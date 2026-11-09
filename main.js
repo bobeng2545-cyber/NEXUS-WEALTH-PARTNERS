@@ -645,6 +645,7 @@ async function loadMemberProfile(user) {
 }
 
 
+
 /* =========================================
    16. LOAD MEMBER WALLET
 ========================================= */
@@ -670,18 +671,23 @@ async function loadMemberWallet(user) {
     const deposits = Number(data.total_deposits) || 0;
     const withdrawals = Number(data.total_withdrawals) || 0;
 
-    /* Load money reserved for pending withdrawals. */
-    const { data: requests, error: requestError } =
-        await nexusSupabase
-            .from("withdrawal_requests")
-            .select("amount, status")
-            .eq("user_id", user.id)
-            .in("status", ["pending", "processing"]);
+    /* LOAD PENDING AND PROCESSING WITHDRAWALS */
+
+    const {
+        data: requests,
+        error: requestError
+    } = await nexusSupabase
+        .from("withdrawal_requests")
+        .select("amount, status")
+        .eq("user_id", user.id)
+        .in("status", ["pending", "processing"]);
 
     if (requestError) {
         console.error("Withdrawal reservation error:", requestError);
         throw requestError;
     }
+
+    /* CALCULATE TOTAL RESERVED WITHDRAWALS */
 
     const reservedWithdrawals = (requests || []).reduce(
         (total, request) => {
@@ -690,12 +696,15 @@ async function loadMemberWallet(user) {
         0
     );
 
+    /* CALCULATE AVAILABLE BALANCE */
+
     const availableBalance = Math.max(
         0,
         balance - reservedWithdrawals
     );
 
-    /* Actual wallet balance. */
+    /* ACTUAL WALLET BALANCE */
+
     [
         "walletBalance",
         "walletBalanceDisplay",
@@ -708,9 +717,11 @@ async function loadMemberWallet(user) {
         if (element) {
             element.textContent = formatMoney(balance);
         }
+
     });
 
-    /* Available balance after reserved withdrawals. */
+    /* AVAILABLE BALANCE */
+
     [
         "walletAvailableBalance",
         "availableBalance"
@@ -721,9 +732,23 @@ async function loadMemberWallet(user) {
         if (element) {
             element.textContent = formatMoney(availableBalance);
         }
+
     });
 
-    /* Total deposits. */
+    /* PENDING WITHDRAWALS CARD */
+
+    const pendingCard = getElement(
+        "walletPendingWithdrawals"
+    );
+
+    if (pendingCard) {
+        pendingCard.textContent = formatMoney(
+            reservedWithdrawals
+        );
+    }
+
+    /* TOTAL DEPOSITS */
+
     [
         "walletTotalDeposits",
         "totalDeposits"
@@ -734,11 +759,17 @@ async function loadMemberWallet(user) {
         if (element) {
             element.textContent = formatMoney(deposits);
         }
+
     });
 
-    /* Completed withdrawals. */
-    if (getElement("walletTotalWithdrawals")) {
-        getElement("walletTotalWithdrawals").textContent =
+    /* COMPLETED WITHDRAWALS */
+
+    const totalWithdrawalsElement = getElement(
+        "walletTotalWithdrawals"
+    );
+
+    if (totalWithdrawalsElement) {
+        totalWithdrawalsElement.textContent =
             formatMoney(withdrawals);
     }
 
@@ -748,6 +779,7 @@ async function loadMemberWallet(user) {
         reserved_withdrawals: reservedWithdrawals
     };
 }
+
 
 
 /* =========================================
@@ -1271,6 +1303,7 @@ async function loadMemberTransactions(user) {
 }
 
 
+
 /* =========================================
    26. LOAD PENDING WITHDRAWALS
 ========================================= */
@@ -1279,16 +1312,25 @@ async function loadPendingWithdrawals(user) {
 
     const list = getElement("pendingWithdrawalList");
     const totalDisplay = getElement("pendingWithdrawalTotal");
+    const pendingCard = getElement("walletPendingWithdrawals");
 
-    if (!list || !totalDisplay || !user) return;
+    if (!user) return;
 
-    list.innerHTML = `
-        <tr>
-            <td colspan="4">Loading withdrawal requests...</td>
-        </tr>
-    `;
+    if (list) {
+        list.innerHTML = `
+            <tr>
+                <td colspan="4">Loading withdrawal requests...</td>
+            </tr>
+        `;
+    }
 
-    totalDisplay.textContent = formatMoney(0);
+    if (totalDisplay) {
+        totalDisplay.textContent = formatMoney(0);
+    }
+
+    if (pendingCard) {
+        pendingCard.textContent = formatMoney(0);
+    }
 
     try {
 
@@ -1303,6 +1345,8 @@ async function loadPendingWithdrawals(user) {
 
         const requests = data || [];
 
+        /* CALCULATE TOTAL RESERVED */
+
         const reservedTotal = requests.reduce(
             (total, request) => {
                 return total + (Number(request.amount) || 0);
@@ -1310,7 +1354,19 @@ async function loadPendingWithdrawals(user) {
             0
         );
 
-        totalDisplay.textContent = formatMoney(reservedTotal);
+        /* UPDATE BOTH PENDING WITHDRAWAL DISPLAYS */
+
+        if (totalDisplay) {
+            totalDisplay.textContent = formatMoney(reservedTotal);
+        }
+
+        if (pendingCard) {
+            pendingCard.textContent = formatMoney(reservedTotal);
+        }
+
+        if (!list) return;
+
+        /* NO PENDING WITHDRAWALS */
 
         if (requests.length === 0) {
 
@@ -1348,7 +1404,9 @@ async function loadPendingWithdrawals(user) {
             const dateCell = document.createElement("td");
             const statusCell = document.createElement("td");
 
-            amountCell.textContent = formatMoney(request.amount);
+            amountCell.textContent = formatMoney(
+                request.amount
+            );
 
             methodCell.textContent =
                 methodLabels[request.withdrawal_method] ||
@@ -1372,23 +1430,27 @@ async function loadPendingWithdrawals(user) {
             row.appendChild(statusCell);
 
             list.appendChild(row);
+
         });
 
     } catch (error) {
 
         console.error("Pending withdrawals error:", error);
 
-        list.innerHTML = `
-            <tr>
-                <td colspan="4">
-                    Unable to load withdrawal requests.
-                </td>
-            </tr>
-        `;
+        if (list) {
+            list.innerHTML = `
+                <tr>
+                    <td colspan="4">
+                        Unable to load withdrawal requests.
+                    </td>
+                </tr>
+            `;
+        }
 
         throw error;
     }
 }
+
 
 
 /* =========================================
