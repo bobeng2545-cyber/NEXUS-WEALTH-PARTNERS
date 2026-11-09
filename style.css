@@ -3198,27 +3198,33 @@ body {
 }
 
 
-/* =========================================
-   REMOVE DUPLICATE HEADER ON INNER PAGES
-========================================= */
+
+/* REMOVE THE EXTRA HOME HEADER ON INNER SCREENS */
 
 @media (max-width: 768px) {
 
-    /* Hide the Home Dashboard header on inner pages */
-    body.mobile-inner-page #mobileHomeHeader {
+    body.mobile-inner-page #mobileHomeHeader,
+    #memberDashboard.mobile-inner-page #mobileHomeHeader {
         display: none !important;
+        visibility: hidden !important;
+        height: 0 !important;
+        min-height: 0 !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        overflow: hidden !important;
     }
 
-    /* Keep only the current page header visible */
+    /* Keep the actual page header */
     body.mobile-inner-page #mobileScreenHeader {
         display: flex !important;
-        position: fixed !important;
-        top: 0 !important;
-        left: 0 !important;
-        right: 0 !important;
-        width: 100% !important;
+        height: 64px !important;
+        min-height: 64px !important;
         background: #142f68 !important;
         z-index: 99999 !important;
     }
 
+    /* Remove the extra home-header spacing */
+    body.mobile-inner-page #memberDashboard {
+        padding-top: 64px !important;
+    }
 }
