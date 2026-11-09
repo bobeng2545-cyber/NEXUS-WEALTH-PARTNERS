@@ -646,8 +646,10 @@ async function loadMemberProfile(user) {
 
 
 
+
 /* =========================================
    16. LOAD MEMBER WALLET
+   DISPLAY BALANCE AFTER PENDING WITHDRAWALS
 ========================================= */
 
 async function loadMemberWallet(user) {
@@ -667,12 +669,13 @@ async function loadMemberWallet(user) {
         throw new Error("Your wallet record was not found.");
     }
 
-    const balance = Number(data.balance) || 0;
+    // ACTUAL DATABASE WALLET BALANCE
+    const actualBalance = Number(data.balance) || 0;
+
     const deposits = Number(data.total_deposits) || 0;
     const withdrawals = Number(data.total_withdrawals) || 0;
 
-    /* LOAD PENDING AND PROCESSING WITHDRAWALS */
-
+    // LOAD PENDING AND PROCESSING WITHDRAWALS
     const {
         data: requests,
         error: requestError
@@ -683,28 +686,28 @@ async function loadMemberWallet(user) {
         .in("status", ["pending", "processing"]);
 
     if (requestError) {
-        console.error("Withdrawal reservation error:", requestError);
+        console.error("Withdrawal loading error:", requestError);
         throw requestError;
     }
 
-    /* CALCULATE TOTAL RESERVED WITHDRAWALS */
-
-    const reservedWithdrawals = (requests || []).reduce(
+    // CALCULATE TOTAL PENDING WITHDRAWALS
+    const pendingWithdrawals = (requests || []).reduce(
         (total, request) => {
             return total + (Number(request.amount) || 0);
         },
         0
     );
 
-    /* CALCULATE AVAILABLE BALANCE */
-
-    const availableBalance = Math.max(
+    // DISPLAY BALANCE AFTER WITHDRAWAL REQUESTS
+    const currentBalance = Math.max(
         0,
-        balance - reservedWithdrawals
+        actualBalance - pendingWithdrawals
     );
 
-    /* ACTUAL WALLET BALANCE */
+    // AVAILABLE BALANCE MUST EQUAL DISPLAYED WALLET BALANCE
+    const availableBalance = currentBalance;
 
+    // DISPLAY WALLET BALANCE
     [
         "walletBalance",
         "walletBalanceDisplay",
@@ -715,13 +718,12 @@ async function loadMemberWallet(user) {
         const element = getElement(id);
 
         if (element) {
-            element.textContent = formatMoney(balance);
+            element.textContent = formatMoney(currentBalance);
         }
 
     });
 
-    /* AVAILABLE BALANCE */
-
+    // DISPLAY AVAILABLE BALANCE
     [
         "walletAvailableBalance",
         "availableBalance"
@@ -735,20 +737,14 @@ async function loadMemberWallet(user) {
 
     });
 
-    /* PENDING WITHDRAWALS CARD */
-
-    const pendingCard = getElement(
-        "walletPendingWithdrawals"
-    );
+    // DISPLAY PENDING WITHDRAWALS
+    const pendingCard = getElement("walletPendingWithdrawals");
 
     if (pendingCard) {
-        pendingCard.textContent = formatMoney(
-            reservedWithdrawals
-        );
+        pendingCard.textContent = formatMoney(pendingWithdrawals);
     }
 
-    /* TOTAL DEPOSITS */
-
+    // DISPLAY TOTAL DEPOSITS
     [
         "walletTotalDeposits",
         "totalDeposits"
@@ -762,8 +758,7 @@ async function loadMemberWallet(user) {
 
     });
 
-    /* COMPLETED WITHDRAWALS */
-
+    // DISPLAY COMPLETED WITHDRAWALS
     const totalWithdrawalsElement = getElement(
         "walletTotalWithdrawals"
     );
@@ -775,10 +770,13 @@ async function loadMemberWallet(user) {
 
     return {
         ...data,
+        actual_balance: actualBalance,
+        balance: currentBalance,
         available_balance: availableBalance,
-        reserved_withdrawals: reservedWithdrawals
+        reserved_withdrawals: pendingWithdrawals
     };
 }
+
 
 
 
