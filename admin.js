@@ -729,31 +729,19 @@ function displayAdminWithdrawals(withdrawals, profiles) {
 
         const row = document.createElement("tr");
 
-
-        // REQUEST ID
-
         row.appendChild(
             createAdminTableCell(requestId)
         );
 
-
-        // MEMBER
-
         row.appendChild(
             createAdminTableCell(memberName)
         );
-
-
-        // AMOUNT
 
         row.appendChild(
             createAdminTableCell(
                 formatNexusAdminMoney(request.amount)
             )
         );
-
-
-        // PAYMENT METHOD
 
         row.appendChild(
             createAdminTableCell(
@@ -762,15 +750,9 @@ function displayAdminWithdrawals(withdrawals, profiles) {
             )
         );
 
-
-        // PAYMENT DETAILS
-
         row.appendChild(
             createAdminTableCell(request.payment_details)
         );
-
-
-        // STATUS
 
         const statusCell = createAdminTableCell(
             String(request.status || "").toUpperCase()
@@ -780,9 +762,6 @@ function displayAdminWithdrawals(withdrawals, profiles) {
             "transaction-status status-" + request.status;
 
         row.appendChild(statusCell);
-
-
-        // ACTION BUTTONS
 
         const actionCell = document.createElement("td");
 
@@ -840,9 +819,6 @@ function displayAdminWithdrawals(withdrawals, profiles) {
 
         row.appendChild(actionCell);
 
-
-        // DATE AND TIME REQUESTED
-
         const requestedDateTime =
             formatAdminDateTime(request.created_at);
 
@@ -860,15 +836,9 @@ function displayAdminWithdrawals(withdrawals, profiles) {
 
         row.appendChild(dateTimeCell);
 
-
-        // ADD TO ALL WITHDRAWAL REQUESTS TABLE
-
         if (table) {
             table.appendChild(row);
         }
-
-
-        // FIVE MOST RECENT REQUESTS
 
         if (index < 5 && recentTable) {
 
@@ -982,17 +952,11 @@ function displayAdminSavings(wallets, profiles, withdrawals) {
             profile => profile.id === wallet.user_id
         );
 
-
-        // MEMBER ID
-
         row.appendChild(
             createAdminTableCell(
                 memberProfile?.member_id
             )
         );
-
-
-        // MEMBER NAME
 
         row.appendChild(
             createAdminTableCell(
@@ -1002,9 +966,6 @@ function displayAdminSavings(wallets, profiles, withdrawals) {
                 )
             )
         );
-
-
-        // ADJUSTED WALLET BALANCE
 
         const displayBalance =
             getMemberDisplayBalance(
@@ -1018,9 +979,6 @@ function displayAdminSavings(wallets, profiles, withdrawals) {
             )
         );
 
-
-        // TOTAL DEPOSITS
-
         row.appendChild(
             createAdminTableCell(
                 formatNexusAdminMoney(
@@ -1028,9 +986,6 @@ function displayAdminSavings(wallets, profiles, withdrawals) {
                 )
             )
         );
-
-
-        // COMPLETED WITHDRAWALS
 
         row.appendChild(
             createAdminTableCell(
@@ -1048,7 +1003,293 @@ function displayAdminSavings(wallets, profiles, withdrawals) {
 
 
 /* =========================================
-   20. LOAD ALL DASHBOARD RECORDS
+   20. DISPLAY ALL FINANCIAL TRANSACTIONS
+========================================= */
+
+function displayAdminTransactions(
+    deposits,
+    withdrawals,
+    profiles
+) {
+
+    const table =
+        document.getElementById("transactionsTable");
+
+    if (!table) {
+
+        console.error(
+            "The transactionsTable element was not found in admin.html."
+        );
+
+        return;
+
+    }
+
+
+    /*
+       CREATE THE TABLE HEADINGS
+       This ensures the headings match the records.
+    */
+
+    const parentTable = table.closest("table");
+
+    if (parentTable) {
+
+        let thead = parentTable.querySelector("thead");
+
+        if (!thead) {
+
+            thead = document.createElement("thead");
+
+            parentTable.prepend(thead);
+
+        }
+
+        const headingRow = document.createElement("tr");
+
+        [
+            "Transaction Reference",
+            "Member",
+            "Transaction Type",
+            "Amount",
+            "Payment Method",
+            "Status",
+            "Date & Time"
+        ].forEach(heading => {
+
+            const th = document.createElement("th");
+
+            th.textContent = heading;
+
+            headingRow.appendChild(th);
+
+        });
+
+        thead.replaceChildren(headingRow);
+
+    }
+
+
+    /*
+       COMBINE DEPOSITS AND WITHDRAWALS
+    */
+
+    const transactions = [];
+
+
+    /* DEPOSIT TRANSACTIONS */
+
+    deposits.forEach(deposit => {
+
+        transactions.push({
+
+            id: deposit.id,
+
+            reference: deposit.reference,
+
+            user_id: deposit.user_id,
+
+            type: "Deposit",
+
+            amount: deposit.amount,
+
+            payment_method: deposit.payment_method,
+
+            status: deposit.status,
+
+            created_at: deposit.created_at
+
+        });
+
+    });
+
+
+    /* WITHDRAWAL TRANSACTIONS */
+
+    withdrawals.forEach(withdrawal => {
+
+        transactions.push({
+
+            id: withdrawal.id,
+
+            reference:
+                "WDR-" + String(withdrawal.id).slice(0, 8),
+
+            user_id: withdrawal.user_id,
+
+            type: "Withdrawal",
+
+            amount: withdrawal.amount,
+
+            payment_method: withdrawal.withdrawal_method,
+
+            status: withdrawal.status,
+
+            created_at: withdrawal.created_at
+
+        });
+
+    });
+
+
+    /*
+       SORT NEWEST TRANSACTIONS FIRST
+    */
+
+    transactions.sort((a, b) => {
+
+        return new Date(b.created_at || 0) -
+            new Date(a.created_at || 0);
+
+    });
+
+
+    if (!transactions.length) {
+
+        showAdminTableMessage(
+            "transactionsTable",
+            7,
+            "No financial transactions have been recorded yet."
+        );
+
+        return;
+
+    }
+
+
+    table.replaceChildren();
+
+
+    /*
+       PAYMENT METHOD LABELS
+    */
+
+    const methodLabels = {
+
+        mtn: "MTN Mobile Money",
+        mtn_momo: "MTN Mobile Money",
+
+        telecel: "Telecel Cash",
+        telecel_cash: "Telecel Cash",
+
+        at: "AT Money",
+        at_money: "AT Money",
+
+        bank: "Bank Account",
+
+        card: "Bank Card"
+
+    };
+
+
+    /*
+       DISPLAY EVERY TRANSACTION
+    */
+
+    transactions.forEach(transaction => {
+
+        const row = document.createElement("tr");
+
+
+        // REFERENCE
+
+        row.appendChild(
+            createAdminTableCell(
+                transaction.reference || transaction.id
+            )
+        );
+
+
+        // MEMBER NAME
+
+        row.appendChild(
+            createAdminTableCell(
+                getAdminMemberName(
+                    transaction.user_id,
+                    profiles
+                )
+            )
+        );
+
+
+        // TRANSACTION TYPE
+
+        const typeCell = createAdminTableCell(
+            transaction.type
+        );
+
+        typeCell.className =
+            transaction.type === "Deposit"
+                ? "transaction-type deposit"
+                : "transaction-type withdrawal";
+
+        row.appendChild(typeCell);
+
+
+        // AMOUNT
+
+        row.appendChild(
+            createAdminTableCell(
+                formatNexusAdminMoney(transaction.amount)
+            )
+        );
+
+
+        // PAYMENT METHOD
+
+        row.appendChild(
+            createAdminTableCell(
+                methodLabels[transaction.payment_method] ||
+                transaction.payment_method
+            )
+        );
+
+
+        // STATUS
+
+        const status = String(
+            transaction.status || "unknown"
+        ).toLowerCase();
+
+        const statusCell = createAdminTableCell(
+            status.toUpperCase()
+        );
+
+        statusCell.className =
+            "transaction-status status-" +
+            status.replace(/[^a-z0-9_-]/g, "");
+
+        row.appendChild(statusCell);
+
+
+        // DATE AND TIME
+
+        row.appendChild(
+            createAdminTableCell(
+                formatAdminDateTime(transaction.created_at)
+            )
+        );
+
+
+        table.appendChild(row);
+
+    });
+
+
+    console.log(
+        "Admin financial transactions displayed:",
+        {
+            deposits: deposits.length,
+            withdrawals: withdrawals.length,
+            total: transactions.length
+        }
+    );
+
+}
+
+
+/* =========================================
+   21. LOAD ALL DASHBOARD RECORDS
 ========================================= */
 
 async function loadAdminDashboardData() {
@@ -1058,7 +1299,8 @@ async function loadAdminDashboardData() {
     const [
         profilesResult,
         walletsResult,
-        withdrawalsResult
+        withdrawalsResult,
+        depositsResult
     ] = await Promise.all([
 
         nexusAdminSupabase
@@ -1079,9 +1321,19 @@ async function loadAdminDashboardData() {
             .select(
                 "id, user_id, amount, withdrawal_method, payment_details, status, created_at, completed_at"
             )
+            .order("created_at", { ascending: false }),
+
+        nexusAdminSupabase
+            .from("deposit_transactions")
+            .select(
+                "id, user_id, amount, payment_method, payment_phone, reference, status, created_at, paid_at"
+            )
             .order("created_at", { ascending: false })
 
     ]);
+
+
+    /* CHECK REQUIRED TABLES */
 
     if (profilesResult.error) {
         throw profilesResult.error;
@@ -1095,9 +1347,14 @@ async function loadAdminDashboardData() {
         throw withdrawalsResult.error;
     }
 
+
     const profiles = profilesResult.data || [];
+
     const wallets = walletsResult.data || [];
+
     const withdrawals = withdrawalsResult.data || [];
+
+    const deposits = depositsResult.data || [];
 
 
     /* TOTAL MEMBERS */
@@ -1253,13 +1510,50 @@ async function loadAdminDashboardData() {
     );
 
 
+    /*
+       DISPLAY FINANCIAL TRANSACTIONS
+
+       If the deposits query fails, the other
+       dashboard sections can still load.
+    */
+
+    if (depositsResult.error) {
+
+        console.error(
+            "Deposit transaction loading error:",
+            depositsResult.error
+        );
+
+        showAdminTableMessage(
+            "transactionsTable",
+            7,
+            "Unable to load deposits. Check the deposit_transactions SELECT permission in Supabase. Error: " +
+            depositsResult.error.message
+        );
+
+    } else {
+
+        displayAdminTransactions(
+            deposits,
+            withdrawals,
+            profiles
+        );
+
+    }
+
+
     console.log("Nexus admin dashboard data loaded.", {
 
         members: profiles.length,
 
         wallets: wallets.length,
 
+        depositTransactions: deposits.length,
+
         withdrawalRequests: withdrawals.length,
+
+        totalFinancialTransactions:
+            deposits.length + withdrawals.length,
 
         pendingWithdrawals: pending,
 
@@ -1273,7 +1567,7 @@ async function loadAdminDashboardData() {
 
 
 /* =========================================
-   21. ADMIN WITHDRAWAL REVIEW
+   22. ADMIN WITHDRAWAL REVIEW
 ========================================= */
 
 async function reviewNexusWithdrawal(requestId, action) {
@@ -1330,8 +1624,6 @@ async function reviewNexusWithdrawal(requestId, action) {
             )
         );
 
-        // REFRESH ALL ADMIN RECORDS
-
         await loadAdminDashboardData();
 
     } catch (error) {
@@ -1352,7 +1644,7 @@ async function reviewNexusWithdrawal(requestId, action) {
 
 
 /* =========================================
-   22. START ADMIN DASHBOARD
+   23. START ADMIN DASHBOARD
 ========================================= */
 
 checkAdminSession();
