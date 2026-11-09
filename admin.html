@@ -20,13 +20,17 @@
 
 <body>
 
-    <!-- ADMIN LOGIN -->
+    <!-- =========================================
+         ADMIN LOGIN
+    ========================================== -->
+
     <section id="adminLoginScreen" class="admin-login-screen">
 
         <div class="login-card">
 
             <div class="brand-logo">
                 <div class="brand-icon">N</div>
+
                 <div>
                     <h1>NEXUS</h1>
                     <p>WEALTH PARTNERS</p>
@@ -43,6 +47,7 @@
 
                 <div class="form-group">
                     <label for="adminEmail">Administrator Email</label>
+
                     <input
                         type="email"
                         id="adminEmail"
@@ -54,6 +59,7 @@
 
                 <div class="form-group">
                     <label for="adminPassword">Password</label>
+
                     <input
                         type="password"
                         id="adminPassword"
@@ -85,10 +91,17 @@
     </section>
 
 
-    <!-- ADMIN DASHBOARD -->
+    <!-- =========================================
+         ADMIN DASHBOARD
+    ========================================== -->
+
     <div id="adminDashboard" class="admin-dashboard" hidden>
 
-        <!-- SIDEBAR -->
+
+        <!-- =====================================
+             SIDEBAR
+        ====================================== -->
+
         <aside class="admin-sidebar" id="adminSidebar">
 
             <div class="sidebar-brand">
@@ -141,7 +154,11 @@
                     View Main Website
                 </a>
 
-                <button type="button" id="adminLogoutButton" class="logout-button">
+                <button
+                    type="button"
+                    id="adminLogoutButton"
+                    class="logout-button"
+                >
                     <span>⇥</span>
                     Sign Out
                 </button>
@@ -151,15 +168,26 @@
         </aside>
 
 
-        <!-- MAIN CONTENT -->
+        <!-- =====================================
+             MAIN CONTENT
+        ====================================== -->
+
         <main class="admin-main">
 
-            <!-- TOP BAR -->
+
+            <!-- =================================
+                 TOP BAR
+            ================================== -->
+
             <header class="admin-topbar">
 
                 <div class="topbar-left">
 
-                    <button type="button" id="sidebarToggle" class="sidebar-toggle">
+                    <button
+                        type="button"
+                        id="sidebarToggle"
+                        class="sidebar-toggle"
+                    >
                         ☰
                     </button>
 
@@ -184,10 +212,14 @@
             </header>
 
 
-            <!-- OVERVIEW PAGE -->
+            <!-- =================================
+                 OVERVIEW PAGE
+            ================================== -->
+
             <section id="page-overview" class="admin-page active">
 
                 <div class="page-intro">
+
                     <div>
                         <h2>Dashboard Overview</h2>
                         <p>Monitor your platform's financial and membership activities.</p>
@@ -196,10 +228,12 @@
                     <div class="overview-date" id="dashboardDate">
                         Dashboard
                     </div>
+
                 </div>
 
 
                 <!-- STATISTICS -->
+
                 <div class="statistics-grid">
 
                     <article class="stat-card">
@@ -234,15 +268,18 @@
 
 
                 <!-- QUICK INFORMATION -->
+
                 <div class="overview-grid">
 
                     <div class="admin-panel">
 
                         <div class="panel-heading">
+
                             <div>
                                 <h3>Withdrawal Overview</h3>
                                 <p>Review member withdrawal activity.</p>
                             </div>
+
                         </div>
 
                         <div class="withdrawal-summary">
@@ -274,13 +311,16 @@
                     <div class="admin-panel">
 
                         <div class="panel-heading">
+
                             <div>
                                 <h3>Platform Information</h3>
                                 <p>Important account controls.</p>
                             </div>
+
                         </div>
 
                         <div class="platform-information">
+
                             <div>
                                 <span>Platform</span>
                                 <strong>Nexus Wealth Partners</strong>
@@ -295,6 +335,7 @@
                                 <span>Administrator</span>
                                 <strong>Authorized Admin</strong>
                             </div>
+
                         </div>
 
                     </div>
@@ -303,9 +344,11 @@
 
 
                 <!-- RECENT WITHDRAWALS -->
+
                 <div class="admin-panel recent-panel">
 
                     <div class="panel-heading">
+
                         <div>
                             <h3>Recent Withdrawal Requests</h3>
                             <p>The latest member withdrawal requests.</p>
@@ -314,11 +357,13 @@
                         <button class="text-action" data-page="withdrawals">
                             View All
                         </button>
+
                     </div>
 
                     <div class="table-container">
 
                         <table>
+
                             <thead>
                                 <tr>
                                     <th>Request ID</th>
@@ -330,11 +375,13 @@
                             </thead>
 
                             <tbody id="recentWithdrawalsTable">
+
                                 <tr>
                                     <td colspan="5" class="empty-table">
                                         No withdrawal records loaded yet.
                                     </td>
                                 </tr>
+
                             </tbody>
 
                         </table>
@@ -346,28 +393,36 @@
             </section>
 
 
-            <!-- MEMBERS PAGE -->
+            <!-- =================================
+                 MEMBERS PAGE
+            ================================== -->
+
             <section id="page-members" class="admin-page">
 
                 <div class="page-intro">
+
                     <div>
                         <h2>Members Management</h2>
                         <p>View registered members and their account information.</p>
                     </div>
+
                 </div>
 
                 <div class="admin-panel">
 
                     <div class="panel-heading">
+
                         <div>
                             <h3>Registered Members</h3>
                             <p>Member accounts on the platform.</p>
                         </div>
+
                     </div>
 
                     <div class="table-container">
 
                         <table>
+
                             <thead>
                                 <tr>
                                     <th>Member ID</th>
@@ -379,11 +434,13 @@
                             </thead>
 
                             <tbody id="membersTable">
+
                                 <tr>
                                     <td colspan="5" class="empty-table">
                                         Members will appear here.
                                     </td>
                                 </tr>
+
                             </tbody>
 
                         </table>
@@ -395,15 +452,23 @@
             </section>
 
 
-            <!-- WITHDRAWALS PAGE -->
+            <!-- =================================
+                 WITHDRAWALS PAGE
+            ================================== -->
+
             <section id="page-withdrawals" class="admin-page">
 
                 <div class="page-intro">
+
                     <div>
                         <h2>Withdrawal Requests</h2>
                         <p>Review requests and manage the payout process.</p>
                     </div>
+
                 </div>
+
+
+                <!-- WITHDRAWAL RULES -->
 
                 <div class="withdrawal-rules">
 
@@ -419,18 +484,24 @@
 
                 </div>
 
+
+                <!-- ALL WITHDRAWAL REQUESTS -->
+
                 <div class="admin-panel">
 
                     <div class="panel-heading">
+
                         <div>
                             <h3>All Withdrawal Requests</h3>
                             <p>Review each request before making a payout.</p>
                         </div>
+
                     </div>
 
                     <div class="table-container">
 
                         <table>
+
                             <thead>
                                 <tr>
                                     <th>Request ID</th>
@@ -440,15 +511,18 @@
                                     <th>Payment Details</th>
                                     <th>Status</th>
                                     <th>Action</th>
+                                    <th>Date &amp; Time Requested</th>
                                 </tr>
                             </thead>
 
                             <tbody id="withdrawalsTable">
+
                                 <tr>
-                                    <td colspan="7" class="empty-table">
+                                    <td colspan="8" class="empty-table">
                                         Withdrawal requests will appear here.
                                     </td>
                                 </tr>
+
                             </tbody>
 
                         </table>
@@ -460,28 +534,36 @@
             </section>
 
 
-            <!-- TRANSACTIONS PAGE -->
+            <!-- =================================
+                 TRANSACTIONS PAGE
+            ================================== -->
+
             <section id="page-transactions" class="admin-page">
 
                 <div class="page-intro">
+
                     <div>
                         <h2>Transactions</h2>
                         <p>Monitor deposits and completed withdrawals.</p>
                     </div>
+
                 </div>
 
                 <div class="admin-panel">
 
                     <div class="panel-heading">
+
                         <div>
                             <h3>Transaction Records</h3>
                             <p>Financial transaction history.</p>
                         </div>
+
                     </div>
 
                     <div class="table-container">
 
                         <table>
+
                             <thead>
                                 <tr>
                                     <th>Transaction ID</th>
@@ -494,11 +576,13 @@
                             </thead>
 
                             <tbody id="transactionsTable">
+
                                 <tr>
                                     <td colspan="6" class="empty-table">
                                         Transaction records will appear here.
                                     </td>
                                 </tr>
+
                             </tbody>
 
                         </table>
@@ -510,28 +594,36 @@
             </section>
 
 
-            <!-- SAVINGS PAGE -->
+            <!-- =================================
+                 SAVINGS PAGE
+            ================================== -->
+
             <section id="page-savings" class="admin-page">
 
                 <div class="page-intro">
+
                     <div>
                         <h2>Savings Management</h2>
                         <p>Monitor members' savings activities and balances.</p>
                     </div>
+
                 </div>
 
                 <div class="admin-panel">
 
                     <div class="panel-heading">
+
                         <div>
                             <h3>Members' Savings</h3>
                             <p>Savings records will be displayed here.</p>
                         </div>
+
                     </div>
 
                     <div class="table-container">
 
                         <table>
+
                             <thead>
                                 <tr>
                                     <th>Member ID</th>
@@ -543,11 +635,13 @@
                             </thead>
 
                             <tbody id="savingsTable">
+
                                 <tr>
                                     <td colspan="5" class="empty-table">
                                         Savings information will appear here.
                                     </td>
                                 </tr>
+
                             </tbody>
 
                         </table>
@@ -558,9 +652,17 @@
 
             </section>
 
+
+            <!-- =================================
+                 FOOTER
+            ================================== -->
+
             <footer class="admin-footer">
+
                 <p>© 2026 Nexus Wealth Partners. All rights reserved.</p>
+
                 <span>Secure Administration Portal</span>
+
             </footer>
 
         </main>
@@ -568,10 +670,17 @@
     </div>
 
 
-    <!-- SUPABASE -->
+    <!-- =========================================
+         SUPABASE
+    ========================================== -->
+
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-    <!-- ADMIN JAVASCRIPT -->
+
+    <!-- =========================================
+         ADMIN JAVASCRIPT
+    ========================================== -->
+
     <script src="admin.js"></script>
 
 </body>
