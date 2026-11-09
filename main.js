@@ -205,9 +205,10 @@ function showForgotPassword() {
 }
 
 
+
 /* =========================================
    10. MOBILE DASHBOARD NAVIGATION
-   ONE SCREEN AT A TIME
+   SHOW ONLY THE SELECTED SCREEN
 ========================================= */
 
 let currentDashboardView = "home";
@@ -216,25 +217,46 @@ function setMobileDashboardView(screen, shouldScroll = true) {
 
     const isMobile = window.matchMedia("(max-width: 700px)").matches;
 
+    const dashboard = getElement("memberDashboard");
+    const homeHeader = getElement("mobileHomeHeader");
     const screenHeader = getElement("mobileScreenHeader");
     const screenTitle = getElement("mobileScreenTitle");
     const backButton = getElement("mobileBackButton");
 
     const screenTitles = {
-        home: "Home",
+        home: "My Dashboard",
         transactions: "Transactions",
         pendingWithdrawals: "Pending Withdrawals",
-        savings: "Savings",
+        savings: "My Savings",
         profile: "My Profile"
     };
 
-        const screenSections = {
+    /*
+       HOME CONTENT:
+       Wallet, deposits, withdrawals and dashboard summary.
+    */
+
+    const homeSections = [
+        ".home-dashboard-content"
+    ];
+
+    /*
+       ALL SECTIONS THAT MUST BE HIDDEN
+       BEFORE SHOWING THE SELECTED SCREEN.
+    */
+
+    const allSections = [
+        ".home-dashboard-content",
+        "#pendingWithdrawals",
+        "#memberTransactions",
+        "#memberSavings",
+        "#memberProfile"
+    ];
+
+    const screenSections = {
+
         home: [
-            ".dashboard-heading",
-            ".dashboard-cards",
-            "#myWallet",
-            "#depositFunds",
-            "#withdrawFunds"
+            ".home-dashboard-content"
         ],
 
         transactions: [
@@ -253,20 +275,8 @@ function setMobileDashboardView(screen, shouldScroll = true) {
         profile: [
             "#memberProfile"
         ]
-    };
 
-    const allSections = [
-        ".dashboard-heading",
-        ".dashboard-cards",
-        "#myWallet",
-        "#depositFunds",
-        "#withdrawFunds",
-        ".dashboard-content-grid",
-        "#pendingWithdrawals",
-        "#memberTransactions",
-        "#memberSavings",
-        "#memberProfile"
-    ];
+    };
 
     if (!screenSections[screen]) {
         screen = "home";
@@ -274,197 +284,254 @@ function setMobileDashboardView(screen, shouldScroll = true) {
 
     currentDashboardView = screen;
 
-    /* Restore all sections before applying the selected view. */
-    allSections.forEach(selector => {
-        document.querySelectorAll("#memberDashboard " + selector).forEach(element => {
-            element.classList.remove("mobile-view-hidden");
-            element.style.display = "";
-        });
-    });
+    /*
+       RESTORE ALL SECTIONS FIRST.
+    */
 
-    /* Desktop displays the normal complete dashboard. */
-    if (!isMobile) {
+    allSections.forEach(selector => {
 
         document.querySelectorAll(
-            "#memberDashboard #memberTransactions h1, " +
-            "#memberDashboard #memberTransactions h2, " +
-            "#memberDashboard #memberTransactions h3, " +
-            "#memberDashboard #pendingWithdrawals h1, " +
-            "#memberDashboard #pendingWithdrawals h2, " +
-            "#memberDashboard #pendingWithdrawals h3, " +
-            "#memberDashboard #memberSavings h1, " +
-            "#memberDashboard #memberSavings h2, " +
-            "#memberDashboard #memberSavings h3, " +
-            "#memberDashboard #memberProfile h1, " +
-            "#memberDashboard #memberProfile h2, " +
-            "#memberDashboard #memberProfile h3"
-        ).forEach(heading => {
-            if (heading.hasAttribute("data-nexus-original-display")) {
-                heading.style.display =
-                    heading.getAttribute("data-nexus-original-display");
-            }
+            "#memberDashboard " + selector
+        ).forEach(element => {
+
+            element.classList.remove("mobile-view-hidden");
+            element.style.display = "";
+
         });
+
+    });
+
+    /*
+       REMOVE SPECIAL SAVINGS DISPLAY CLASS.
+    */
+
+    document.querySelectorAll(
+        "#memberDashboard .dashboard-content-grid"
+    ).forEach(element => {
+        element.classList.remove("mobile-savings-visible");
+    });
+
+    /*
+       DESKTOP:
+       Show the normal complete dashboard.
+    */
+
+    if (!isMobile) {
+
+        document.body.classList.remove("mobile-inner-page");
+
+        if (dashboard) {
+            dashboard.classList.remove("mobile-inner-page");
+            dashboard.style.paddingTop = "";
+        }
+
+        if (homeHeader) {
+            homeHeader.style.display = "none";
+        }
 
         if (screenHeader) {
             screenHeader.style.display = "none";
-            screenHeader.style.position = "";
-            screenHeader.style.top = "";
-            screenHeader.style.left = "";
-            screenHeader.style.right = "";
-            screenHeader.style.width = "";
-            screenHeader.style.zIndex = "";
-            screenHeader.style.boxSizing = "";
-        }
-
-        if (memberDashboard) {
-            memberDashboard.classList.remove("mobile-inner-page");
-            memberDashboard.style.paddingTop = "";
         }
 
         if (backButton) {
             backButton.style.display = "none";
         }
 
-        document.querySelectorAll(".member-navigation a[data-screen]").forEach(link => {
-            link.classList.toggle("active", link.dataset.screen === "home");
+        document.querySelectorAll(
+            ".member-navigation a[data-screen]"
+        ).forEach(link => {
+
+            link.classList.toggle(
+                "active",
+                link.dataset.screen === "home"
+            );
+
         });
 
         return;
     }
 
-    /* Mobile: hide every dashboard screen first. */
+    /*
+       MOBILE:
+       Hide every screen first.
+    */
+
     allSections.forEach(selector => {
-        document.querySelectorAll("#memberDashboard " + selector).forEach(element => {
+
+        document.querySelectorAll(
+            "#memberDashboard " + selector
+        ).forEach(element => {
+
             element.classList.add("mobile-view-hidden");
             element.style.display = "none";
+
         });
+
     });
 
-    /* Then show only the screen selected by the member. */
+    /*
+       SHOW ONLY THE SELECTED SCREEN.
+    */
+
     screenSections[screen].forEach(selector => {
-        document.querySelectorAll("#memberDashboard " + selector).forEach(element => {
+
+        document.querySelectorAll(
+            "#memberDashboard " + selector
+        ).forEach(element => {
+
             element.classList.remove("mobile-view-hidden");
             element.style.display = "";
+
         });
+
     });
 
-    /* The fixed title bar replaces the repeated title inside each panel. */
-    if (screenHeader) {
+    /*
+       SAVINGS OVERVIEW IS INSIDE A WRAPPER.
+       Give that wrapper a special visible class.
+    */
 
-        if (screen === "home") {
-            screenHeader.style.display = "none";
-            screenHeader.style.position = "";
+    if (screen === "savings") {
 
-            if (memberDashboard) {
-                memberDashboard.style.paddingTop = "";
-                memberDashboard.classList.remove("mobile-inner-page");
-            }
+        const savingsWrapper = document.querySelector(
+            "#memberDashboard .dashboard-content-grid"
+        );
 
-        } else {
-            screenHeader.style.display = "flex";
-            screenHeader.style.position = "fixed";
-            screenHeader.style.top = "0";
-            screenHeader.style.left = "0";
-            screenHeader.style.right = "0";
-            screenHeader.style.width = "100%";
-            screenHeader.style.zIndex = "1000";
-            screenHeader.style.boxSizing = "border-box";
-
-            if (memberDashboard) {
-                memberDashboard.classList.add("mobile-inner-page");
-                memberDashboard.style.paddingTop = screenHeader.offsetHeight + "px";
-            }
+        if (savingsWrapper) {
+            savingsWrapper.classList.add("mobile-savings-visible");
+            savingsWrapper.style.display = "grid";
         }
+
     }
+
+    /*
+       CONTROL THE TWO MOBILE HEADERS.
+    */
+
+    if (screen === "home") {
+
+        document.body.classList.remove("mobile-inner-page");
+
+        if (dashboard) {
+            dashboard.classList.remove("mobile-inner-page");
+            dashboard.style.paddingTop = "";
+        }
+
+        if (homeHeader) {
+            homeHeader.style.display = "flex";
+        }
+
+        if (screenHeader) {
+            screenHeader.style.display = "none";
+        }
+
+    } else {
+
+        document.body.classList.add("mobile-inner-page");
+
+        if (dashboard) {
+            dashboard.classList.add("mobile-inner-page");
+            dashboard.style.paddingTop = "";
+        }
+
+        if (homeHeader) {
+            homeHeader.style.display = "none";
+        }
+
+        if (screenHeader) {
+            screenHeader.style.display = "flex";
+        }
+
+    }
+
+    /*
+       UPDATE PAGE TITLE AND BACK BUTTON.
+    */
 
     if (screenTitle) {
         screenTitle.textContent = screenTitles[screen];
     }
 
     if (backButton) {
-        backButton.style.display = screen === "home" ? "none" : "flex";
+        backButton.style.display =
+            screen === "home" ? "none" : "flex";
     }
 
     /*
-       Hide the first heading inside the selected panel.
-       The fixed mobile header already displays the panel title.
+       UPDATE ACTIVE NAVIGATION ITEM.
     */
 
     document.querySelectorAll(
-        "#memberDashboard #memberTransactions, " +
-        "#memberDashboard #pendingWithdrawals, " +
-        "#memberDashboard #memberSavings, " +
-        "#memberDashboard #memberProfile"
-    ).forEach(panel => {
+        ".member-navigation a[data-screen]"
+    ).forEach(link => {
 
-        const heading = panel.querySelector("h1, h2, h3");
-
-        if (heading) {
-
-            if (!heading.hasAttribute("data-nexus-original-display")) {
-                heading.setAttribute(
-                    "data-nexus-original-display",
-                    heading.style.display || ""
-                );
-            }
-
-            heading.style.display =
-                heading.getAttribute("data-nexus-original-display");
-        }
-    });
-
-    if (screen !== "home") {
-
-        const selectedPanel = document.querySelector(
-            "#memberDashboard " + screenSections[screen][0]
+        link.classList.toggle(
+            "active",
+            link.dataset.screen === screen
         );
 
-        const duplicateHeading = selectedPanel
-            ? selectedPanel.querySelector("h1, h2, h3")
-            : null;
-
-        if (duplicateHeading) {
-            duplicateHeading.style.display = "none";
-        }
-    }
-
-    /* Update the active navigation item. */
-    document.querySelectorAll(".member-navigation a[data-screen]").forEach(link => {
-        link.classList.toggle("active", link.dataset.screen === screen);
     });
 
+    /*
+       RETURN TO TOP OF THE SELECTED SCREEN.
+    */
+
     if (shouldScroll) {
+
         window.scrollTo({
             top: 0,
             behavior: "smooth"
         });
+
     }
+
 }
 
-/* Keep the existing function name working throughout the website. */
+
+/* BACK BUTTON */
+
+const mobileBackButton = getElement("mobileBackButton");
+
+if (mobileBackButton) {
+
+    mobileBackButton.addEventListener("click", function(event) {
+
+        event.preventDefault();
+
+        setMobileDashboardView("home");
+
+    });
+
+}
+
+
+/* KEEP OLD FUNCTION NAME WORKING */
+
 function showMobileDashboardScreen(screen) {
+
     setMobileDashboardView(screen);
+
 }
 
 window.showMobileDashboardScreen = showMobileDashboardScreen;
 window.setMobileDashboardView = setMobileDashboardView;
 
-/* Back arrow always returns to the dashboard home screen. */
-const mobileBackButton = getElement("mobileBackButton");
 
-if (mobileBackButton) {
-    mobileBackButton.addEventListener("click", function(event) {
-        event.preventDefault();
-        setMobileDashboardView("home");
-    });
-}
+/* HANDLE SCREEN RESIZING */
 
-/* Restore the correct layout when the browser is resized or rotated. */
 window.addEventListener("resize", function() {
-    if (memberDashboard && memberDashboard.style.display !== "none") {
+
+    if (
+        memberDashboard &&
+        memberDashboard.style.display !== "none"
+    ) {
+
         setMobileDashboardView(currentDashboardView, false);
+
     }
+
 });
+
 
 
 /* =========================================
@@ -891,6 +958,7 @@ if (forgotPasswordForm) {
 }
 
 
+
 /* =========================================
    21. NAVIGATION LINKS
 ========================================= */
@@ -925,15 +993,18 @@ document.addEventListener("click", function(event) {
 
     if (!dashboardLink) return;
 
-    if (window.matchMedia("(max-width: 700px)").matches) {
+    const selectedView = dashboardLink.dataset.screen;
+
+    if (selectedView) {
 
         event.preventDefault();
 
-        const selectedView = dashboardLink.dataset.screen;
-
         setMobileDashboardView(selectedView);
+
     }
+
 });
+
 
 
 /* =========================================
