@@ -3111,3 +3111,30 @@ body {
     }
 
 }
+
+/* FIX: Prevent mobile header from covering the greeting */
+
+@media (max-width: 768px) {
+
+    #memberDashboard {
+        padding-top: 0 !important;
+    }
+
+    #mobileHomeHeader {
+        position: relative !important;
+        top: auto !important;
+        margin-bottom: 18px !important;
+        z-index: 5 !important;
+    }
+
+    .dashboard-heading.home-dashboard-content {
+        position: relative !important;
+        margin-top: 12px !important;
+        padding-top: 10px !important;
+        z-index: 1 !important;
+    }
+
+    body.mobile-inner-page #mobileHomeHeader {
+        display: none !important;
+    }
+}
