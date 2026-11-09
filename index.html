@@ -8,6 +8,8 @@
 
     <meta name="description" content="Nexus Wealth Partners - Save consistently, grow your wealth and manage your savings securely.">
 
+    <meta name="theme-color" content="#087443">
+
     <title>Nexus Wealth Partners | Savings Platform</title>
 
     <link rel="stylesheet" href="style.css">
@@ -102,7 +104,7 @@
         </section>
 
 
-        <!-- SAVINGS PLANS -->
+        <!-- PUBLIC SAVINGS PLANS -->
 
         <section id="savings">
 
@@ -323,14 +325,27 @@
         <section id="memberDashboard" class="member-dashboard">
 
 
-            <!-- MOBILE HEADER -->
+            <!-- MOBILE DASHBOARD HOME HEADER -->
 
-            <div class="mobile-screen-header" id="mobileScreenHeader">
+            <div
+                class="mobile-screen-header home-mobile-header"
+                id="mobileHomeHeader"
+            >
+                <h2>My Dashboard</h2>
+            </div>
+
+
+            <!-- MOBILE INNER PAGE HEADER -->
+
+            <div
+                class="mobile-screen-header mobile-inner-header"
+                id="mobileScreenHeader"
+            >
 
                 <button
                     type="button"
                     id="mobileBackButton"
-                    aria-label="Back to Home"
+                    aria-label="Back to dashboard home"
                 >
                     &#8592;
                 </button>
@@ -942,7 +957,23 @@
                 class="dashboard-panel"
             >
 
-                <h3>My Transactions</h3>
+                <div class="mobile-page-heading">
+
+                    <button
+                        type="button"
+                        class="mobile-back-button"
+                        onclick="showMobileDashboardScreen('home')"
+                        aria-label="Back to dashboard"
+                    >
+                        &#8592;
+                    </button>
+
+                    <h2>Transactions</h2>
+
+                </div>
+
+
+                <h3 class="desktop-page-heading">My Transactions</h3>
 
                 <p>View your deposits and withdrawals.</p>
 
@@ -1018,7 +1049,25 @@
                 class="dashboard-panel"
             >
 
-                <h3>Monthly Savings Breakdown</h3>
+                <div class="mobile-page-heading">
+
+                    <button
+                        type="button"
+                        class="mobile-back-button"
+                        onclick="showMobileDashboardScreen('home')"
+                        aria-label="Back to dashboard"
+                    >
+                        &#8592;
+                    </button>
+
+                    <h2>My Savings</h2>
+
+                </div>
+
+
+                <h3 class="desktop-page-heading">
+                    Monthly Savings Breakdown
+                </h3>
 
                 <p>Track your savings month by month.</p>
 
@@ -1061,7 +1110,23 @@
                 class="dashboard-panel"
             >
 
-                <h3>My Profile</h3>
+                <div class="mobile-page-heading">
+
+                    <button
+                        type="button"
+                        class="mobile-back-button"
+                        onclick="showMobileDashboardScreen('home')"
+                        aria-label="Back to dashboard"
+                    >
+                        &#8592;
+                    </button>
+
+                    <h2>My Profile</h2>
+
+                </div>
+
+
+                <h3 class="desktop-page-heading">My Profile</h3>
 
                 <p>View your personal account information.</p>
 
