@@ -126,43 +126,101 @@ ul {
     transition: color .2s ease;
 }
 
+
 #websiteHeader nav a:hover {
     color: var(--green);
 }
 
-#websiteHeader > div:last-child {
-    display: flex;
-    align-items: center;
-    gap: 10px;
+/* =========================================================
+   NEXUS WEALTH PARTNERS
+   MOBILE DASHBOARD HEADER AND SPACING
+========================================================= */
+
+@media (max-width: 768px) {
+
+    /* HOME DASHBOARD HEADER */
+    #mobileHomeHeader {
+        display: flex !important;
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        width: 100% !important;
+        height: 112px !important;
+        min-height: 112px !important;
+        box-sizing: border-box !important;
+        align-items: center !important;
+        background: #142f68 !important;
+        color: #ffffff !important;
+        margin: 0 !important;
+        z-index: 99999 !important;
+    }
+
+    #mobileHomeHeader * {
+        color: #ffffff !important;
+    }
+
+    /* HOME CONTENT STARTS BELOW FIXED HEADER */
+    #memberDashboard {
+        padding-top: 112px !important;
+    }
+
+    /* GREETING - KEEP IT FULLY VISIBLE */
+    #memberDashboard .dashboard-heading.home-dashboard-content {
+        display: block !important;
+        position: relative !important;
+        margin-top: 18px !important;
+        padding-top: 12px !important;
+        z-index: 1 !important;
+    }
+
+    /* INNER PAGE HEADER */
+    #mobileScreenHeader {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        width: 100% !important;
+        height: 64px !important;
+        min-height: 64px !important;
+        box-sizing: border-box !important;
+        background: #142f68 !important;
+        color: #ffffff !important;
+        z-index: 99999 !important;
+    }
+
+    #mobileScreenHeader * {
+        color: #ffffff !important;
+    }
+
+    /* INNER PAGES: HIDE HOME HEADER COMPLETELY */
+    body.mobile-inner-page #mobileHomeHeader,
+    #memberDashboard.mobile-inner-page #mobileHomeHeader {
+        display: none !important;
+        visibility: hidden !important;
+        height: 0 !important;
+        min-height: 0 !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+
+    /* INNER PAGES: SHOW ONLY THEIR OWN HEADER */
+    body.mobile-inner-page #mobileScreenHeader {
+        display: flex !important;
+    }
+
+    /* INNER PAGE CONTENT SPACING */
+    body.mobile-inner-page #memberDashboard {
+        padding-top: 64px !important;
+    }
+
+    /* DO NOT ADD HOME GREETING SPACING TO OTHER PAGES */
+    body.mobile-inner-page #memberDashboard .dashboard-heading {
+        margin-top: 0 !important;
+        padding-top: 0 !important;
+    }
 }
 
-#websiteHeader > div:last-child a {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 42px;
-    padding: 9px 17px;
-    border-radius: 10px;
-    font-size: 12px;
-    font-weight: 800;
-    transition: .2s ease;
-}
-
-#websiteHeader > div:last-child a:first-child {
-    color: var(--navy);
-    border: 1px solid var(--line);
-    background: var(--white);
-}
-
-#websiteHeader > div:last-child a:last-child {
-    color: var(--white);
-    background: var(--green);
-    box-shadow: 0 7px 16px rgba(11,155,112,.18);
-}
-
-#websiteHeader > div:last-child a:hover {
-    transform: translateY(-2px);
-}
 
 /* =========================================================
    2. PUBLIC WEBSITE
