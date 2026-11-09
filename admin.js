@@ -1,13 +1,17 @@
 
 /* =========================================
    NEXUS WEALTH PARTNERS
-   ADMINISTRATOR DASHBOARD
+   COMPLETE ADMINISTRATOR DASHBOARD
 ========================================= */
 
 
 /* =========================================
    1. SUPABASE CONNECTION
 ========================================= */
+
+if (!window.supabase) {
+    throw new Error("Supabase library not loaded.");
+}
 
 const SUPABASE_URL =
     "https://lzvtgxittsdhgjnfzdpk.supabase.co";
@@ -78,14 +82,103 @@ const adminPageTitles = {
 
 
 /* =========================================
-   5. SHOW ADMIN LOGIN
+   5. HELPER FUNCTIONS
+========================================= */
+
+function formatNexusAdminMoney(amount) {
+
+    return new Intl.NumberFormat("en-GH", {
+        style: "currency",
+        currency: "GHS",
+        minimumFractionDigits: 2
+    }).format(Number(amount) || 0);
+
+}
+
+
+function createAdminTableCell(value) {
+
+    const cell = document.createElement("td");
+
+    cell.textContent =
+        value === null || value === undefined || value === ""
+            ? "—"
+            : String(value);
+
+    return cell;
+
+}
+
+
+function showAdminTableMessage(
+    tableId,
+    columnCount,
+    message
+) {
+
+    const table = document.getElementById(tableId);
+
+    if (!table) return;
+
+    const row = document.createElement("tr");
+    const cell = document.createElement("td");
+
+    cell.colSpan = columnCount;
+    cell.className = "empty-table";
+    cell.textContent = message;
+
+    row.appendChild(cell);
+
+    table.replaceChildren(row);
+
+}
+
+
+function formatAdminDate(value) {
+
+    if (!value) return "—";
+
+    const date = new Date(value);
+
+    if (Number.isNaN(date.getTime())) {
+        return "—";
+    }
+
+    return new Intl.DateTimeFormat("en-GH", {
+        day: "numeric",
+        month: "short",
+        year: "numeric"
+    }).format(date);
+
+}
+
+
+function getAdminMemberName(userId, profiles) {
+
+    const profile = profiles.find(
+        item => item.id === userId
+    );
+
+    return profile?.full_name ||
+        profile?.member_id ||
+        userId;
+
+}
+
+
+/* =========================================
+   6. SHOW ADMIN LOGIN
 ========================================= */
 
 function showAdminLogin() {
 
-    adminLoginScreen.hidden = false;
+    if (adminLoginScreen) {
+        adminLoginScreen.hidden = false;
+    }
 
-    adminDashboard.hidden = true;
+    if (adminDashboard) {
+        adminDashboard.hidden = true;
+    }
 
     if (adminLoginForm) {
         adminLoginForm.reset();
@@ -99,19 +192,23 @@ function showAdminLogin() {
 
 
 /* =========================================
-   6. SHOW ADMIN DASHBOARD
+   7. SHOW ADMIN DASHBOARD
 ========================================= */
 
 async function showAdminDashboard(email) {
 
     console.log("Verifying Nexus administrator...");
 
-    adminLoginScreen.hidden = false;
-    adminDashboard.hidden = true;
+    if (adminLoginScreen) {
+        adminLoginScreen.hidden = false;
+    }
 
-    const { data, error } = await nexusAdminSupabase.rpc(
-        "is_nexus_admin"
-    );
+    if (adminDashboard) {
+        adminDashboard.hidden = true;
+    }
+
+    const { data, error } =
+        await nexusAdminSupabase.rpc("is_nexus_admin");
 
     if (error) {
 
@@ -139,8 +236,13 @@ async function showAdminDashboard(email) {
 
     }
 
-    adminLoginScreen.hidden = true;
-    adminDashboard.hidden = false;
+    if (adminLoginScreen) {
+        adminLoginScreen.hidden = true;
+    }
+
+    if (adminDashboard) {
+        adminDashboard.hidden = false;
+    }
 
     if (adminProfileEmail) {
         adminProfileEmail.textContent = email;
@@ -148,29 +250,13 @@ async function showAdminDashboard(email) {
 
     showAdminPage("overview");
 
-    try {
-
-        await loadAdminDashboardData();
-
-    } catch (error) {
-
-        console.error(
-            "Dashboard data loading error:",
-            error
-        );
-
-        alert(
-            "Administrator verified, but dashboard records could not be loaded: " +
-            error.message
-        );
-
-    }
+    await loadAdminDashboardData();
 
 }
 
 
 /* =========================================
-   7. ADMIN PAGE NAVIGATION
+   8. ADMIN PAGE NAVIGATION
 ========================================= */
 
 function showAdminPage(pageName) {
@@ -214,24 +300,23 @@ function showAdminPage(pageName) {
 
 
 /* =========================================
-   8. NAVIGATION CLICK EVENTS
+   9. NAVIGATION CLICK EVENTS
 ========================================= */
 
-document.querySelectorAll("[data-page]").forEach(button => {
+document.querySelectorAll(".admin-nav-link[data-page]")
+    .forEach(button => {
 
-    button.addEventListener("click", function() {
+        button.addEventListener("click", function() {
 
-        const pageName = this.dataset.page;
+            showAdminPage(this.dataset.page);
 
-        showAdminPage(pageName);
+        });
 
     });
 
-});
-
 
 /* =========================================
-   9. MOBILE SIDEBAR
+   10. MOBILE SIDEBAR
 ========================================= */
 
 if (sidebarToggle && adminSidebar) {
@@ -246,7 +331,7 @@ if (sidebarToggle && adminSidebar) {
 
 
 /* =========================================
-   10. DASHBOARD DATE
+   11. DASHBOARD DATE
 ========================================= */
 
 function updateAdminDate() {
@@ -270,7 +355,7 @@ updateAdminDate();
 
 
 /* =========================================
-   11. ADMINISTRATOR LOGIN
+   12. ADMINISTRATOR LOGIN
 ========================================= */
 
 if (adminLoginForm) {
@@ -281,13 +366,20 @@ if (adminLoginForm) {
 
         const email = document
             .getElementById("adminEmail")
-            .value
-            .trim()
-            .toLowerCase();
+            ?.value.trim().toLowerCase();
 
         const password = document
             .getElementById("adminPassword")
-            .value;
+            ?.value;
+
+        if (!email || !password) {
+
+            adminLoginMessage.textContent =
+                "Enter your administrator email and password.";
+
+            return;
+
+        }
 
         if (email !== AUTHORIZED_ADMIN_EMAIL) {
 
@@ -298,23 +390,24 @@ if (adminLoginForm) {
 
         }
 
-        adminLoginButton.disabled = true;
+        if (adminLoginButton) {
+            adminLoginButton.disabled = true;
+            adminLoginButton.textContent = "Signing In...";
+        }
 
-        adminLoginButton.textContent = "Signing In...";
-
-        adminLoginMessage.textContent = "";
+        if (adminLoginMessage) {
+            adminLoginMessage.textContent = "";
+        }
 
         try {
 
             const { data, error } =
                 await nexusAdminSupabase.auth.signInWithPassword({
-                    email: email,
-                    password: password
+                    email,
+                    password
                 });
 
-            if (error) {
-                throw error;
-            }
+            if (error) throw error;
 
             if (!data.user) {
                 throw new Error("Unable to verify your account.");
@@ -343,16 +436,19 @@ if (adminLoginForm) {
 
             console.error("Administrator login error:", error);
 
-            adminLoginMessage.textContent =
-                error.message ||
-                "Login failed. Please check your details and try again.";
+            if (adminLoginMessage) {
+                adminLoginMessage.textContent =
+                    error.message ||
+                    "Login failed. Please check your details.";
+            }
 
         } finally {
 
-            adminLoginButton.disabled = false;
-
-            adminLoginButton.textContent =
-                "Sign In to Dashboard";
+            if (adminLoginButton) {
+                adminLoginButton.disabled = false;
+                adminLoginButton.textContent =
+                    "Sign In to Dashboard";
+            }
 
         }
 
@@ -362,7 +458,7 @@ if (adminLoginForm) {
 
 
 /* =========================================
-   12. CHECK EXISTING LOGIN SESSION
+   13. CHECK EXISTING LOGIN SESSION
 ========================================= */
 
 async function checkAdminSession() {
@@ -372,9 +468,7 @@ async function checkAdminSession() {
         const { data, error } =
             await nexusAdminSupabase.auth.getSession();
 
-        if (error) {
-            throw error;
-        }
+        if (error) throw error;
 
         const user = data.session?.user;
 
@@ -413,7 +507,7 @@ async function checkAdminSession() {
 
 
 /* =========================================
-   13. ADMIN SIGN OUT
+   14. ADMIN SIGN OUT
 ========================================= */
 
 if (adminLogoutButton) {
@@ -433,9 +527,7 @@ if (adminLogoutButton) {
             const { error } =
                 await nexusAdminSupabase.auth.signOut();
 
-            if (error) {
-                throw error;
-            }
+            if (error) throw error;
 
             showAdminLogin();
 
@@ -459,93 +551,18 @@ if (adminLogoutButton) {
 
 
 /* =========================================
-   14. AUTHENTICATION STATE
+   15. AUTHENTICATION STATE
 ========================================= */
 
 nexusAdminSupabase.auth.onAuthStateChange(
-    (event, session) => {
+    (event) => {
 
         if (event === "SIGNED_OUT") {
-
             showAdminLogin();
-
         }
 
     }
 );
-
-
-/* =========================================
-   15. LIVE DASHBOARD DATA
-========================================= */
-
-function formatNexusAdminMoney(amount) {
-
-    return new Intl.NumberFormat("en-GH", {
-        style: "currency",
-        currency: "GHS",
-        minimumFractionDigits: 2
-    }).format(Number(amount) || 0);
-
-}
-
-
-function createAdminTableCell(value) {
-
-    const cell = document.createElement("td");
-
-    cell.textContent =
-        value === null || value === undefined || value === ""
-            ? "—"
-            : String(value);
-
-    return cell;
-
-}
-
-
-function showAdminTableMessage(tableId, columnCount, message) {
-
-    const table = document.getElementById(tableId);
-
-    if (!table) return;
-
-    const row = document.createElement("tr");
-    const cell = document.createElement("td");
-
-    cell.colSpan = columnCount;
-    cell.className = "empty-table";
-    cell.textContent = message;
-
-    row.appendChild(cell);
-
-    table.replaceChildren(row);
-
-}
-
-
-function formatAdminDate(value) {
-
-    if (!value) return "—";
-
-    return new Intl.DateTimeFormat("en-GH", {
-        day: "numeric",
-        month: "short",
-        year: "numeric"
-    }).format(new Date(value));
-
-}
-
-
-function getAdminMemberName(userId, profiles) {
-
-    const profile = profiles.find(
-        item => item.id === userId
-    );
-
-    return profile?.full_name || profile?.member_id || userId;
-
-}
 
 
 /* =========================================
@@ -576,27 +593,22 @@ function displayAdminMembers(profiles) {
 
         const row = document.createElement("tr");
 
-        // Member ID
         row.appendChild(
             createAdminTableCell(profile.member_id)
         );
 
-        // Full name
         row.appendChild(
             createAdminTableCell(profile.full_name)
         );
 
-        // Member email
         row.appendChild(
             createAdminTableCell(profile.email)
         );
 
-        // Phone number
         row.appendChild(
             createAdminTableCell(profile.phone)
         );
 
-        // Registration date
         row.appendChild(
             createAdminTableCell(
                 formatAdminDate(profile.created_at)
@@ -616,7 +628,8 @@ function displayAdminMembers(profiles) {
 
 function displayAdminWithdrawals(withdrawals, profiles) {
 
-    const table = document.getElementById("withdrawalsTable");
+    const table =
+        document.getElementById("withdrawalsTable");
 
     const recentTable =
         document.getElementById("recentWithdrawalsTable");
@@ -625,7 +638,7 @@ function displayAdminWithdrawals(withdrawals, profiles) {
 
         showAdminTableMessage(
             "withdrawalsTable",
-            7,
+            8,
             "No withdrawal requests found."
         );
 
@@ -647,6 +660,13 @@ function displayAdminWithdrawals(withdrawals, profiles) {
         recentTable.replaceChildren();
     }
 
+    const methodLabels = {
+        mtn_momo: "MTN Mobile Money",
+        telecel_cash: "Telecel Cash",
+        at_money: "AT Money",
+        bank: "Bank Account"
+    };
+
     withdrawals.forEach((request, index) => {
 
         const memberName = getAdminMemberName(
@@ -654,14 +674,8 @@ function displayAdminWithdrawals(withdrawals, profiles) {
             profiles
         );
 
-        const requestId = String(request.id).slice(0, 8);
-
-        const methodLabels = {
-            mtn_momo: "MTN Mobile Money",
-            telecel_cash: "Telecel Cash",
-            at_money: "AT Money",
-            bank: "Bank Account"
-        };
+        const requestId =
+            String(request.id).slice(0, 8);
 
         const row = document.createElement("tr");
 
@@ -691,8 +705,11 @@ function displayAdminWithdrawals(withdrawals, profiles) {
         );
 
         const statusCell = createAdminTableCell(
-            request.status.toUpperCase()
+            String(request.status || "").toUpperCase()
         );
+
+        statusCell.className =
+            "transaction-status status-" + request.status;
 
         row.appendChild(statusCell);
 
@@ -705,28 +722,41 @@ function displayAdminWithdrawals(withdrawals, profiles) {
 
             if (request.status === "pending") {
 
-                const processButton = document.createElement("button");
+                const processButton =
+                    document.createElement("button");
 
+                processButton.type = "button";
                 processButton.textContent = "Process";
-
                 processButton.className = "admin-action-button";
 
                 processButton.addEventListener("click", () => {
-                    reviewNexusWithdrawal(request.id, "processing");
+
+                    reviewNexusWithdrawal(
+                        request.id,
+                        "processing"
+                    );
+
                 });
 
                 actionCell.appendChild(processButton);
 
             }
 
-            const rejectButton = document.createElement("button");
+            const rejectButton =
+                document.createElement("button");
 
+            rejectButton.type = "button";
             rejectButton.textContent = "Reject";
-
-            rejectButton.className = "admin-action-button reject";
+            rejectButton.className =
+                "admin-action-button reject";
 
             rejectButton.addEventListener("click", () => {
-                reviewNexusWithdrawal(request.id, "rejected");
+
+                reviewNexusWithdrawal(
+                    request.id,
+                    "rejected"
+                );
+
             });
 
             actionCell.appendChild(rejectButton);
@@ -749,7 +779,7 @@ function displayAdminWithdrawals(withdrawals, profiles) {
             table.appendChild(row);
         }
 
-        // Show five most recent requests on overview.
+        // FIVE MOST RECENT REQUESTS
         if (index < 5 && recentTable) {
 
             const recentRow = document.createElement("tr");
@@ -776,7 +806,9 @@ function displayAdminWithdrawals(withdrawals, profiles) {
             );
 
             recentRow.appendChild(
-                createAdminTableCell(request.status.toUpperCase())
+                createAdminTableCell(
+                    String(request.status || "").toUpperCase()
+                )
             );
 
             recentTable.appendChild(recentRow);
@@ -789,12 +821,52 @@ function displayAdminWithdrawals(withdrawals, profiles) {
 
 
 /* =========================================
-   18. LOAD WALLET AND SAVINGS DATA
+   18. CALCULATE MEMBER DISPLAY BALANCE
 ========================================= */
 
-function displayAdminSavings(wallets, profiles) {
+function getMemberPendingWithdrawalTotal(userId, withdrawals) {
 
-    const table = document.getElementById("savingsTable");
+    return withdrawals
+        .filter(request =>
+            request.user_id === userId &&
+            ["pending", "processing"].includes(request.status)
+        )
+        .reduce((total, request) => {
+
+            return total + (Number(request.amount) || 0);
+
+        }, 0);
+
+}
+
+
+function getMemberDisplayBalance(wallet, withdrawals) {
+
+    const actualBalance =
+        Number(wallet.balance) || 0;
+
+    const pendingAmount =
+        getMemberPendingWithdrawalTotal(
+            wallet.user_id,
+            withdrawals
+        );
+
+    return Math.max(
+        0,
+        actualBalance - pendingAmount
+    );
+
+}
+
+
+/* =========================================
+   19. LOAD WALLET AND SAVINGS DATA
+========================================= */
+
+function displayAdminSavings(wallets, profiles, withdrawals) {
+
+    const table =
+        document.getElementById("savingsTable");
 
     if (!table) return;
 
@@ -816,35 +888,55 @@ function displayAdminSavings(wallets, profiles) {
 
         const row = document.createElement("tr");
 
+        const memberProfile = profiles.find(
+            profile => profile.id === wallet.user_id
+        );
+
+        // MEMBER ID
         row.appendChild(
             createAdminTableCell(
-                profiles.find(
-                    profile => profile.id === wallet.user_id
-                )?.member_id
+                memberProfile?.member_id
             )
         );
 
+        // MEMBER NAME
         row.appendChild(
             createAdminTableCell(
-                getAdminMemberName(wallet.user_id, profiles)
+                getAdminMemberName(
+                    wallet.user_id,
+                    profiles
+                )
             )
         );
 
-        row.appendChild(
-            createAdminTableCell(
-                formatNexusAdminMoney(wallet.balance)
-            )
-        );
+        // ADJUSTED WALLET BALANCE
+        const displayBalance =
+            getMemberDisplayBalance(
+                wallet,
+                withdrawals
+            );
 
         row.appendChild(
             createAdminTableCell(
-                formatNexusAdminMoney(wallet.total_deposits)
+                formatNexusAdminMoney(displayBalance)
             )
         );
 
+        // TOTAL DEPOSITS
         row.appendChild(
             createAdminTableCell(
-                formatNexusAdminMoney(wallet.total_withdrawals)
+                formatNexusAdminMoney(
+                    wallet.total_deposits
+                )
+            )
+        );
+
+        // COMPLETED WITHDRAWALS
+        row.appendChild(
+            createAdminTableCell(
+                formatNexusAdminMoney(
+                    wallet.total_withdrawals
+                )
             )
         );
 
@@ -856,7 +948,7 @@ function displayAdminSavings(wallets, profiles) {
 
 
 /* =========================================
-   19. LOAD ALL DASHBOARD RECORDS
+   20. LOAD ALL DASHBOARD RECORDS
 ========================================= */
 
 async function loadAdminDashboardData() {
@@ -921,10 +1013,17 @@ async function loadAdminDashboardData() {
     }
 
 
-    /* TOTAL WALLET BALANCES */
+    /* TOTAL ADJUSTED WALLET BALANCES */
 
     const totalBalances = wallets.reduce(
-        (sum, wallet) => sum + Number(wallet.balance || 0),
+        (sum, wallet) => {
+
+            return sum + getMemberDisplayBalance(
+                wallet,
+                withdrawals
+            );
+
+        },
         0
     );
 
@@ -942,7 +1041,12 @@ async function loadAdminDashboardData() {
     /* TOTAL DEPOSITS */
 
     const totalDeposits = wallets.reduce(
-        (sum, wallet) => sum + Number(wallet.total_deposits || 0),
+        (sum, wallet) => {
+
+            return sum +
+                (Number(wallet.total_deposits) || 0);
+
+        },
         0
     );
 
@@ -957,10 +1061,15 @@ async function loadAdminDashboardData() {
     }
 
 
-    /* TOTAL WITHDRAWALS */
+    /* COMPLETED WITHDRAWALS */
 
     const totalWithdrawals = wallets.reduce(
-        (sum, wallet) => sum + Number(wallet.total_withdrawals || 0),
+        (sum, wallet) => {
+
+            return sum +
+                (Number(wallet.total_withdrawals) || 0);
+
+        },
         0
     );
 
@@ -989,6 +1098,7 @@ async function loadAdminDashboardData() {
         request => request.status === "completed"
     ).length;
 
+
     const pendingElement =
         document.getElementById("overviewPendingWithdrawals");
 
@@ -997,6 +1107,7 @@ async function loadAdminDashboardData() {
 
     const completedElement =
         document.getElementById("overviewCompletedWithdrawals");
+
 
     if (pendingElement) {
         pendingElement.textContent = pending;
@@ -1026,32 +1137,59 @@ async function loadAdminDashboardData() {
     }
 
 
-    /* DISPLAY TABLES */
+    /* DISPLAY ALL TABLES */
 
     displayAdminMembers(profiles);
 
-    displayAdminWithdrawals(withdrawals, profiles);
+    displayAdminWithdrawals(
+        withdrawals,
+        profiles
+    );
 
-    displayAdminSavings(wallets, profiles);
+    displayAdminSavings(
+        wallets,
+        profiles,
+        withdrawals
+    );
 
 
     console.log("Nexus admin dashboard data loaded.", {
+
         members: profiles.length,
+
         wallets: wallets.length,
-        withdrawalRequests: withdrawals.length
+
+        withdrawalRequests: withdrawals.length,
+
+        pendingWithdrawals: pending,
+
+        processingWithdrawals: processing,
+
+        completedWithdrawals: completed
+
     });
 
 }
 
 
 /* =========================================
-   20. ADMIN WITHDRAWAL REVIEW
+   21. ADMIN WITHDRAWAL REVIEW
 ========================================= */
 
 async function reviewNexusWithdrawal(requestId, action) {
 
+    if (!["processing", "rejected"].includes(action)) {
+
+        alert("Invalid withdrawal action.");
+
+        return;
+
+    }
+
     const actionName =
-        action === "processing" ? "process" : "reject";
+        action === "processing"
+            ? "process"
+            : "reject";
 
     const confirmed = window.confirm(
         `Are you sure you want to ${actionName} this withdrawal request?`
@@ -1075,13 +1213,24 @@ async function reviewNexusWithdrawal(requestId, action) {
         }
 
         if (!data || data.success !== true) {
+
             throw new Error(
-                data?.message || "Withdrawal update failed."
+                data?.message ||
+                "Withdrawal update failed."
             );
+
         }
 
-        alert(data.message);
+        alert(
+            data.message ||
+            (
+                action === "rejected"
+                    ? "Withdrawal rejected successfully. The member's displayed balance will be restored."
+                    : "Withdrawal moved to processing successfully."
+            )
+        );
 
+        // REFRESH ALL ADMIN RECORDS
         await loadAdminDashboardData();
 
     } catch (error) {
@@ -1092,7 +1241,8 @@ async function reviewNexusWithdrawal(requestId, action) {
         );
 
         alert(
-            "Unable to update withdrawal: " + error.message
+            "Unable to update withdrawal: " +
+            error.message
         );
 
     }
@@ -1101,7 +1251,7 @@ async function reviewNexusWithdrawal(requestId, action) {
 
 
 /* =========================================
-   21. START ADMIN DASHBOARD
+   22. START ADMIN DASHBOARD
 ========================================= */
 
 checkAdminSession();
