@@ -1,4 +1,3 @@
-
 /* =========================================
    NEXUS WEALTH PARTNERS
    COMPLETE MAIN JAVASCRIPT
@@ -106,6 +105,7 @@ function hideMemberDashboard() {
     if (memberDashboard) {
         memberDashboard.style.display = "none";
         memberDashboard.classList.remove("mobile-inner-page");
+        memberDashboard.style.paddingTop = "";
     }
 }
 
@@ -207,13 +207,250 @@ function showForgotPassword() {
 
 /* =========================================
    10. MOBILE DASHBOARD NAVIGATION
+   ONE SCREEN AT A TIME
 ========================================= */
 
 let currentDashboardView = "home";
 
-function setMobileDashboardView(view) {
-    showMobileDashboardScreen(view);
+function setMobileDashboardView(screen, shouldScroll = true) {
+
+    const isMobile = window.matchMedia("(max-width: 700px)").matches;
+
+    const screenHeader = getElement("mobileScreenHeader");
+    const screenTitle = getElement("mobileScreenTitle");
+    const backButton = getElement("mobileBackButton");
+
+    const screenTitles = {
+        home: "Home",
+        transactions: "Transactions",
+        pendingWithdrawals: "Pending Withdrawals",
+        savings: "Savings",
+        profile: "My Profile"
+    };
+
+    const screenSections = {
+        home: [
+            ".dashboard-heading",
+            ".dashboard-cards",
+            "#myWallet",
+            "#depositFunds",
+            "#withdrawFunds"
+        ],
+        transactions: ["#memberTransactions"],
+        pendingWithdrawals: ["#pendingWithdrawals"],
+        savings: ["#memberSavings"],
+        profile: ["#memberProfile"]
+    };
+
+    const allSections = [
+        ".dashboard-heading",
+        ".dashboard-cards",
+        "#myWallet",
+        "#depositFunds",
+        "#withdrawFunds",
+        "#pendingWithdrawals",
+        "#memberTransactions",
+        "#memberSavings",
+        "#memberProfile"
+    ];
+
+    if (!screenSections[screen]) {
+        screen = "home";
+    }
+
+    currentDashboardView = screen;
+
+    /* Restore all sections before applying the selected view. */
+    allSections.forEach(selector => {
+        document.querySelectorAll("#memberDashboard " + selector).forEach(element => {
+            element.classList.remove("mobile-view-hidden");
+            element.style.display = "";
+        });
+    });
+
+    /* Desktop displays the normal complete dashboard. */
+    if (!isMobile) {
+
+        document.querySelectorAll(
+            "#memberDashboard #memberTransactions h1, " +
+            "#memberDashboard #memberTransactions h2, " +
+            "#memberDashboard #memberTransactions h3, " +
+            "#memberDashboard #pendingWithdrawals h1, " +
+            "#memberDashboard #pendingWithdrawals h2, " +
+            "#memberDashboard #pendingWithdrawals h3, " +
+            "#memberDashboard #memberSavings h1, " +
+            "#memberDashboard #memberSavings h2, " +
+            "#memberDashboard #memberSavings h3, " +
+            "#memberDashboard #memberProfile h1, " +
+            "#memberDashboard #memberProfile h2, " +
+            "#memberDashboard #memberProfile h3"
+        ).forEach(heading => {
+            if (heading.hasAttribute("data-nexus-original-display")) {
+                heading.style.display =
+                    heading.getAttribute("data-nexus-original-display");
+            }
+        });
+
+        if (screenHeader) {
+            screenHeader.style.display = "none";
+            screenHeader.style.position = "";
+            screenHeader.style.top = "";
+            screenHeader.style.left = "";
+            screenHeader.style.right = "";
+            screenHeader.style.width = "";
+            screenHeader.style.zIndex = "";
+            screenHeader.style.boxSizing = "";
+        }
+
+        if (memberDashboard) {
+            memberDashboard.classList.remove("mobile-inner-page");
+            memberDashboard.style.paddingTop = "";
+        }
+
+        if (backButton) {
+            backButton.style.display = "none";
+        }
+
+        document.querySelectorAll(".member-navigation a[data-screen]").forEach(link => {
+            link.classList.toggle("active", link.dataset.screen === "home");
+        });
+
+        return;
+    }
+
+    /* Mobile: hide every dashboard screen first. */
+    allSections.forEach(selector => {
+        document.querySelectorAll("#memberDashboard " + selector).forEach(element => {
+            element.classList.add("mobile-view-hidden");
+            element.style.display = "none";
+        });
+    });
+
+    /* Then show only the screen selected by the member. */
+    screenSections[screen].forEach(selector => {
+        document.querySelectorAll("#memberDashboard " + selector).forEach(element => {
+            element.classList.remove("mobile-view-hidden");
+            element.style.display = "";
+        });
+    });
+
+    /* The fixed title bar replaces the repeated title inside each panel. */
+    if (screenHeader) {
+
+        if (screen === "home") {
+            screenHeader.style.display = "none";
+            screenHeader.style.position = "";
+
+            if (memberDashboard) {
+                memberDashboard.style.paddingTop = "";
+                memberDashboard.classList.remove("mobile-inner-page");
+            }
+
+        } else {
+            screenHeader.style.display = "flex";
+            screenHeader.style.position = "fixed";
+            screenHeader.style.top = "0";
+            screenHeader.style.left = "0";
+            screenHeader.style.right = "0";
+            screenHeader.style.width = "100%";
+            screenHeader.style.zIndex = "1000";
+            screenHeader.style.boxSizing = "border-box";
+
+            if (memberDashboard) {
+                memberDashboard.classList.add("mobile-inner-page");
+                memberDashboard.style.paddingTop = screenHeader.offsetHeight + "px";
+            }
+        }
+    }
+
+    if (screenTitle) {
+        screenTitle.textContent = screenTitles[screen];
+    }
+
+    if (backButton) {
+        backButton.style.display = screen === "home" ? "none" : "flex";
+    }
+
+    /*
+       Hide the first heading inside the selected panel.
+       The fixed mobile header already displays the panel title.
+    */
+
+    document.querySelectorAll(
+        "#memberDashboard #memberTransactions, " +
+        "#memberDashboard #pendingWithdrawals, " +
+        "#memberDashboard #memberSavings, " +
+        "#memberDashboard #memberProfile"
+    ).forEach(panel => {
+
+        const heading = panel.querySelector("h1, h2, h3");
+
+        if (heading) {
+
+            if (!heading.hasAttribute("data-nexus-original-display")) {
+                heading.setAttribute(
+                    "data-nexus-original-display",
+                    heading.style.display || ""
+                );
+            }
+
+            heading.style.display =
+                heading.getAttribute("data-nexus-original-display");
+        }
+    });
+
+    if (screen !== "home") {
+
+        const selectedPanel = document.querySelector(
+            "#memberDashboard " + screenSections[screen][0]
+        );
+
+        const duplicateHeading = selectedPanel
+            ? selectedPanel.querySelector("h1, h2, h3")
+            : null;
+
+        if (duplicateHeading) {
+            duplicateHeading.style.display = "none";
+        }
+    }
+
+    /* Update the active navigation item. */
+    document.querySelectorAll(".member-navigation a[data-screen]").forEach(link => {
+        link.classList.toggle("active", link.dataset.screen === screen);
+    });
+
+    if (shouldScroll) {
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
+    }
 }
+
+/* Keep the existing function name working throughout the website. */
+function showMobileDashboardScreen(screen) {
+    setMobileDashboardView(screen);
+}
+
+window.showMobileDashboardScreen = showMobileDashboardScreen;
+window.setMobileDashboardView = setMobileDashboardView;
+
+/* Back arrow always returns to the dashboard home screen. */
+const mobileBackButton = getElement("mobileBackButton");
+
+if (mobileBackButton) {
+    mobileBackButton.addEventListener("click", function(event) {
+        event.preventDefault();
+        setMobileDashboardView("home");
+    });
+}
+
+/* Restore the correct layout when the browser is resized or rotated. */
+window.addEventListener("resize", function() {
+    if (memberDashboard && memberDashboard.style.display !== "none") {
+        setMobileDashboardView(currentDashboardView, false);
+    }
+});
 
 
 /* =========================================
@@ -239,233 +476,13 @@ function showMemberDashboard() {
         publicMain.style.display = "block";
     }
 
-    showMobileDashboardScreen("home");
+    setMobileDashboardView("home", false);
 
     window.scrollTo({
         top: 0,
         behavior: "instant"
     });
 }
-
-
-/* =========================================
-   12. MOBILE DASHBOARD SCREEN CONTROL
-========================================= */
-
-function showMobileDashboardScreen(screen) {
-
-    const isMobile = window.matchMedia(
-        "(max-width: 700px)"
-    ).matches;
-
-    const screenHeader = getElement("mobileScreenHeader");
-    const screenTitle = getElement("mobileScreenTitle");
-    const backButton = getElement("mobileBackButton");
-
-    const homeSelectors = [
-        ".dashboard-heading",
-        ".dashboard-cards",
-        "#myWallet",
-        "#depositFunds",
-        "#withdrawFunds",
-        ".dashboard-content-grid"
-    ];
-
-    const allSelectors = [
-        ...homeSelectors,
-        "#pendingWithdrawals",
-        "#memberTransactions",
-        "#memberSavings",
-        "#memberProfile"
-    ];
-
-    const configuration = {
-
-        home: {
-            title: "My Dashboard",
-            selectors: homeSelectors
-        },
-
-        transactions: {
-            title: "My Transactions",
-            selectors: ["#memberTransactions"]
-        },
-
-        pendingWithdrawals: {
-            title: "Pending Withdrawals",
-            selectors: ["#pendingWithdrawals"]
-        },
-
-        savings: {
-            title: "My Savings",
-            selectors: ["#memberSavings"]
-        },
-
-        profile: {
-            title: "My Profile",
-            selectors: ["#memberProfile"]
-        }
-
-    };
-
-    const selected = configuration[screen] ||
-        configuration.home;
-
-    currentDashboardView =
-        configuration[screen] ? screen : "home";
-
-
-    // Desktop: show the complete dashboard.
-    if (!isMobile) {
-
-        allSelectors.forEach(selector => {
-
-            document.querySelectorAll(
-                "#memberDashboard " + selector
-            ).forEach(element => {
-
-                element.classList.remove("mobile-view-hidden");
-                element.style.display = "";
-
-            });
-
-        });
-
-        if (screenHeader) {
-            screenHeader.style.display = "none";
-        }
-
-        if (memberDashboard) {
-            memberDashboard.classList.remove("mobile-inner-page");
-        }
-
-        if (backButton) {
-            backButton.style.display = "none";
-        }
-
-        document.querySelectorAll(
-            ".member-navigation a[data-screen]"
-        ).forEach(link => {
-
-            link.classList.toggle(
-                "active",
-                link.dataset.screen === "home"
-            );
-
-        });
-
-        return;
-    }
-
-
-    // Hide all dashboard sections first.
-    allSelectors.forEach(selector => {
-
-        document.querySelectorAll(
-            "#memberDashboard " + selector
-        ).forEach(element => {
-
-            element.classList.add("mobile-view-hidden");
-            element.style.display = "none";
-
-        });
-
-    });
-
-
-    // Display the selected dashboard section.
-    selected.selectors.forEach(selector => {
-
-        document.querySelectorAll(
-            "#memberDashboard " + selector
-        ).forEach(element => {
-
-            element.classList.remove("mobile-view-hidden");
-            element.style.display = "";
-
-        });
-
-    });
-
-
-    // Update the header title.
-    if (screenHeader) {
-        screenHeader.style.display =
-            screen === "home" ? "none" : "flex";
-    }
-
-    if (screenTitle) {
-        screenTitle.textContent = selected.title;
-    }
-
-
-    // Display the back arrow only on inner pages.
-    if (backButton) {
-
-        backButton.style.display =
-            screen === "home" ? "none" : "flex";
-
-        // Attach the back action directly.
-        backButton.onclick = function(event) {
-
-            event.preventDefault();
-
-            showMobileDashboardScreen("home");
-
-        };
-
-    }
-
-
-    // Add active state to the selected navigation link.
-    document.querySelectorAll(
-        ".member-navigation a[data-screen]"
-    ).forEach(link => {
-
-        link.classList.toggle(
-            "active",
-            link.dataset.screen === screen
-        );
-
-    });
-
-
-    // Add a class for fixed-header spacing.
-    if (memberDashboard) {
-
-        memberDashboard.classList.toggle(
-            "mobile-inner-page",
-            screen !== "home"
-        );
-
-    }
-
-
-    // Start each selected page at the top.
-    window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-    });
-
-}
-
-
-/* =========================================
-   13. RESTORE VIEW WHEN PHONE ROTATES
-========================================= */
-
-window.addEventListener("resize", function() {
-
-    if (
-        memberDashboard &&
-        memberDashboard.style.display !== "none"
-    ) {
-
-        showMobileDashboardScreen(currentDashboardView);
-
-    }
-
-});
 
 
 /* =========================================
@@ -572,8 +589,7 @@ async function loadMemberWallet(user) {
     const deposits = Number(data.total_deposits) || 0;
     const withdrawals = Number(data.total_withdrawals) || 0;
 
-
-    // Load money reserved for pending withdrawals.
+    /* Load money reserved for pending withdrawals. */
     const { data: requests, error: requestError } =
         await nexusSupabase
             .from("withdrawal_requests")
@@ -588,9 +604,7 @@ async function loadMemberWallet(user) {
 
     const reservedWithdrawals = (requests || []).reduce(
         (total, request) => {
-
             return total + (Number(request.amount) || 0);
-
         },
         0
     );
@@ -600,8 +614,7 @@ async function loadMemberWallet(user) {
         balance - reservedWithdrawals
     );
 
-
-    // Actual wallet balance.
+    /* Actual wallet balance. */
     [
         "walletBalance",
         "walletBalanceDisplay",
@@ -614,11 +627,9 @@ async function loadMemberWallet(user) {
         if (element) {
             element.textContent = formatMoney(balance);
         }
-
     });
 
-
-    // Available balance after reserved withdrawals.
+    /* Available balance after reserved withdrawals. */
     [
         "walletAvailableBalance",
         "availableBalance"
@@ -629,11 +640,9 @@ async function loadMemberWallet(user) {
         if (element) {
             element.textContent = formatMoney(availableBalance);
         }
-
     });
 
-
-    // Total deposits.
+    /* Total deposits. */
     [
         "walletTotalDeposits",
         "totalDeposits"
@@ -644,16 +653,12 @@ async function loadMemberWallet(user) {
         if (element) {
             element.textContent = formatMoney(deposits);
         }
-
     });
 
-
-    // Completed withdrawals.
+    /* Completed withdrawals. */
     if (getElement("walletTotalWithdrawals")) {
-
         getElement("walletTotalWithdrawals").textContent =
             formatMoney(withdrawals);
-
     }
 
     return {
@@ -692,7 +697,6 @@ async function loadDashboard(user) {
             error.message ||
             "Unable to load your dashboard information."
         );
-
     }
 }
 
@@ -762,7 +766,6 @@ if (registrationForm) {
                 );
 
                 showLogin();
-
             }
 
         } catch (error) {
@@ -776,11 +779,8 @@ if (registrationForm) {
         } finally {
 
             if (submitButton) submitButton.disabled = false;
-
         }
-
     });
-
 }
 
 
@@ -831,11 +831,8 @@ if (loginForm) {
         } finally {
 
             if (submitButton) submitButton.disabled = false;
-
         }
-
     });
-
 }
 
 
@@ -875,11 +872,8 @@ if (forgotPasswordForm) {
             console.error("Password reset error:", error);
 
             showMessage(error.message || "Password reset failed.");
-
         }
-
     });
-
 }
 
 
@@ -912,34 +906,19 @@ document.addEventListener("click", function(event) {
     }
 
     const dashboardLink = event.target.closest(
-        ".member-navigation a"
+        ".member-navigation a[data-screen]"
     );
 
     if (!dashboardLink) return;
 
-    const mobileViews = {
-        "#memberDashboard": "home",
-        "#memberTransactions": "transactions",
-        "#pendingWithdrawals": "pendingWithdrawals",
-        "#memberSavings": "savings",
-        "#memberProfile": "profile"
-    };
-
-    const destination = dashboardLink.getAttribute("href");
-
-    const selectedView = mobileViews[destination];
-
-    if (
-        selectedView &&
-        window.matchMedia("(max-width: 700px)").matches
-    ) {
+    if (window.matchMedia("(max-width: 700px)").matches) {
 
         event.preventDefault();
 
-        showMobileDashboardScreen(selectedView);
+        const selectedView = dashboardLink.dataset.screen;
 
+        setMobileDashboardView(selectedView);
     }
-
 });
 
 
@@ -956,9 +935,6 @@ window.showLogin = showLogin;
 window.showRegistration = showRegistration;
 window.showForgotPassword = showForgotPassword;
 window.returnToHome = returnToHome;
-
-window.showMobileDashboardScreen =
-    showMobileDashboardScreen;
 
 
 /* =========================================
@@ -981,7 +957,6 @@ async function logoutMember() {
     showPublicHome();
 
     showMessage("You have been logged out.");
-
 }
 
 window.logoutMember = logoutMember;
@@ -1003,13 +978,9 @@ nexusSupabase.auth.onAuthStateChange((event, session) => {
     if (event === "SIGNED_IN" && session?.user) {
 
         Promise.resolve().then(() => {
-
             loadDashboard(session.user);
-
         });
-
     }
-
 });
 
 
@@ -1060,7 +1031,6 @@ async function loadMemberTransactions(user) {
                 ...item,
                 type: "withdrawal"
             }))
-
         ];
 
         transactions.sort((a, b) =>
@@ -1142,7 +1112,6 @@ async function loadMemberTransactions(user) {
 
                 amountCell.textContent =
                     "- " + formatMoney(transaction.amount);
-
             }
 
             dateCell.textContent = new Date(
@@ -1175,15 +1144,12 @@ async function loadMemberTransactions(user) {
             if (canViewReceipt) {
 
                 receiptButton.addEventListener("click", function() {
-
                     generateTransactionReceipt(transaction);
-
                 });
 
             } else {
 
                 receiptButton.textContent = "Unavailable";
-
             }
 
             receiptCell.appendChild(receiptButton);
@@ -1195,7 +1161,6 @@ async function loadMemberTransactions(user) {
             row.appendChild(receiptCell);
 
             transactionList.appendChild(row);
-
         });
 
         const activeFilter = document.querySelector(
@@ -1217,9 +1182,7 @@ async function loadMemberTransactions(user) {
                 </td>
             </tr>
         `;
-
     }
-
 }
 
 
@@ -1257,9 +1220,7 @@ async function loadPendingWithdrawals(user) {
 
         const reservedTotal = requests.reduce(
             (total, request) => {
-
                 return total + (Number(request.amount) || 0);
-
             },
             0
         );
@@ -1326,7 +1287,6 @@ async function loadPendingWithdrawals(user) {
             row.appendChild(statusCell);
 
             list.appendChild(row);
-
         });
 
     } catch (error) {
@@ -1342,9 +1302,7 @@ async function loadPendingWithdrawals(user) {
         `;
 
         throw error;
-
     }
-
 }
 
 
@@ -1412,10 +1370,8 @@ if (depositForm) {
         );
 
         if (submitButton) {
-
             submitButton.disabled = true;
             submitButton.textContent = "Connecting to Paystack...";
-
         }
 
         try {
@@ -1426,11 +1382,9 @@ if (depositForm) {
             if (authError) throw authError;
 
             if (!authData.user) {
-
                 throw new Error(
                     "Your session has expired. Please log in again."
                 );
-
             }
 
             const { data, error } =
@@ -1446,12 +1400,10 @@ if (depositForm) {
                 );
 
             if (error) {
-
                 throw new Error(
                     error.message ||
                     "Unable to initialize your deposit."
                 );
-
             }
 
             if (
@@ -1459,12 +1411,10 @@ if (depositForm) {
                 data.success !== true ||
                 !data.authorization_url
             ) {
-
                 throw new Error(
                     data?.message ||
                     "Paystack did not return a payment link."
                 );
-
             }
 
             console.log(
@@ -1484,16 +1434,11 @@ if (depositForm) {
             );
 
             if (submitButton) {
-
                 submitButton.disabled = false;
                 submitButton.textContent = "Continue to Deposit";
-
             }
-
         }
-
     });
-
 }
 
 
@@ -1523,23 +1468,17 @@ if (withdrawalForm) {
             getElement("withdrawNote")?.value.trim() || null;
 
         if (!Number.isFinite(amount) || amount <= 0) {
-
             showMessage("Please enter a valid withdrawal amount.");
-
             return;
         }
 
         if (!method) {
-
             showMessage("Please select a withdrawal method.");
-
             return;
         }
 
         if (!paymentDetails || paymentDetails.length < 5) {
-
             showMessage("Please enter valid payment details.");
-
             return;
         }
 
@@ -1548,10 +1487,8 @@ if (withdrawalForm) {
         );
 
         if (submitButton) {
-
             submitButton.disabled = true;
             submitButton.textContent = "Submitting Request...";
-
         }
 
         try {
@@ -1564,11 +1501,9 @@ if (withdrawalForm) {
             if (authError) throw authError;
 
             if (!authData.user) {
-
                 throw new Error(
                     "Your session has expired. Please log in again."
                 );
-
             }
 
             const {
@@ -1587,12 +1522,10 @@ if (withdrawalForm) {
             if (error) throw error;
 
             if (!data || data.success !== true) {
-
                 throw new Error(
                     data?.message ||
                     "Your withdrawal request could not be submitted."
                 );
-
             }
 
             withdrawalForm.reset();
@@ -1626,17 +1559,12 @@ if (withdrawalForm) {
         } finally {
 
             if (submitButton) {
-
                 submitButton.disabled = false;
                 submitButton.textContent =
                     "Submit Withdrawal Request";
-
             }
-
         }
-
     });
-
 }
 
 
@@ -1662,9 +1590,7 @@ function initializeTransactionFilters() {
         const selectedFilter = button.dataset.filter;
 
         filterContainer.querySelectorAll("button").forEach(item => {
-
             item.classList.remove("active");
-
         });
 
         button.classList.add("active");
@@ -1686,7 +1612,6 @@ function initializeTransactionFilters() {
             if (shouldShow) {
                 visibleCount++;
             }
-
         });
 
         let emptyRow = getElement("noFilteredTransactions");
@@ -1709,7 +1634,6 @@ function initializeTransactionFilters() {
                 emptyRow.appendChild(cell);
 
                 transactionList.appendChild(emptyRow);
-
             }
 
             emptyRow.hidden = false;
@@ -1717,11 +1641,8 @@ function initializeTransactionFilters() {
         } else if (emptyRow) {
 
             emptyRow.hidden = true;
-
         }
-
     });
-
 }
 
 
@@ -1740,11 +1661,9 @@ function generateTransactionReceipt(transaction) {
         : transaction.status === "completed";
 
     if (!successful) {
-
         showMessage(
             "A receipt is only available for a completed transaction."
         );
-
         return;
     }
 
@@ -1792,11 +1711,9 @@ function generateTransactionReceipt(transaction) {
     );
 
     if (!receiptWindow) {
-
         showMessage(
             "Please allow pop-ups in your browser to view your receipt."
         );
-
         return;
     }
 
@@ -2014,7 +1931,6 @@ function generateTransactionReceipt(transaction) {
     receiptWindow.document.open();
     receiptWindow.document.write(receiptHTML);
     receiptWindow.document.close();
-
 }
 
 
@@ -2034,7 +1950,6 @@ function escapeReceiptText(value) {
             "'": "&#39;"
         })[character]
     );
-
 }
 
 
@@ -2063,13 +1978,9 @@ async function initializeWebsite() {
         if (error) throw error;
 
         if (data.session?.user) {
-
             await loadDashboard(data.session.user);
-
         } else {
-
             showPublicHome();
-
         }
 
     } catch (error) {
@@ -2077,7 +1988,5 @@ async function initializeWebsite() {
         console.error("Website initialization error:", error);
 
         showPublicHome();
-
     }
-
 }
