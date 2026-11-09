@@ -3128,3 +3128,71 @@ body {
     }
 
 }
+
+
+/* =========================================
+   NEXUS WEALTH PARTNERS
+   FINAL MOBILE HEADER AND HEADING FIX
+========================================= */
+
+@media (max-width: 768px) {
+
+    /* HOME DASHBOARD HEADER */
+    #mobileHomeHeader {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        width: 100% !important;
+        height: 112px !important;
+        min-height: 112px !important;
+        box-sizing: border-box !important;
+        background: #142f68 !important;
+        background-color: #142f68 !important;
+        color: #ffffff !important;
+        z-index: 9999 !important;
+        margin: 0 !important;
+        align-items: center !important;
+    }
+
+    #mobileHomeHeader * {
+        color: #ffffff !important;
+    }
+
+    /* SPACE BELOW THE FIXED HOME HEADER */
+    #memberDashboard {
+        padding-top: 112px !important;
+    }
+
+    /* HOME GREETING */
+    #memberDashboard .dashboard-heading.home-dashboard-content {
+        padding-top: 0 !important;
+        margin-top: 0 !important;
+        position: relative !important;
+        z-index: 1 !important;
+    }
+
+    /* INNER PAGE HEADER */
+    #mobileScreenHeader {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        width: 100% !important;
+        min-height: 64px !important;
+        box-sizing: border-box !important;
+        background: #142f68 !important;
+        background-color: #142f68 !important;
+        color: #ffffff !important;
+        z-index: 9999 !important;
+    }
+
+    #mobileScreenHeader * {
+        color: #ffffff !important;
+    }
+
+    /* INNER PAGE CONTENT SPACING */
+    body.mobile-inner-page #memberDashboard {
+        padding-top: 64px !important;
+    }
+}
