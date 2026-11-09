@@ -125,10 +125,7 @@ function showPublicHome() {
     if (websiteFooter) websiteFooter.style.display = "";
     if (publicMain) publicMain.style.display = "";
 
-    window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-    });
+    // Do not force the page to the top here.
 }
 
 
