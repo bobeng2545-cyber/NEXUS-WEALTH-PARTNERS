@@ -3286,3 +3286,145 @@ body {
         padding-top: 64px !important;
     }
 }
+
+
+/* =========================================================
+   NEXUS WEALTH PARTNERS
+   FINAL MOBILE GREETING AND FIXED HEADER CORRECTION
+========================================================= */
+
+@media (max-width: 768px) {
+
+    /* FIXED HOME DASHBOARD HEADER */
+    #memberDashboard #mobileHomeHeader {
+        display: flex !important;
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        width: 100% !important;
+        height: 112px !important;
+        min-height: 112px !important;
+        padding: 15px 22px !important;
+        align-items: center !important;
+        box-sizing: border-box !important;
+        background: #142f68 !important;
+        color: #ffffff !important;
+        z-index: 99999 !important;
+        margin: 0 !important;
+    }
+
+    #mobileHomeHeader h2,
+    #mobileHomeHeader * {
+        color: #ffffff !important;
+    }
+
+    /* MAKE ROOM FOR THE FIXED HEADER */
+    #memberDashboard {
+        padding-top: 112px !important;
+    }
+
+    /* GREETING CONTAINER */
+    #memberDashboard .dashboard-heading.home-dashboard-content {
+        display: flex !important;
+        position: relative !important;
+        width: 100% !important;
+        height: auto !important;
+        min-height: 145px !important;
+        margin: 0 !important;
+        padding: 20px 22px 18px !important;
+        overflow: visible !important;
+        align-items: flex-start !important;
+        justify-content: space-between !important;
+        gap: 12px !important;
+        z-index: 2 !important;
+    }
+
+    /* GREETING TEXT */
+    #memberDashboard .dashboard-welcome {
+        display: block !important;
+        position: relative !important;
+        width: auto !important;
+        min-width: 0 !important;
+        height: auto !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        overflow: visible !important;
+    }
+
+    #memberDashboard .dashboard-welcome h2 {
+        display: block !important;
+        position: static !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        transform: none !important;
+        height: auto !important;
+        margin: 0 0 8px !important;
+        padding: 0 !important;
+        color: #101b3b !important;
+        font-size: 21px !important;
+        line-height: 1.4 !important;
+        overflow: visible !important;
+    }
+
+    #memberDashboard .dashboard-welcome h2 span {
+        display: inline !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        color: #087443 !important;
+    }
+
+    #memberDashboard .dashboard-welcome p {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        margin: 5px 0 !important;
+        line-height: 1.5 !important;
+    }
+
+    /* MEMBER ID */
+    #memberDashboard #memberId {
+        display: inline-block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+
+    /* INNER PAGE HEADER */
+    #memberDashboard #mobileScreenHeader {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        width: 100% !important;
+        height: 64px !important;
+        min-height: 64px !important;
+        background: #142f68 !important;
+        color: #ffffff !important;
+        z-index: 99999 !important;
+    }
+
+    #mobileScreenHeader * {
+        color: #ffffff !important;
+    }
+
+    /* HIDE HOME HEADER ON INNER PAGES */
+    body.mobile-inner-page #mobileHomeHeader {
+        display: none !important;
+    }
+
+    /* SHOW ONLY THE INNER PAGE HEADER */
+    body.mobile-inner-page #mobileScreenHeader {
+        display: flex !important;
+    }
+
+    body.mobile-inner-page #memberDashboard {
+        padding-top: 64px !important;
+    }
+
+    /* DO NOT SHOW HOME GREETING ON INNER PAGES */
+    body.mobile-inner-page #memberDashboard .home-dashboard-content {
+        display: none !important;
+    }
+}
