@@ -230,6 +230,7 @@ function showMemberDashboard() {
 
 
 
+
 /* =========================================
    10A. MOBILE DASHBOARD SCREEN CONTROL
 ========================================= */
@@ -237,137 +238,8 @@ function showMemberDashboard() {
 let currentDashboardView = "home";
 
 function setMobileDashboardView(view) {
-
-    currentDashboardView = view;
-
-    const dashboardViews = {
-
-        home: [
-            ".dashboard-heading",
-            ".dashboard-cards",
-            "#myWallet",
-            "#depositFunds",
-            "#withdrawFunds"
-        ],
-
-        transactions: [
-            "#memberTransactions"
-        ],
-
-        pendingWithdrawals: [
-            "#pendingWithdrawals"
-        ],
-
-        savings: [
-            ".dashboard-content-grid",
-            "#memberSavings"
-        ],
-
-        profile: [
-            "#memberProfile"
-        ]
-
-    };
-
-    const allDashboardSections = [
-        ".dashboard-heading",
-        ".dashboard-cards",
-        "#myWallet",
-        "#depositFunds",
-        ".dashboard-content-grid",
-        "#withdrawFunds",
-        "#pendingWithdrawals",
-        "#memberTransactions",
-        "#memberSavings",
-        "#memberProfile"
-    ];
-
-    const isMobile = window.matchMedia(
-        "(max-width: 700px)"
-    ).matches;
-
-    if (!isMobile) {
-
-        allDashboardSections.forEach(selector => {
-
-            document.querySelectorAll(
-                "#memberDashboard " + selector
-            ).forEach(element => {
-                element.classList.remove("mobile-view-hidden");
-            });
-
-        });
-
-    } else {
-
-        allDashboardSections.forEach(selector => {
-
-            document.querySelectorAll(
-                "#memberDashboard " + selector
-            ).forEach(element => {
-                element.classList.add("mobile-view-hidden");
-            });
-
-        });
-
-        const selectedSections =
-            dashboardViews[view] || dashboardViews.home;
-
-        selectedSections.forEach(selector => {
-
-            document.querySelectorAll(
-                "#memberDashboard " + selector
-            ).forEach(element => {
-                element.classList.remove("mobile-view-hidden");
-            });
-
-        });
-
-    }
-
-    const selectedLinks = {
-        home: "#memberDashboard",
-        transactions: "#memberTransactions",
-        pendingWithdrawals: "#pendingWithdrawals",
-        savings: "#memberSavings",
-        profile: "#memberProfile"
-    };
-
-    document.querySelectorAll(
-        ".member-navigation a"
-    ).forEach(link => {
-
-        link.classList.remove("active");
-
-        if (
-            link.getAttribute("href") === selectedLinks[view]
-        ) {
-            link.classList.add("active");
-        }
-
-    });
-
-    const screenTitle = getElement("mobileScreenTitle");
-
-    const titles = {
-        home: "Home",
-        transactions: "Transactions",
-        pendingWithdrawals: "Pending Withdrawals",
-        savings: "Savings",
-        profile: "My Profile"
-    };
-
-    if (screenTitle) {
-        screenTitle.textContent = titles[view] || "Dashboard";
-    }
-
-    window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-    });
-
+    showMobileDashboardScreen(view);
 }
-
 
 
 /* =========================================
@@ -827,7 +699,7 @@ document.addEventListener("click", function(event) {
 
         event.preventDefault();
 
-        setMobileDashboardView(selectedView);
+        showMobileDashboardScreen(selectedView);
     }
 
 });
@@ -920,6 +792,7 @@ async function initializeWebsite() {
 
 
 
+
 /* =========================================
    23. MOBILE DASHBOARD SCREEN NAVIGATION
 ========================================= */
@@ -930,93 +803,118 @@ function showMobileDashboardScreen(screen) {
         "(max-width: 700px)"
     ).matches;
 
-    if (!isMobile) return;
-
-    const homeItems = document.querySelectorAll(
-        "#memberDashboard .home-dashboard-content"
-    );
-
-    const dashboardSections = [
-        "memberTransactions",
-        "pendingWithdrawals",
-        "memberSavings",
-        "memberProfile"
-    ];
-
     const screenHeader = getElement("mobileScreenHeader");
     const screenTitle = getElement("mobileScreenTitle");
     const backButton = getElement("mobileBackButton");
 
-    homeItems.forEach(item => {
-        item.style.display = "none";
-    });
+    const homeSelectors = [
+        ".dashboard-heading",
+        ".dashboard-cards",
+        "#myWallet",
+        "#depositFunds",
+        "#withdrawFunds"
+    ];
 
-    dashboardSections.forEach(id => {
+    const allSelectors = [
+        ...homeSelectors,
+        ".dashboard-content-grid",
+        "#pendingWithdrawals",
+        "#memberTransactions",
+        "#memberSavings",
+        "#memberProfile"
+    ];
 
-        const section = getElement(id);
-
-        if (section) {
-            section.style.display = "none";
-        }
-
-    });
-
-    const navigationLinks = document.querySelectorAll(
-        ".member-navigation a[data-screen]"
-    );
-
-    navigationLinks.forEach(link => {
-        link.classList.remove("active");
-    });
-
-    const screenConfiguration = {
+    const configuration = {
 
         home: {
-            title: "Home",
-            section: null
+            title: "My Dashboard",
+            selectors: homeSelectors
         },
 
         transactions: {
-            title: "Transactions",
-            section: "memberTransactions"
+            title: "My Transactions",
+            selectors: ["#memberTransactions"]
         },
 
         pendingWithdrawals: {
             title: "Pending Withdrawals",
-            section: "pendingWithdrawals"
+            selectors: ["#pendingWithdrawals"]
         },
 
         savings: {
-            title: "Savings",
-            section: "memberSavings"
+            title: "My Savings",
+            selectors: ["#memberSavings"]
         },
 
         profile: {
             title: "My Profile",
-            section: "memberProfile"
+            selectors: ["#memberProfile"]
         }
 
     };
 
-    const selected = screenConfiguration[screen] ||
-        screenConfiguration.home;
+    const selected = configuration[screen] ||
+        configuration.home;
 
-    if (screen === "home") {
+    currentDashboardView =
+        configuration[screen] ? screen : "home";
 
-        homeItems.forEach(item => {
-            item.style.display = "";
+
+    // Reset all dashboard sections on desktop.
+    if (!isMobile) {
+
+        allSelectors.forEach(selector => {
+
+            document.querySelectorAll(
+                "#memberDashboard " + selector
+            ).forEach(element => {
+
+                element.classList.remove("mobile-view-hidden");
+                element.style.display = "";
+
+            });
+
         });
 
-    } else {
-
-        const section = getElement(selected.section);
-
-        if (section) {
-            section.style.display = "block";
+        if (screenHeader) {
+            screenHeader.style.display = "none";
         }
 
+        return;
     }
 
+
+    // Hide every dashboard section on mobile.
+    allSelectors.forEach(selector => {
+
+        document.querySelectorAll(
+            "#memberDashboard " + selector
+        ).forEach(element => {
+
+            element.classList.add("mobile-view-hidden");
+            element.style.display = "none";
+
+        });
+
+    });
+
+
+    // Display only the selected section.
+    selected.selectors.forEach(selector => {
+
+        document.querySelectorAll(
+            "#memberDashboard " + selector
+        ).forEach(element => {
+
+            element.classList.remove("mobile-view-hidden");
+            element.style.display = "";
+
+        });
+
+    });
+
+
+    // Update the section heading.
     if (screenHeader) {
         screenHeader.style.display =
             screen === "home" ? "none" : "flex";
@@ -1026,27 +924,40 @@ function showMobileDashboardScreen(screen) {
         screenTitle.textContent = selected.title;
     }
 
+
+    // Show back arrow on inner dashboard pages.
     if (backButton) {
+
         backButton.style.display =
             screen === "home" ? "none" : "flex";
+
     }
 
-    const activeLink = document.querySelector(
-        `.member-navigation a[data-screen="${screen}"]`
-    );
 
-    if (activeLink) {
-        activeLink.classList.add("active");
-    }
+    // Update active navigation link.
+    document.querySelectorAll(
+        ".member-navigation a[data-screen]"
+    ).forEach(link => {
 
-    currentDashboardView = screen;
+        link.classList.remove("active");
 
+        if (
+            link.getAttribute("data-screen") === screen
+        ) {
+            link.classList.add("active");
+        }
+
+    });
+
+
+    // Start the selected section at the top.
     window.scrollTo({
         top: 0,
         behavior: "smooth"
     });
 
 }
+
 
 
 
