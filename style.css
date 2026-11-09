@@ -2236,3 +2236,36 @@ body {
         max-width: none !important;
     }
 }
+
+/* =========================================
+   MOBILE DASHBOARD NAVIGATION FIX
+========================================= */
+
+@media screen and (max-width: 700px) {
+
+    .member-navigation {
+        display: grid !important;
+        grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+        grid-auto-flow: row !important;
+        gap: 4px !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        overflow-x: hidden !important;
+        flex-wrap: nowrap !important;
+        box-sizing: border-box;
+    }
+
+    .member-navigation a {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        min-width: 0 !important;
+        padding: 10px 2px !important;
+        text-align: center !important;
+        white-space: nowrap !important;
+        font-size: 11px !important;
+        box-sizing: border-box;
+    }
+
+}
