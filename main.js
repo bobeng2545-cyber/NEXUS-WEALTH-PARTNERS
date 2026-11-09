@@ -1,3 +1,4 @@
+
 /* =========================================
    NEXUS WEALTH PARTNERS
    COMPLETE MAIN JAVASCRIPT
@@ -104,6 +105,7 @@ function hideMemberDashboard() {
 
     if (memberDashboard) {
         memberDashboard.style.display = "none";
+        memberDashboard.classList.remove("mobile-inner-page");
     }
 }
 
@@ -125,7 +127,10 @@ function showPublicHome() {
     if (websiteFooter) websiteFooter.style.display = "";
     if (publicMain) publicMain.style.display = "";
 
-    // Do not force the page to the top here.
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
 }
 
 
@@ -201,7 +206,18 @@ function showForgotPassword() {
 
 
 /* =========================================
-   10. SHOW MEMBER DASHBOARD
+   10. MOBILE DASHBOARD NAVIGATION
+========================================= */
+
+let currentDashboardView = "home";
+
+function setMobileDashboardView(view) {
+    showMobileDashboardScreen(view);
+}
+
+
+/* =========================================
+   11. SHOW MEMBER DASHBOARD
 ========================================= */
 
 function showMemberDashboard() {
@@ -223,27 +239,219 @@ function showMemberDashboard() {
         publicMain.style.display = "block";
     }
 
-    setMobileDashboardView("home");
+    showMobileDashboardScreen("home");
 
-    window.scrollTo(0, 0);
+    window.scrollTo({
+        top: 0,
+        behavior: "instant"
+    });
 }
 
 
-
-
 /* =========================================
-   10A. MOBILE DASHBOARD SCREEN CONTROL
+   12. MOBILE DASHBOARD SCREEN CONTROL
 ========================================= */
 
-let currentDashboardView = "home";
+function showMobileDashboardScreen(screen) {
 
-function setMobileDashboardView(view) {
-    showMobileDashboardScreen(view);
+    const isMobile = window.matchMedia(
+        "(max-width: 700px)"
+    ).matches;
+
+    const screenHeader = getElement("mobileScreenHeader");
+    const screenTitle = getElement("mobileScreenTitle");
+    const backButton = getElement("mobileBackButton");
+
+    const homeSelectors = [
+        ".dashboard-heading",
+        ".dashboard-cards",
+        "#myWallet",
+        "#depositFunds",
+        "#withdrawFunds",
+        ".dashboard-content-grid"
+    ];
+
+    const allSelectors = [
+        ...homeSelectors,
+        "#pendingWithdrawals",
+        "#memberTransactions",
+        "#memberSavings",
+        "#memberProfile"
+    ];
+
+    const configuration = {
+
+        home: {
+            title: "My Dashboard",
+            selectors: homeSelectors
+        },
+
+        transactions: {
+            title: "My Transactions",
+            selectors: ["#memberTransactions"]
+        },
+
+        pendingWithdrawals: {
+            title: "Pending Withdrawals",
+            selectors: ["#pendingWithdrawals"]
+        },
+
+        savings: {
+            title: "My Savings",
+            selectors: ["#memberSavings"]
+        },
+
+        profile: {
+            title: "My Profile",
+            selectors: ["#memberProfile"]
+        }
+
+    };
+
+    const selected = configuration[screen] ||
+        configuration.home;
+
+    currentDashboardView =
+        configuration[screen] ? screen : "home";
+
+
+    // Desktop: show the complete dashboard.
+    if (!isMobile) {
+
+        allSelectors.forEach(selector => {
+
+            document.querySelectorAll(
+                "#memberDashboard " + selector
+            ).forEach(element => {
+
+                element.classList.remove("mobile-view-hidden");
+                element.style.display = "";
+
+            });
+
+        });
+
+        if (screenHeader) {
+            screenHeader.style.display = "none";
+        }
+
+        if (memberDashboard) {
+            memberDashboard.classList.remove("mobile-inner-page");
+        }
+
+        if (backButton) {
+            backButton.style.display = "none";
+        }
+
+        document.querySelectorAll(
+            ".member-navigation a[data-screen]"
+        ).forEach(link => {
+
+            link.classList.toggle(
+                "active",
+                link.dataset.screen === "home"
+            );
+
+        });
+
+        return;
+    }
+
+
+    // Hide all dashboard sections first.
+    allSelectors.forEach(selector => {
+
+        document.querySelectorAll(
+            "#memberDashboard " + selector
+        ).forEach(element => {
+
+            element.classList.add("mobile-view-hidden");
+            element.style.display = "none";
+
+        });
+
+    });
+
+
+    // Display the selected dashboard section.
+    selected.selectors.forEach(selector => {
+
+        document.querySelectorAll(
+            "#memberDashboard " + selector
+        ).forEach(element => {
+
+            element.classList.remove("mobile-view-hidden");
+            element.style.display = "";
+
+        });
+
+    });
+
+
+    // Update the header title.
+    if (screenHeader) {
+        screenHeader.style.display =
+            screen === "home" ? "none" : "flex";
+    }
+
+    if (screenTitle) {
+        screenTitle.textContent = selected.title;
+    }
+
+
+    // Display the back arrow only on inner pages.
+    if (backButton) {
+
+        backButton.style.display =
+            screen === "home" ? "none" : "flex";
+
+        // Attach the back action directly.
+        backButton.onclick = function(event) {
+
+            event.preventDefault();
+
+            showMobileDashboardScreen("home");
+
+        };
+
+    }
+
+
+    // Add active state to the selected navigation link.
+    document.querySelectorAll(
+        ".member-navigation a[data-screen]"
+    ).forEach(link => {
+
+        link.classList.toggle(
+            "active",
+            link.dataset.screen === screen
+        );
+
+    });
+
+
+    // Add a class for fixed-header spacing.
+    if (memberDashboard) {
+
+        memberDashboard.classList.toggle(
+            "mobile-inner-page",
+            screen !== "home"
+        );
+
+    }
+
+
+    // Start each selected page at the top.
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+
 }
 
 
 /* =========================================
-   10B. RESTORE SCREEN WHEN PHONE ROTATES
+   13. RESTORE VIEW WHEN PHONE ROTATES
 ========================================= */
 
 window.addEventListener("resize", function() {
@@ -252,14 +460,16 @@ window.addEventListener("resize", function() {
         memberDashboard &&
         memberDashboard.style.display !== "none"
     ) {
-        setMobileDashboardView(currentDashboardView);
+
+        showMobileDashboardScreen(currentDashboardView);
+
     }
 
 });
 
 
 /* =========================================
-   11. DISPLAY MEMBER INFORMATION
+   14. DISPLAY MEMBER INFORMATION
 ========================================= */
 
 function displayMemberInformation(user, profile) {
@@ -309,7 +519,7 @@ function displayMemberInformation(user, profile) {
 
 
 /* =========================================
-   12. LOAD MEMBER PROFILE
+   15. LOAD MEMBER PROFILE
 ========================================= */
 
 async function loadMemberProfile(user) {
@@ -337,14 +547,12 @@ async function loadMemberProfile(user) {
 }
 
 
-
 /* =========================================
-   13. LOAD MEMBER WALLET
+   16. LOAD MEMBER WALLET
 ========================================= */
 
 async function loadMemberWallet(user) {
 
-    // Load wallet information
     const { data, error } = await nexusSupabase
         .from("wallets")
         .select("balance, total_deposits, total_withdrawals")
@@ -364,7 +572,8 @@ async function loadMemberWallet(user) {
     const deposits = Number(data.total_deposits) || 0;
     const withdrawals = Number(data.total_withdrawals) || 0;
 
-    // Load pending and processing withdrawals
+
+    // Load money reserved for pending withdrawals.
     const { data: requests, error: requestError } =
         await nexusSupabase
             .from("withdrawal_requests")
@@ -373,64 +582,78 @@ async function loadMemberWallet(user) {
             .in("status", ["pending", "processing"]);
 
     if (requestError) {
-        console.error(
-            "Pending withdrawal loading error:",
-            requestError
-        );
-
+        console.error("Withdrawal reservation error:", requestError);
         throw requestError;
     }
 
-    // Calculate money reserved for withdrawals
     const reservedWithdrawals = (requests || []).reduce(
         (total, request) => {
+
             return total + (Number(request.amount) || 0);
+
         },
         0
     );
 
-    // Calculate spendable balance
     const availableBalance = Math.max(
         0,
         balance - reservedWithdrawals
     );
 
-    // Display available balance
-    const walletElements = [
+
+    // Actual wallet balance.
+    [
         "walletBalance",
         "walletBalanceDisplay",
-        "walletAvailableBalance",
         "depositCurrentBalance",
-        "availableBalance",
         "totalSavingsBalance"
-    ];
+    ].forEach(id => {
 
-    walletElements.forEach(id => {
+        const element = getElement(id);
+
+        if (element) {
+            element.textContent = formatMoney(balance);
+        }
+
+    });
+
+
+    // Available balance after reserved withdrawals.
+    [
+        "walletAvailableBalance",
+        "availableBalance"
+    ].forEach(id => {
+
         const element = getElement(id);
 
         if (element) {
             element.textContent = formatMoney(availableBalance);
         }
+
     });
 
-    // Display total deposits
-    const depositElements = [
+
+    // Total deposits.
+    [
         "walletTotalDeposits",
         "totalDeposits"
-    ];
+    ].forEach(id => {
 
-    depositElements.forEach(id => {
         const element = getElement(id);
 
         if (element) {
             element.textContent = formatMoney(deposits);
         }
+
     });
 
-    // Display completed withdrawals
+
+    // Completed withdrawals.
     if (getElement("walletTotalWithdrawals")) {
+
         getElement("walletTotalWithdrawals").textContent =
             formatMoney(withdrawals);
+
     }
 
     return {
@@ -441,10 +664,8 @@ async function loadMemberWallet(user) {
 }
 
 
-
-
 /* =========================================
-   14. LOAD MEMBER DASHBOARD DATA
+   17. LOAD MEMBER DASHBOARD DATA
 ========================================= */
 
 async function loadDashboard(user) {
@@ -467,13 +688,17 @@ async function loadDashboard(user) {
 
         console.error("Dashboard error:", error);
 
+        showMessage(
+            error.message ||
+            "Unable to load your dashboard information."
+        );
+
     }
 }
 
 
-
 /* =========================================
-   15. REGISTRATION
+   18. REGISTRATION
 ========================================= */
 
 if (registrationForm) {
@@ -537,6 +762,7 @@ if (registrationForm) {
                 );
 
                 showLogin();
+
             }
 
         } catch (error) {
@@ -550,13 +776,16 @@ if (registrationForm) {
         } finally {
 
             if (submitButton) submitButton.disabled = false;
+
         }
+
     });
+
 }
 
 
 /* =========================================
-   16. MEMBER LOGIN
+   19. MEMBER LOGIN
 ========================================= */
 
 if (loginForm) {
@@ -602,13 +831,16 @@ if (loginForm) {
         } finally {
 
             if (submitButton) submitButton.disabled = false;
+
         }
+
     });
+
 }
 
 
 /* =========================================
-   17. FORGOT PASSWORD
+   20. FORGOT PASSWORD
 ========================================= */
 
 if (forgotPasswordForm) {
@@ -628,7 +860,8 @@ if (forgotPasswordForm) {
 
             const { error } =
                 await nexusSupabase.auth.resetPasswordForEmail(email, {
-                    redirectTo: window.location.origin + "/reset-password.html"
+                    redirectTo:
+                        window.location.origin + "/reset-password.html"
                 });
 
             if (error) throw error;
@@ -642,13 +875,16 @@ if (forgotPasswordForm) {
             console.error("Password reset error:", error);
 
             showMessage(error.message || "Password reset failed.");
+
         }
+
     });
+
 }
 
 
 /* =========================================
-   18. NAVIGATION LINKS
+   21. NAVIGATION LINKS
 ========================================= */
 
 document.addEventListener("click", function(event) {
@@ -681,14 +917,15 @@ document.addEventListener("click", function(event) {
 
     if (!dashboardLink) return;
 
-    const destination = dashboardLink.getAttribute("href");
-
     const mobileViews = {
         "#memberDashboard": "home",
         "#memberTransactions": "transactions",
+        "#pendingWithdrawals": "pendingWithdrawals",
         "#memberSavings": "savings",
         "#memberProfile": "profile"
     };
+
+    const destination = dashboardLink.getAttribute("href");
 
     const selectedView = mobileViews[destination];
 
@@ -700,13 +937,14 @@ document.addEventListener("click", function(event) {
         event.preventDefault();
 
         showMobileDashboardScreen(selectedView);
+
     }
 
 });
 
 
 /* =========================================
-   19. BACK TO HOME
+   22. BACK TO HOME
 ========================================= */
 
 function returnToHome() {
@@ -719,9 +957,12 @@ window.showRegistration = showRegistration;
 window.showForgotPassword = showForgotPassword;
 window.returnToHome = returnToHome;
 
+window.showMobileDashboardScreen =
+    showMobileDashboardScreen;
+
 
 /* =========================================
-   20. LOGOUT
+   23. LOGOUT
 ========================================= */
 
 async function logoutMember() {
@@ -729,241 +970,51 @@ async function logoutMember() {
     const { error } = await nexusSupabase.auth.signOut();
 
     if (error) {
+
         console.error("Logout error:", error);
+
         showMessage(error.message);
+
         return;
     }
 
     showPublicHome();
+
     showMessage("You have been logged out.");
+
 }
 
 window.logoutMember = logoutMember;
 
 
 /* =========================================
-   21. AUTHENTICATION STATE
+   24. AUTHENTICATION STATE
 ========================================= */
 
 nexusSupabase.auth.onAuthStateChange((event, session) => {
 
     if (event === "SIGNED_OUT") {
+
         showPublicHome();
+
         return;
     }
 
     if (event === "SIGNED_IN" && session?.user) {
 
         Promise.resolve().then(() => {
+
             loadDashboard(session.user);
+
         });
+
     }
+
 });
 
 
 /* =========================================
-   22. INITIALIZE WEBSITE
-========================================= */
-
-async function initializeWebsite() {
-
-    showPublicHome();
-
-    try {
-
-        const { data, error } =
-            await nexusSupabase.auth.getSession();
-
-        if (error) throw error;
-
-        if (data.session?.user) {
-            await loadDashboard(data.session.user);
-        } else {
-            showPublicHome();
-        }
-
-    } catch (error) {
-
-        console.error("Website initialization error:", error);
-
-        showPublicHome();
-    }
-}
-
-
-
-
-/* =========================================
-   23. MOBILE DASHBOARD SCREEN NAVIGATION
-========================================= */
-
-function showMobileDashboardScreen(screen) {
-
-    const isMobile = window.matchMedia(
-        "(max-width: 700px)"
-    ).matches;
-
-    const screenHeader = getElement("mobileScreenHeader");
-    const screenTitle = getElement("mobileScreenTitle");
-    const backButton = getElement("mobileBackButton");
-
-    const homeSelectors = [
-        ".dashboard-heading",
-        ".dashboard-cards",
-        "#myWallet",
-        "#depositFunds",
-        "#withdrawFunds"
-    ];
-
-    const allSelectors = [
-        ...homeSelectors,
-        ".dashboard-content-grid",
-        "#pendingWithdrawals",
-        "#memberTransactions",
-        "#memberSavings",
-        "#memberProfile"
-    ];
-
-    const configuration = {
-
-        home: {
-            title: "My Dashboard",
-            selectors: homeSelectors
-        },
-
-        transactions: {
-            title: "My Transactions",
-            selectors: ["#memberTransactions"]
-        },
-
-        pendingWithdrawals: {
-            title: "Pending Withdrawals",
-            selectors: ["#pendingWithdrawals"]
-        },
-
-        savings: {
-            title: "My Savings",
-            selectors: ["#memberSavings"]
-        },
-
-        profile: {
-            title: "My Profile",
-            selectors: ["#memberProfile"]
-        }
-
-    };
-
-    const selected = configuration[screen] ||
-        configuration.home;
-
-    currentDashboardView =
-        configuration[screen] ? screen : "home";
-
-
-    // Reset all dashboard sections on desktop.
-    if (!isMobile) {
-
-        allSelectors.forEach(selector => {
-
-            document.querySelectorAll(
-                "#memberDashboard " + selector
-            ).forEach(element => {
-
-                element.classList.remove("mobile-view-hidden");
-                element.style.display = "";
-
-            });
-
-        });
-
-        if (screenHeader) {
-            screenHeader.style.display = "none";
-        }
-
-        return;
-    }
-
-
-    // Hide every dashboard section on mobile.
-    allSelectors.forEach(selector => {
-
-        document.querySelectorAll(
-            "#memberDashboard " + selector
-        ).forEach(element => {
-
-            element.classList.add("mobile-view-hidden");
-            element.style.display = "none";
-
-        });
-
-    });
-
-
-    // Display only the selected section.
-    selected.selectors.forEach(selector => {
-
-        document.querySelectorAll(
-            "#memberDashboard " + selector
-        ).forEach(element => {
-
-            element.classList.remove("mobile-view-hidden");
-            element.style.display = "";
-
-        });
-
-    });
-
-
-    // Update the section heading.
-    if (screenHeader) {
-        screenHeader.style.display =
-            screen === "home" ? "none" : "flex";
-    }
-
-    if (screenTitle) {
-        screenTitle.textContent = selected.title;
-    }
-
-
-    // Show back arrow on inner dashboard pages.
-    if (backButton) {
-
-        backButton.style.display =
-            screen === "home" ? "none" : "flex";
-
-    }
-
-
-    // Update active navigation link.
-    document.querySelectorAll(
-        ".member-navigation a[data-screen]"
-    ).forEach(link => {
-
-        link.classList.remove("active");
-
-        if (
-            link.getAttribute("data-screen") === screen
-        ) {
-            link.classList.add("active");
-        }
-
-    });
-
-
-    // Start the selected section at the top.
-    window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-    });
-
-}
-
-
-
-
-
-/* =========================================
-   23A. MEMBER TRANSACTION HISTORY
+   25. MEMBER TRANSACTION HISTORY
 ========================================= */
 
 async function loadMemberTransactions(user) {
@@ -1108,7 +1159,6 @@ async function loadMemberTransactions(user) {
             statusCell.className =
                 "transaction-status status-" + transaction.status;
 
-            // Generate receipt button
             const receiptButton = document.createElement("button");
 
             receiptButton.type = "button";
@@ -1149,7 +1199,7 @@ async function loadMemberTransactions(user) {
         });
 
         const activeFilter = document.querySelector(
-            '#transactionFilters button.active'
+            "#transactionFilters button.active"
         );
 
         if (activeFilter) {
@@ -1167,20 +1217,14 @@ async function loadMemberTransactions(user) {
                 </td>
             </tr>
         `;
+
     }
-}
-
-
-// Compatibility with existing withdrawal code
-async function loadMemberWithdrawalRequests(user) {
-
-    return loadMemberTransactions(user);
 
 }
 
 
 /* =========================================
-   23A-1. LOAD PENDING WITHDRAWALS
+   26. LOAD PENDING WITHDRAWALS
 ========================================= */
 
 async function loadPendingWithdrawals(user) {
@@ -1213,7 +1257,9 @@ async function loadPendingWithdrawals(user) {
 
         const reservedTotal = requests.reduce(
             (total, request) => {
+
                 return total + (Number(request.amount) || 0);
+
             },
             0
         );
@@ -1256,8 +1302,7 @@ async function loadPendingWithdrawals(user) {
             const dateCell = document.createElement("td");
             const statusCell = document.createElement("td");
 
-            amountCell.textContent =
-                formatMoney(request.amount);
+            amountCell.textContent = formatMoney(request.amount);
 
             methodCell.textContent =
                 methodLabels[request.withdrawal_method] ||
@@ -1297,14 +1342,14 @@ async function loadPendingWithdrawals(user) {
         `;
 
         throw error;
+
     }
+
 }
 
 
-
-
 /* =========================================
-   23B. MEMBER DEPOSIT PROCESSING
+   27. MEMBER DEPOSIT PROCESSING
 ========================================= */
 
 const depositForm = getElement("depositForm");
@@ -1333,7 +1378,6 @@ if (depositForm) {
 
         const method = methodMap[selectedMethod];
 
-        // Validate amount
         if (
             !Number.isFinite(amount) ||
             amount < 1 ||
@@ -1347,7 +1391,6 @@ if (depositForm) {
             return;
         }
 
-        // Validate payment method
         if (!method) {
 
             showMessage("Please select a valid deposit method.");
@@ -1355,7 +1398,6 @@ if (depositForm) {
             return;
         }
 
-        // Validate Ghana mobile money number
         if (!/^0\d{9}$/.test(phone)) {
 
             showMessage(
@@ -1372,15 +1414,12 @@ if (depositForm) {
         if (submitButton) {
 
             submitButton.disabled = true;
-
-            submitButton.textContent =
-                "Connecting to Paystack...";
+            submitButton.textContent = "Connecting to Paystack...";
 
         }
 
         try {
 
-            // Confirm logged-in member
             const { data: authData, error: authError } =
                 await nexusSupabase.auth.getUser();
 
@@ -1394,15 +1433,14 @@ if (depositForm) {
 
             }
 
-            // Initialize deposit through secure Supabase Edge Function
             const { data, error } =
                 await nexusSupabase.functions.invoke(
                     "nexus-deposit",
                     {
                         body: {
-                            amount: amount,
-                            method: method,
-                            phone: phone
+                            amount,
+                            method,
+                            phone
                         }
                     }
                 );
@@ -1434,7 +1472,6 @@ if (depositForm) {
                 data.reference
             );
 
-            // Redirect to Paystack hosted checkout
             window.location.assign(data.authorization_url);
 
         } catch (error) {
@@ -1449,9 +1486,7 @@ if (depositForm) {
             if (submitButton) {
 
                 submitButton.disabled = false;
-
-                submitButton.textContent =
-                    "Continue to Deposit";
+                submitButton.textContent = "Continue to Deposit";
 
             }
 
@@ -1463,7 +1498,7 @@ if (depositForm) {
 
 
 /* =========================================
-   24. MEMBER WITHDRAWAL REQUEST
+   28. MEMBER WITHDRAWAL REQUEST
 ========================================= */
 
 const withdrawalForm = getElement("withdrawalForm");
@@ -1487,32 +1522,37 @@ if (withdrawalForm) {
         const note =
             getElement("withdrawNote")?.value.trim() || null;
 
-
         if (!Number.isFinite(amount) || amount <= 0) {
+
             showMessage("Please enter a valid withdrawal amount.");
+
             return;
         }
 
         if (!method) {
+
             showMessage("Please select a withdrawal method.");
+
             return;
         }
 
         if (!paymentDetails || paymentDetails.length < 5) {
+
             showMessage("Please enter valid payment details.");
+
             return;
         }
-
 
         const submitButton = withdrawalForm.querySelector(
             'button[type="submit"]'
         );
 
         if (submitButton) {
+
             submitButton.disabled = true;
             submitButton.textContent = "Submitting Request...";
-        }
 
+        }
 
         try {
 
@@ -1524,11 +1564,12 @@ if (withdrawalForm) {
             if (authError) throw authError;
 
             if (!authData.user) {
+
                 throw new Error(
                     "Your session has expired. Please log in again."
                 );
-            }
 
+            }
 
             const {
                 data,
@@ -1546,28 +1587,26 @@ if (withdrawalForm) {
             if (error) throw error;
 
             if (!data || data.success !== true) {
+
                 throw new Error(
                     data?.message ||
                     "Your withdrawal request could not be submitted."
                 );
-            }
 
+            }
 
             withdrawalForm.reset();
 
             await loadMemberWallet(authData.user);
-            
             await loadMemberTransactions(authData.user);
-            
             await loadPendingWithdrawals(authData.user);
-
 
             showMessage(
                 "Withdrawal request submitted successfully!\n\n" +
                 "Amount: " + formatMoney(amount) + "\n" +
                 "Status: Pending\n" +
                 "Request ID: " + data.request_id + "\n\n" +
-                "Your wallet has not been debited. Your request is awaiting review."
+                "Your money is reserved while the request awaits review. It is not yet paid out."
             );
 
             console.log(
@@ -1587,23 +1626,27 @@ if (withdrawalForm) {
         } finally {
 
             if (submitButton) {
+
                 submitButton.disabled = false;
                 submitButton.textContent =
                     "Submit Withdrawal Request";
+
             }
+
         }
+
     });
+
 }
 
 
 /* =========================================
-   25. MEMBER TRANSACTION FILTERS
+   29. MEMBER TRANSACTION FILTERS
 ========================================= */
 
 function initializeTransactionFilters() {
 
     const filterContainer = getElement("transactionFilters");
-
     const transactionList = getElement("transactionList");
 
     if (!filterContainer || !transactionList) {
@@ -1614,22 +1657,18 @@ function initializeTransactionFilters() {
 
         const button = event.target.closest("button[data-filter]");
 
-        if (!button) {
-            return;
-        }
+        if (!button) return;
 
         const selectedFilter = button.dataset.filter;
 
-
-        // Update active filter button.
         filterContainer.querySelectorAll("button").forEach(item => {
+
             item.classList.remove("active");
+
         });
 
         button.classList.add("active");
 
-
-        // Filter transaction rows.
         const rows = transactionList.querySelectorAll(
             "tr[data-transaction-type]"
         );
@@ -1638,11 +1677,9 @@ function initializeTransactionFilters() {
 
         rows.forEach(row => {
 
-            const transactionType = row.dataset.transactionType;
-
             const shouldShow =
                 selectedFilter === "all" ||
-                selectedFilter === transactionType;
+                selectedFilter === row.dataset.transactionType;
 
             row.hidden = !shouldShow;
 
@@ -1652,8 +1689,6 @@ function initializeTransactionFilters() {
 
         });
 
-
-        // Show a message when no matching transactions exist.
         let emptyRow = getElement("noFilteredTransactions");
 
         if (!visibleCount) {
@@ -1665,13 +1700,16 @@ function initializeTransactionFilters() {
                 emptyRow.id = "noFilteredTransactions";
 
                 const cell = document.createElement("td");
+
                 cell.colSpan = 5;
+
                 cell.textContent =
                     "No matching transactions available.";
 
                 emptyRow.appendChild(cell);
 
                 transactionList.appendChild(emptyRow);
+
             }
 
             emptyRow.hidden = false;
@@ -1683,17 +1721,12 @@ function initializeTransactionFilters() {
         }
 
     });
+
 }
 
 
 /* =========================================
-   26. START WEBSITE
-========================================= */
-
-initializeTransactionFilters();
-
-/* =========================================
-   26. PROFESSIONAL TRANSACTION RECEIPT
+   30. PROFESSIONAL TRANSACTION RECEIPT
 ========================================= */
 
 function generateTransactionReceipt(transaction) {
@@ -1702,10 +1735,9 @@ function generateTransactionReceipt(transaction) {
 
     const isDeposit = transaction.type === "deposit";
 
-    const successful =
-        isDeposit
-            ? transaction.status === "successful"
-            : transaction.status === "completed";
+    const successful = isDeposit
+        ? transaction.status === "successful"
+        : transaction.status === "completed";
 
     if (!successful) {
 
@@ -1719,8 +1751,7 @@ function generateTransactionReceipt(transaction) {
     const amount = Number(transaction.amount);
 
     const reference =
-        transaction.reference ||
-        transaction.id;
+        transaction.reference || transaction.id;
 
     const date = new Date(
         transaction.created_at
@@ -1772,18 +1803,12 @@ function generateTransactionReceipt(transaction) {
     const receiptHTML = `
         <!DOCTYPE html>
         <html lang="en">
-
         <head>
-
             <meta charset="UTF-8">
-
-            <meta name="viewport"
-                  content="width=device-width, initial-scale=1.0">
-
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>Nexus Transaction Receipt</title>
 
             <style>
-
                 * {
                     box-sizing: border-box;
                 }
@@ -1885,7 +1910,6 @@ function generateTransactionReceipt(transaction) {
                 }
 
                 @media print {
-
                     body {
                         background: white;
                         padding: 0;
@@ -1899,19 +1923,14 @@ function generateTransactionReceipt(transaction) {
                     .print-button {
                         display: none;
                     }
-
                 }
-
             </style>
-
         </head>
 
         <body>
-
             <div class="receipt">
 
                 <div class="header">
-
                     <div class="brand">
                         NEXUS WEALTH PARTNERS
                     </div>
@@ -1923,17 +1942,14 @@ function generateTransactionReceipt(transaction) {
                     <div class="success">
                         ${isDeposit ? "DEPOSIT SUCCESSFUL" : "WITHDRAWAL COMPLETED"}
                     </div>
-
                 </div>
 
                 <div class="amount">
-
                     <p>
                         ${isDeposit ? "Amount Deposited" : "Amount Withdrawn"}
                     </p>
 
                     <h1>${formatMoney(amount)}</h1>
-
                 </div>
 
                 <div class="details">
@@ -1981,26 +1997,17 @@ function generateTransactionReceipt(transaction) {
                 </div>
 
                 <div class="footer">
-
                     Thank you for using Nexus Wealth Partners.
-
                     <br>
-
                     Keep this receipt for your records.
-
                 </div>
 
-                <button class="print-button"
-                    onclick="window.print()">
-
+                <button class="print-button" onclick="window.print()">
                     Print / Save Receipt
-
                 </button>
 
             </div>
-
         </body>
-
         </html>
     `;
 
@@ -2012,7 +2019,7 @@ function generateTransactionReceipt(transaction) {
 
 
 /* =========================================
-   27. RECEIPT TEXT SECURITY
+   31. RECEIPT TEXT SECURITY
 ========================================= */
 
 function escapeReceiptText(value) {
@@ -2030,4 +2037,47 @@ function escapeReceiptText(value) {
 
 }
 
+
+/* =========================================
+   32. START WEBSITE
+========================================= */
+
+initializeTransactionFilters();
+
 initializeWebsite();
+
+
+/* =========================================
+   33. INITIALIZE WEBSITE
+========================================= */
+
+async function initializeWebsite() {
+
+    showPublicHome();
+
+    try {
+
+        const { data, error } =
+            await nexusSupabase.auth.getSession();
+
+        if (error) throw error;
+
+        if (data.session?.user) {
+
+            await loadDashboard(data.session.user);
+
+        } else {
+
+            showPublicHome();
+
+        }
+
+    } catch (error) {
+
+        console.error("Website initialization error:", error);
+
+        showPublicHome();
+
+    }
+
+}
