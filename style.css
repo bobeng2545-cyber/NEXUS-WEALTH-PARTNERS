@@ -2473,3 +2473,36 @@ body {
     }
 
 }
+
+
+/* =========================================
+   FIX MOBILE HEADER OVERLAPPING CONTENT
+========================================= */
+
+@media screen and (max-width: 700px) {
+
+    #memberDashboard {
+        padding-top: 0 !important;
+    }
+
+    .mobile-screen-header {
+        position: relative !important;
+        top: auto !important;
+        z-index: 10;
+
+        margin-bottom: 18px;
+    }
+
+    #memberDashboard .dashboard-heading,
+    #memberDashboard .dashboard-cards,
+    #memberDashboard #myWallet,
+    #memberDashboard #depositFunds,
+    #memberDashboard #withdrawFunds {
+        scroll-margin-top: 20px;
+    }
+
+    #memberDashboard .dashboard-cards {
+        margin-top: 18px;
+    }
+
+}
