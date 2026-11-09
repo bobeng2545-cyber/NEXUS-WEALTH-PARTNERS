@@ -102,12 +102,10 @@ function showAdminLogin() {
    6. SHOW ADMIN DASHBOARD
 ========================================= */
 
-
 async function showAdminDashboard(email) {
 
     console.log("Verifying Nexus administrator...");
 
-    // Keep dashboard hidden until authorization succeeds.
     adminLoginScreen.hidden = false;
     adminDashboard.hidden = true;
 
@@ -141,7 +139,6 @@ async function showAdminDashboard(email) {
 
     }
 
-    // Authorization successful.
     adminLoginScreen.hidden = true;
     adminDashboard.hidden = false;
 
@@ -170,7 +167,6 @@ async function showAdminDashboard(email) {
     }
 
 }
-
 
 
 /* =========================================
@@ -479,9 +475,8 @@ nexusAdminSupabase.auth.onAuthStateChange(
 );
 
 
-
 /* =========================================
-   16. LIVE DASHBOARD DATA
+   15. LIVE DASHBOARD DATA
 ========================================= */
 
 function formatNexusAdminMoney(amount) {
@@ -554,7 +549,7 @@ function getAdminMemberName(userId, profiles) {
 
 
 /* =========================================
-   17. LOAD MEMBERS
+   16. LOAD MEMBERS
 ========================================= */
 
 function displayAdminMembers(profiles) {
@@ -581,23 +576,27 @@ function displayAdminMembers(profiles) {
 
         const row = document.createElement("tr");
 
+        // Member ID
         row.appendChild(
             createAdminTableCell(profile.member_id)
         );
 
+        // Full name
         row.appendChild(
             createAdminTableCell(profile.full_name)
         );
 
-        // Email is not currently stored in the profiles table.
+        // Member email
         row.appendChild(
-            createAdminTableCell("Not available")
+            createAdminTableCell(profile.email)
         );
 
+        // Phone number
         row.appendChild(
             createAdminTableCell(profile.phone)
         );
 
+        // Registration date
         row.appendChild(
             createAdminTableCell(
                 formatAdminDate(profile.created_at)
@@ -612,7 +611,7 @@ function displayAdminMembers(profiles) {
 
 
 /* =========================================
-   18. LOAD WITHDRAWAL REQUESTS
+   17. LOAD WITHDRAWAL REQUESTS
 ========================================= */
 
 function displayAdminWithdrawals(withdrawals, profiles) {
@@ -640,7 +639,9 @@ function displayAdminWithdrawals(withdrawals, profiles) {
 
     }
 
-    table.replaceChildren();
+    if (table) {
+        table.replaceChildren();
+    }
 
     if (recentTable) {
         recentTable.replaceChildren();
@@ -690,53 +691,53 @@ function displayAdminWithdrawals(withdrawals, profiles) {
         );
 
         const statusCell = createAdminTableCell(
-    request.status.toUpperCase()
-);
+            request.status.toUpperCase()
+        );
 
-row.appendChild(statusCell);
+        row.appendChild(statusCell);
 
-const actionCell = document.createElement("td");
+        const actionCell = document.createElement("td");
 
-if (
-    request.status === "pending" ||
-    request.status === "processing"
-) {
+        if (
+            request.status === "pending" ||
+            request.status === "processing"
+        ) {
 
-    if (request.status === "pending") {
+            if (request.status === "pending") {
 
-        const processButton = document.createElement("button");
+                const processButton = document.createElement("button");
 
-        processButton.textContent = "Process";
+                processButton.textContent = "Process";
 
-        processButton.className = "admin-action-button";
+                processButton.className = "admin-action-button";
 
-        processButton.addEventListener("click", () => {
-            reviewNexusWithdrawal(request.id, "processing");
-        });
+                processButton.addEventListener("click", () => {
+                    reviewNexusWithdrawal(request.id, "processing");
+                });
 
-        actionCell.appendChild(processButton);
+                actionCell.appendChild(processButton);
 
-    }
+            }
 
-    const rejectButton = document.createElement("button");
+            const rejectButton = document.createElement("button");
 
-    rejectButton.textContent = "Reject";
+            rejectButton.textContent = "Reject";
 
-    rejectButton.className = "admin-action-button reject";
+            rejectButton.className = "admin-action-button reject";
 
-    rejectButton.addEventListener("click", () => {
-        reviewNexusWithdrawal(request.id, "rejected");
-    });
+            rejectButton.addEventListener("click", () => {
+                reviewNexusWithdrawal(request.id, "rejected");
+            });
 
-    actionCell.appendChild(rejectButton);
+            actionCell.appendChild(rejectButton);
 
-} else {
+        } else {
 
-    actionCell.textContent = "No action";
+            actionCell.textContent = "No action";
 
-}
+        }
 
-row.appendChild(actionCell);
+        row.appendChild(actionCell);
 
         row.appendChild(
             createAdminTableCell(
@@ -744,9 +745,11 @@ row.appendChild(actionCell);
             )
         );
 
-        table.appendChild(row);
+        if (table) {
+            table.appendChild(row);
+        }
 
-        // Show the five most recent requests on overview.
+        // Show five most recent requests on overview.
         if (index < 5 && recentTable) {
 
             const recentRow = document.createElement("tr");
@@ -786,7 +789,7 @@ row.appendChild(actionCell);
 
 
 /* =========================================
-   19. LOAD WALLET AND SAVINGS DATA
+   18. LOAD WALLET AND SAVINGS DATA
 ========================================= */
 
 function displayAdminSavings(wallets, profiles) {
@@ -853,7 +856,7 @@ function displayAdminSavings(wallets, profiles) {
 
 
 /* =========================================
-   20. LOAD ALL DASHBOARD RECORDS
+   19. LOAD ALL DASHBOARD RECORDS
 ========================================= */
 
 async function loadAdminDashboardData() {
@@ -868,7 +871,9 @@ async function loadAdminDashboardData() {
 
         nexusAdminSupabase
             .from("profiles")
-            .select("id, full_name, phone, member_id, created_at")
+            .select(
+                "id, full_name, phone, member_id, email, created_at"
+            )
             .order("created_at", { ascending: false }),
 
         nexusAdminSupabase
@@ -902,10 +907,18 @@ async function loadAdminDashboardData() {
     const wallets = walletsResult.data || [];
     const withdrawals = withdrawalsResult.data || [];
 
+
     /* TOTAL MEMBERS */
 
-    document.getElementById("totalMembers").textContent =
-        profiles.length.toLocaleString("en-GH");
+    const totalMembersElement =
+        document.getElementById("totalMembers");
+
+    if (totalMembersElement) {
+
+        totalMembersElement.textContent =
+            profiles.length.toLocaleString("en-GH");
+
+    }
 
 
     /* TOTAL WALLET BALANCES */
@@ -915,8 +928,15 @@ async function loadAdminDashboardData() {
         0
     );
 
-    document.getElementById("totalWalletBalances").textContent =
-        formatNexusAdminMoney(totalBalances);
+    const totalWalletBalancesElement =
+        document.getElementById("totalWalletBalances");
+
+    if (totalWalletBalancesElement) {
+
+        totalWalletBalancesElement.textContent =
+            formatNexusAdminMoney(totalBalances);
+
+    }
 
 
     /* TOTAL DEPOSITS */
@@ -926,8 +946,15 @@ async function loadAdminDashboardData() {
         0
     );
 
-    document.getElementById("totalDeposits").textContent =
-        formatNexusAdminMoney(totalDeposits);
+    const totalDepositsElement =
+        document.getElementById("totalDeposits");
+
+    if (totalDepositsElement) {
+
+        totalDepositsElement.textContent =
+            formatNexusAdminMoney(totalDeposits);
+
+    }
 
 
     /* TOTAL WITHDRAWALS */
@@ -937,8 +964,15 @@ async function loadAdminDashboardData() {
         0
     );
 
-    document.getElementById("totalWithdrawals").textContent =
-        formatNexusAdminMoney(totalWithdrawals);
+    const totalWithdrawalsElement =
+        document.getElementById("totalWithdrawals");
+
+    if (totalWithdrawalsElement) {
+
+        totalWithdrawalsElement.textContent =
+            formatNexusAdminMoney(totalWithdrawals);
+
+    }
 
 
     /* WITHDRAWAL COUNTS */
@@ -955,17 +989,26 @@ async function loadAdminDashboardData() {
         request => request.status === "completed"
     ).length;
 
-    document.getElementById(
-        "overviewPendingWithdrawals"
-    ).textContent = pending;
+    const pendingElement =
+        document.getElementById("overviewPendingWithdrawals");
 
-    document.getElementById(
-        "overviewProcessingWithdrawals"
-    ).textContent = processing;
+    const processingElement =
+        document.getElementById("overviewProcessingWithdrawals");
 
-    document.getElementById(
-        "overviewCompletedWithdrawals"
-    ).textContent = completed;
+    const completedElement =
+        document.getElementById("overviewCompletedWithdrawals");
+
+    if (pendingElement) {
+        pendingElement.textContent = pending;
+    }
+
+    if (processingElement) {
+        processingElement.textContent = processing;
+    }
+
+    if (completedElement) {
+        completedElement.textContent = completed;
+    }
 
 
     /* PENDING SIDEBAR BADGE */
@@ -977,6 +1020,7 @@ async function loadAdminDashboardData() {
     if (badge) {
 
         badge.textContent = pending;
+
         badge.hidden = pending === 0;
 
     }
@@ -999,8 +1043,9 @@ async function loadAdminDashboardData() {
 
 }
 
+
 /* =========================================
-   22. ADMIN WITHDRAWAL REVIEW
+   20. ADMIN WITHDRAWAL REVIEW
 ========================================= */
 
 async function reviewNexusWithdrawal(requestId, action) {
@@ -1054,6 +1099,7 @@ async function reviewNexusWithdrawal(requestId, action) {
 
 }
 
+
 /* =========================================
    21. START ADMIN DASHBOARD
 ========================================= */
@@ -1063,4 +1109,3 @@ checkAdminSession();
 console.log(
     "Nexus Wealth Partners Admin Dashboard initialized."
 );
-
