@@ -2269,3 +2269,108 @@ body {
     }
 
 }
+
+
+/* =========================================
+   NEXUS MOBILE PAGE HEADINGS
+========================================= */
+
+.mobile-page-heading {
+    display: none;
+}
+
+.mobile-inner-header {
+    display: none;
+}
+
+@media screen and (max-width: 700px) {
+
+    .mobile-page-heading {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        width: 100%;
+        margin: 0 0 22px;
+    }
+
+    .mobile-back-button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 42px;
+        height: 42px;
+        min-width: 42px;
+        border: none;
+        border-radius: 50%;
+        background: #e8f5ee;
+        color: #087443;
+        font-size: 26px;
+        cursor: pointer;
+    }
+
+    .mobile-page-heading h2 {
+        margin: 0;
+        font-size: 21px;
+        font-weight: 700;
+    }
+
+    .desktop-page-heading {
+        display: none;
+    }
+
+    .member-navigation {
+        display: grid !important;
+        grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+        gap: 6px !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
+    .member-navigation a {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        min-width: 0 !important;
+        padding: 8px 2px !important;
+        text-align: center !important;
+    }
+
+    body.mobile-inner-page .member-navigation {
+        display: none !important;
+    }
+
+    body.mobile-inner-page .home-dashboard-content {
+        display: none !important;
+    }
+
+    body.mobile-inner-page .mobile-inner-header {
+        display: flex !important;
+    }
+
+    body.mobile-inner-page .home-mobile-header {
+        display: none !important;
+    }
+
+    .mobile-inner-header {
+        align-items: center;
+        gap: 14px;
+        margin-bottom: 20px;
+    }
+
+    .mobile-inner-header h2 {
+        margin: 0;
+        font-size: 21px;
+    }
+
+    .mobile-inner-header button {
+        width: 42px;
+        height: 42px;
+        border: none;
+        border-radius: 50%;
+        background: #e8f5ee;
+        color: #087443;
+        font-size: 26px;
+    }
+
+}
