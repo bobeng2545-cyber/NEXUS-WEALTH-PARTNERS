@@ -228,7 +228,7 @@ function setMobileDashboardView(screen, shouldScroll = true) {
         profile: "My Profile"
     };
 
-    const screenSections = {
+        const screenSections = {
         home: [
             ".dashboard-heading",
             ".dashboard-cards",
@@ -236,10 +236,23 @@ function setMobileDashboardView(screen, shouldScroll = true) {
             "#depositFunds",
             "#withdrawFunds"
         ],
-        transactions: ["#memberTransactions"],
-        pendingWithdrawals: ["#pendingWithdrawals"],
-        savings: ["#memberSavings"],
-        profile: ["#memberProfile"]
+
+        transactions: [
+            "#memberTransactions"
+        ],
+
+        pendingWithdrawals: [
+            "#pendingWithdrawals"
+        ],
+
+        savings: [
+            ".dashboard-content-grid",
+            "#memberSavings"
+        ],
+
+        profile: [
+            "#memberProfile"
+        ]
     };
 
     const allSections = [
@@ -248,6 +261,7 @@ function setMobileDashboardView(screen, shouldScroll = true) {
         "#myWallet",
         "#depositFunds",
         "#withdrawFunds",
+        ".dashboard-content-grid",
         "#pendingWithdrawals",
         "#memberTransactions",
         "#memberSavings",
