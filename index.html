@@ -1,0 +1,1146 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="description" content="Nexus Wealth Partners - Save consistently, grow your wealth and manage your savings securely.">
+
+    <title>Nexus Wealth Partners | Savings Platform</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- =====================================
+         WEBSITE HEADER
+    ====================================== -->
+
+    <header id="websiteHeader">
+
+        <div>
+            <h1>THINK TWICE OFFICIALS</h1>
+            <p>Building wealth together, the NEXUS way.</p>
+        </div>
+
+        <nav aria-label="Main Navigation">
+            <ul>
+                <li><a href="#home">Home</a></li>
+                <li><a href="#about">About Us</a></li>
+                <li><a href="#savings">Savings Plans</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+
+        <div>
+            <a href="#login">Login</a>
+            <a href="#register">Create Account</a>
+        </div>
+
+    </header>
+
+
+    <!-- =====================================
+         MAIN WEBSITE CONTENT
+    ====================================== -->
+
+    <main id="publicMain">
+
+        <!-- HOME -->
+
+        <section id="home">
+
+            <h2>Welcome to Nexus Wealth Partners</h2>
+
+            <h3>Your Money. Your Future. Your Wealth.</h3>
+
+            <p>
+                Build a better financial future through consistent
+                savings, transparent transactions and reliable
+                financial management.
+            </p>
+
+            <a href="#register">Start Saving Today</a>
+            <a href="#about">Learn More</a>
+
+        </section>
+
+
+        <!-- ABOUT -->
+
+        <section id="about">
+
+            <h2>About Nexus Wealth Partners</h2>
+
+            <p>
+                Nexus Wealth Partners is a savings platform designed
+                to help members develop consistent savings habits,
+                monitor their contributions and track their financial
+                progress.
+            </p>
+
+            <h3>Our Mission</h3>
+
+            <p>
+                To empower individuals to build wealth through
+                disciplined savings and transparent financial services.
+            </p>
+
+            <h3>Our Values</h3>
+
+            <ul>
+                <li>Security</li>
+                <li>Transparency</li>
+                <li>Reliability</li>
+                <li>Financial Discipline</li>
+                <li>Trust</li>
+            </ul>
+
+        </section>
+
+
+        <!-- SAVINGS PLANS -->
+
+        <section id="savings">
+
+            <h2>Our Savings Plans</h2>
+
+            <article>
+                <h3>Daily Savings</h3>
+                <p>Save money consistently every day.</p>
+            </article>
+
+            <article>
+                <h3>Weekly Savings</h3>
+                <p>Build your savings through weekly contributions.</p>
+            </article>
+
+            <article>
+                <h3>Monthly Savings</h3>
+                <p>Save monthly towards your financial goals.</p>
+            </article>
+
+            <article>
+                <h3>Target Savings</h3>
+                <p>Set a financial target and work towards achieving it.</p>
+            </article>
+
+        </section>
+
+
+        <!-- REGISTRATION -->
+
+        <section id="register" class="auth-screen">
+
+            <h2>Create Your Account</h2>
+
+            <form id="registrationForm">
+
+                <label for="registerName">Full Name</label>
+
+                <input
+                    type="text"
+                    id="registerName"
+                    name="fullName"
+                    placeholder="Enter your full name"
+                    autocomplete="name"
+                    required
+                >
+
+                <label for="registerEmail">Email Address</label>
+
+                <input
+                    type="email"
+                    id="registerEmail"
+                    name="email"
+                    placeholder="Enter your email address"
+                    autocomplete="email"
+                    required
+                >
+
+                <label for="registerPhone">Phone Number</label>
+
+                <input
+                    type="tel"
+                    id="registerPhone"
+                    name="phone"
+                    placeholder="Enter your phone number"
+                    autocomplete="tel"
+                    required
+                >
+
+                <label for="registerPassword">Password</label>
+
+                <input
+                    type="password"
+                    id="registerPassword"
+                    name="password"
+                    placeholder="Create a password"
+                    autocomplete="new-password"
+                    required
+                >
+
+                <label for="confirmPassword">Confirm Password</label>
+
+                <input
+                    type="password"
+                    id="confirmPassword"
+                    name="confirmPassword"
+                    placeholder="Confirm your password"
+                    autocomplete="new-password"
+                    required
+                >
+
+                <button type="submit">Create Account</button>
+
+                <p>
+                    Already have an account?
+                    <a href="#login">Login</a>
+                </p>
+
+                <button
+                    type="button"
+                    class="back-home-btn"
+                    onclick="showPublicHome()"
+                >
+                    Back to Home
+                </button>
+
+            </form>
+
+        </section>
+
+
+        <!-- LOGIN -->
+
+        <section id="login" class="auth-screen">
+
+            <h2>Member Login</h2>
+
+            <form id="loginForm">
+
+                <label for="loginEmail">Email Address</label>
+
+                <input
+                    type="email"
+                    id="loginEmail"
+                    name="email"
+                    placeholder="Enter your email address"
+                    autocomplete="email"
+                    required
+                >
+
+                <label for="loginPassword">Password</label>
+
+                <input
+                    type="password"
+                    id="loginPassword"
+                    name="password"
+                    placeholder="Enter your password"
+                    autocomplete="current-password"
+                    required
+                >
+
+                <button type="submit">Login</button>
+
+                <p>
+                    <a href="#forgotPassword">Forgot Password?</a>
+                </p>
+
+                <p>
+                    Don't have an account?
+                    <a href="#register">Create Account</a>
+                </p>
+
+                <button
+                    type="button"
+                    class="back-home-btn"
+                    onclick="showPublicHome()"
+                >
+                    Back to Home
+                </button>
+
+            </form>
+
+        </section>
+
+
+        <!-- FORGOT PASSWORD -->
+
+        <section id="forgotPassword" class="auth-screen">
+
+            <h2>Reset Your Password</h2>
+
+            <p>
+                Enter the email address associated with your account
+                to request a password reset.
+            </p>
+
+            <form id="forgotPasswordForm">
+
+                <label for="resetEmail">
+                    Registered Email Address
+                </label>
+
+                <input
+                    type="email"
+                    id="resetEmail"
+                    name="email"
+                    placeholder="Enter your registered email"
+                    autocomplete="email"
+                    required
+                >
+
+                <button type="submit">
+                    Request Password Reset
+                </button>
+
+                <p>
+                    Remembered your password?
+                    <a href="#login">Login</a>
+                </p>
+
+                <button
+                    type="button"
+                    class="back-home-btn"
+                    onclick="showPublicHome()"
+                >
+                    Back to Home
+                </button>
+
+            </form>
+
+        </section>
+
+
+        <!-- =====================================
+             MEMBER DASHBOARD
+        ====================================== -->
+
+        <section id="memberDashboard" class="member-dashboard">
+
+
+            <!-- MOBILE HEADER -->
+
+            <div class="mobile-screen-header" id="mobileScreenHeader">
+
+                <button
+                    type="button"
+                    id="mobileBackButton"
+                    aria-label="Back to Home"
+                >
+                    &#8592;
+                </button>
+
+                <h2 id="mobileScreenTitle">Transactions</h2>
+
+            </div>
+
+
+            <!-- DASHBOARD HEADING -->
+
+            <div class="dashboard-heading home-dashboard-content">
+
+                <div class="dashboard-welcome">
+
+                    <h2>
+                        Welcome back,
+                        <span id="memberFirstName">Member</span> 👋
+                    </h2>
+
+                    <p>Here is an overview of your account.</p>
+
+                    <p>
+                        Member ID:
+                        <span id="memberId">NWP001</span>
+                    </p>
+
+                </div>
+
+
+                <!-- NOTIFICATIONS -->
+
+                <div class="notification-area">
+
+                    <button
+                        type="button"
+                        id="notificationButton"
+                        class="notification-button"
+                        aria-label="Open notifications"
+                        aria-expanded="false"
+                        aria-controls="notificationMenu"
+                    >
+
+                        <span class="notification-bell-icon">🔔</span>
+
+                        <span
+                            id="notificationCount"
+                            class="notification-count"
+                            hidden
+                        >0</span>
+
+                    </button>
+
+
+                    <div
+                        id="notificationMenu"
+                        class="notification-menu"
+                        hidden
+                    >
+
+                        <div class="notification-menu-header">
+
+                            <h3>Notifications</h3>
+
+                            <button
+                                type="button"
+                                id="markAllNotifications"
+                            >
+                                Mark all as read
+                            </button>
+
+                        </div>
+
+                        <div
+                            id="notificationList"
+                            class="notification-list"
+                        >
+
+                            <div class="empty-notifications">
+                                <span>🔔</span>
+                                <p>No notifications yet.</p>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- DASHBOARD SUMMARY -->
+
+            <div class="dashboard-cards home-dashboard-content">
+
+                <article class="dashboard-card balance-card">
+
+                    <span class="card-icon">👛</span>
+
+                    <p>My Wallet Balance</p>
+
+                    <h3 id="walletBalance">GHS 0.00</h3>
+
+                    <small>Your current wallet balance</small>
+
+                </article>
+
+
+                <article class="dashboard-card">
+
+                    <span class="card-icon">📥</span>
+
+                    <p>Total Deposits</p>
+
+                    <h3 id="walletTotalDeposits">GHS 0.00</h3>
+
+                    <small>Your confirmed deposits</small>
+
+                </article>
+
+
+                <article class="dashboard-card">
+
+                    <span class="card-icon">📤</span>
+
+                    <p>Total Withdrawals</p>
+
+                    <h3 id="walletTotalWithdrawals">GHS 0.00</h3>
+
+                    <small>Your completed withdrawals</small>
+
+                </article>
+
+            </div>
+
+
+            <!-- MEMBER NAVIGATION -->
+
+            <nav
+                class="member-navigation"
+                aria-label="Member Dashboard Navigation"
+            >
+
+                <a
+                    href="#memberDashboard"
+                    data-screen="home"
+                    class="active"
+                >
+                    <span>🏠</span>
+                    <small>Home</small>
+                </a>
+
+                <a
+                    href="#memberTransactions"
+                    data-screen="transactions"
+                >
+                    <span>📄</span>
+                    <small>Transactions</small>
+                </a>
+
+                <a
+                    href="#pendingWithdrawals"
+                    data-screen="pendingWithdrawals"
+                >
+                    <span>⏳</span>
+                    <small>Pending</small>
+                </a>
+
+                <a
+                    href="#memberSavings"
+                    data-screen="savings"
+                >
+                    <span>💰</span>
+                    <small>Savings</small>
+                </a>
+
+                <a
+                    href="#memberProfile"
+                    data-screen="profile"
+                >
+                    <span>👤</span>
+                    <small>Profile</small>
+                </a>
+
+            </nav>
+
+
+            <!-- MY WALLET -->
+
+            <section
+                id="myWallet"
+                class="dashboard-panel home-dashboard-content"
+            >
+
+                <h3>My Wallet</h3>
+
+                <p>Manage and monitor your wallet.</p>
+
+                <div class="dashboard-cards">
+
+                    <article class="dashboard-card balance-card">
+
+                        <span class="card-icon">💰</span>
+
+                        <p>Total Wallet Balance</p>
+
+                        <h3 id="walletBalanceDisplay">GHS 0.00</h3>
+
+                    </article>
+
+
+                    <article class="dashboard-card">
+
+                        <span class="card-icon">💵</span>
+
+                        <p>Available Balance</p>
+
+                        <h3 id="walletAvailableBalance">GHS 0.00</h3>
+
+                    </article>
+
+                </div>
+
+
+                <div class="wallet-actions">
+
+                    <a href="#depositFunds">➕ Deposit Money</a>
+
+                    <a href="#withdrawFunds">📤 Withdraw Money</a>
+
+                </div>
+
+            </section>
+
+
+            <!-- DEPOSIT MONEY -->
+
+            <section
+                id="depositFunds"
+                class="dashboard-panel home-dashboard-content"
+            >
+
+                <h3>Deposit Money</h3>
+
+                <p>Add money to your Nexus wallet.</p>
+
+                <div class="available-balance-card">
+
+                    <span>Current Wallet Balance</span>
+
+                    <h2 id="depositCurrentBalance">GHS 0.00</h2>
+
+                </div>
+
+
+                <form id="depositForm">
+
+                    <label for="depositAmount">
+                        Amount to Deposit (GHS)
+                    </label>
+
+                    <input
+                        type="number"
+                        id="depositAmount"
+                        name="amount"
+                        min="1"
+                        step="0.01"
+                        placeholder="Enter deposit amount"
+                        required
+                    >
+
+
+                    <label for="depositMethod">
+                        Deposit Method
+                    </label>
+
+                    <select
+                        id="depositMethod"
+                        name="method"
+                        required
+                    >
+
+                        <option value="">
+                            Select Deposit Method
+                        </option>
+
+                        <option value="mtn_momo">
+                            MTN Mobile Money
+                        </option>
+
+                        <option value="telecel_cash">
+                            Telecel Cash
+                        </option>
+
+                        <option value="at_money">
+                            AT Money
+                        </option>
+
+                    </select>
+
+
+                    <label for="depositPhone">
+                        Mobile Money Number
+                    </label>
+
+                    <input
+                        type="tel"
+                        id="depositPhone"
+                        name="phone"
+                        placeholder="Enter mobile money number"
+                        autocomplete="tel"
+                        required
+                    >
+
+
+                    <button type="submit">
+                        Continue to Deposit
+                    </button>
+
+                </form>
+
+
+                <p>
+                    Your wallet will only be credited after the payment
+                    provider confirms a successful deposit.
+                </p>
+
+            </section>
+
+
+            <!-- SAVINGS OVERVIEW -->
+
+            <div class="dashboard-content-grid home-dashboard-content">
+
+                <section class="dashboard-panel savings-overview-panel">
+
+                    <div class="panel-heading">
+
+                        <div>
+                            <h3>Savings Overview</h3>
+                            <p>Monitor your savings progress.</p>
+                        </div>
+
+                    </div>
+
+
+                    <div class="savings-overview-content">
+
+                        <div class="savings-progress-circle">
+
+                            <div class="progress-inner">
+
+                                <strong id="savingsProgress">0%</strong>
+
+                                <small>Target achieved</small>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="savings-target-details">
+
+                            <div>
+                                <span>Target</span>
+                                <strong id="savingsTarget">GHS 0.00</strong>
+                            </div>
+
+                            <div>
+                                <span>Saved</span>
+                                <strong id="savingsTotal">GHS 0.00</strong>
+                            </div>
+
+                            <div>
+                                <span>Total Deposits</span>
+                                <strong id="totalDeposits">GHS 0.00</strong>
+                            </div>
+
+                            <div>
+                                <span>Total Profits</span>
+                                <strong id="totalProfits">GHS 0.00</strong>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- ACCOUNT INFORMATION -->
+
+                <section class="dashboard-panel account-information">
+
+                    <h3>Account Information</h3>
+
+                    <p>Keep track of your savings account.</p>
+
+                    <div class="information-item">
+
+                        <span>Account Type</span>
+
+                        <strong>Member Savings</strong>
+
+                    </div>
+
+
+                    <div class="information-item">
+
+                        <span>Account Status</span>
+
+                        <strong class="account-status">Pending Setup</strong>
+
+                    </div>
+
+
+                    <div class="information-item">
+
+                        <span>Member ID</span>
+
+                        <strong id="accountMemberId">NWP001</strong>
+
+                    </div>
+
+                </section>
+
+            </div>
+
+
+            <!-- WITHDRAWAL -->
+
+            <section
+                id="withdrawFunds"
+                class="dashboard-panel home-dashboard-content"
+            >
+
+                <h3>Withdraw from My Wallet</h3>
+
+                <p>
+                    Submit a request to withdraw money from your wallet.
+                </p>
+
+
+                <div class="available-balance-card">
+
+                    <span>Available Wallet Balance</span>
+
+                    <h2 id="availableBalance">GHS 0.00</h2>
+
+                </div>
+
+
+                <form id="withdrawalForm">
+
+                    <label for="withdrawAmount">
+                        Amount to Withdraw
+                    </label>
+
+                    <input
+                        type="number"
+                        id="withdrawAmount"
+                        name="amount"
+                        min="1"
+                        step="0.01"
+                        placeholder="Enter amount"
+                        required
+                    >
+
+
+                    <label for="withdrawMethod">
+                        Withdrawal Method
+                    </label>
+
+                    <select
+                        id="withdrawMethod"
+                        name="method"
+                        required
+                    >
+
+                        <option value="">
+                            Select Withdrawal Method
+                        </option>
+
+                        <option value="mtn_momo">
+                            MTN Mobile Money
+                        </option>
+
+                        <option value="telecel_cash">
+                            Telecel Cash
+                        </option>
+
+                        <option value="at_money">
+                            AT Money
+                        </option>
+
+                        <option value="bank">
+                            Bank Account
+                        </option>
+
+                    </select>
+
+
+                    <label for="withdrawPhone">
+                        Mobile Money Number or Account Details
+                    </label>
+
+                    <input
+                        type="text"
+                        id="withdrawPhone"
+                        name="phone"
+                        placeholder="Enter your payment details"
+                        required
+                    >
+
+
+                    <label for="withdrawNote">
+                        Note (Optional)
+                    </label>
+
+                    <textarea
+                        id="withdrawNote"
+                        name="note"
+                        placeholder="Enter additional information"
+                    ></textarea>
+
+
+                    <button type="submit">
+                        Submit Withdrawal Request
+                    </button>
+
+                </form>
+
+
+                <div class="withdrawal-rules">
+
+                    <h3>Withdrawal Rules</h3>
+
+                    <ul>
+                        <li>Withdrawal requests are subject to approval.</li>
+                        <li>Withdrawals must not exceed the available balance.</li>
+                        <li>All transactions must be recorded.</li>
+                    </ul>
+
+                </div>
+
+            </section>
+
+
+            <!-- =====================================
+                 PENDING WITHDRAWALS
+            ====================================== -->
+
+            <section
+                id="pendingWithdrawals"
+                class="dashboard-panel"
+            >
+
+                <h3>Pending Withdrawals</h3>
+
+                <p>
+                    Track withdrawal requests that have not yet
+                    been completed.
+                </p>
+
+
+                <div class="pending-withdrawal-summary">
+
+                    <span>Total Reserved</span>
+
+                    <strong id="pendingWithdrawalTotal">
+                        GHS 0.00
+                    </strong>
+
+                </div>
+
+
+                <div class="table-container">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+                                <th>Amount</th>
+                                <th>Payment Method</th>
+                                <th>Date Requested</th>
+                                <th>Status</th>
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody id="pendingWithdrawalList">
+
+                            <tr>
+                                <td colspan="4">
+                                    No pending withdrawals.
+                                </td>
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </section>
+
+
+            <!-- =====================================
+                 TRANSACTION HISTORY
+            ====================================== -->
+
+            <section
+                id="memberTransactions"
+                class="dashboard-panel"
+            >
+
+                <h3>My Transactions</h3>
+
+                <p>View your deposits and withdrawals.</p>
+
+
+                <div
+                    class="transaction-filters"
+                    id="transactionFilters"
+                >
+
+                    <button
+                        type="button"
+                        class="active"
+                        data-filter="all"
+                    >
+                        All
+                    </button>
+
+                    <button
+                        type="button"
+                        data-filter="deposit"
+                    >
+                        Deposits
+                    </button>
+
+                    <button
+                        type="button"
+                        data-filter="withdrawal"
+                    >
+                        Withdrawals
+                    </button>
+
+                </div>
+
+
+                <div class="table-container">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+                                <th>Transaction</th>
+                                <th>Date</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                                <th>Receipt</th>
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody id="transactionList">
+
+                            <tr>
+                                <td colspan="5">
+                                    No transactions available.
+                                </td>
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </section>
+
+
+            <!-- MONTHLY SAVINGS -->
+
+            <section
+                id="memberSavings"
+                class="dashboard-panel"
+            >
+
+                <h3>Monthly Savings Breakdown</h3>
+
+                <p>Track your savings month by month.</p>
+
+
+                <div class="table-container">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+                                <th>Month</th>
+                                <th>Amount Saved</th>
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody id="monthlySavingsList">
+
+                            <tr>
+                                <td colspan="2">
+                                    No savings records available.
+                                </td>
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </section>
+
+
+            <!-- MEMBER PROFILE -->
+
+            <section
+                id="memberProfile"
+                class="dashboard-panel"
+            >
+
+                <h3>My Profile</h3>
+
+                <p>View your personal account information.</p>
+
+
+                <div class="profile-information">
+
+                    <div>
+                        <span>Full Name</span>
+                        <strong id="profileName"></strong>
+                    </div>
+
+                    <div>
+                        <span>Email Address</span>
+                        <strong id="profileEmail"></strong>
+                    </div>
+
+                    <div>
+                        <span>Phone Number</span>
+                        <strong id="profilePhone"></strong>
+                    </div>
+
+                    <div>
+                        <span>Member ID</span>
+                        <strong id="profileMemberId"></strong>
+                    </div>
+
+                </div>
+
+            </section>
+
+        </section>
+
+    </main>
+
+
+    <!-- =====================================
+         WEBSITE FOOTER
+    ====================================== -->
+
+    <footer id="websiteFooter">
+
+        <h2 id="contact">NEXUS WEALTH PARTNERS</h2>
+
+        <p>Secure. Transparent. Reliable.</p>
+
+        <p>
+            Building wealth together, the NEXUS way.
+        </p>
+
+        <h3>Contact Us</h3>
+
+        <p>Email: To be provided</p>
+
+        <p>Phone: To be provided</p>
+
+        <p>
+            &copy; 2026 Nexus Wealth Partners.
+            All rights reserved.
+        </p>
+
+    </footer>
+
+
+    <!-- =====================================
+         JAVASCRIPT CONNECTIONS
+    ====================================== -->
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script src="main.js"></script>
+
+</body>
+
+</html>

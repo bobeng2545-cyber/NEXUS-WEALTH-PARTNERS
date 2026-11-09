@@ -1,0 +1,578 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="description" content="Nexus Wealth Partners Administration Dashboard">
+
+    <title>Nexus Wealth Partners | Admin Dashboard</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="admin.css">
+</head>
+
+<body>
+
+    <!-- ADMIN LOGIN -->
+    <section id="adminLoginScreen" class="admin-login-screen">
+
+        <div class="login-card">
+
+            <div class="brand-logo">
+                <div class="brand-icon">N</div>
+                <div>
+                    <h1>NEXUS</h1>
+                    <p>WEALTH PARTNERS</p>
+                </div>
+            </div>
+
+            <div class="login-heading">
+                <span class="login-lock">🔐</span>
+                <h2>Administrator Login</h2>
+                <p>Sign in to manage the Nexus Wealth Partners platform.</p>
+            </div>
+
+            <form id="adminLoginForm">
+
+                <div class="form-group">
+                    <label for="adminEmail">Administrator Email</label>
+                    <input
+                        type="email"
+                        id="adminEmail"
+                        placeholder="Enter administrator email"
+                        autocomplete="username"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="adminPassword">Password</label>
+                    <input
+                        type="password"
+                        id="adminPassword"
+                        placeholder="Enter your password"
+                        autocomplete="current-password"
+                        required
+                    >
+                </div>
+
+                <button type="submit" id="adminLoginButton">
+                    Sign In to Dashboard
+                </button>
+
+                <p id="adminLoginMessage" class="admin-message" role="alert"></p>
+
+            </form>
+
+            <div class="login-security">
+                <span>🛡️</span>
+                Secure Administrator Access
+            </div>
+
+            <a href="index.html" class="back-to-website">
+                ← Back to Main Website
+            </a>
+
+        </div>
+
+    </section>
+
+
+    <!-- ADMIN DASHBOARD -->
+    <div id="adminDashboard" class="admin-dashboard" hidden>
+
+        <!-- SIDEBAR -->
+        <aside class="admin-sidebar" id="adminSidebar">
+
+            <div class="sidebar-brand">
+
+                <div class="brand-icon">N</div>
+
+                <div>
+                    <h2>NEXUS</h2>
+                    <p>ADMINISTRATION</p>
+                </div>
+
+            </div>
+
+            <div class="sidebar-label">MAIN MENU</div>
+
+            <nav class="admin-navigation">
+
+                <button class="admin-nav-link active" data-page="overview">
+                    <span>▦</span>
+                    <span>Overview</span>
+                </button>
+
+                <button class="admin-nav-link" data-page="members">
+                    <span>♙</span>
+                    <span>Members</span>
+                </button>
+
+                <button class="admin-nav-link" data-page="withdrawals">
+                    <span>⇧</span>
+                    <span>Withdrawal Requests</span>
+                    <span id="pendingWithdrawalBadge" class="nav-badge" hidden>0</span>
+                </button>
+
+                <button class="admin-nav-link" data-page="transactions">
+                    <span>⇄</span>
+                    <span>Transactions</span>
+                </button>
+
+                <button class="admin-nav-link" data-page="savings">
+                    <span>◈</span>
+                    <span>Savings Management</span>
+                </button>
+
+            </nav>
+
+            <div class="sidebar-bottom">
+
+                <a href="index.html" class="sidebar-website-link">
+                    <span>↗</span>
+                    View Main Website
+                </a>
+
+                <button type="button" id="adminLogoutButton" class="logout-button">
+                    <span>⇥</span>
+                    Sign Out
+                </button>
+
+            </div>
+
+        </aside>
+
+
+        <!-- MAIN CONTENT -->
+        <main class="admin-main">
+
+            <!-- TOP BAR -->
+            <header class="admin-topbar">
+
+                <div class="topbar-left">
+
+                    <button type="button" id="sidebarToggle" class="sidebar-toggle">
+                        ☰
+                    </button>
+
+                    <div>
+                        <p class="topbar-label">NEXUS WEALTH PARTNERS</p>
+                        <h2 id="adminPageTitle">Dashboard Overview</h2>
+                    </div>
+
+                </div>
+
+                <div class="admin-profile">
+
+                    <div class="admin-avatar">A</div>
+
+                    <div class="admin-profile-details">
+                        <strong>Administrator</strong>
+                        <span id="adminProfileEmail">Admin Account</span>
+                    </div>
+
+                </div>
+
+            </header>
+
+
+            <!-- OVERVIEW PAGE -->
+            <section id="page-overview" class="admin-page active">
+
+                <div class="page-intro">
+                    <div>
+                        <h2>Dashboard Overview</h2>
+                        <p>Monitor your platform's financial and membership activities.</p>
+                    </div>
+
+                    <div class="overview-date" id="dashboardDate">
+                        Dashboard
+                    </div>
+                </div>
+
+
+                <!-- STATISTICS -->
+                <div class="statistics-grid">
+
+                    <article class="stat-card">
+                        <div class="stat-icon members-icon">♙</div>
+                        <p>Total Members</p>
+                        <h3 id="totalMembers">0</h3>
+                        <span>Registered accounts</span>
+                    </article>
+
+                    <article class="stat-card">
+                        <div class="stat-icon wallet-icon">▣</div>
+                        <p>Total Wallet Balances</p>
+                        <h3 id="totalWalletBalances">GH₵0.00</h3>
+                        <span>Members' wallet balances</span>
+                    </article>
+
+                    <article class="stat-card">
+                        <div class="stat-icon deposits-icon">↙</div>
+                        <p>Total Deposits</p>
+                        <h3 id="totalDeposits">GH₵0.00</h3>
+                        <span>Recorded deposits</span>
+                    </article>
+
+                    <article class="stat-card">
+                        <div class="stat-icon withdrawals-icon">↗</div>
+                        <p>Total Withdrawals</p>
+                        <h3 id="totalWithdrawals">GH₵0.00</h3>
+                        <span>Completed withdrawals</span>
+                    </article>
+
+                </div>
+
+
+                <!-- QUICK INFORMATION -->
+                <div class="overview-grid">
+
+                    <div class="admin-panel">
+
+                        <div class="panel-heading">
+                            <div>
+                                <h3>Withdrawal Overview</h3>
+                                <p>Review member withdrawal activity.</p>
+                            </div>
+                        </div>
+
+                        <div class="withdrawal-summary">
+
+                            <div class="summary-item">
+                                <span>Pending Requests</span>
+                                <strong id="overviewPendingWithdrawals">0</strong>
+                            </div>
+
+                            <div class="summary-item">
+                                <span>Processing Requests</span>
+                                <strong id="overviewProcessingWithdrawals">0</strong>
+                            </div>
+
+                            <div class="summary-item">
+                                <span>Completed Requests</span>
+                                <strong id="overviewCompletedWithdrawals">0</strong>
+                            </div>
+
+                        </div>
+
+                        <button class="panel-action" data-page="withdrawals">
+                            Manage Withdrawals →
+                        </button>
+
+                    </div>
+
+
+                    <div class="admin-panel">
+
+                        <div class="panel-heading">
+                            <div>
+                                <h3>Platform Information</h3>
+                                <p>Important account controls.</p>
+                            </div>
+                        </div>
+
+                        <div class="platform-information">
+                            <div>
+                                <span>Platform</span>
+                                <strong>Nexus Wealth Partners</strong>
+                            </div>
+
+                            <div>
+                                <span>Currency</span>
+                                <strong>Ghana Cedi (GHS)</strong>
+                            </div>
+
+                            <div>
+                                <span>Administrator</span>
+                                <strong>Authorized Admin</strong>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- RECENT WITHDRAWALS -->
+                <div class="admin-panel recent-panel">
+
+                    <div class="panel-heading">
+                        <div>
+                            <h3>Recent Withdrawal Requests</h3>
+                            <p>The latest member withdrawal requests.</p>
+                        </div>
+
+                        <button class="text-action" data-page="withdrawals">
+                            View All
+                        </button>
+                    </div>
+
+                    <div class="table-container">
+
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Request ID</th>
+                                    <th>Member</th>
+                                    <th>Amount</th>
+                                    <th>Method</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+
+                            <tbody id="recentWithdrawalsTable">
+                                <tr>
+                                    <td colspan="5" class="empty-table">
+                                        No withdrawal records loaded yet.
+                                    </td>
+                                </tr>
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- MEMBERS PAGE -->
+            <section id="page-members" class="admin-page">
+
+                <div class="page-intro">
+                    <div>
+                        <h2>Members Management</h2>
+                        <p>View registered members and their account information.</p>
+                    </div>
+                </div>
+
+                <div class="admin-panel">
+
+                    <div class="panel-heading">
+                        <div>
+                            <h3>Registered Members</h3>
+                            <p>Member accounts on the platform.</p>
+                        </div>
+                    </div>
+
+                    <div class="table-container">
+
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Member ID</th>
+                                    <th>Full Name</th>
+                                    <th>Email</th>
+                                    <th>Phone</th>
+                                    <th>Joined</th>
+                                </tr>
+                            </thead>
+
+                            <tbody id="membersTable">
+                                <tr>
+                                    <td colspan="5" class="empty-table">
+                                        Members will appear here.
+                                    </td>
+                                </tr>
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- WITHDRAWALS PAGE -->
+            <section id="page-withdrawals" class="admin-page">
+
+                <div class="page-intro">
+                    <div>
+                        <h2>Withdrawal Requests</h2>
+                        <p>Review requests and manage the payout process.</p>
+                    </div>
+                </div>
+
+                <div class="withdrawal-rules">
+
+                    <div>
+                        <strong>2</strong>
+                        <span>Maximum successful withdrawals per week</span>
+                    </div>
+
+                    <div>
+                        <strong>4</strong>
+                        <span>Maximum successful withdrawals per year</span>
+                    </div>
+
+                </div>
+
+                <div class="admin-panel">
+
+                    <div class="panel-heading">
+                        <div>
+                            <h3>All Withdrawal Requests</h3>
+                            <p>Review each request before making a payout.</p>
+                        </div>
+                    </div>
+
+                    <div class="table-container">
+
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Request ID</th>
+                                    <th>Member</th>
+                                    <th>Amount</th>
+                                    <th>Payment Method</th>
+                                    <th>Payment Details</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+
+                            <tbody id="withdrawalsTable">
+                                <tr>
+                                    <td colspan="7" class="empty-table">
+                                        Withdrawal requests will appear here.
+                                    </td>
+                                </tr>
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- TRANSACTIONS PAGE -->
+            <section id="page-transactions" class="admin-page">
+
+                <div class="page-intro">
+                    <div>
+                        <h2>Transactions</h2>
+                        <p>Monitor deposits and completed withdrawals.</p>
+                    </div>
+                </div>
+
+                <div class="admin-panel">
+
+                    <div class="panel-heading">
+                        <div>
+                            <h3>Transaction Records</h3>
+                            <p>Financial transaction history.</p>
+                        </div>
+                    </div>
+
+                    <div class="table-container">
+
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Transaction ID</th>
+                                    <th>Member</th>
+                                    <th>Type</th>
+                                    <th>Amount</th>
+                                    <th>Date</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+
+                            <tbody id="transactionsTable">
+                                <tr>
+                                    <td colspan="6" class="empty-table">
+                                        Transaction records will appear here.
+                                    </td>
+                                </tr>
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- SAVINGS PAGE -->
+            <section id="page-savings" class="admin-page">
+
+                <div class="page-intro">
+                    <div>
+                        <h2>Savings Management</h2>
+                        <p>Monitor members' savings activities and balances.</p>
+                    </div>
+                </div>
+
+                <div class="admin-panel">
+
+                    <div class="panel-heading">
+                        <div>
+                            <h3>Members' Savings</h3>
+                            <p>Savings records will be displayed here.</p>
+                        </div>
+                    </div>
+
+                    <div class="table-container">
+
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Member ID</th>
+                                    <th>Member Name</th>
+                                    <th>Wallet Balance</th>
+                                    <th>Total Deposits</th>
+                                    <th>Total Withdrawals</th>
+                                </tr>
+                            </thead>
+
+                            <tbody id="savingsTable">
+                                <tr>
+                                    <td colspan="5" class="empty-table">
+                                        Savings information will appear here.
+                                    </td>
+                                </tr>
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+            <footer class="admin-footer">
+                <p>© 2026 Nexus Wealth Partners. All rights reserved.</p>
+                <span>Secure Administration Portal</span>
+            </footer>
+
+        </main>
+
+    </div>
+
+
+    <!-- SUPABASE -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <!-- ADMIN JAVASCRIPT -->
+    <script src="admin.js"></script>
+
+</body>
+</html>

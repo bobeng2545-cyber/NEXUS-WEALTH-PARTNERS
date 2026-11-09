@@ -1,0 +1,266 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Verifying Payment | Nexus Wealth Partners</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f3f6fb;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .payment-card {
+            width: 100%;
+            max-width: 450px;
+            background: white;
+            padding: 40px 25px;
+            border-radius: 18px;
+            text-align: center;
+            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.08);
+        }
+
+        .payment-icon {
+            font-size: 55px;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            color: #123b2a;
+            margin-bottom: 12px;
+            font-size: 25px;
+        }
+
+        #paymentMessage {
+            color: #64748b;
+            line-height: 1.7;
+            margin-bottom: 25px;
+        }
+
+        .spinner {
+            width: 45px;
+            height: 45px;
+            border: 4px solid #e2e8f0;
+            border-top-color: #16a34a;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 25px;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .success {
+            color: #15803d;
+        }
+
+        .failure {
+            color: #dc2626;
+        }
+
+        button {
+            background: #123b2a;
+            color: white;
+            border: none;
+            padding: 14px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: bold;
+            display: none;
+        }
+
+        button:hover {
+            background: #19563c;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="payment-card">
+
+        <div class="payment-icon" id="paymentIcon">💳</div>
+
+        <h1 id="paymentTitle">Verifying Your Payment</h1>
+
+        <div class="spinner" id="paymentSpinner"></div>
+
+        <p id="paymentMessage">
+            Please wait while Nexus Wealth Partners securely verifies your payment.
+        </p>
+
+        <button id="returnButton" onclick="returnToDashboard()">
+            Return to Nexus
+        </button>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script>
+        const SUPABASE_URL =
+            "https://lzvtgxittsdhgjnfzdpk.supabase.co";
+
+        const SUPABASE_ANON_KEY =
+            "sb_publishable_191rkqJFaFYGbZxZMAzFPQ_DyMa5wi0";
+
+        const nexusSupabase = window.supabase.createClient(
+            SUPABASE_URL,
+            SUPABASE_ANON_KEY
+        );
+
+        const paymentTitle =
+            document.getElementById("paymentTitle");
+
+        const paymentMessage =
+            document.getElementById("paymentMessage");
+
+        const paymentIcon =
+            document.getElementById("paymentIcon");
+
+        const paymentSpinner =
+            document.getElementById("paymentSpinner");
+
+        const returnButton =
+            document.getElementById("returnButton");
+
+
+        function showResult(success, message) {
+
+            paymentSpinner.style.display = "none";
+
+            returnButton.style.display = "inline-block";
+
+            paymentMessage.textContent = message;
+
+            if (success) {
+
+                paymentTitle.textContent =
+                    "Payment Verified Successfully";
+
+                paymentTitle.className = "success";
+
+                paymentIcon.textContent = "✓";
+
+            } else {
+
+                paymentTitle.textContent =
+                    "Payment Not Confirmed";
+
+                paymentTitle.className = "failure";
+
+                paymentIcon.textContent = "⚠";
+
+            }
+        }
+
+
+        async function verifyDeposit() {
+
+            try {
+
+                const urlParams =
+                    new URLSearchParams(window.location.search);
+
+                const reference =
+                    urlParams.get("reference") ||
+                    urlParams.get("trxref");
+
+                if (!reference) {
+
+                    throw new Error(
+                        "Payment reference was not found. Please check your transaction."
+                    );
+
+                }
+
+                const { data: authData, error: authError } =
+                    await nexusSupabase.auth.getUser();
+
+                if (authError) throw authError;
+
+                if (!authData.user) {
+
+                    throw new Error(
+                        "Your session could not be found. Please log in again using the same browser."
+                    );
+
+                }
+
+                const { data, error } =
+                    await nexusSupabase.functions.invoke(
+                        "nexus-verify-deposit",
+                        {
+                            body: {
+                                reference: reference
+                            }
+                        }
+                    );
+
+                if (error) throw error;
+
+                if (!data || data.success !== true) {
+
+                    throw new Error(
+                        data?.message ||
+                        "The payment could not be verified."
+                    );
+
+                }
+
+                showResult(
+                    true,
+                    data.message ||
+                    "Your payment has been verified. Your Nexus wallet has been credited."
+                );
+
+            } catch (error) {
+
+                console.error(
+                    "Payment verification error:",
+                    error
+                );
+
+                showResult(
+                    false,
+                    error.message ||
+                    "We could not confirm your payment. Please contact Nexus support before attempting another deposit."
+                );
+
+            }
+
+        }
+
+
+        function returnToDashboard() {
+
+            window.location.href = "index.html";
+
+        }
+
+
+        verifyDeposit();
+    </script>
+
+</body>
+</html>
+```

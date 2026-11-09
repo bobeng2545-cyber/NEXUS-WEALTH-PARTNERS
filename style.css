@@ -1,0 +1,2238 @@
+
+/* =========================================================
+   NEXUS WEALTH PARTNERS
+   Premium responsive website and member dashboard
+========================================================= */
+
+:root {
+    --navy: #101b3b;
+    --navy-2: #172852;
+    --navy-3: #223967;
+    --green: #0b9b70;
+    --green-dark: #087a59;
+    --green-soft: #e8f7f1;
+    --gold: #d7ad5b;
+    --page: #f4f7fb;
+    --white: #ffffff;
+    --ink: #1c2942;
+    --muted: #718096;
+    --line: #e4eaf1;
+    --danger: #d94b55;
+    --shadow: 0 14px 38px rgba(16, 27, 59, .08);
+    --shadow-soft: 0 6px 20px rgba(16, 27, 59, .06);
+    --radius: 18px;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 100px;
+}
+
+body {
+    min-width: 320px;
+    font-family: Inter, "Segoe UI", Arial, sans-serif;
+    color: var(--ink);
+    background: var(--page);
+    line-height: 1.65;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+button,
+input,
+select,
+textarea {
+    font: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+img {
+    max-width: 100%;
+}
+
+ul {
+    padding-left: 20px;
+}
+
+:focus-visible {
+    outline: 3px solid rgba(11, 155, 112, .28);
+    outline-offset: 2px;
+}
+
+/* =========================================================
+   1. PUBLIC WEBSITE HEADER
+========================================================= */
+
+#websiteHeader {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    min-height: 82px;
+    width: 100%;
+    padding: 14px clamp(20px, 6vw, 88px);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 28px;
+    background: rgba(255,255,255,.96);
+    border-bottom: 1px solid rgba(228,234,241,.9);
+    box-shadow: 0 5px 24px rgba(16,27,59,.045);
+    backdrop-filter: blur(14px);
+}
+
+#websiteHeader > div:first-child {
+    flex: 0 0 auto;
+}
+
+#websiteHeader h1 {
+    color: var(--navy);
+    font-size: clamp(17px, 2vw, 22px);
+    line-height: 1.2;
+    font-weight: 850;
+    letter-spacing: .035em;
+}
+
+#websiteHeader p {
+    margin: 5px 0 0;
+    color: var(--green);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .045em;
+}
+
+#websiteHeader nav ul {
+    display: flex;
+    align-items: center;
+    gap: clamp(14px, 2.5vw, 32px);
+    list-style: none;
+    padding: 0;
+}
+
+#websiteHeader nav a {
+    color: #536078;
+    font-size: 13px;
+    font-weight: 700;
+    transition: color .2s ease;
+}
+
+#websiteHeader nav a:hover {
+    color: var(--green);
+}
+
+#websiteHeader > div:last-child {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+#websiteHeader > div:last-child a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 42px;
+    padding: 9px 17px;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 800;
+    transition: .2s ease;
+}
+
+#websiteHeader > div:last-child a:first-child {
+    color: var(--navy);
+    border: 1px solid var(--line);
+    background: var(--white);
+}
+
+#websiteHeader > div:last-child a:last-child {
+    color: var(--white);
+    background: var(--green);
+    box-shadow: 0 7px 16px rgba(11,155,112,.18);
+}
+
+#websiteHeader > div:last-child a:hover {
+    transform: translateY(-2px);
+}
+
+/* =========================================================
+   2. PUBLIC WEBSITE
+========================================================= */
+
+main {
+    width: 100%;
+    min-height: 500px;
+}
+
+main > section:not(.auth-screen):not(#memberDashboard) {
+    padding: 76px clamp(22px, 9vw, 140px);
+}
+
+main h2 {
+    color: var(--navy);
+    font-size: clamp(25px, 3vw, 34px);
+    line-height: 1.2;
+    letter-spacing: -.035em;
+    margin-bottom: 18px;
+}
+
+main h3 {
+    color: var(--navy);
+    margin-bottom: 10px;
+}
+
+main p {
+    color: var(--muted);
+    margin-bottom: 14px;
+}
+
+/* =========================================================
+   3. HOMEPAGE HERO
+========================================================= */
+
+#home {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    min-height: 510px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+
+    background:
+        radial-gradient(circle at 82% 20%, rgba(36,190,143,.22), transparent 30%),
+        radial-gradient(circle at 92% 90%, rgba(215,173,91,.14), transparent 26%),
+        linear-gradient(125deg, #0d1835 0%, #172b55 55%, #1d4260 100%);
+}
+
+#home::after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    width: 390px;
+    height: 390px;
+    right: 7%;
+    bottom: -190px;
+    border: 1px solid rgba(255,255,255,.14);
+    border-radius: 50%;
+    box-shadow:
+        0 0 0 35px rgba(255,255,255,.025),
+        0 0 0 75px rgba(255,255,255,.02);
+}
+
+#home h2 {
+    max-width: 720px;
+    color: var(--white);
+    font-size: clamp(36px, 5.5vw, 62px);
+    line-height: 1.08;
+    letter-spacing: -.045em;
+    margin-bottom: 18px;
+}
+
+#home h3 {
+    color: #69e0b5;
+    font-size: clamp(17px, 2vw, 22px);
+    font-weight: 750;
+    margin-bottom: 14px;
+}
+
+#home p {
+    max-width: 620px;
+    color: rgba(255,255,255,.78);
+    font-size: 16px;
+    margin-bottom: 28px;
+}
+
+#home a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 48px;
+    padding: 12px 22px;
+    margin: 0 10px 8px 0;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 800;
+    transition: .2s ease;
+}
+
+#home a:first-of-type {
+    color: var(--white);
+    background: var(--green);
+    box-shadow: 0 9px 22px rgba(11,155,112,.22);
+}
+
+#home a:last-of-type {
+    color: var(--white);
+    border: 1px solid rgba(255,255,255,.4);
+    background: rgba(255,255,255,.06);
+}
+
+#home a:hover {
+    transform: translateY(-3px);
+}
+
+/* =========================================================
+   4. ABOUT SECTION
+========================================================= */
+
+#about {
+    background: var(--white);
+}
+
+#about > p {
+    max-width: 850px;
+    font-size: 15px;
+}
+
+#about h3 {
+    margin-top: 27px;
+    font-size: 17px;
+}
+
+#about ul {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px 30px;
+    max-width: 700px;
+}
+
+#about li {
+    color: #59677d;
+    padding: 4px 0;
+}
+
+/* =========================================================
+   5. SAVINGS PLANS
+========================================================= */
+
+#savings {
+    text-align: center;
+    background: #f5f8fc;
+}
+
+#savings > article {
+    display: inline-flex;
+    flex-direction: column;
+    vertical-align: top;
+    width: min(230px, 100%);
+    min-height: 185px;
+    padding: 25px 22px;
+    margin: 12px;
+    text-align: left;
+    background: var(--white);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    box-shadow: var(--shadow-soft);
+    transition: transform .22s ease, box-shadow .22s ease;
+}
+
+#savings > article:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--shadow);
+}
+
+#savings article h3 {
+    color: var(--green);
+    font-size: 17px;
+}
+
+#savings article p {
+    font-size: 13px;
+    margin: 0;
+}
+
+/* =========================================================
+   6. LOGIN, REGISTRATION AND PASSWORD RESET
+========================================================= */
+
+.auth-screen {
+    display: none;
+    width: min(100% - 36px, 520px);
+    margin: 55px auto;
+    padding: clamp(25px, 5vw, 42px);
+    background: var(--white);
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    box-shadow: var(--shadow);
+}
+
+.auth-screen h2 {
+    font-size: 28px;
+    margin-bottom: 8px;
+}
+
+.auth-screen > p {
+    font-size: 13px;
+}
+
+form {
+    width: 100%;
+}
+
+label {
+    display: block;
+    margin: 17px 0 7px;
+    color: #34425b;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+input,
+select,
+textarea {
+    width: 100%;
+    min-height: 47px;
+    padding: 12px 14px;
+    color: var(--ink);
+    background: #fbfcfe;
+    border: 1px solid #dfe6ef;
+    border-radius: 10px;
+    font-size: 13px;
+    outline: none;
+    transition: border-color .2s ease, box-shadow .2s ease, background .2s ease;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    border-color: var(--green);
+    background: var(--white);
+    box-shadow: 0 0 0 4px rgba(11,155,112,.09);
+}
+
+textarea {
+    min-height: 110px;
+    resize: vertical;
+}
+
+button {
+    border: 0;
+    border-radius: 10px;
+    padding: 12px 18px;
+    color: var(--white);
+    background: var(--green);
+    font-size: 13px;
+    font-weight: 800;
+    transition: background .2s ease, transform .2s ease;
+}
+
+button:hover {
+    background: var(--green-dark);
+}
+
+button:disabled {
+    opacity: .6;
+    cursor: not-allowed;
+}
+
+form button[type="submit"] {
+    width: 100%;
+    min-height: 48px;
+    margin-top: 22px;
+}
+
+.auth-screen form > p {
+    margin-top: 17px;
+    font-size: 13px;
+    text-align: center;
+}
+
+.auth-screen a {
+    color: var(--green-dark);
+    font-weight: 800;
+}
+
+.auth-screen .back-home-btn {
+    width: 100%;
+    margin-top: 12px;
+    color: var(--navy);
+    background: #edf1f6;
+}
+
+.auth-screen .back-home-btn:hover {
+    background: #e1e8f0;
+}
+
+/* =========================================================
+   7. MEMBER DASHBOARD
+========================================================= */
+
+/* Hidden until the member is authenticated */
+#memberDashboard.member-dashboard,
+#memberDashboard {
+    display: none;
+}
+
+#memberDashboard {
+    width: min(100%, 1600px);
+    margin: 0 auto;
+    padding: 36px clamp(18px, 5vw, 70px) 65px;
+}
+
+.dashboard-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 25px;
+}
+
+.dashboard-heading h2 {
+    font-size: clamp(24px, 3vw, 32px);
+    margin-bottom: 6px;
+}
+
+.dashboard-heading p {
+    margin-bottom: 5px;
+    font-size: 13px;
+}
+
+.dashboard-heading #memberId {
+    display: inline-block;
+    padding: 3px 9px;
+    color: var(--green-dark);
+    background: var(--green-soft);
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 800;
+}
+
+/* =========================================================
+   8. DASHBOARD SUMMARY CARDS
+========================================================= */
+
+.dashboard-cards {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+    margin-bottom: 24px;
+}
+
+.dashboard-card {
+    position: relative;
+    min-width: 0;
+    padding: 23px;
+    background: var(--white);
+    border: 1px solid var(--line);
+    border-radius: 17px;
+    box-shadow: var(--shadow-soft);
+    transition: transform .2s ease, box-shadow .2s ease;
+}
+
+.dashboard-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow);
+}
+
+.dashboard-card p {
+    margin: 12px 0 5px;
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 650;
+}
+
+.dashboard-card h3 {
+    color: var(--navy);
+    font-size: clamp(21px, 2.4vw, 28px);
+    letter-spacing: -.03em;
+    overflow-wrap: anywhere;
+}
+
+.dashboard-card small {
+    color: var(--muted);
+    font-size: 11px;
+}
+
+.card-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 43px;
+    height: 43px;
+    border-radius: 13px;
+    background: var(--green-soft);
+    font-size: 20px;
+}
+
+.balance-card {
+    color: var(--white);
+    background: linear-gradient(135deg, #14234a, #245078);
+    border: 0;
+}
+
+.balance-card p,
+.balance-card h3,
+.balance-card small {
+    color: var(--white);
+}
+
+.balance-card .card-icon {
+    background: rgba(255,255,255,.14);
+}
+
+/* =========================================================
+   9. MEMBER NAVIGATION
+========================================================= */
+
+.member-navigation {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 20px;
+    padding: 10px;
+    margin-bottom: 25px;
+    background: var(--navy);
+    border-radius: 14px;
+    box-shadow: 0 8px 22px rgba(16,27,59,.12);
+}
+
+.member-navigation a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 40px;
+    padding: 9px 13px;
+    color: rgba(255,255,255,.8);
+    border-radius: 15px;
+    font-size: 20px;
+    font-weight: 750;
+    transition: .2s ease;
+}
+
+.member-navigation a:hover,
+.member-navigation a.active {
+    color: var(--white);
+    background: var(--green);
+}
+
+/* =========================================================
+   10. DASHBOARD PANELS AND CONTENT GRIDS
+========================================================= */
+
+.dashboard-panel {
+    min-width: 0;
+    padding: clamp(20px, 3vw, 28px);
+    margin-bottom: 22px;
+    background: var(--white);
+    border: 1px solid var(--line);
+    border-radius: 17px;
+    box-shadow: var(--shadow-soft);
+}
+
+.dashboard-panel h3 {
+    color: var(--navy);
+    font-size: 17px;
+    margin-bottom: 5px;
+}
+
+.dashboard-panel > p {
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.dashboard-content-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.45fr) minmax(260px, 1fr);
+    gap: 20px;
+    margin-bottom: 4px;
+}
+
+.dashboard-content-grid .dashboard-panel {
+    margin-bottom: 22px;
+}
+
+.panel-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    margin-bottom: 18px;
+}
+
+.panel-heading p {
+    margin: 0;
+    font-size: 12px;
+}
+
+/* =========================================================
+   11. WALLET ACTION LINKS
+========================================================= */
+
+.wallet-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.wallet-actions a {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 43px;
+    padding: 10px 16px;
+    color: var(--green-dark);
+    background: var(--green-soft);
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.wallet-actions a:hover {
+    color: var(--white);
+    background: var(--green);
+}
+
+/* =========================================================
+   12. SAVINGS PROGRESS
+========================================================= */
+
+.savings-overview-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    gap: 25px;
+    padding: 18px 0 5px;
+}
+
+.savings-progress-circle {
+    width: 165px;
+    height: 165px;
+    flex: 0 0 165px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    border-radius: 50%;
+    background: conic-gradient(var(--green) 0deg, #e8edf3 0deg);
+}
+
+.progress-inner {
+    width: 130px;
+    height: 130px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: var(--white);
+    border-radius: 50%;
+}
+
+.progress-inner strong {
+    color: var(--green-dark);
+    font-size: 27px;
+}
+
+.progress-inner small {
+    color: var(--muted);
+    font-size: 10px;
+}
+
+.savings-target-details {
+    flex: 1;
+    min-width: 150px;
+}
+
+.savings-target-details div {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin: 12px 0;
+}
+
+.savings-target-details span {
+    color: var(--muted);
+    font-size: 11px;
+}
+
+.savings-target-details strong {
+    color: var(--navy);
+    font-size: 15px;
+}
+
+/* =========================================================
+   13. ACCOUNT INFORMATION
+========================================================= */
+
+.information-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 15px 0;
+    border-bottom: 1px solid var(--line);
+}
+
+.information-item:last-child {
+    border-bottom: 0;
+}
+
+.information-item span {
+    color: var(--muted);
+    font-size: 11px;
+}
+
+.information-item strong {
+    color: var(--navy);
+    font-size: 11px;
+    text-align: right;
+    overflow-wrap: anywhere;
+}
+
+.account-status {
+    color: #b7791f !important;
+}
+
+/* =========================================================
+   14. AVAILABLE BALANCE AND WITHDRAWAL RULES
+========================================================= */
+
+.available-balance-card {
+    padding: 21px 23px;
+    margin: 18px 0;
+    background: linear-gradient(135deg, #14234a, #245078);
+    border-radius: 14px;
+}
+
+.available-balance-card span {
+    color: rgba(255,255,255,.75);
+    font-size: 12px;
+}
+
+.available-balance-card h2 {
+    color: var(--white);
+    font-size: 28px;
+    margin: 5px 0 0;
+}
+
+.withdrawal-rules {
+    margin-top: 25px;
+    padding: 18px 20px;
+    background: #f5f8fb;
+    border: 1px solid var(--line);
+    border-radius: 13px;
+}
+
+.withdrawal-rules h3 {
+    margin-bottom: 8px;
+}
+
+.withdrawal-rules li {
+    color: var(--muted);
+    font-size: 12px;
+    padding: 4px 0;
+}
+
+/* =========================================================
+   15. TRANSACTION TABLES
+========================================================= */
+
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+}
+
+table {
+    width: 100%;
+    min-width: 520px;
+    border-collapse: collapse;
+    background: var(--white);
+}
+
+thead {
+    background: #f4f7fa;
+}
+
+th,
+td {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--line);
+    text-align: left;
+    font-size: 12px;
+}
+
+th {
+    color: #536078;
+    font-size: 10px;
+    font-weight: 850;
+    text-transform: uppercase;
+    letter-spacing: .055em;
+}
+
+td {
+    color: #657188;
+}
+
+tbody tr:last-child td {
+    border-bottom: 0;
+}
+
+tbody tr:hover {
+    background: #f9fbfd;
+}
+
+.transaction-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 18px 0;
+}
+
+.transaction-filters button {
+    width: auto;
+    padding: 9px 16px;
+    color: var(--navy);
+    background: #edf2f7;
+    font-size: 11px;
+}
+
+.transaction-filters button:hover,
+.transaction-filters button.active {
+    color: var(--white);
+    background: var(--green);
+}
+
+/* =========================================================
+   16. MEMBER PROFILE
+========================================================= */
+
+.profile-information {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0,1fr));
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.profile-information > div {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding: 16px;
+    background: #f7f9fc;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+}
+
+.profile-information span {
+    color: var(--muted);
+    font-size: 10px;
+    font-weight: 750;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+}
+
+.profile-information strong {
+    color: var(--navy);
+    font-size: 13px;
+    overflow-wrap: anywhere;
+}
+
+/* =========================================================
+   17. WEBSITE FOOTER
+========================================================= */
+
+#websiteFooter {
+    padding: 48px 22px;
+    color: var(--white);
+    background: #0d1732;
+    text-align: center;
+}
+
+#websiteFooter h2 {
+    color: var(--white);
+    font-size: 23px;
+    margin-bottom: 8px;
+}
+
+#websiteFooter h3 {
+    color: #65dcb1;
+    margin: 23px 0 8px;
+}
+
+#websiteFooter p {
+    color: rgba(255,255,255,.68);
+    font-size: 12px;
+    margin: 8px 0;
+}
+
+/* =========================================================
+   18. TABLET RESPONSIVENESS
+========================================================= */
+
+@media (max-width: 980px) {
+    #websiteHeader {
+        flex-wrap: wrap;
+        gap: 14px 22px;
+    }
+
+    #websiteHeader nav {
+        order: 3;
+        width: 100%;
+    }
+
+    #websiteHeader nav ul {
+        justify-content: center;
+    }
+
+    .dashboard-content-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* =========================================================
+   19. MOBILE RESPONSIVENESS
+========================================================= */
+
+@media (max-width: 700px) {
+    #websiteHeader {
+        padding: 14px 18px;
+    }
+
+    #websiteHeader > div:first-child {
+        flex: 1;
+    }
+
+    #websiteHeader nav {
+        overflow-x: auto;
+    }
+
+    #websiteHeader nav ul {
+        justify-content: flex-start;
+        width: max-content;
+        gap: 20px;
+        padding: 4px 0;
+    }
+
+    #websiteHeader > div:last-child {
+        width: 100%;
+    }
+
+    #websiteHeader > div:last-child a {
+        flex: 1;
+    }
+
+    main > section:not(.auth-screen):not(#memberDashboard) {
+        padding: 55px 22px;
+    }
+
+    #home {
+        min-height: 450px;
+    }
+
+    #home p {
+        font-size: 14px;
+    }
+
+    #about ul {
+        grid-template-columns: 1fr;
+    }
+
+    #savings > article {
+        width: min(100%, 320px);
+        margin: 9px 0;
+    }
+
+    .dashboard-cards {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .dashboard-card {
+        padding: 19px;
+    }
+
+    .member-navigation {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0,1fr));
+    }
+
+    .member-navigation a {
+        justify-content: center;
+        text-align: center;
+        padding: 10px 7px;
+    }
+
+    .profile-information {
+        grid-template-columns: 1fr;
+    }
+
+    .dashboard-heading {
+        align-items: flex-start;
+    }
+
+    .dashboard-panel {
+        padding: 19px;
+    }
+
+    .savings-overview-content {
+        justify-content: center;
+    }
+
+    .savings-target-details {
+        width: 100%;
+    }
+
+    .table-container table {
+        min-width: 500px;
+    }
+}
+
+/* =========================================================
+   20. SMALL MOBILE DEVICES
+========================================================= */
+
+@media (max-width: 390px) {
+    #websiteHeader h1 {
+        font-size: 16px;
+    }
+
+    #websiteHeader > div:last-child a {
+        padding: 9px 10px;
+        font-size: 11px;
+    }
+
+    #home h2 {
+        font-size: 34px;
+    }
+
+    #home a {
+        width: 100%;
+        margin-right: 0;
+    }
+
+    .member-navigation {
+        grid-template-columns: 1fr;
+    }
+
+    .transaction-filters button {
+        flex: 1;
+    }
+}
+
+/* =========================================================
+   21. REDUCED MOTION ACCESSIBILITY
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        scroll-behavior: auto !important;
+        transition-duration: .01ms !important;
+        animation-duration: .01ms !important;
+    }
+}
+
+
+/* =========================================
+   NEXUS WEALTH PARTNERS
+   MOBILE AND AUTHENTICATION FIX
+========================================= */
+
+/* SHOW LOGIN, REGISTRATION AND RESET SCREENS */
+.auth-screen.active {
+    display: block !important;
+    width: min(100% - 32px, 520px);
+    margin: 35px auto;
+    visibility: visible;
+    opacity: 1;
+}
+
+/* PREVENT UNWANTED HORIZONTAL PAGE SCROLLING */
+html,
+body {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+/* MAKE AUTHENTICATION FORMS FIT PHONE SCREENS */
+.auth-screen,
+.auth-screen form {
+    max-width: 100%;
+    min-width: 0;
+}
+
+.auth-screen input,
+.auth-screen select,
+.auth-screen textarea,
+.auth-screen button {
+    max-width: 100%;
+    min-width: 0;
+}
+
+/* PHONE LAYOUT */
+@media (max-width: 600px) {
+    .auth-screen.active {
+        width: calc(100% - 28px);
+        margin: 20px auto;
+        padding: 22px 18px;
+        border-radius: 14px;
+    }
+
+    .auth-screen h2 {
+        font-size: 23px;
+        line-height: 1.3;
+    }
+
+    .auth-screen label {
+        font-size: 13px;
+    }
+
+    .auth-screen input {
+        min-height: 48px;
+        font-size: 16px;
+    }
+
+    .auth-screen button {
+        min-height: 48px;
+        font-size: 14px;
+    }
+}
+
+
+/* =================================================
+   NEXUS WEALTH PARTNERS
+   MOBILE RESPONSIVE DESIGN FIX
+   Preserve the original desktop appearance
+================================================= */
+
+/* GLOBAL MOBILE WIDTH CONTROL */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+body {
+    width: 100%;
+    max-width: 100%;
+    min-width: 320px;
+    overflow-x: hidden;
+}
+
+#publicMain,
+#memberDashboard,
+#websiteHeader,
+#websiteFooter {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+}
+
+/* AUTHENTICATION SCREENS */
+.auth-screen {
+    display: none;
+}
+
+.auth-screen.active {
+    display: block !important;
+    width: min(520px, calc(100% - 30px));
+    margin: 35px auto;
+    padding: 30px;
+}
+
+/* MOBILE HEADER */
+@media screen and (max-width: 700px) {
+
+    #websiteHeader {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 15px;
+        padding: 18px 16px;
+    }
+
+    #websiteHeader > div:first-child {
+        width: 100%;
+        text-align: center;
+    }
+
+    #websiteHeader h1 {
+        font-size: 19px;
+        line-height: 1.3;
+        overflow-wrap: anywhere;
+    }
+
+    #websiteHeader p {
+        font-size: 11px;
+    }
+
+    #websiteHeader nav {
+        display: block;
+        width: 100%;
+        max-width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    #websiteHeader nav ul {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        width: max-content;
+        min-width: 100%;
+        gap: 22px;
+        padding: 8px 2px;
+    }
+
+    #websiteHeader nav a {
+        white-space: nowrap;
+        font-size: 12px;
+    }
+
+    #websiteHeader > div:last-child {
+        display: flex;
+        width: 100%;
+        gap: 10px;
+    }
+
+    #websiteHeader > div:last-child a {
+        flex: 1;
+        min-width: 0;
+        padding: 11px 8px;
+        font-size: 12px;
+        text-align: center;
+    }
+
+    /* HOMEPAGE HERO */
+    main > section:not(.auth-screen):not(#memberDashboard) {
+        padding: 45px 20px;
+    }
+
+    #home {
+        min-height: 440px;
+        padding: 55px 22px !important;
+        align-items: flex-start;
+        justify-content: center;
+    }
+
+    #home h2 {
+        max-width: 100%;
+        font-size: clamp(32px, 9vw, 43px);
+        line-height: 1.15;
+        overflow-wrap: break-word;
+    }
+
+    #home h3 {
+        font-size: 17px;
+    }
+
+    #home p {
+        max-width: 100%;
+        font-size: 14px;
+        line-height: 1.8;
+    }
+
+    #home a {
+        width: 100%;
+        min-height: 48px;
+        margin: 7px 0;
+        text-align: center;
+    }
+
+    /* ABOUT SECTION */
+    #about {
+        padding: 45px 20px !important;
+    }
+
+    #about ul {
+        grid-template-columns: 1fr;
+        gap: 7px;
+    }
+
+    /* SAVINGS PLANS */
+    #savings {
+        padding: 45px 18px !important;
+    }
+
+    #savings > article {
+        display: block;
+        width: 100%;
+        min-height: auto;
+        margin: 12px 0;
+        padding: 23px;
+    }
+
+    /* LOGIN AND REGISTRATION */
+    .auth-screen.active {
+        width: calc(100% - 28px);
+        max-width: 520px;
+        margin: 22px auto;
+        padding: 23px 18px;
+        border-radius: 16px;
+    }
+
+    .auth-screen h2 {
+        font-size: 24px;
+    }
+
+    .auth-screen input,
+    .auth-screen select,
+    .auth-screen textarea {
+        width: 100%;
+        min-width: 0;
+        min-height: 49px;
+        font-size: 16px;
+    }
+
+    .auth-screen button {
+        width: 100%;
+        min-height: 48px;
+    }
+
+    /* MEMBER DASHBOARD */
+    #memberDashboard {
+        padding: 24px 14px 45px;
+    }
+
+    .dashboard-heading {
+        display: block;
+        margin-bottom: 20px;
+    }
+
+    .dashboard-heading h2 {
+        font-size: 23px;
+    }
+
+    /* WALLET CARDS */
+    .dashboard-cards {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 13px;
+    }
+
+    .dashboard-card {
+        width: 100%;
+        min-width: 0;
+        padding: 21px;
+    }
+
+    .dashboard-card h3 {
+        font-size: 25px;
+        overflow-wrap: anywhere;
+    }
+
+    /* MEMBER NAVIGATION */
+    .member-navigation {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+        padding: 10px;
+    }
+
+    .member-navigation a {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-width: 0;
+        min-height: 45px;
+        padding: 8px 5px;
+        text-align: center;
+        font-size: 11px;
+        overflow-wrap: anywhere;
+    }
+
+    /* DASHBOARD PANELS */
+    .dashboard-content-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 0;
+    }
+
+    .dashboard-panel {
+        width: 100%;
+        min-width: 0;
+        padding: 19px 15px;
+        margin-bottom: 16px;
+    }
+
+    .savings-overview-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 22px;
+    }
+
+    .savings-target-details {
+        width: 100%;
+    }
+
+    /* FORMS */
+    .dashboard-panel form,
+    .dashboard-panel input,
+    .dashboard-panel select,
+    .dashboard-panel textarea {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+    }
+
+    /* TABLES: scroll inside their own container */
+    .table-container {
+        display: block;
+        width: 100%;
+        max-width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .table-container table {
+        min-width: 520px;
+    }
+
+    /* PROFILE */
+    .profile-information {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    /* FOOTER */
+    #websiteFooter {
+        padding: 35px 18px;
+    }
+}
+
+/* SMALL PHONES */
+@media screen and (max-width: 380px) {
+
+    #websiteHeader h1 {
+        font-size: 17px;
+    }
+
+    #home h2 {
+        font-size: 31px;
+    }
+
+    .member-navigation {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .auth-screen.active {
+        padding: 20px 15px;
+    }
+
+    #memberDashboard {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+}
+
+
+/* =========================================
+   FIXED BOTTOM MOBILE NAVIGATION
+========================================= */
+
+@media screen and (max-width: 700px) {
+
+    .member-navigation {
+        position: fixed !important;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 9999;
+
+        display: grid !important;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 0;
+
+        width: 100%;
+        margin: 0;
+        padding: 9px 5px calc(9px + env(safe-area-inset-bottom));
+
+        background: #101b3b;
+        border-radius: 0;
+        border-top: 1px solid rgba(255,255,255,.12);
+        box-shadow: 0 -5px 22px rgba(16,27,59,.16);
+    }
+
+    /* Hide the other dashboard navigation links */
+    .member-navigation a[href="#myWallet"],
+    .member-navigation a[href="#depositFunds"],
+    .member-navigation a[href="#withdrawFunds"] {
+        display: none !important;
+    }
+
+    /* Four navigation items */
+    .member-navigation a {
+        display: flex !important;
+        justify-content: center;
+        align-items: center;
+        min-width: 0;
+        min-height: 48px;
+        padding: 7px 2px;
+
+        color: #ffffff;
+        background: transparent;
+        border-radius: 9px;
+
+        font-size: 10px;
+        text-align: center;
+        white-space: normal;
+    }
+
+    .member-navigation a.active {
+        color: #55d6a5;
+        background: rgba(11,155,112,.17);
+    }
+
+    /* Leave room so the bottom bar does not cover content */
+    #memberDashboard {
+        padding-bottom: 105px !important;
+    }
+
+    body {
+        padding-bottom: 0;
+    }
+}
+
+/* =========================================
+   MOBILE: SEPARATE DASHBOARD SCREENS
+========================================= */
+
+@media screen and (max-width: 700px) {
+
+    /* Hide all dashboard sections by default */
+    #memberDashboard .dashboard-screen {
+        display: none !important;
+    }
+
+    /* Show only the selected screen */
+    #memberDashboard .dashboard-screen.active-screen {
+        display: block !important;
+    }
+
+    /* Keep space for the fixed bottom navigation */
+    #memberDashboard {
+        padding-bottom: 100px !important;
+    }
+
+}
+
+
+/* =========================================
+   NEXUS MOBILE DASHBOARD SCREENS
+========================================= */
+
+@media screen and (max-width: 700px) {
+
+    /* Hide unselected dashboard screens */
+    #memberDashboard .mobile-view-hidden {
+        display: none !important;
+    }
+
+    /* Fixed four-button bottom navigation */
+    .member-navigation {
+        position: fixed !important;
+        left: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+
+        z-index: 9999 !important;
+
+        display: grid !important;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+
+        width: 100% !important;
+        margin: 0 !important;
+
+        gap: 0 !important;
+
+        padding: 9px 5px
+            calc(9px + env(safe-area-inset-bottom)) !important;
+
+        background: #101b3b !important;
+
+        border-radius: 0 !important;
+        border-top: 1px solid rgba(255,255,255,0.12);
+
+        box-shadow: 0 -5px 22px rgba(16,27,59,0.16);
+    }
+
+    /* Hide extra navigation links on phones */
+    .member-navigation a[href="#myWallet"],
+    .member-navigation a[href="#depositFunds"],
+    .member-navigation a[href="#withdrawFunds"] {
+        display: none !important;
+    }
+
+    /* Bottom navigation buttons */
+    .member-navigation a {
+        display: flex !important;
+
+        justify-content: center;
+        align-items: center;
+
+        min-width: 0;
+        min-height: 48px;
+
+        padding: 7px 2px;
+
+        color: #ffffff !important;
+        background: transparent !important;
+
+        border-radius: 9px;
+
+        font-size: 11px;
+        font-weight: 600;
+
+        text-align: center;
+        text-decoration: none;
+
+        white-space: normal;
+    }
+
+    /* Selected navigation button */
+    .member-navigation a.active {
+        color: #55d6a5 !important;
+        background: rgba(11,155,112,0.17) !important;
+    }
+
+    /* Space for the fixed navigation */
+    #memberDashboard {
+        padding-bottom: 105px !important;
+    }
+
+}
+
+/* =========================================
+   NEXUS MOBILE APP-STYLE NAVIGATION
+========================================= */
+
+.mobile-screen-header {
+    display: none;
+}
+
+@media screen and (max-width: 700px) {
+
+    /* Blue header for category screens */
+    .mobile-screen-header {
+        display: none;
+        align-items: center;
+        gap: 15px;
+        width: 100%;
+        min-height: 65px;
+        padding: 12px 18px;
+        background: #102b63;
+        color: #ffffff;
+        box-sizing: border-box;
+        margin-bottom: 20px;
+        border-radius: 0 0 12px 12px;
+    }
+
+    .mobile-screen-header h2 {
+        margin: 0;
+        color: #ffffff;
+        font-size: 19px;
+        font-weight: 600;
+    }
+
+    /* Back arrow */
+    #mobileBackButton {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 38px;
+        height: 38px;
+        border: none;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.15);
+        color: #ffffff;
+        font-size: 27px;
+        cursor: pointer;
+    }
+
+    /* Fixed bottom navigation */
+    .member-navigation {
+        position: fixed !important;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 99999;
+        display: grid !important;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 0;
+        width: 100%;
+        margin: 0 !important;
+        padding: 8px 5px calc(8px + env(safe-area-inset-bottom));
+        background: #102b63 !important;
+        border-radius: 0 !important;
+        border-top: 1px solid rgba(255, 255, 255, 0.15);
+        box-shadow: 0 -4px 18px rgba(0, 0, 0, 0.15);
+        box-sizing: border-box;
+    }
+
+    .member-navigation a {
+        display: flex !important;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        min-width: 0;
+        min-height: 53px;
+        padding: 5px 2px;
+        color: #ffffff !important;
+        background: transparent !important;
+        border-radius: 9px;
+        text-decoration: none;
+        text-align: center;
+    }
+
+    .member-navigation a span {
+        font-size: 19px;
+        line-height: 1.2;
+    }
+
+    .member-navigation a small {
+        font-size: 10px;
+        color: #ffffff;
+        white-space: nowrap;
+    }
+
+    .member-navigation a.active {
+        background: rgba(255, 255, 255, 0.15) !important;
+    }
+
+    .member-navigation a.active small {
+        color: #55e0ad;
+        font-weight: 700;
+    }
+
+    /* Leave room for the bottom navigation */
+    #memberDashboard {
+        padding-bottom: 100px !important;
+    }
+
+    /* Prevent horizontal scrolling */
+    body {
+        overflow-x: hidden;
+    }
+
+}
+
+/* =========================================
+   FIXED MOBILE CATEGORY HEADER
+========================================= */
+
+@media screen and (max-width: 700px) {
+
+    .mobile-screen-header {
+        position: fixed !important;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 100000;
+        width: 100%;
+        min-height: 65px;
+        margin: 0 !important;
+        border-radius: 0 !important;
+        box-shadow: 0 3px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Prevent category content from going behind the header */
+    #memberTransactions,
+    #memberSavings,
+    #memberProfile {
+        padding-top: 85px !important;
+    }
+
+    /* Keep dashboard content below the fixed header */
+    #memberDashboard {
+        scroll-padding-top: 75px;
+    }
+
+}
+
+/* =========================================
+   PHONE HOME SCREEN CARD ARRANGEMENT
+========================================= */
+
+@media screen and (max-width: 650px) {
+
+    /* Two cards per row */
+    #memberDashboard > .dashboard-cards {
+        display: grid !important;
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 12px !important;
+    }
+
+    /* Wallet balance takes the full row */
+    #memberDashboard > .dashboard-cards > .balance-card {
+        grid-column: 1 / -1 !important;
+        width: 100% !important;
+    }
+
+    /* Other cards remain in two columns */
+    #memberDashboard > .dashboard-cards > .dashboard-card:not(.balance-card) {
+        grid-column: auto !important;
+        width: 100% !important;
+    }
+
+    /* Card sizing */
+    #memberDashboard > .dashboard-cards > .dashboard-card {
+        min-width: 0 !important;
+        box-sizing: border-box !important;
+        padding: 16px !important;
+    }
+
+    /* Readable card text */
+    #memberDashboard > .dashboard-cards > .dashboard-card h3 {
+        font-size: 18px !important;
+    }
+
+    #memberDashboard > .dashboard-cards > .dashboard-card p {
+        font-size: 13px !important;
+    }
+
+}
+
+/* =========================================
+   PHONE HOME SCREEN - TWO CARDS PER ROW
+========================================= */
+
+@media screen and (max-width: 700px) {
+
+    /* Dashboard summary cards */
+    #memberDashboard > .dashboard-cards,
+    #memberDashboard .dashboard-content-grid,
+    #memberDashboard .savings-overview-content {
+
+        display: grid !important;
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 12px !important;
+    }
+
+    /* Make individual cards fit their columns */
+    #memberDashboard .dashboard-card,
+    #memberDashboard .dashboard-content-grid > .dashboard-panel {
+
+        min-width: 0 !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+        padding: 14px !important;
+    }
+
+    /* Smaller but readable text */
+    #memberDashboard .dashboard-card h3 {
+        font-size: 17px !important;
+        overflow-wrap: anywhere;
+    }
+
+    #memberDashboard .dashboard-card p {
+        font-size: 12px !important;
+    }
+
+    #memberDashboard .dashboard-card small {
+        font-size: 10px !important;
+    }
+
+}
+
+/* =========================================
+   MOBILE SAVINGS OVERVIEW & ACCOUNT INFORMATION
+========================================= */
+
+@media screen and (max-width: 700px) {
+
+    /* Arrange the two sections vertically */
+    #memberDashboard .dashboard-content-grid {
+        display: grid !important;
+        grid-template-columns: 1fr !important;
+        gap: 18px !important;
+        width: 100% !important;
+        margin: 20px 0 !important;
+        padding: 0 !important;
+    }
+
+    /* Style both cards */
+    #memberDashboard .savings-overview-panel,
+    #memberDashboard .account-information {
+        display: block !important;
+        width: 100% !important;
+        min-width: 0 !important;
+        box-sizing: border-box !important;
+        padding: 20px !important;
+        margin: 0 !important;
+        background: #ffffff !important;
+        border: 1px solid #e5eaf2 !important;
+        border-radius: 16px !important;
+        box-shadow: 0 4px 15px rgba(16, 43, 99, 0.07) !important;
+        overflow: hidden !important;
+    }
+
+    /* Section headings */
+    #memberDashboard .savings-overview-panel h3,
+    #memberDashboard .account-information h3 {
+        font-size: 18px !important;
+        font-weight: 700 !important;
+        color: #102b63 !important;
+        margin: 0 0 18px !important;
+        line-height: 1.4 !important;
+    }
+
+    /* Text inside the cards */
+    #memberDashboard .savings-overview-panel p,
+    #memberDashboard .account-information p {
+        font-size: 14px !important;
+        line-height: 1.7 !important;
+        overflow-wrap: anywhere;
+    }
+
+    /* Keep savings figures readable */
+    #memberDashboard .savings-overview-panel strong {
+        color: #102b63;
+    }
+
+    /* Prevent content from overflowing */
+    #memberDashboard .savings-overview-panel *,
+    #memberDashboard .account-information * {
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+}
+
+
+/* =========================================
+   NEXUS NOTIFICATION BELL
+========================================= */
+
+.dashboard-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+}
+
+.dashboard-welcome {
+    flex: 1;
+    min-width: 0;
+}
+
+.notification-area {
+    position: relative;
+    flex-shrink: 0;
+}
+
+.notification-button {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 46px;
+    height: 46px;
+    border: 1px solid #e2e8f0;
+    border-radius: 50%;
+    background: #ffffff;
+    color: #102b63;
+    cursor: pointer;
+    box-shadow: 0 3px 12px rgba(16, 43, 99, 0.08);
+}
+
+.notification-bell-icon {
+    font-size: 21px;
+}
+
+.notification-count {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 19px;
+    height: 19px;
+    padding: 0 4px;
+    border: 2px solid #ffffff;
+    border-radius: 20px;
+    background: #e53935;
+    color: #ffffff;
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.notification-menu[hidden],
+.notification-count[hidden] {
+    display: none !important;
+}
+
+.notification-menu {
+    position: absolute;
+    top: 58px;
+    right: 0;
+    z-index: 100001;
+    width: 340px;
+    max-width: calc(100vw - 30px);
+    background: #ffffff;
+    border: 1px solid #e5eaf2;
+    border-radius: 14px;
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+}
+
+.notification-menu-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 16px;
+    border-bottom: 1px solid #edf0f5;
+}
+
+.notification-menu-header h3 {
+    margin: 0;
+    color: #102b63;
+    font-size: 16px;
+}
+
+.notification-menu-header button {
+    border: none;
+    background: transparent;
+    color: #2563eb;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.notification-list {
+    max-height: 320px;
+    overflow-y: auto;
+}
+
+.empty-notifications {
+    padding: 30px 15px;
+    text-align: center;
+    color: #64748b;
+}
+
+.empty-notifications span {
+    font-size: 27px;
+}
+
+.empty-notifications p {
+    margin: 10px 0 0;
+    font-size: 13px;
+}
+
+/* MOBILE */
+
+@media screen and (max-width: 700px) {
+
+    .dashboard-heading {
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .notification-button {
+        width: 42px;
+        height: 42px;
+    }
+
+    .notification-menu {
+        position: fixed;
+        top: 75px;
+        right: 12px;
+        left: 12px;
+        width: auto;
+        max-width: none;
+    }
+}
+
+
+/* =========================================
+   MOBILE DASHBOARD CARD OVERFLOW FIX
+========================================= */
+
+@media screen and (max-width: 700px) {
+
+    /* Prevent horizontal overflow */
+    html,
+    body {
+        width: 100%;
+        max-width: 100%;
+        overflow-x: hidden;
+    }
+
+    #memberDashboard {
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+        padding-left: 12px !important;
+        padding-right: 12px !important;
+        padding-bottom: 120px !important;
+        overflow: visible !important;
+    }
+
+    /* Keep dashboard sections within the phone */
+    #memberDashboard .dashboard-panel,
+    #memberDashboard .dashboard-content-grid,
+    #memberDashboard .dashboard-cards {
+        min-width: 0 !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
+    /* Summary cards */
+    #memberDashboard > .dashboard-cards {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 12px !important;
+    }
+
+    #memberDashboard > .dashboard-cards > .balance-card {
+        grid-column: 1 / -1 !important;
+    }
+
+    #memberDashboard > .dashboard-cards > .dashboard-card {
+        min-width: 0 !important;
+        overflow-wrap: anywhere;
+    }
+
+    /* Savings and account cards */
+    #memberDashboard .dashboard-content-grid {
+        grid-template-columns: minmax(0, 1fr) !important;
+        gap: 16px !important;
+    }
+
+    #memberDashboard .savings-overview-panel,
+    #memberDashboard .account-information {
+        width: 100% !important;
+        min-width: 0 !important;
+        overflow: hidden;
+    }
+
+    /* Keep space above the fixed bottom navigation */
+    #memberDashboard .dashboard-panel:last-child {
+        margin-bottom: 20px;
+    }
+
+    .member-navigation {
+        z-index: 99999 !important;
+    }
+
+    /* Keep notification dropdown within the phone */
+    .notification-menu {
+        left: 12px !important;
+        right: 12px !important;
+        width: auto !important;
+        max-width: none !important;
+    }
+}
