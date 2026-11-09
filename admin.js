@@ -134,6 +134,8 @@ function showAdminTableMessage(
 }
 
 
+/* DATE ONLY */
+
 function formatAdminDate(value) {
 
     if (!value) return "—";
@@ -145,10 +147,42 @@ function formatAdminDate(value) {
     }
 
     return new Intl.DateTimeFormat("en-GH", {
+        timeZone: "Africa/Accra",
         day: "numeric",
         month: "short",
         year: "numeric"
     }).format(date);
+
+}
+
+
+/* DATE AND EXACT TIME */
+
+function formatAdminDateTime(value) {
+
+    if (!value) return "—";
+
+    const date = new Date(value);
+
+    if (Number.isNaN(date.getTime())) {
+        return "—";
+    }
+
+    const formattedDate = new Intl.DateTimeFormat("en-GH", {
+        timeZone: "Africa/Accra",
+        day: "numeric",
+        month: "short",
+        year: "numeric"
+    }).format(date);
+
+    const formattedTime = new Intl.DateTimeFormat("en-GH", {
+        timeZone: "Africa/Accra",
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: true
+    }).format(date);
+
+    return `${formattedDate}, ${formattedTime}`;
 
 }
 
@@ -250,7 +284,23 @@ async function showAdminDashboard(email) {
 
     showAdminPage("overview");
 
-    await loadAdminDashboardData();
+    try {
+
+        await loadAdminDashboardData();
+
+    } catch (error) {
+
+        console.error(
+            "Dashboard data loading error:",
+            error
+        );
+
+        alert(
+            "Dashboard opened, but some records could not load: " +
+            error.message
+        );
+
+    }
 
 }
 
@@ -303,16 +353,15 @@ function showAdminPage(pageName) {
    9. NAVIGATION CLICK EVENTS
 ========================================= */
 
-document.querySelectorAll(".admin-nav-link[data-page]")
-    .forEach(button => {
+document.querySelectorAll("[data-page]").forEach(button => {
 
-        button.addEventListener("click", function() {
+    button.addEventListener("click", function() {
 
-            showAdminPage(this.dataset.page);
-
-        });
+        showAdminPage(this.dataset.page);
 
     });
+
+});
 
 
 /* =========================================
@@ -343,6 +392,7 @@ function updateAdminDate() {
 
     dateElement.textContent =
         new Intl.DateTimeFormat("en-GH", {
+            timeZone: "Africa/Accra",
             weekday: "short",
             day: "numeric",
             month: "long",
@@ -679,19 +729,31 @@ function displayAdminWithdrawals(withdrawals, profiles) {
 
         const row = document.createElement("tr");
 
+
+        // REQUEST ID
+
         row.appendChild(
             createAdminTableCell(requestId)
         );
 
+
+        // MEMBER
+
         row.appendChild(
             createAdminTableCell(memberName)
         );
+
+
+        // AMOUNT
 
         row.appendChild(
             createAdminTableCell(
                 formatNexusAdminMoney(request.amount)
             )
         );
+
+
+        // PAYMENT METHOD
 
         row.appendChild(
             createAdminTableCell(
@@ -700,9 +762,15 @@ function displayAdminWithdrawals(withdrawals, profiles) {
             )
         );
 
+
+        // PAYMENT DETAILS
+
         row.appendChild(
             createAdminTableCell(request.payment_details)
         );
+
+
+        // STATUS
 
         const statusCell = createAdminTableCell(
             String(request.status || "").toUpperCase()
@@ -712,6 +780,9 @@ function displayAdminWithdrawals(withdrawals, profiles) {
             "transaction-status status-" + request.status;
 
         row.appendChild(statusCell);
+
+
+        // ACTION BUTTONS
 
         const actionCell = document.createElement("td");
 
@@ -769,17 +840,36 @@ function displayAdminWithdrawals(withdrawals, profiles) {
 
         row.appendChild(actionCell);
 
-        row.appendChild(
-            createAdminTableCell(
-                formatAdminDate(request.created_at)
-            )
-        );
+
+        // DATE AND TIME REQUESTED
+
+        const requestedDateTime =
+            formatAdminDateTime(request.created_at);
+
+        const dateTimeCell =
+            createAdminTableCell(requestedDateTime);
+
+        dateTimeCell.className = "withdrawal-date-time";
+
+        if (request.created_at) {
+
+            dateTimeCell.title =
+                new Date(request.created_at).toISOString();
+
+        }
+
+        row.appendChild(dateTimeCell);
+
+
+        // ADD TO ALL WITHDRAWAL REQUESTS TABLE
 
         if (table) {
             table.appendChild(row);
         }
 
+
         // FIVE MOST RECENT REQUESTS
+
         if (index < 5 && recentTable) {
 
             const recentRow = document.createElement("tr");
@@ -892,14 +982,18 @@ function displayAdminSavings(wallets, profiles, withdrawals) {
             profile => profile.id === wallet.user_id
         );
 
+
         // MEMBER ID
+
         row.appendChild(
             createAdminTableCell(
                 memberProfile?.member_id
             )
         );
 
+
         // MEMBER NAME
+
         row.appendChild(
             createAdminTableCell(
                 getAdminMemberName(
@@ -909,7 +1003,9 @@ function displayAdminSavings(wallets, profiles, withdrawals) {
             )
         );
 
+
         // ADJUSTED WALLET BALANCE
+
         const displayBalance =
             getMemberDisplayBalance(
                 wallet,
@@ -922,7 +1018,9 @@ function displayAdminSavings(wallets, profiles, withdrawals) {
             )
         );
 
+
         // TOTAL DEPOSITS
+
         row.appendChild(
             createAdminTableCell(
                 formatNexusAdminMoney(
@@ -931,7 +1029,9 @@ function displayAdminSavings(wallets, profiles, withdrawals) {
             )
         );
 
+
         // COMPLETED WITHDRAWALS
+
         row.appendChild(
             createAdminTableCell(
                 formatNexusAdminMoney(
@@ -1231,6 +1331,7 @@ async function reviewNexusWithdrawal(requestId, action) {
         );
 
         // REFRESH ALL ADMIN RECORDS
+
         await loadAdminDashboardData();
 
     } catch (error) {
