@@ -3372,3 +3372,17 @@ body {
     }
 
 }
+
+/* REMOVE EMPTY MOBILE DASHBOARD HEADER */
+@media screen and (max-width: 700px) {
+    #mobileHomeHeader {
+        display: none !important;
+        height: 0 !important;
+        min-height: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        border: none !important;
+        background: transparent !important;
+        box-shadow: none !important;
+    }
+}
