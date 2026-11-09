@@ -2950,3 +2950,164 @@ body {
         display: none !important;
     }
 }
+
+
+/* =========================================
+   NEXUS WEALTH PARTNERS
+   FINAL DASHBOARD NAVIGATION FIX
+========================================= */
+
+@media screen and (max-width: 700px) {
+
+    /* HOME HEADER */
+    #mobileHomeHeader {
+        display: flex;
+        position: relative !important;
+        top: auto !important;
+        left: auto !important;
+        right: auto !important;
+        z-index: 5 !important;
+        width: 100%;
+        min-height: 62px;
+        padding: 14px 18px;
+        margin: 0 0 20px;
+        align-items: center;
+        background: #087443;
+        color: #ffffff;
+        border-radius: 0 0 14px 14px;
+        box-shadow: 0 3px 12px rgba(0,0,0,.08);
+    }
+
+    #mobileHomeHeader h2 {
+        color: #ffffff;
+        font-size: 20px;
+        margin: 0;
+    }
+
+    /* HOME CONTENT MUST START BELOW THE HEADER */
+    #memberDashboard:not(.mobile-inner-page) {
+        padding: 12px 12px 110px !important;
+        margin: 0 !important;
+        overflow: visible !important;
+    }
+
+    #memberDashboard:not(.mobile-inner-page) .dashboard-heading {
+        position: relative !important;
+        margin-top: 8px !important;
+        z-index: 1 !important;
+    }
+
+    #memberDashboard:not(.mobile-inner-page) .dashboard-cards {
+        position: relative !important;
+        margin-top: 12px !important;
+    }
+
+    #memberDashboard:not(.mobile-inner-page) #myWallet {
+        position: relative !important;
+        margin-top: 18px !important;
+        scroll-margin-top: 20px;
+    }
+
+    /* INNER PAGE HEADER */
+    #mobileScreenHeader {
+        display: none;
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        z-index: 100000 !important;
+        width: 100% !important;
+        min-height: 64px;
+        margin: 0 !important;
+        padding: 10px 16px;
+        align-items: center;
+        gap: 14px;
+        background: #087443 !important;
+        color: #ffffff !important;
+        border-radius: 0 !important;
+        box-shadow: 0 3px 14px rgba(0,0,0,.12);
+    }
+
+    #mobileScreenHeader h2 {
+        color: #ffffff !important;
+        margin: 0;
+        font-size: 19px;
+    }
+
+    #mobileBackButton {
+        display: flex;
+        flex: 0 0 40px;
+        width: 40px;
+        height: 40px;
+        align-items: center;
+        justify-content: center;
+        border: 0;
+        border-radius: 50%;
+        background: rgba(255,255,255,.17);
+        color: #ffffff;
+        font-size: 25px;
+    }
+
+    /* HIDE ALL UNSELECTED SCREENS */
+    #memberDashboard .mobile-view-hidden {
+        display: none !important;
+    }
+
+    /* INNER PAGE CONTENT STARTS BELOW THE FIXED HEADER */
+    body.mobile-inner-page #memberDashboard {
+        padding: 0 12px 35px !important;
+    }
+
+    body.mobile-inner-page #memberTransactions,
+    body.mobile-inner-page #pendingWithdrawals,
+    body.mobile-inner-page #memberSavings,
+    body.mobile-inner-page #memberProfile {
+        padding-top: 84px !important;
+        margin-top: 0 !important;
+        scroll-margin-top: 84px !important;
+    }
+
+    /* HIDE HOME CONTENT ON INNER PAGES */
+    body.mobile-inner-page #memberDashboard .home-dashboard-content {
+        display: none !important;
+    }
+
+    /* EXCEPT THE SAVINGS OVERVIEW WHEN SAVINGS IS SELECTED */
+    body.mobile-inner-page
+    #memberDashboard
+    .dashboard-content-grid.mobile-savings-visible {
+        display: grid !important;
+        grid-template-columns: minmax(0, 1fr) !important;
+        gap: 14px !important;
+        width: 100% !important;
+        margin-top: 0 !important;
+    }
+
+    /* SHOW ONLY THE SAVINGS WRAPPER AND MONTHLY SAVINGS */
+    body.mobile-inner-page
+    #memberDashboard
+    .dashboard-content-grid.mobile-savings-visible
+    .dashboard-panel {
+        display: block !important;
+    }
+
+    /* HIDE THE BOTTOM NAVIGATION ON INNER PAGES */
+    body.mobile-inner-page #memberDashboard .member-navigation {
+        display: none !important;
+    }
+
+    /* SHOW BOTTOM NAVIGATION ON HOME */
+    #memberDashboard:not(.mobile-inner-page) .member-navigation {
+        display: grid !important;
+    }
+
+    /* INNER PAGE TITLES ARE ALREADY IN THE FIXED HEADER */
+    .mobile-page-heading {
+        display: none !important;
+    }
+
+    .desktop-page-heading {
+        display: none !important;
+    }
+
+}
