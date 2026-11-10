@@ -3487,20 +3487,17 @@ body {
 }
 
 
-/* =========================================
-   NEXUS NOTIFICATION MENU
-========================================= */
 
-#memberDashboard .notification-area {
+/* =========================================================
+   NEXUS MEMBER NOTIFICATIONS
+========================================================= */
+
+.notification-area {
     position: relative;
-    z-index: 1000;
+    z-index: 100;
 }
 
-#memberDashboard .notification-menu[hidden] {
-    display: none !important;
-}
-
-#memberDashboard .notification-menu {
+.notification-menu {
     position: absolute;
     top: calc(100% + 12px);
     right: 0;
@@ -3516,105 +3513,106 @@ body {
     z-index: 9999;
 }
 
-#memberDashboard .notification-menu.notification-open {
-    display: block;
+.notification-menu[hidden] {
+    display: none !important;
 }
 
-#memberDashboard .notification-menu-header {
+.notification-menu-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 10px;
-    padding: 16px;
+    padding: 15px;
     border-bottom: 1px solid #e5e7eb;
 }
 
-#memberDashboard .notification-menu-header h3 {
+.notification-menu-header h3 {
     margin: 0;
     font-size: 16px;
 }
 
-#memberDashboard .notification-menu-header button {
+#markAllNotifications {
     border: none;
     background: transparent;
     color: #087443;
-    cursor: pointer;
     font-size: 12px;
     font-weight: 600;
-}
-
-#memberDashboard .notification-item {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 10px;
-    padding: 14px 16px;
-    border-bottom: 1px solid #edf0f2;
     cursor: pointer;
 }
 
-#memberDashboard .notification-item:hover {
+#markAllNotifications:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+.nexus-notification-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 14px 15px;
+    border-bottom: 1px solid #edf0f2;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.nexus-notification-item:hover {
     background: #f7faf8;
 }
 
-#memberDashboard .notification-item.unread {
-    background: #f0fdf4;
+.nexus-notification-item.unread {
+    background: #effaf4;
 }
 
-#memberDashboard .notification-content {
-    flex: 1;
+.nexus-notification-content {
     min-width: 0;
+    flex: 1;
 }
 
-#memberDashboard .notification-content h4 {
-    margin: 0 0 6px;
+.nexus-notification-content h4 {
+    margin: 0 0 5px;
     font-size: 14px;
-    color: #172033;
+    font-weight: 700;
 }
 
-#memberDashboard .notification-content p {
+.nexus-notification-content p {
     margin: 0 0 7px;
     font-size: 13px;
     line-height: 1.5;
-    color: #475569;
+    color: #596579;
     overflow-wrap: anywhere;
 }
 
-#memberDashboard .notification-content small {
-    color: #94a3b8;
+.nexus-notification-content small {
     font-size: 11px;
+    color: #8993a3;
 }
 
-#memberDashboard .notification-unread-dot {
+.nexus-notification-status {
     color: #087443;
-    font-size: 10px;
-    padding-top: 4px;
+    font-size: 12px;
 }
 
-#memberDashboard .empty-notifications {
+.empty-notifications {
     padding: 30px 15px;
     text-align: center;
-    color: #64748b;
+    color: #8993a3;
 }
 
-#memberDashboard .empty-notifications span {
+.empty-notifications span {
     display: block;
-    font-size: 25px;
     margin-bottom: 8px;
+    font-size: 25px;
 }
 
-#memberDashboard .empty-notifications p {
+.empty-notifications p {
     margin: 0;
     font-size: 13px;
 }
 
-#memberDashboard .notification-count[hidden] {
-    display: none !important;
-}
-
 @media (max-width: 480px) {
-    #memberDashboard .notification-menu {
+    .notification-menu {
         right: -5px;
-        width: min(340px, calc(100vw - 25px));
+        width: 310px;
     }
 }
