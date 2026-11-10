@@ -3771,8 +3771,10 @@ body > #notificationMenu.notification-open {
 
 
 
+
 /* =========================================
-   NEXUS - WHATSAPP STYLE NOTIFICATION RIPPLE
+   WHATSAPP-STYLE RIPPLE
+   ONLY WHEN UNREAD NOTIFICATIONS EXIST
 ========================================= */
 
 .notification-button {
@@ -3782,9 +3784,8 @@ body > #notificationMenu.notification-open {
     isolation: isolate;
 }
 
-/* FIRST RIPPLE CIRCLE */
-.notification-button::before,
-.notification-button::after {
+.notification-button.has-unread::before,
+.notification-button.has-unread::after {
     content: "";
     position: absolute;
     inset: -5px;
@@ -3795,8 +3796,7 @@ body > #notificationMenu.notification-open {
     animation: nexusWhatsAppRipple 2.2s ease-out infinite;
 }
 
-/* SECOND RIPPLE CIRCLE */
-.notification-button::after {
+.notification-button.has-unread::after {
     animation-delay: 1.1s;
 }
 
@@ -3812,16 +3812,14 @@ body > #notificationMenu.notification-open {
     }
 }
 
-/* SUBTLE HOVER POP */
 .notification-button:hover {
     transform: scale(1.08) !important;
     transition: transform 0.25s ease !important;
 }
 
-/* ACCESSIBILITY */
 @media (prefers-reduced-motion: reduce) {
-    .notification-button::before,
-    .notification-button::after {
+    .notification-button.has-unread::before,
+    .notification-button.has-unread::after {
         animation: none !important;
     }
 }
