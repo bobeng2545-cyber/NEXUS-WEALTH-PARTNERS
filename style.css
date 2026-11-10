@@ -221,73 +221,6 @@ ul {
     }
 }
 
-
-
-/* =========================================
-   NEXUS - NOTIFICATION POPUP FIX
-========================================= */
-
-#memberDashboard .notification-area {
-    position: relative !important;
-    z-index: 200000 !important;
-    overflow: visible !important;
-}
-
-#memberDashboard .notification-button {
-    position: relative !important;
-    z-index: 200001 !important;
-}
-
-#memberDashboard .notification-menu {
-    position: fixed !important;
-    top: 75px !important;
-    right: 15px !important;
-    width: 340px !important;
-    max-width: calc(100vw - 30px) !important;
-    max-height: 70vh !important;
-    overflow-y: auto !important;
-    background: #ffffff !important;
-    color: #172033 !important;
-    border-radius: 14px !important;
-    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.30) !important;
-    z-index: 200002 !important;
-}
-
-#memberDashboard .notification-menu[hidden] {
-    display: none !important;
-}
-
-#memberDashboard .notification-menu.notification-open {
-    display: block !important;
-}
-
-/* DESKTOP POSITION */
-@media (min-width: 769px) {
-    #memberDashboard .notification-menu {
-        position: absolute !important;
-        top: calc(100% + 12px) !important;
-        right: 0 !important;
-    }
-}
-
-/* MOBILE POSITION */
-@media (max-width: 768px) {
-    #memberDashboard .notification-menu {
-        position: fixed !important;
-        top: 120px !important;
-        right: 12px !important;
-        left: auto !important;
-        width: min(340px, calc(100vw - 24px)) !important;
-        z-index: 200002 !important;
-    }
-
-    body.mobile-inner-page #memberDashboard .notification-menu {
-        top: 72px !important;
-    }
-}
-
-
-
 /* =========================================================
    2. PUBLIC WEBSITE
 ========================================================= */
@@ -3722,5 +3655,68 @@ body {
     #memberDashboard .notification-menu {
         right: -5px !important;
         width: min(340px, calc(100vw - 25px));
+    }
+}
+
+/* =========================================
+   NEXUS - NOTIFICATION POPUP FIX
+========================================= */
+
+#memberDashboard .notification-area {
+    position: relative !important;
+    z-index: 200000 !important;
+    overflow: visible !important;
+}
+
+#memberDashboard .notification-button {
+    position: relative !important;
+    z-index: 200001 !important;
+}
+
+#memberDashboard .notification-menu {
+    position: fixed !important;
+    top: 75px !important;
+    right: 15px !important;
+    width: 340px !important;
+    max-width: calc(100vw - 30px) !important;
+    max-height: 70vh !important;
+    overflow-y: auto !important;
+    background: #ffffff !important;
+    color: #172033 !important;
+    border-radius: 14px !important;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.30) !important;
+    z-index: 200002 !important;
+}
+
+#memberDashboard .notification-menu[hidden] {
+    display: none !important;
+}
+
+#memberDashboard .notification-menu.notification-open {
+    display: block !important;
+}
+
+/* DESKTOP POSITION */
+@media (min-width: 769px) {
+    #memberDashboard .notification-menu {
+        position: absolute !important;
+        top: calc(100% + 12px) !important;
+        right: 0 !important;
+    }
+}
+
+/* MOBILE POSITION */
+@media (max-width: 768px) {
+    #memberDashboard .notification-menu {
+        position: fixed !important;
+        top: 120px !important;
+        right: 12px !important;
+        left: auto !important;
+        width: min(340px, calc(100vw - 24px)) !important;
+        z-index: 200002 !important;
+    }
+
+    body.mobile-inner-page #memberDashboard .notification-menu {
+        top: 72px !important;
     }
 }
