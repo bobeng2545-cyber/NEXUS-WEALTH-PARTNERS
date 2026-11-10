@@ -534,6 +534,18 @@ function showMemberDashboard() {
 
 let nexusNotificationsInitialized = false;
 
+/* MOVE NOTIFICATION POPUP OUTSIDE DASHBOARD */
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const notificationMenu = getElement("notificationMenu");
+
+    if (notificationMenu && notificationMenu.parentElement !== document.body) {
+        document.body.appendChild(notificationMenu);
+    }
+
+});
+
 
 /* FORMAT NOTIFICATION DATE */
 
