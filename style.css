@@ -3458,3 +3458,25 @@ body {
         height: 42px !important;
     }
 }
+
+
+/* Center notification bell inside its circular border */
+#memberDashboard .notification-area {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+#memberDashboard .notification-button {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 0 !important;
+    line-height: 1 !important;
+}
+
+#memberDashboard .notification-bell-icon {
+    display: block !important;
+    line-height: 1 !important;
+    transform: translateY(0) !important;
+}
