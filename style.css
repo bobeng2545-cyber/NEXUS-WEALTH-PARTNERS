@@ -3770,88 +3770,58 @@ body > #notificationMenu.notification-open {
 }
 
 
+
 /* =========================================
-   NEXUS - ANIMATED NOTIFICATION BELL
+   NEXUS - WHATSAPP STYLE NOTIFICATION RIPPLE
 ========================================= */
 
 .notification-button {
     position: relative !important;
-    display: inline-flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    width: 48px !important;
-    height: 48px !important;
+    z-index: 2 !important;
     border-radius: 50% !important;
-    cursor: pointer !important;
-    transition: transform 0.3s ease, background 0.3s ease !important;
+    isolation: isolate;
 }
 
-/* ANIMATED CIRCLE AROUND THE BELL */
-
-.notification-button::before {
+/* FIRST RIPPLE CIRCLE */
+.notification-button::before,
+.notification-button::after {
     content: "";
     position: absolute;
-    inset: -4px;
-    border: 2px solid #16a36a;
+    inset: -5px;
+    border: 2px solid #16c76a;
     border-radius: 50%;
-    opacity: 0;
     pointer-events: none;
-    animation: nexusNotificationPulse 2s infinite;
+    z-index: -1;
+    animation: nexusWhatsAppRipple 2.2s ease-out infinite;
 }
 
-/* CONTINUOUS PULSING EFFECT */
+/* SECOND RIPPLE CIRCLE */
+.notification-button::after {
+    animation-delay: 1.1s;
+}
 
-@keyframes nexusNotificationPulse {
+@keyframes nexusWhatsAppRipple {
     0% {
-        transform: scale(0.9);
-        opacity: 0.8;
-    }
-
-    70% {
-        transform: scale(1.25);
-        opacity: 0;
+        transform: scale(1);
+        opacity: 0.75;
     }
 
     100% {
-        transform: scale(1.25);
+        transform: scale(1.8);
         opacity: 0;
     }
 }
 
-/* HOVER POP EFFECT */
-
+/* SUBTLE HOVER POP */
 .notification-button:hover {
-    transform: scale(1.12) !important;
-    background: rgba(22, 163, 106, 0.12) !important;
-}
-
-/* MAKE THE BELL MOVE SLIGHTLY ON HOVER */
-
-.notification-button:hover .notification-bell-icon {
-    display: inline-block;
-    animation: nexusBellShake 0.5s ease;
-}
-
-@keyframes nexusBellShake {
-    0%, 100% { transform: rotate(0deg); }
-    20% { transform: rotate(-15deg); }
-    40% { transform: rotate(15deg); }
-    60% { transform: rotate(-10deg); }
-    80% { transform: rotate(10deg); }
-}
-
-/* KEEP NOTIFICATION COUNT ABOVE THE CIRCLE */
-
-.notification-count {
-    position: absolute;
-    z-index: 5;
+    transform: scale(1.08) !important;
+    transition: transform 0.25s ease !important;
 }
 
 /* ACCESSIBILITY */
-
 @media (prefers-reduced-motion: reduce) {
     .notification-button::before,
-    .notification-button:hover .notification-bell-icon {
+    .notification-button::after {
         animation: none !important;
     }
 }
