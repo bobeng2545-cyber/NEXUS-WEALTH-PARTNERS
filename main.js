@@ -27,6 +27,100 @@ const nexusSupabase = window.supabase.createClient(
 );
 
 
+
+/* =========================================
+   NEXUS PAYSTACK PAYMENT CALLBACK
+   VERIFY ONLY AFTER LOGIN IS RESTORED
+========================================= */
+
+let nexusPaymentCallbackStarted = false;
+
+async function handleNexusPaymentCallback(user) {
+
+    const url = new URL(window.location.href);
+
+    const reference =
+        url.searchParams.get("reference") ||
+        url.searchParams.get("trxref");
+
+    if (!reference || !reference.startsWith("NEXUS_")) {
+        return;
+    }
+
+    // Wait until the customer is authenticated.
+    if (!user) {
+        return;
+    }
+
+    // Prevent duplicate verification calls.
+    if (nexusPaymentCallbackStarted) {
+        return;
+    }
+
+    nexusPaymentCallbackStarted = true;
+
+    try {
+
+        console.log("Verifying Nexus deposit:", reference);
+
+        const { data, error } =
+            await nexusSupabase.functions.invoke(
+                "nexus-verify-deposit",
+                {
+                    body: { reference }
+                }
+            );
+
+        if (error) {
+            throw error;
+        }
+
+        if (!data || data.success !== true) {
+            throw new Error(
+                data?.message ||
+                "Paystack has not confirmed this payment."
+            );
+        }
+
+        // Remove callback parameters after successful verification.
+        url.searchParams.delete("reference");
+        url.searchParams.delete("trxref");
+
+        window.history.replaceState(
+            {},
+            document.title,
+            url.pathname + url.search + url.hash
+        );
+
+        showMessage(
+            data.already_processed
+                ? "This deposit has already been credited."
+                : "Deposit successful! Your wallet has been credited."
+        );
+
+        console.log("Nexus deposit verified:", data);
+
+        // Refresh wallet, transactions and dashboard.
+        await loadDashboard(user);
+
+    } catch (error) {
+
+        console.error("Nexus payment verification error:", error);
+
+        nexusPaymentCallbackStarted = false;
+
+        showMessage(
+            (error.message ||
+            "We could not verify your payment.") +
+            "\n\nYour payment reference is: " + reference +
+            "\n\nPlease try again or contact support."
+        );
+    }
+}
+
+
+
+
 /* =========================================
    2. GET HTML ELEMENTS
 ========================================= */
@@ -1416,6 +1510,7 @@ async function logoutMember() {
 window.logoutMember = logoutMember;
 
 
+
 /* =========================================
    23. AUTHENTICATION STATE
 ========================================= */
@@ -1433,9 +1528,15 @@ nexusSupabase.auth.onAuthStateChange((event, session) => {
 
     if (event === "SIGNED_IN" && session?.user) {
 
-        Promise.resolve().then(() => {
-            loadDashboard(session.user);
+        Promise.resolve().then(async () => {
+
+            await loadDashboard(session.user);
+
+            // Check whether the customer has returned from Paystack.
+            await handleNexusPaymentCallback(session.user);
+
         });
+
     }
 });
 
@@ -2447,13 +2548,12 @@ initializeTransactionFilters();
 initializeWebsite();
 
 
+
 /* =========================================
-   32. INITIALIZE WEBSITE
+   INITIALIZE WEBSITE
 ========================================= */
 
 async function initializeWebsite() {
-
-    showPublicHome();
 
     try {
 
@@ -2463,9 +2563,36 @@ async function initializeWebsite() {
         if (error) throw error;
 
         if (data.session?.user) {
-            await loadDashboard(data.session.user);
+
+            const user = data.session.user;
+
+            await loadDashboard(user);
+
+            // Verify a Paystack payment after restoring the session.
+            await handleNexusPaymentCallback(user);
+
         } else {
-            showPublicHome();
+
+            const url = new URL(window.location.href);
+
+            const reference =
+                url.searchParams.get("reference") ||
+                url.searchParams.get("trxref");
+
+            if (reference && reference.startsWith("NEXUS_")) {
+
+                // Keep the payment reference while the customer logs in.
+                showLogin();
+
+                showMessage(
+                    "Please log in to verify your deposit and update your wallet."
+                );
+
+            } else {
+
+                showPublicHome();
+
+            }
         }
 
     } catch (error) {
@@ -2473,5 +2600,7 @@ async function initializeWebsite() {
         console.error("Website initialization error:", error);
 
         showPublicHome();
+
     }
 }
+
