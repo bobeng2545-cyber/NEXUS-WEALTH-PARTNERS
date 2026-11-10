@@ -3740,3 +3740,31 @@ body > .notification-menu {
 body > #notificationMenu:not([hidden]) {
     display: block !important;
 }
+
+
+/* =========================================
+   NEXUS GLOBAL NOTIFICATION POPUP
+========================================= */
+
+body > #notificationMenu {
+    position: fixed !important;
+    top: 120px !important;
+    right: 12px !important;
+    left: auto !important;
+    width: min(340px, calc(100vw - 24px)) !important;
+    max-height: 70vh !important;
+    overflow-y: auto !important;
+    background: #ffffff !important;
+    color: #172033 !important;
+    z-index: 2147483647 !important;
+    border-radius: 14px !important;
+    box-shadow: 0 15px 45px rgba(0, 0, 0, 0.30) !important;
+}
+
+body > #notificationMenu[hidden] {
+    display: none !important;
+}
+
+body > #notificationMenu.notification-open {
+    display: block !important;
+}
