@@ -611,6 +611,17 @@ async function loadNexusNotifications(user) {
             notification => !notification.is_read
         ).length;
 
+       /* CONTROL NOTIFICATION RIPPLE */
+       
+       const notificationButton = getElement("notificationButton");
+       
+       if (notificationButton) {
+          notificationButton.classList.toggle(
+             "has-unread",
+             unreadCount > 0
+          );
+       }
+
         /* UPDATE UNREAD COUNT */
 
         if (notificationCount) {
