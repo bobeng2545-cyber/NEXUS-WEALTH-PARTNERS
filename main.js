@@ -1,3 +1,4 @@
+
 /* =========================================
    NEXUS WEALTH PARTNERS
    COMPLETE MAIN JAVASCRIPT
@@ -127,6 +128,8 @@ function showPublicHome() {
     if (websiteFooter) websiteFooter.style.display = "";
     if (publicMain) publicMain.style.display = "";
 
+    closeNexusNotificationMenu();
+
     window.scrollTo({
         top: 0,
         behavior: "smooth"
@@ -205,7 +208,6 @@ function showForgotPassword() {
 }
 
 
-
 /* =========================================
    10. MOBILE DASHBOARD NAVIGATION
    SHOW ONLY THE SELECTED SCREEN
@@ -230,20 +232,6 @@ function setMobileDashboardView(screen, shouldScroll = true) {
         savings: "My Savings",
         profile: "My Profile"
     };
-
-    /*
-       HOME CONTENT:
-       Wallet, deposits, withdrawals and dashboard summary.
-    */
-
-    const homeSections = [
-        ".home-dashboard-content"
-    ];
-
-    /*
-       ALL SECTIONS THAT MUST BE HIDDEN
-       BEFORE SHOWING THE SELECTED SCREEN.
-    */
 
     const allSections = [
         ".home-dashboard-content",
@@ -284,9 +272,7 @@ function setMobileDashboardView(screen, shouldScroll = true) {
 
     currentDashboardView = screen;
 
-    /*
-       RESTORE ALL SECTIONS FIRST.
-    */
+    /* RESTORE ALL SECTIONS FIRST */
 
     allSections.forEach(selector => {
 
@@ -301,9 +287,7 @@ function setMobileDashboardView(screen, shouldScroll = true) {
 
     });
 
-    /*
-       REMOVE SPECIAL SAVINGS DISPLAY CLASS.
-    */
+    /* REMOVE SPECIAL SAVINGS DISPLAY CLASS */
 
     document.querySelectorAll(
         "#memberDashboard .dashboard-content-grid"
@@ -311,10 +295,7 @@ function setMobileDashboardView(screen, shouldScroll = true) {
         element.classList.remove("mobile-savings-visible");
     });
 
-    /*
-       DESKTOP:
-       Show the normal complete dashboard.
-    */
+    /* DESKTOP VIEW */
 
     if (!isMobile) {
 
@@ -351,10 +332,7 @@ function setMobileDashboardView(screen, shouldScroll = true) {
         return;
     }
 
-    /*
-       MOBILE:
-       Hide every screen first.
-    */
+    /* MOBILE VIEW: HIDE ALL SCREENS FIRST */
 
     allSections.forEach(selector => {
 
@@ -369,9 +347,7 @@ function setMobileDashboardView(screen, shouldScroll = true) {
 
     });
 
-    /*
-       SHOW ONLY THE SELECTED SCREEN.
-    */
+    /* SHOW SELECTED SCREEN */
 
     screenSections[screen].forEach(selector => {
 
@@ -386,10 +362,7 @@ function setMobileDashboardView(screen, shouldScroll = true) {
 
     });
 
-    /*
-       SAVINGS OVERVIEW IS INSIDE A WRAPPER.
-       Give that wrapper a special visible class.
-    */
+    /* SAVINGS OVERVIEW */
 
     if (screen === "savings") {
 
@@ -404,9 +377,7 @@ function setMobileDashboardView(screen, shouldScroll = true) {
 
     }
 
-    /*
-       CONTROL THE TWO MOBILE HEADERS.
-    */
+    /* CONTROL MOBILE HEADERS */
 
     if (screen === "home") {
 
@@ -444,9 +415,7 @@ function setMobileDashboardView(screen, shouldScroll = true) {
 
     }
 
-    /*
-       UPDATE PAGE TITLE AND BACK BUTTON.
-    */
+    /* UPDATE TITLE AND BACK BUTTON */
 
     if (screenTitle) {
         screenTitle.textContent = screenTitles[screen];
@@ -457,9 +426,7 @@ function setMobileDashboardView(screen, shouldScroll = true) {
             screen === "home" ? "none" : "flex";
     }
 
-    /*
-       UPDATE ACTIVE NAVIGATION ITEM.
-    */
+    /* UPDATE ACTIVE NAVIGATION */
 
     document.querySelectorAll(
         ".member-navigation a[data-screen]"
@@ -472,9 +439,7 @@ function setMobileDashboardView(screen, shouldScroll = true) {
 
     });
 
-    /*
-       RETURN TO TOP OF THE SELECTED SCREEN.
-    */
+    /* SCROLL TO TOP */
 
     if (shouldScroll) {
 
@@ -508,9 +473,7 @@ if (mobileBackButton) {
 /* KEEP OLD FUNCTION NAME WORKING */
 
 function showMobileDashboardScreen(screen) {
-
     setMobileDashboardView(screen);
-
 }
 
 window.showMobileDashboardScreen = showMobileDashboardScreen;
@@ -531,7 +494,6 @@ window.addEventListener("resize", function() {
     }
 
 });
-
 
 
 /* =========================================
@@ -567,7 +529,353 @@ function showMemberDashboard() {
 
 
 /* =========================================
-   14. DISPLAY MEMBER INFORMATION
+   12. NEXUS MEMBER NOTIFICATIONS
+========================================= */
+
+let nexusNotificationsInitialized = false;
+
+
+/* FORMAT NOTIFICATION DATE */
+
+function formatNotificationDate(dateValue) {
+
+    if (!dateValue) return "";
+
+    const date = new Date(dateValue);
+
+    if (Number.isNaN(date.getTime())) return "";
+
+    return date.toLocaleString("en-GH", {
+        day: "numeric",
+        month: "short",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit"
+    });
+}
+
+
+/* CLOSE NOTIFICATION MENU */
+
+function closeNexusNotificationMenu() {
+
+    const menu = getElement("notificationMenu");
+    const button = getElement("notificationButton");
+
+    if (menu) {
+        menu.hidden = true;
+    }
+
+    if (button) {
+        button.setAttribute("aria-expanded", "false");
+    }
+}
+
+
+/* LOAD MEMBER NOTIFICATIONS */
+
+async function loadNexusNotifications(user) {
+
+    const notificationCount = getElement("notificationCount");
+    const notificationList = getElement("notificationList");
+    const markAllButton = getElement("markAllNotifications");
+
+    if (!user || !notificationList) return;
+
+    try {
+
+        const { data, error } = await nexusSupabase
+            .from("nexus_notifications")
+            .select("id, title, message, type, is_read, created_at")
+            .eq("user_id", user.id)
+            .order("created_at", { ascending: false })
+            .limit(50);
+
+        if (error) throw error;
+
+        const notifications = data || [];
+
+        const unreadCount = notifications.filter(
+            notification => !notification.is_read
+        ).length;
+
+        /* UPDATE UNREAD COUNT */
+
+        if (notificationCount) {
+
+            notificationCount.textContent =
+                unreadCount > 99 ? "99+" : String(unreadCount);
+
+            notificationCount.hidden = unreadCount === 0;
+        }
+
+        /* UPDATE MARK ALL BUTTON */
+
+        if (markAllButton) {
+            markAllButton.disabled = unreadCount === 0;
+        }
+
+        notificationList.replaceChildren();
+
+        /* EMPTY NOTIFICATION MESSAGE */
+
+        if (notifications.length === 0) {
+
+            const empty = document.createElement("div");
+            empty.className = "empty-notifications";
+
+            const icon = document.createElement("span");
+            icon.textContent = "🔔";
+
+            const message = document.createElement("p");
+            message.textContent = "No notifications yet.";
+
+            empty.append(icon, message);
+            notificationList.appendChild(empty);
+
+            return;
+        }
+
+        /* DISPLAY NOTIFICATIONS */
+
+        notifications.forEach(notification => {
+
+            const item = document.createElement("div");
+
+            item.className = "nexus-notification-item";
+
+            if (!notification.is_read) {
+                item.classList.add("unread");
+            }
+
+            item.dataset.notificationId = notification.id;
+
+            const content = document.createElement("div");
+            content.className = "nexus-notification-content";
+
+            const title = document.createElement("h4");
+            title.textContent = notification.title || "Notification";
+
+            const message = document.createElement("p");
+            message.textContent = notification.message || "";
+
+            const date = document.createElement("small");
+            date.textContent = formatNotificationDate(
+                notification.created_at
+            );
+
+            content.append(title, message, date);
+
+            const status = document.createElement("span");
+            status.className = "nexus-notification-status";
+            status.textContent = notification.is_read ? "" : "●";
+
+            item.append(content, status);
+
+            /* MARK INDIVIDUAL NOTIFICATION AS READ */
+
+            item.addEventListener("click", async function() {
+
+                if (!notification.is_read) {
+                    await markNexusNotificationRead(notification.id);
+                }
+
+            });
+
+            notificationList.appendChild(item);
+
+        });
+
+    } catch (error) {
+
+        console.error("Notification loading error:", error);
+
+        notificationList.innerHTML = `
+            <div class="empty-notifications">
+                <span>⚠️</span>
+                <p>Unable to load notifications.</p>
+            </div>
+        `;
+    }
+}
+
+
+/* MARK ONE NOTIFICATION AS READ */
+
+async function markNexusNotificationRead(notificationId) {
+
+    try {
+
+        const { error } = await nexusSupabase.rpc(
+            "mark_nexus_notification_read",
+            {
+                p_notification_id: notificationId
+            }
+        );
+
+        if (error) throw error;
+
+        const { data, error: authError } =
+            await nexusSupabase.auth.getUser();
+
+        if (authError) throw authError;
+
+        if (data.user) {
+            await loadNexusNotifications(data.user);
+        }
+
+    } catch (error) {
+
+        console.error(
+            "Could not mark notification as read:",
+            error
+        );
+
+        showMessage("Unable to update this notification.");
+
+    }
+}
+
+
+/* MARK ALL NOTIFICATIONS AS READ */
+
+async function markAllNexusNotificationsRead() {
+
+    const button = getElement("markAllNotifications");
+
+    if (button) {
+        button.disabled = true;
+    }
+
+    try {
+
+        const { error } = await nexusSupabase.rpc(
+            "mark_all_nexus_notifications_read"
+        );
+
+        if (error) throw error;
+
+        const { data, error: authError } =
+            await nexusSupabase.auth.getUser();
+
+        if (authError) throw authError;
+
+        if (data.user) {
+            await loadNexusNotifications(data.user);
+        }
+
+    } catch (error) {
+
+        console.error(
+            "Could not mark all notifications as read:",
+            error
+        );
+
+        if (button) {
+            button.disabled = false;
+        }
+
+        showMessage("Unable to mark all notifications as read.");
+
+    }
+}
+
+
+/* INITIALIZE NOTIFICATION BELL */
+
+function initializeNexusNotifications() {
+
+    if (nexusNotificationsInitialized) return;
+
+    const notificationButton = getElement("notificationButton");
+    const notificationMenu = getElement("notificationMenu");
+    const markAllButton = getElement("markAllNotifications");
+
+    if (!notificationButton || !notificationMenu) {
+
+        console.warn(
+            "Notification HTML elements were not found."
+        );
+
+        return;
+    }
+
+    /* OPEN AND CLOSE MENU */
+
+    notificationButton.addEventListener("click", async function() {
+
+        const isOpening = notificationMenu.hidden;
+
+        notificationMenu.hidden = !isOpening;
+
+        notificationButton.setAttribute(
+            "aria-expanded",
+            String(isOpening)
+        );
+
+        /* REFRESH NOTIFICATIONS WHEN OPENED */
+
+        if (isOpening) {
+
+            const { data, error } =
+                await nexusSupabase.auth.getUser();
+
+            if (error) {
+                console.error("Notification user check error:", error);
+                return;
+            }
+
+            if (data.user) {
+                await loadNexusNotifications(data.user);
+            }
+
+        }
+
+    });
+
+    /* MARK ALL AS READ */
+
+    if (markAllButton) {
+
+        markAllButton.addEventListener("click", function() {
+            markAllNexusNotificationsRead();
+        });
+
+    }
+
+    /* CLOSE MENU WHEN CLICKING OUTSIDE */
+
+    document.addEventListener("click", function(event) {
+
+        const notificationArea = notificationButton.closest(
+            ".notification-area"
+        );
+
+        if (
+            notificationArea &&
+            !notificationArea.contains(event.target)
+        ) {
+            closeNexusNotificationMenu();
+        }
+
+    });
+
+    /* CLOSE MENU WITH ESCAPE KEY */
+
+    document.addEventListener("keydown", function(event) {
+
+        if (event.key === "Escape") {
+            closeNexusNotificationMenu();
+        }
+
+    });
+
+    nexusNotificationsInitialized = true;
+}
+
+
+/* =========================================
+   13. DISPLAY MEMBER INFORMATION
 ========================================= */
 
 function displayMemberInformation(user, profile) {
@@ -617,7 +925,7 @@ function displayMemberInformation(user, profile) {
 
 
 /* =========================================
-   15. LOAD MEMBER PROFILE
+   14. LOAD MEMBER PROFILE
 ========================================= */
 
 async function loadMemberProfile(user) {
@@ -645,10 +953,8 @@ async function loadMemberProfile(user) {
 }
 
 
-
-
 /* =========================================
-   16. LOAD MEMBER WALLET
+   15. LOAD MEMBER WALLET
    DISPLAY BALANCE AFTER PENDING WITHDRAWALS
 ========================================= */
 
@@ -669,13 +975,13 @@ async function loadMemberWallet(user) {
         throw new Error("Your wallet record was not found.");
     }
 
-    // ACTUAL DATABASE WALLET BALANCE
     const actualBalance = Number(data.balance) || 0;
 
     const deposits = Number(data.total_deposits) || 0;
     const withdrawals = Number(data.total_withdrawals) || 0;
 
-    // LOAD PENDING AND PROCESSING WITHDRAWALS
+    /* LOAD PENDING AND PROCESSING WITHDRAWALS */
+
     const {
         data: requests,
         error: requestError
@@ -690,7 +996,8 @@ async function loadMemberWallet(user) {
         throw requestError;
     }
 
-    // CALCULATE TOTAL PENDING WITHDRAWALS
+    /* CALCULATE TOTAL RESERVED WITHDRAWALS */
+
     const pendingWithdrawals = (requests || []).reduce(
         (total, request) => {
             return total + (Number(request.amount) || 0);
@@ -698,16 +1005,17 @@ async function loadMemberWallet(user) {
         0
     );
 
-    // DISPLAY BALANCE AFTER WITHDRAWAL REQUESTS
+    /* DISPLAY BALANCE AFTER WITHDRAWAL REQUESTS */
+
     const currentBalance = Math.max(
         0,
         actualBalance - pendingWithdrawals
     );
 
-    // AVAILABLE BALANCE MUST EQUAL DISPLAYED WALLET BALANCE
     const availableBalance = currentBalance;
 
-    // DISPLAY WALLET BALANCE
+    /* DISPLAY WALLET BALANCE */
+
     [
         "walletBalance",
         "walletBalanceDisplay",
@@ -723,7 +1031,8 @@ async function loadMemberWallet(user) {
 
     });
 
-    // DISPLAY AVAILABLE BALANCE
+    /* DISPLAY AVAILABLE BALANCE */
+
     [
         "walletAvailableBalance",
         "availableBalance"
@@ -737,14 +1046,16 @@ async function loadMemberWallet(user) {
 
     });
 
-    // DISPLAY PENDING WITHDRAWALS
+    /* DISPLAY PENDING WITHDRAWALS */
+
     const pendingCard = getElement("walletPendingWithdrawals");
 
     if (pendingCard) {
         pendingCard.textContent = formatMoney(pendingWithdrawals);
     }
 
-    // DISPLAY TOTAL DEPOSITS
+    /* DISPLAY TOTAL DEPOSITS */
+
     [
         "walletTotalDeposits",
         "totalDeposits"
@@ -758,7 +1069,8 @@ async function loadMemberWallet(user) {
 
     });
 
-    // DISPLAY COMPLETED WITHDRAWALS
+    /* DISPLAY COMPLETED WITHDRAWALS */
+
     const totalWithdrawalsElement = getElement(
         "walletTotalWithdrawals"
     );
@@ -778,17 +1090,19 @@ async function loadMemberWallet(user) {
 }
 
 
-
-
 /* =========================================
-   17. LOAD MEMBER DASHBOARD DATA
+   16. LOAD MEMBER DASHBOARD DATA
 ========================================= */
 
 async function loadDashboard(user) {
 
+    if (!user) return;
+
     showMemberDashboard();
 
     try {
+
+        initializeNexusNotifications();
 
         await loadMemberProfile(user);
 
@@ -797,6 +1111,8 @@ async function loadDashboard(user) {
         await loadMemberTransactions(user);
 
         await loadPendingWithdrawals(user);
+
+        await loadNexusNotifications(user);
 
         console.log("Member dashboard loaded successfully.");
 
@@ -813,7 +1129,7 @@ async function loadDashboard(user) {
 
 
 /* =========================================
-   18. REGISTRATION
+   17. REGISTRATION
 ========================================= */
 
 if (registrationForm) {
@@ -896,7 +1212,7 @@ if (registrationForm) {
 
 
 /* =========================================
-   19. MEMBER LOGIN
+   18. MEMBER LOGIN
 ========================================= */
 
 if (loginForm) {
@@ -948,7 +1264,7 @@ if (loginForm) {
 
 
 /* =========================================
-   20. FORGOT PASSWORD
+   19. FORGOT PASSWORD
 ========================================= */
 
 if (forgotPasswordForm) {
@@ -988,9 +1304,8 @@ if (forgotPasswordForm) {
 }
 
 
-
 /* =========================================
-   21. NAVIGATION LINKS
+   20. NAVIGATION LINKS
 ========================================= */
 
 document.addEventListener("click", function(event) {
@@ -1036,9 +1351,8 @@ document.addEventListener("click", function(event) {
 });
 
 
-
 /* =========================================
-   22. BACK TO HOME
+   21. BACK TO HOME
 ========================================= */
 
 function returnToHome() {
@@ -1053,7 +1367,7 @@ window.returnToHome = returnToHome;
 
 
 /* =========================================
-   23. LOGOUT
+   22. LOGOUT
 ========================================= */
 
 async function logoutMember() {
@@ -1069,6 +1383,8 @@ async function logoutMember() {
         return;
     }
 
+    closeNexusNotificationMenu();
+
     showPublicHome();
 
     showMessage("You have been logged out.");
@@ -1078,12 +1394,14 @@ window.logoutMember = logoutMember;
 
 
 /* =========================================
-   24. AUTHENTICATION STATE
+   23. AUTHENTICATION STATE
 ========================================= */
 
 nexusSupabase.auth.onAuthStateChange((event, session) => {
 
     if (event === "SIGNED_OUT") {
+
+        closeNexusNotificationMenu();
 
         showPublicHome();
 
@@ -1100,7 +1418,7 @@ nexusSupabase.auth.onAuthStateChange((event, session) => {
 
 
 /* =========================================
-   25. MEMBER TRANSACTION HISTORY
+   24. MEMBER TRANSACTION HISTORY
 ========================================= */
 
 async function loadMemberTransactions(user) {
@@ -1301,9 +1619,8 @@ async function loadMemberTransactions(user) {
 }
 
 
-
 /* =========================================
-   26. LOAD PENDING WITHDRAWALS
+   25. LOAD PENDING WITHDRAWALS
 ========================================= */
 
 async function loadPendingWithdrawals(user) {
@@ -1352,7 +1669,7 @@ async function loadPendingWithdrawals(user) {
             0
         );
 
-        /* UPDATE BOTH PENDING WITHDRAWAL DISPLAYS */
+        /* UPDATE PENDING WITHDRAWAL DISPLAYS */
 
         if (totalDisplay) {
             totalDisplay.textContent = formatMoney(reservedTotal);
@@ -1450,9 +1767,8 @@ async function loadPendingWithdrawals(user) {
 }
 
 
-
 /* =========================================
-   27. MEMBER DEPOSIT PROCESSING
+   26. MEMBER DEPOSIT PROCESSING
 ========================================= */
 
 const depositForm = getElement("depositForm");
@@ -1588,7 +1904,7 @@ if (depositForm) {
 
 
 /* =========================================
-   28. MEMBER WITHDRAWAL REQUEST
+   27. MEMBER WITHDRAWAL REQUEST
 ========================================= */
 
 const withdrawalForm = getElement("withdrawalForm");
@@ -1678,6 +1994,7 @@ if (withdrawalForm) {
             await loadMemberWallet(authData.user);
             await loadMemberTransactions(authData.user);
             await loadPendingWithdrawals(authData.user);
+            await loadNexusNotifications(authData.user);
 
             showMessage(
                 "Withdrawal request submitted successfully!\n\n" +
@@ -1714,7 +2031,7 @@ if (withdrawalForm) {
 
 
 /* =========================================
-   29. MEMBER TRANSACTION FILTERS
+   28. MEMBER TRANSACTION FILTERS
 ========================================= */
 
 function initializeTransactionFilters() {
@@ -1792,7 +2109,7 @@ function initializeTransactionFilters() {
 
 
 /* =========================================
-   30. PROFESSIONAL TRANSACTION RECEIPT
+   29. PROFESSIONAL TRANSACTION RECEIPT
 ========================================= */
 
 function generateTransactionReceipt(transaction) {
@@ -2080,7 +2397,7 @@ function generateTransactionReceipt(transaction) {
 
 
 /* =========================================
-   31. RECEIPT TEXT SECURITY
+   30. RECEIPT TEXT SECURITY
 ========================================= */
 
 function escapeReceiptText(value) {
@@ -2099,7 +2416,7 @@ function escapeReceiptText(value) {
 
 
 /* =========================================
-   32. START WEBSITE
+   31. START WEBSITE
 ========================================= */
 
 initializeTransactionFilters();
@@ -2108,7 +2425,7 @@ initializeWebsite();
 
 
 /* =========================================
-   33. INITIALIZE WEBSITE
+   32. INITIALIZE WEBSITE
 ========================================= */
 
 async function initializeWebsite() {
