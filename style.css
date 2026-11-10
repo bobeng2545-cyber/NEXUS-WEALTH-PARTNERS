@@ -3768,3 +3768,90 @@ body > #notificationMenu[hidden] {
 body > #notificationMenu.notification-open {
     display: block !important;
 }
+
+
+/* =========================================
+   NEXUS - ANIMATED NOTIFICATION BELL
+========================================= */
+
+.notification-button {
+    position: relative !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 48px !important;
+    height: 48px !important;
+    border-radius: 50% !important;
+    cursor: pointer !important;
+    transition: transform 0.3s ease, background 0.3s ease !important;
+}
+
+/* ANIMATED CIRCLE AROUND THE BELL */
+
+.notification-button::before {
+    content: "";
+    position: absolute;
+    inset: -4px;
+    border: 2px solid #16a36a;
+    border-radius: 50%;
+    opacity: 0;
+    pointer-events: none;
+    animation: nexusNotificationPulse 2s infinite;
+}
+
+/* CONTINUOUS PULSING EFFECT */
+
+@keyframes nexusNotificationPulse {
+    0% {
+        transform: scale(0.9);
+        opacity: 0.8;
+    }
+
+    70% {
+        transform: scale(1.25);
+        opacity: 0;
+    }
+
+    100% {
+        transform: scale(1.25);
+        opacity: 0;
+    }
+}
+
+/* HOVER POP EFFECT */
+
+.notification-button:hover {
+    transform: scale(1.12) !important;
+    background: rgba(22, 163, 106, 0.12) !important;
+}
+
+/* MAKE THE BELL MOVE SLIGHTLY ON HOVER */
+
+.notification-button:hover .notification-bell-icon {
+    display: inline-block;
+    animation: nexusBellShake 0.5s ease;
+}
+
+@keyframes nexusBellShake {
+    0%, 100% { transform: rotate(0deg); }
+    20% { transform: rotate(-15deg); }
+    40% { transform: rotate(15deg); }
+    60% { transform: rotate(-10deg); }
+    80% { transform: rotate(10deg); }
+}
+
+/* KEEP NOTIFICATION COUNT ABOVE THE CIRCLE */
+
+.notification-count {
+    position: absolute;
+    z-index: 5;
+}
+
+/* ACCESSIBILITY */
+
+@media (prefers-reduced-motion: reduce) {
+    .notification-button::before,
+    .notification-button:hover .notification-bell-icon {
+        animation: none !important;
+    }
+}
