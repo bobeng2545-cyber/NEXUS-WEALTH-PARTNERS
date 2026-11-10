@@ -3720,3 +3720,23 @@ body {
         top: 72px !important;
     }
 }
+
+
+/* =========================================
+   NEXUS NOTIFICATION - ABOVE HOMEPAGE
+========================================= */
+
+body > #notificationMenu,
+body > .notification-menu {
+    position: fixed !important;
+    z-index: 2147483647 !important;
+    background: #ffffff !important;
+    max-height: 70vh !important;
+    overflow-y: auto !important;
+    isolation: isolate !important;
+}
+
+/* Keep popup visible when opened */
+body > #notificationMenu:not([hidden]) {
+    display: block !important;
+}
