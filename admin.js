@@ -2,6 +2,7 @@
 /* =========================================
    NEXUS WEALTH PARTNERS
    COMPLETE ADMINISTRATOR DASHBOARD
+   CORRECTED VERSION
 ========================================= */
 
 
@@ -187,6 +188,8 @@ function formatAdminDateTime(value) {
 }
 
 
+/* MEMBER NAME */
+
 function getAdminMemberName(userId, profiles) {
 
     const profile = profiles.find(
@@ -196,6 +199,17 @@ function getAdminMemberName(userId, profiles) {
     return profile?.full_name ||
         profile?.member_id ||
         userId;
+
+}
+
+
+/* SAFE NUMBER */
+
+function getAdminNumber(value) {
+
+    const number = Number(value);
+
+    return Number.isFinite(number) ? number : 0;
 
 }
 
@@ -424,8 +438,10 @@ if (adminLoginForm) {
 
         if (!email || !password) {
 
-            adminLoginMessage.textContent =
-                "Enter your administrator email and password.";
+            if (adminLoginMessage) {
+                adminLoginMessage.textContent =
+                    "Enter your administrator email and password.";
+            }
 
             return;
 
@@ -433,8 +449,10 @@ if (adminLoginForm) {
 
         if (email !== AUTHORIZED_ADMIN_EMAIL) {
 
-            adminLoginMessage.textContent =
-                "This email is not authorized for administrator access.";
+            if (adminLoginMessage) {
+                adminLoginMessage.textContent =
+                    "This email is not authorized for administrator access.";
+            }
 
             return;
 
@@ -829,8 +847,11 @@ function displayAdminWithdrawals(withdrawals, profiles) {
 
         if (request.created_at) {
 
-            dateTimeCell.title =
-                new Date(request.created_at).toISOString();
+            const requestDate = new Date(request.created_at);
+
+            if (!Number.isNaN(requestDate.getTime())) {
+                dateTimeCell.title = requestDate.toISOString();
+            }
 
         }
 
@@ -881,49 +902,76 @@ function displayAdminWithdrawals(withdrawals, profiles) {
 
 
 /* =========================================
-   18. CALCULATE MEMBER DISPLAY BALANCE
+   18. WALLET BALANCE CALCULATION
 ========================================= */
 
-function getMemberPendingWithdrawalTotal(userId, withdrawals) {
+/*
+   IMPORTANT:
 
-    return withdrawals
-        .filter(request =>
-            request.user_id === userId &&
-            ["pending", "processing"].includes(request.status)
+   The customer's wallet is already reduced
+   when the withdrawal request is submitted.
+
+   Therefore, pending and processing withdrawals
+   must NOT be deducted again here.
+
+   The actual wallet balance is the correct
+   amount to display.
+*/
+
+function getMemberDisplayBalance(wallet) {
+
+    return getAdminNumber(wallet?.balance);
+
+}
+
+
+/* =========================================
+   19. DEPOSIT AND WITHDRAWAL TOTALS
+========================================= */
+
+function getSuccessfulDepositsForMember(userId, deposits) {
+
+    return deposits
+        .filter(deposit =>
+            deposit.user_id === userId &&
+            String(deposit.status).toLowerCase() === "successful"
         )
-        .reduce((total, request) => {
+        .reduce((total, deposit) => {
 
-            return total + (Number(request.amount) || 0);
+            return total + getAdminNumber(deposit.amount);
 
         }, 0);
 
 }
 
 
-function getMemberDisplayBalance(wallet, withdrawals) {
+function getCompletedWithdrawalsForMember(userId, withdrawals) {
 
-    const actualBalance =
-        Number(wallet.balance) || 0;
+    return withdrawals
+        .filter(request =>
+            request.user_id === userId &&
+            String(request.status).toLowerCase() === "completed"
+        )
+        .reduce((total, request) => {
 
-    const pendingAmount =
-        getMemberPendingWithdrawalTotal(
-            wallet.user_id,
-            withdrawals
-        );
+            return total + getAdminNumber(request.amount);
 
-    return Math.max(
-        0,
-        actualBalance - pendingAmount
-    );
+        }, 0);
 
 }
 
 
 /* =========================================
-   19. LOAD WALLET AND SAVINGS DATA
+   20. LOAD WALLET AND SAVINGS DATA
 ========================================= */
 
-function displayAdminSavings(wallets, profiles, withdrawals) {
+function displayAdminSavings(
+    wallets,
+    profiles,
+    deposits,
+    withdrawals,
+    depositsAvailable = true
+) {
 
     const table =
         document.getElementById("savingsTable");
@@ -967,30 +1015,48 @@ function displayAdminSavings(wallets, profiles, withdrawals) {
             )
         );
 
-        const displayBalance =
-            getMemberDisplayBalance(
-                wallet,
-                withdrawals
-            );
+        /*
+           CURRENT WALLET BALANCE
 
-        row.appendChild(
-            createAdminTableCell(
-                formatNexusAdminMoney(displayBalance)
-            )
-        );
+           Do not subtract pending withdrawals again.
+        */
 
         row.appendChild(
             createAdminTableCell(
                 formatNexusAdminMoney(
-                    wallet.total_deposits
+                    getMemberDisplayBalance(wallet)
                 )
             )
         );
 
+        /*
+           SUCCESSFUL PAYSTACK DEPOSITS ONLY
+        */
+
+        row.appendChild(
+            createAdminTableCell(
+                depositsAvailable
+                    ? formatNexusAdminMoney(
+                        getSuccessfulDepositsForMember(
+                            wallet.user_id,
+                            deposits
+                        )
+                    )
+                    : "Unavailable"
+            )
+        );
+
+        /*
+           COMPLETED WITHDRAWALS ONLY
+        */
+
         row.appendChild(
             createAdminTableCell(
                 formatNexusAdminMoney(
-                    wallet.total_withdrawals
+                    getCompletedWithdrawalsForMember(
+                        wallet.user_id,
+                        withdrawals
+                    )
                 )
             )
         );
@@ -1003,7 +1069,7 @@ function displayAdminSavings(wallets, profiles, withdrawals) {
 
 
 /* =========================================
-   20. DISPLAY ALL FINANCIAL TRANSACTIONS
+   21. DISPLAY ALL FINANCIAL TRANSACTIONS
 ========================================= */
 
 function displayAdminTransactions(
@@ -1028,7 +1094,6 @@ function displayAdminTransactions(
 
     /*
        CREATE THE TABLE HEADINGS
-       This ensures the headings match the records.
     */
 
     const parentTable = table.closest("table");
@@ -1289,7 +1354,7 @@ function displayAdminTransactions(
 
 
 /* =========================================
-   21. LOAD ALL DASHBOARD RECORDS
+   22. LOAD ALL DASHBOARD RECORDS
 ========================================= */
 
 async function loadAdminDashboardData() {
@@ -1354,10 +1419,26 @@ async function loadAdminDashboardData() {
 
     const withdrawals = withdrawalsResult.data || [];
 
-    const deposits = depositsResult.data || [];
+    const depositsAvailable = !depositsResult.error;
+
+    const deposits = depositsAvailable
+        ? (depositsResult.data || [])
+        : [];
 
 
-    /* TOTAL MEMBERS */
+    if (depositsResult.error) {
+
+        console.error(
+            "Deposit transaction loading error:",
+            depositsResult.error
+        );
+
+    }
+
+
+    /* =====================================
+       TOTAL MEMBERS
+    ===================================== */
 
     const totalMembersElement =
         document.getElementById("totalMembers");
@@ -1370,15 +1451,21 @@ async function loadAdminDashboardData() {
     }
 
 
-    /* TOTAL ADJUSTED WALLET BALANCES */
+    /* =====================================
+       TOTAL WALLET BALANCES
+    ===================================== */
+
+    /*
+       This is the sum of actual wallet balances.
+
+       Pending and processing withdrawals have
+       already been deducted from the wallets.
+    */
 
     const totalBalances = wallets.reduce(
         (sum, wallet) => {
 
-            return sum + getMemberDisplayBalance(
-                wallet,
-                withdrawals
-            );
+            return sum + getMemberDisplayBalance(wallet);
 
         },
         0
@@ -1395,13 +1482,20 @@ async function loadAdminDashboardData() {
     }
 
 
-    /* TOTAL DEPOSITS */
+    /* =====================================
+       TOTAL SUCCESSFUL DEPOSITS
+    ===================================== */
 
-    const totalDeposits = wallets.reduce(
-        (sum, wallet) => {
+    const totalDeposits = deposits.reduce(
+        (sum, deposit) => {
 
-            return sum +
-                (Number(wallet.total_deposits) || 0);
+            if (
+                String(deposit.status).toLowerCase() !== "successful"
+            ) {
+                return sum;
+            }
+
+            return sum + getAdminNumber(deposit.amount);
 
         },
         0
@@ -1413,22 +1507,31 @@ async function loadAdminDashboardData() {
     if (totalDepositsElement) {
 
         totalDepositsElement.textContent =
-            formatNexusAdminMoney(totalDeposits);
+            depositsAvailable
+                ? formatNexusAdminMoney(totalDeposits)
+                : "Unavailable";
 
     }
 
 
-    /* COMPLETED WITHDRAWALS */
+    /* =====================================
+       TOTAL COMPLETED WITHDRAWALS
+    ===================================== */
 
-    const totalWithdrawals = wallets.reduce(
-        (sum, wallet) => {
+    const completedWithdrawalRecords =
+        withdrawals.filter(request =>
+            String(request.status).toLowerCase() === "completed"
+        );
 
-            return sum +
-                (Number(wallet.total_withdrawals) || 0);
+    const totalWithdrawals =
+        completedWithdrawalRecords.reduce(
+            (sum, request) => {
 
-        },
-        0
-    );
+                return sum + getAdminNumber(request.amount);
+
+            },
+            0
+        );
 
     const totalWithdrawalsElement =
         document.getElementById("totalWithdrawals");
@@ -1441,20 +1544,21 @@ async function loadAdminDashboardData() {
     }
 
 
-    /* WITHDRAWAL COUNTS */
+    /* =====================================
+       WITHDRAWAL COUNTS
+    ===================================== */
 
     const pending = withdrawals.filter(
-        request => request.status === "pending"
+        request =>
+            String(request.status).toLowerCase() === "pending"
     ).length;
 
     const processing = withdrawals.filter(
-        request => request.status === "processing"
+        request =>
+            String(request.status).toLowerCase() === "processing"
     ).length;
 
-    const completed = withdrawals.filter(
-        request => request.status === "completed"
-    ).length;
-
+    const completed = completedWithdrawalRecords.length;
 
     const pendingElement =
         document.getElementById("overviewPendingWithdrawals");
@@ -1479,7 +1583,9 @@ async function loadAdminDashboardData() {
     }
 
 
-    /* PENDING SIDEBAR BADGE */
+    /* =====================================
+       PENDING SIDEBAR BADGE
+    ===================================== */
 
     const badge = document.getElementById(
         "pendingWithdrawalBadge"
@@ -1494,7 +1600,9 @@ async function loadAdminDashboardData() {
     }
 
 
-    /* DISPLAY ALL TABLES */
+    /* =====================================
+       DISPLAY ALL TABLES
+    ===================================== */
 
     displayAdminMembers(profiles);
 
@@ -1506,28 +1614,22 @@ async function loadAdminDashboardData() {
     displayAdminSavings(
         wallets,
         profiles,
-        withdrawals
+        deposits,
+        withdrawals,
+        depositsAvailable
     );
 
 
-    /*
+    /* =====================================
        DISPLAY FINANCIAL TRANSACTIONS
-
-       If the deposits query fails, the other
-       dashboard sections can still load.
-    */
+    ===================================== */
 
     if (depositsResult.error) {
-
-        console.error(
-            "Deposit transaction loading error:",
-            depositsResult.error
-        );
 
         showAdminTableMessage(
             "transactionsTable",
             7,
-            "Unable to load deposits. Check the deposit_transactions SELECT permission in Supabase. Error: " +
+            "Unable to load deposit records. Check the deposit_transactions SELECT permission in Supabase. Error: " +
             depositsResult.error.message
         );
 
@@ -1542,11 +1644,22 @@ async function loadAdminDashboardData() {
     }
 
 
+    /* =====================================
+       DASHBOARD CONSOLE SUMMARY
+    ===================================== */
+
     console.log("Nexus admin dashboard data loaded.", {
 
         members: profiles.length,
 
         wallets: wallets.length,
+
+        totalWalletBalances: totalBalances,
+
+        totalSuccessfulDeposits:
+            depositsAvailable ? totalDeposits : "Unavailable",
+
+        totalCompletedWithdrawals: totalWithdrawals,
 
         depositTransactions: deposits.length,
 
@@ -1567,7 +1680,7 @@ async function loadAdminDashboardData() {
 
 
 /* =========================================
-   22. ADMIN WITHDRAWAL REVIEW
+   23. ADMIN WITHDRAWAL REVIEW
 ========================================= */
 
 async function reviewNexusWithdrawal(requestId, action) {
@@ -1585,8 +1698,13 @@ async function reviewNexusWithdrawal(requestId, action) {
             ? "process"
             : "reject";
 
+    const confirmationMessage =
+        action === "rejected"
+            ? "Are you sure you want to reject this withdrawal? The amount will be returned to the customer's wallet."
+            : "Are you sure you want to move this withdrawal to processing?";
+
     const confirmed = window.confirm(
-        `Are you sure you want to ${actionName} this withdrawal request?`
+        confirmationMessage
     );
 
     if (!confirmed) return;
@@ -1619,10 +1737,15 @@ async function reviewNexusWithdrawal(requestId, action) {
             data.message ||
             (
                 action === "rejected"
-                    ? "Withdrawal rejected successfully. The member's displayed balance will be restored."
+                    ? "Withdrawal rejected. The customer's wallet has been restored."
                     : "Withdrawal moved to processing successfully."
             )
         );
+
+        /*
+           Reload the dashboard so the wallet balance,
+           withdrawal status and statistics are updated.
+        */
 
         await loadAdminDashboardData();
 
@@ -1644,7 +1767,7 @@ async function reviewNexusWithdrawal(requestId, action) {
 
 
 /* =========================================
-   23. START ADMIN DASHBOARD
+   24. START ADMIN DASHBOARD
 ========================================= */
 
 checkAdminSession();
