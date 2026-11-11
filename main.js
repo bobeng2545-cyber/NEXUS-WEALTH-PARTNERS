@@ -2549,6 +2549,7 @@ initializeWebsite();
 
 
 
+
 /* =========================================
    INITIALIZE WEBSITE
 ========================================= */
@@ -2579,20 +2580,36 @@ async function initializeWebsite() {
                 url.searchParams.get("reference") ||
                 url.searchParams.get("trxref");
 
+            const page = window.location.hash.toLowerCase();
+
             if (reference && reference.startsWith("NEXUS_")) {
 
-                // Keep the payment reference while the customer logs in.
                 showLogin();
 
                 showMessage(
                     "Please log in to verify your deposit and update your wallet."
                 );
 
+            } else if (page === "#register") {
+
+                showRegistration();
+
+            } else if (page === "#login") {
+
+                showLogin();
+
+            } else if (
+                page === "#forgotpassword"
+            ) {
+
+                showForgotPassword();
+
             } else {
 
                 showPublicHome();
 
             }
+
         }
 
     } catch (error) {
@@ -2603,4 +2620,5 @@ async function initializeWebsite() {
 
     }
 }
+
 
