@@ -819,25 +819,6 @@ ul {
     line-height: 1.8;
 }
 
-.savings-plan-card > a {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-
-    min-height: 39px;
-    padding: 9px 14px;
-
-    color: white;
-    background: var(--green);
-    border-radius: 8px;
-    font-size: 11px;
-    font-weight: 800;
-}
-
-.savings-plan-card > a:hover {
-    background: var(--green-dark);
-}
-
 .featured-plan {
     background: linear-gradient(145deg, #122348, #1c4561);
     border-color: transparent;
