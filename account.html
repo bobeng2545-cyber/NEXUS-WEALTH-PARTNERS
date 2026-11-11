@@ -37,19 +37,21 @@
         </div>
 
         <nav class="public-navigation" aria-label="Account Navigation">
+
             <ul>
                 <li><a href="index.html">Home</a></li>
                 <li><a href="index.html#about">About Us</a></li>
                 <li><a href="index.html#savings">Savings Plans</a></li>
             </ul>
+
         </nav>
 
         <div class="header-actions">
-            <a href="#login" class="header-login">Login</a>
 
-            <a href="#register" class="header-register">
-                Create Account
+            <a href="#login" class="header-login">
+                Login
             </a>
+
         </div>
 
     </header>
@@ -68,11 +70,30 @@
 
         <section id="register" class="auth-screen">
 
-            <h2>Create Your Account</h2>
+            <div class="auth-card-header">
+
+                <div class="auth-brand-icon">
+                    N
+                </div>
+
+                <span class="auth-welcome-label">
+                    JOIN NEXUS WEALTH PARTNERS
+                </span>
+
+                <h2>Create Your Account</h2>
+
+                <p>
+                    Start building better financial habits today.
+                </p>
+
+            </div>
+
 
             <form id="registrationForm">
 
-                <label for="registerName">Full Name</label>
+                <label for="registerName">
+                    Full Name
+                </label>
 
                 <input
                     type="text"
@@ -83,7 +104,10 @@
                     required
                 >
 
-                <label for="registerEmail">Email Address</label>
+
+                <label for="registerEmail">
+                    Email Address
+                </label>
 
                 <input
                     type="email"
@@ -94,7 +118,10 @@
                     required
                 >
 
-                <label for="registerPhone">Phone Number</label>
+
+                <label for="registerPhone">
+                    Phone Number
+                </label>
 
                 <input
                     type="tel"
@@ -105,7 +132,10 @@
                     required
                 >
 
-                <label for="registerPassword">Password</label>
+
+                <label for="registerPassword">
+                    Password
+                </label>
 
                 <input
                     type="password"
@@ -116,7 +146,10 @@
                     required
                 >
 
-                <label for="confirmPassword">Confirm Password</label>
+
+                <label for="confirmPassword">
+                    Confirm Password
+                </label>
 
                 <input
                     type="password"
@@ -127,12 +160,25 @@
                     required
                 >
 
-                <button type="submit">Create Account</button>
 
-                <p>
+                <button type="submit">
+                    Create Account
+                </button>
+
+
+                <p class="auth-switch-text">
+
                     Already have an account?
-                    <a href="#login">Login</a>
+
+                    <a
+                        href="#login"
+                        class="auth-switch-link"
+                    >
+                        Login
+                    </a>
+
                 </p>
+
 
                 <button
                     type="button"
@@ -147,17 +193,37 @@
         </section>
 
 
+
         <!-- =====================================
              LOGIN
         ====================================== -->
 
         <section id="login" class="auth-screen">
 
-            <h2>Member Login</h2>
+            <div class="auth-card-header">
+
+                <div class="auth-brand-icon">
+                    N
+                </div>
+
+                <span class="auth-welcome-label">
+                    WELCOME TO NEXUS
+                </span>
+
+                <h2>Welcome Back</h2>
+
+                <p>
+                    Sign in to access your savings dashboard.
+                </p>
+
+            </div>
+
 
             <form id="loginForm">
 
-                <label for="loginEmail">Email Address</label>
+                <label for="loginEmail">
+                    Email Address
+                </label>
 
                 <input
                     type="email"
@@ -168,7 +234,10 @@
                     required
                 >
 
-                <label for="loginPassword">Password</label>
+
+                <label for="loginPassword">
+                    Password
+                </label>
 
                 <input
                     type="password"
@@ -179,16 +248,34 @@
                     required
                 >
 
-                <button type="submit">Login</button>
 
-                <p>
-                    <a href="#forgotPassword">Forgot Password?</a>
+                <p class="forgot-password-link">
+
+                    <a href="#forgotPassword">
+                        Forgot Password?
+                    </a>
+
                 </p>
 
-                <p>
+
+                <button type="submit">
+                    Login to Your Account
+                </button>
+
+
+                <p class="auth-switch-text">
+
                     Don't have an account?
-                    <a href="#register">Create Account</a>
+
+                    <a
+                        href="#register"
+                        class="auth-switch-link"
+                    >
+                        Sign Up
+                    </a>
+
                 </p>
+
 
                 <button
                     type="button"
@@ -203,18 +290,32 @@
         </section>
 
 
+
         <!-- =====================================
              FORGOT PASSWORD
         ====================================== -->
 
         <section id="forgotPassword" class="auth-screen">
 
-            <h2>Reset Your Password</h2>
+            <div class="auth-card-header">
 
-            <p>
-                Enter the email address associated with your account
-                to request a password reset.
-            </p>
+                <div class="auth-brand-icon">
+                    N
+                </div>
+
+                <span class="auth-welcome-label">
+                    ACCOUNT RECOVERY
+                </span>
+
+                <h2>Reset Your Password</h2>
+
+                <p>
+                    Enter the email address associated with your account
+                    to request a password reset.
+                </p>
+
+            </div>
+
 
             <form id="forgotPasswordForm">
 
@@ -231,14 +332,25 @@
                     required
                 >
 
+
                 <button type="submit">
                     Request Password Reset
                 </button>
 
-                <p>
+
+                <p class="auth-switch-text">
+
                     Remembered your password?
-                    <a href="#login">Login</a>
+
+                    <a
+                        href="#login"
+                        class="auth-switch-link"
+                    >
+                        Login
+                    </a>
+
                 </p>
+
 
                 <button
                     type="button"
@@ -251,6 +363,7 @@
             </form>
 
         </section>
+
 
 
         <!-- =====================================
@@ -283,7 +396,9 @@
                     &#8592;
                 </button>
 
-                <h2 id="mobileScreenTitle">Transactions</h2>
+                <h2 id="mobileScreenTitle">
+                    Transactions
+                </h2>
 
             </div>
 
@@ -299,7 +414,9 @@
                         <span id="memberFirstName">Member</span> 👋
                     </h2>
 
-                    <p>Here is an overview of your account.</p>
+                    <p>
+                        Here is an overview of your account.
+                    </p>
 
                     <p>
                         Member ID:
@@ -322,7 +439,9 @@
                         aria-controls="notificationMenu"
                     >
 
-                        <span class="notification-bell-icon">🔔</span>
+                        <span class="notification-bell-icon">
+                            🔔
+                        </span>
 
                         <span
                             id="notificationCount"
@@ -358,8 +477,11 @@
                         >
 
                             <div class="empty-notifications">
+
                                 <span>🔔</span>
+
                                 <p>No notifications yet.</p>
+
                             </div>
 
                         </div>
@@ -369,6 +491,7 @@
                 </div>
 
             </div>
+
 
 
             <!-- DASHBOARD SUMMARY -->
@@ -381,7 +504,9 @@
 
                     <p>My Wallet Balance</p>
 
-                    <h3 id="walletBalance">GHS 0.00</h3>
+                    <h3 id="walletBalance">
+                        GHS 0.00
+                    </h3>
 
                     <small>Your current wallet balance</small>
 
@@ -394,7 +519,9 @@
 
                     <p>Total Deposits</p>
 
-                    <h3 id="walletTotalDeposits">GHS 0.00</h3>
+                    <h3 id="walletTotalDeposits">
+                        GHS 0.00
+                    </h3>
 
                     <small>Your confirmed deposits</small>
 
@@ -407,13 +534,16 @@
 
                     <p>Total Withdrawals</p>
 
-                    <h3 id="walletTotalWithdrawals">GHS 0.00</h3>
+                    <h3 id="walletTotalWithdrawals">
+                        GHS 0.00
+                    </h3>
 
                     <small>Your completed withdrawals</small>
 
                 </article>
 
             </div>
+
 
 
             <!-- MEMBER NAVIGATION -->
@@ -459,6 +589,7 @@
             </nav>
 
 
+
             <!-- MY WALLET -->
 
             <section
@@ -468,7 +599,10 @@
 
                 <h3>My Wallet</h3>
 
-                <p>Manage and monitor your wallet.</p>
+                <p>
+                    Manage and monitor your wallet.
+                </p>
+
 
                 <div class="dashboard-cards">
 
@@ -478,7 +612,9 @@
 
                         <p>Total Wallet Balance</p>
 
-                        <h3 id="walletBalanceDisplay">GHS 0.00</h3>
+                        <h3 id="walletBalanceDisplay">
+                            GHS 0.00
+                        </h3>
 
                     </article>
 
@@ -489,7 +625,9 @@
 
                         <p>Available Balance</p>
 
-                        <h3 id="walletAvailableBalance">GHS 0.00</h3>
+                        <h3 id="walletAvailableBalance">
+                            GHS 0.00
+                        </h3>
 
                     </article>
 
@@ -500,7 +638,9 @@
 
                         <p>Pending Withdrawals</p>
 
-                        <h3 id="walletPendingWithdrawals">GHS 0.00</h3>
+                        <h3 id="walletPendingWithdrawals">
+                            GHS 0.00
+                        </h3>
 
                         <small>
                             Money reserved for pending and processing requests
@@ -513,13 +653,18 @@
 
                 <div class="wallet-actions">
 
-                    <a href="#depositFunds">➕ Deposit Money</a>
+                    <a href="#depositFunds">
+                        ➕ Deposit Money
+                    </a>
 
-                    <a href="#withdrawFunds">📤 Withdraw Money</a>
+                    <a href="#withdrawFunds">
+                        📤 Withdraw Money
+                    </a>
 
                 </div>
 
             </section>
+
 
 
             <!-- DEPOSIT MONEY -->
@@ -531,13 +676,18 @@
 
                 <h3>Deposit Money</h3>
 
-                <p>Add money to your Nexus wallet.</p>
+                <p>
+                    Add money to your Nexus wallet.
+                </p>
+
 
                 <div class="available-balance-card">
 
                     <span>Current Wallet Balance</span>
 
-                    <h2 id="depositCurrentBalance">GHS 0.00</h2>
+                    <h2 id="depositCurrentBalance">
+                        GHS 0.00
+                    </h2>
 
                 </div>
 
@@ -617,6 +767,7 @@
             </section>
 
 
+
             <!-- SAVINGS OVERVIEW -->
 
             <div class="dashboard-content-grid home-dashboard-content">
@@ -626,8 +777,13 @@
                     <div class="panel-heading">
 
                         <div>
+
                             <h3>Savings Overview</h3>
-                            <p>Monitor your savings progress.</p>
+
+                            <p>
+                                Monitor your savings progress.
+                            </p>
+
                         </div>
 
                     </div>
@@ -639,7 +795,9 @@
 
                             <div class="progress-inner">
 
-                                <strong id="savingsProgress">0%</strong>
+                                <strong id="savingsProgress">
+                                    0%
+                                </strong>
 
                                 <small>Target achieved</small>
 
@@ -652,22 +810,30 @@
 
                             <div>
                                 <span>Target</span>
-                                <strong id="savingsTarget">GHS 0.00</strong>
+                                <strong id="savingsTarget">
+                                    GHS 0.00
+                                </strong>
                             </div>
 
                             <div>
                                 <span>Saved</span>
-                                <strong id="savingsTotal">GHS 0.00</strong>
+                                <strong id="savingsTotal">
+                                    GHS 0.00
+                                </strong>
                             </div>
 
                             <div>
                                 <span>Total Deposits</span>
-                                <strong id="totalDeposits">GHS 0.00</strong>
+                                <strong id="totalDeposits">
+                                    GHS 0.00
+                                </strong>
                             </div>
 
                             <div>
                                 <span>Total Profits</span>
-                                <strong id="totalProfits">GHS 0.00</strong>
+                                <strong id="totalProfits">
+                                    GHS 0.00
+                                </strong>
                             </div>
 
                         </div>
@@ -677,13 +843,17 @@
                 </section>
 
 
+
                 <!-- ACCOUNT INFORMATION -->
 
                 <section class="dashboard-panel account-information">
 
                     <h3>Account Information</h3>
 
-                    <p>Keep track of your savings account.</p>
+                    <p>
+                        Keep track of your savings account.
+                    </p>
+
 
                     <div class="information-item">
 
@@ -698,7 +868,9 @@
 
                         <span>Account Status</span>
 
-                        <strong class="account-status">Pending Setup</strong>
+                        <strong class="account-status">
+                            Pending Setup
+                        </strong>
 
                     </div>
 
@@ -707,13 +879,16 @@
 
                         <span>Member ID</span>
 
-                        <strong id="accountMemberId">NWP001</strong>
+                        <strong id="accountMemberId">
+                            NWP001
+                        </strong>
 
                     </div>
 
                 </section>
 
             </div>
+
 
 
             <!-- WITHDRAWAL -->
@@ -734,7 +909,9 @@
 
                     <span>Available Wallet Balance</span>
 
-                    <h2 id="availableBalance">GHS 0.00</h2>
+                    <h2 id="availableBalance">
+                        GHS 0.00
+                    </h2>
 
                 </div>
 
@@ -835,6 +1012,7 @@
             </section>
 
 
+
             <!-- PENDING WITHDRAWALS -->
 
             <section
@@ -894,6 +1072,7 @@
             </section>
 
 
+
             <!-- TRANSACTION HISTORY -->
 
             <section
@@ -917,9 +1096,13 @@
                 </div>
 
 
-                <h3 class="desktop-page-heading">My Transactions</h3>
+                <h3 class="desktop-page-heading">
+                    My Transactions
+                </h3>
 
-                <p>View your deposits and withdrawals.</p>
+                <p>
+                    View your deposits and withdrawals.
+                </p>
 
 
                 <div
@@ -986,6 +1169,7 @@
             </section>
 
 
+
             <!-- MONTHLY SAVINGS -->
 
             <section
@@ -1013,7 +1197,9 @@
                     Monthly Savings Breakdown
                 </h3>
 
-                <p>Track your savings month by month.</p>
+                <p>
+                    Track your savings month by month.
+                </p>
 
 
                 <div class="table-container">
@@ -1047,6 +1233,7 @@
             </section>
 
 
+
             <!-- MEMBER PROFILE -->
 
             <section
@@ -1070,9 +1257,13 @@
                 </div>
 
 
-                <h3 class="desktop-page-heading">My Profile</h3>
+                <h3 class="desktop-page-heading">
+                    My Profile
+                </h3>
 
-                <p>View your personal account information.</p>
+                <p>
+                    View your personal account information.
+                </p>
 
 
                 <div class="profile-information">
@@ -1106,22 +1297,29 @@
     </main>
 
 
+
     <!-- =====================================
          JAVASCRIPT CONNECTIONS
     ====================================== -->
 
     <script>
-        // Open the login screen by default when account.html
-        // is visited without a specific section in its URL.
+        // Open the login screen by default when no
+        // account section is specified in the URL.
+
         if (!window.location.hash) {
             history.replaceState(null, "", "#login");
         }
     </script>
 
+
+    <!-- SUPABASE LIBRARY -->
+
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+
+    <!-- NEXUS MAIN JAVASCRIPT -->
 
     <script src="main.js"></script>
 
 </body>
-
 </html>
