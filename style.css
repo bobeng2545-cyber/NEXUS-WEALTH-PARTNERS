@@ -171,6 +171,1041 @@ ul {
 
 
 /* =========================================================
+   3A. NEXUS PUBLIC HOMEPAGE - COMPLETE DESIGN
+========================================================= */
+
+/* PUBLIC HEADER */
+
+#websiteHeader.public-header {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    width: 100%;
+    min-height: 82px;
+    padding: 12px clamp(18px, 6vw, 90px);
+
+    gap: 25px;
+
+    background: rgba(255, 255, 255, .97);
+    border-bottom: 1px solid var(--line);
+    box-shadow: 0 5px 24px rgba(16, 27, 59, .05);
+
+    backdrop-filter: blur(14px);
+}
+
+.brand-area,
+.brand-logo {
+    display: flex;
+    align-items: center;
+}
+
+.brand-logo {
+    gap: 11px;
+    flex-shrink: 0;
+}
+
+.brand-symbol {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 45px;
+    height: 45px;
+
+    color: white;
+    background: linear-gradient(135deg, var(--green), var(--navy));
+
+    border-radius: 13px;
+
+    font-size: 25px;
+    font-weight: 900;
+}
+
+.brand-text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.15;
+}
+
+.brand-text strong {
+    color: var(--navy);
+    font-size: 19px;
+    font-weight: 900;
+    letter-spacing: .08em;
+}
+
+.brand-text small {
+    margin-top: 5px;
+    color: var(--green-dark);
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: .13em;
+}
+
+.public-navigation {
+    display: flex;
+    align-items: center;
+}
+
+.public-navigation ul {
+    display: flex;
+    align-items: center;
+    gap: clamp(13px, 2vw, 27px);
+
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+.public-navigation a {
+    color: #536078;
+    font-size: 12px;
+    font-weight: 750;
+    transition: color .2s ease;
+}
+
+.public-navigation a:hover {
+    color: var(--green);
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.header-actions a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 42px;
+    padding: 10px 17px;
+
+    border-radius: 9px;
+
+    font-size: 12px;
+    font-weight: 800;
+
+    transition: .2s ease;
+}
+
+.header-login {
+    color: var(--navy);
+    background: #f0f4f8;
+}
+
+.header-register {
+    color: white;
+    background: var(--green);
+    box-shadow: 0 5px 15px rgba(11, 155, 112, .18);
+}
+
+.header-register:hover {
+    background: var(--green-dark);
+    transform: translateY(-2px);
+}
+
+/* HERO */
+
+#publicMain {
+    width: 100%;
+}
+
+#publicMain > .hero-section {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(300px, .9fr);
+
+    align-items: center;
+
+    gap: 45px;
+
+    min-height: 590px;
+    padding: 80px clamp(25px, 9vw, 140px);
+
+    background:
+        radial-gradient(circle at 85% 15%, rgba(36, 190, 143, .2), transparent 30%),
+        linear-gradient(125deg, #0d1835, #172b55 55%, #1d4260);
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+    max-width: 650px;
+}
+
+.hero-label,
+.section-label {
+    display: inline-block;
+
+    color: var(--green);
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: .14em;
+}
+
+.hero-label {
+    padding: 9px 13px;
+    margin-bottom: 23px;
+
+    color: #80e8c3;
+    background: rgba(255, 255, 255, .09);
+
+    border: 1px solid rgba(255, 255, 255, .12);
+    border-radius: 30px;
+}
+
+.hero-content h1 {
+    color: white;
+    font-size: clamp(39px, 5.3vw, 67px);
+    line-height: 1.08;
+    letter-spacing: -.05em;
+    font-weight: 900;
+}
+
+.hero-content h1 span {
+    display: block;
+    color: #68dfb5;
+}
+
+.hero-description {
+    max-width: 550px;
+    margin: 23px 0 28px;
+
+    color: rgba(255, 255, 255, .76);
+    font-size: 15px;
+    line-height: 1.9;
+}
+
+.hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.hero-actions a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 49px;
+    padding: 12px 21px;
+
+    border-radius: 10px;
+
+    font-size: 13px;
+    font-weight: 850;
+
+    transition: .2s ease;
+}
+
+.hero-primary-btn {
+    color: white;
+    background: var(--green);
+    box-shadow: 0 8px 20px rgba(11, 155, 112, .25);
+}
+
+.hero-primary-btn span {
+    margin-left: 12px;
+}
+
+.hero-secondary-btn {
+    color: white;
+    background: rgba(255, 255, 255, .07);
+    border: 1px solid rgba(255, 255, 255, .35);
+}
+
+.hero-actions a:hover {
+    transform: translateY(-3px);
+}
+
+.hero-trust-text {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+
+    margin-top: 25px;
+
+    color: rgba(255, 255, 255, .75);
+    font-size: 11px;
+}
+
+.hero-trust-text span {
+    display: grid;
+    place-items: center;
+
+    width: 20px;
+    height: 20px;
+
+    color: #0c543e;
+    background: #75e6bd;
+    border-radius: 50%;
+
+    font-weight: 900;
+}
+
+.hero-visual {
+    position: relative;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 350px;
+}
+
+.hero-decoration {
+    position: absolute;
+
+    width: 310px;
+    height: 310px;
+
+    border: 1px solid rgba(255, 255, 255, .13);
+    border-radius: 50%;
+
+    box-shadow:
+        0 0 0 35px rgba(255, 255, 255, .025),
+        0 0 0 75px rgba(255, 255, 255, .018);
+}
+
+.hero-finance-card {
+    position: relative;
+    z-index: 2;
+
+    width: min(100%, 365px);
+    padding: 26px;
+
+    color: white;
+    background: linear-gradient(145deg, rgba(255,255,255,.17), rgba(255,255,255,.07));
+
+    border: 1px solid rgba(255,255,255,.25);
+    border-radius: 22px;
+
+    box-shadow: 0 25px 65px rgba(0,0,0,.2);
+    backdrop-filter: blur(15px);
+}
+
+.finance-card-top,
+.finance-card-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.finance-card-top {
+    color: #a9e9d2;
+    font-size: 9px;
+    font-weight: 850;
+    letter-spacing: .1em;
+}
+
+.finance-card-icon {
+    color: #f2d18b;
+    font-size: 24px;
+}
+
+.finance-card-main {
+    padding: 43px 0;
+}
+
+.finance-card-main > span {
+    color: rgba(255,255,255,.65);
+    font-size: 11px;
+}
+
+.finance-card-main h2 {
+    margin: 9px 0;
+    color: white;
+    font-size: 27px;
+}
+
+.finance-card-main p {
+    color: rgba(255,255,255,.72);
+    font-size: 12px;
+    line-height: 1.8;
+}
+
+.finance-card-bottom {
+    padding-top: 17px;
+    border-top: 1px solid rgba(255,255,255,.18);
+
+    color: #80e8c3;
+    font-size: 10px;
+    font-weight: 850;
+    letter-spacing: .12em;
+}
+
+.hero-floating-note {
+    position: absolute;
+    z-index: 3;
+
+    right: -5px;
+    bottom: 20px;
+
+    display: flex;
+    align-items: center;
+    gap: 11px;
+
+    padding: 13px 17px;
+
+    color: var(--navy);
+    background: white;
+
+    border-radius: 12px;
+    box-shadow: 0 12px 30px rgba(0,0,0,.18);
+}
+
+.hero-floating-note > span {
+    display: grid;
+    place-items: center;
+
+    width: 30px;
+    height: 30px;
+
+    color: white;
+    background: var(--green);
+    border-radius: 50%;
+}
+
+.hero-floating-note div {
+    display: flex;
+    flex-direction: column;
+}
+
+.hero-floating-note strong {
+    font-size: 11px;
+}
+
+.hero-floating-note small {
+    color: var(--muted);
+    font-size: 9px;
+}
+
+/* SHARED SECTION HEADINGS */
+
+#publicMain > section:not(.hero-section) {
+    padding: 85px clamp(22px, 9vw, 140px);
+}
+
+.section-heading {
+    max-width: 760px;
+    margin: 0 auto 42px;
+    text-align: center;
+}
+
+.section-heading h2 {
+    margin: 13px 0;
+
+    color: var(--navy);
+    font-size: clamp(27px, 3.5vw, 40px);
+    line-height: 1.2;
+    letter-spacing: -.04em;
+}
+
+.section-heading h2 span {
+    color: var(--green);
+}
+
+.section-heading p {
+    max-width: 680px;
+    margin: 0 auto;
+
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.9;
+}
+
+/* ABOUT */
+
+.about-section {
+    background: white;
+}
+
+.about-content {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.about-feature {
+    padding: 27px;
+
+    background: #fbfcfe;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+
+    transition: .2s ease;
+}
+
+.about-feature:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-soft);
+}
+
+.feature-icon {
+    display: grid;
+    place-items: center;
+
+    width: 48px;
+    height: 48px;
+    margin-bottom: 19px;
+
+    background: var(--green-soft);
+    border-radius: 13px;
+
+    font-size: 22px;
+}
+
+.about-feature h3 {
+    margin-bottom: 10px;
+    color: var(--navy);
+    font-size: 17px;
+}
+
+.about-feature p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.9;
+}
+
+/* WHY CHOOSE NEXUS AND HOW IT WORKS */
+
+.why-nexus-section {
+    background: #f4f7fb;
+}
+
+.benefits-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 17px;
+}
+
+.benefit-card {
+    padding: 25px 21px;
+
+    background: white;
+    border: 1px solid var(--line);
+    border-radius: 15px;
+
+    box-shadow: var(--shadow-soft);
+    transition: .2s ease;
+}
+
+.benefit-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow);
+}
+
+.benefit-card > span {
+    display: grid;
+    place-items: center;
+
+    width: 43px;
+    height: 43px;
+    margin-bottom: 18px;
+
+    color: var(--green-dark);
+    background: var(--green-soft);
+    border-radius: 12px;
+
+    font-size: 19px;
+    font-weight: 900;
+}
+
+.benefit-card h3 {
+    margin-bottom: 9px;
+    color: var(--navy);
+    font-size: 15px;
+}
+
+.benefit-card p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.8;
+}
+
+/* SAVINGS PLANS */
+
+.savings-section {
+    background: white;
+}
+
+.savings-plans-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.savings-plan-card {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+
+    min-width: 0;
+    min-height: 285px;
+    padding: 25px 22px;
+
+    background: #fbfcfe;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+
+    transition: .22s ease;
+}
+
+.savings-plan-card:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--shadow);
+}
+
+.plan-icon {
+    display: grid;
+    place-items: center;
+
+    width: 47px;
+    height: 47px;
+    margin-bottom: 19px;
+
+    color: var(--green-dark);
+    background: var(--green-soft);
+    border-radius: 13px;
+
+    font-size: 22px;
+}
+
+.plan-frequency {
+    color: var(--green-dark);
+    font-size: 9px;
+    font-weight: 900;
+    letter-spacing: .12em;
+}
+
+.savings-plan-card h3 {
+    margin: 10px 0;
+    color: var(--navy);
+    font-size: 17px;
+}
+
+.savings-plan-card p {
+    flex: 1;
+    margin: 0 0 20px;
+
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.8;
+}
+
+.savings-plan-card > a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 39px;
+    padding: 9px 14px;
+
+    color: white;
+    background: var(--green);
+    border-radius: 8px;
+
+    font-size: 11px;
+    font-weight: 800;
+}
+
+.savings-plan-card > a:hover {
+    background: var(--green-dark);
+}
+
+.featured-plan {
+    background: linear-gradient(145deg, #122348, #1c4561);
+    border-color: transparent;
+}
+
+.featured-plan .plan-frequency,
+.featured-plan h3,
+.featured-plan p {
+    color: white;
+}
+
+.featured-plan p {
+    color: rgba(255,255,255,.72);
+}
+
+.featured-plan .plan-icon {
+    color: white;
+    background: rgba(255,255,255,.14);
+}
+
+.featured-plan > a {
+    color: var(--navy);
+    background: #83e5c2;
+}
+
+/* FAQ */
+
+#faq {
+    background: #f4f7fb;
+}
+
+#faq .about-content {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+#faq .about-feature {
+    background: white;
+}
+
+/* FINAL CALL TO ACTION */
+
+#publicMain > .final-cta-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    text-align: center;
+
+    background:
+        radial-gradient(circle at 90% 10%, rgba(36,190,143,.17), transparent 28%),
+        linear-gradient(125deg, #101b3b, #1c4260);
+}
+
+.final-cta-section .section-label {
+    color: #80e8c3;
+}
+
+.final-cta-section h2 {
+    max-width: 750px;
+    margin: 17px 0;
+
+    color: white;
+    font-size: clamp(27px, 4vw, 42px);
+    line-height: 1.2;
+}
+
+.final-cta-section p {
+    max-width: 600px;
+    margin-bottom: 25px;
+
+    color: rgba(255,255,255,.75);
+    font-size: 14px;
+}
+
+.cta-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 49px;
+    padding: 13px 22px;
+
+    color: white;
+    background: var(--green);
+    border-radius: 10px;
+
+    font-size: 13px;
+    font-weight: 850;
+
+    transition: .2s ease;
+}
+
+.cta-button:hover {
+    transform: translateY(-3px);
+    background: var(--green-dark);
+}
+
+/* PUBLIC FOOTER */
+
+#websiteFooter.public-footer {
+    padding: 55px clamp(22px, 9vw, 140px) 20px;
+    color: white;
+    background: #0d1732;
+    text-align: left;
+}
+
+.footer-main {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1fr 1.2fr;
+    gap: 35px;
+
+    max-width: 1300px;
+    margin: 0 auto 40px;
+}
+
+.footer-logo .brand-text strong {
+    color: white;
+}
+
+.footer-logo .brand-text small {
+    color: #80e8c3;
+}
+
+.footer-logo .brand-symbol {
+    color: var(--navy);
+    background: #80e8c3;
+}
+
+.footer-brand > p {
+    max-width: 300px;
+    margin-top: 18px;
+
+    color: rgba(255,255,255,.62);
+    font-size: 12px;
+    line-height: 1.9;
+}
+
+.footer-links {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 11px;
+}
+
+.footer-links h3 {
+    margin: 0 0 8px;
+    color: #80e8c3;
+    font-size: 14px;
+}
+
+.footer-links a,
+.footer-links p {
+    color: rgba(255,255,255,.68);
+    font-size: 11px;
+    line-height: 1.8;
+}
+
+.footer-links a:hover {
+    color: #80e8c3;
+}
+
+.footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+
+    max-width: 1300px;
+    margin: 0 auto;
+    padding-top: 20px;
+
+    border-top: 1px solid rgba(255,255,255,.13);
+}
+
+.footer-bottom p {
+    margin: 0;
+    color: rgba(255,255,255,.55);
+    font-size: 10px;
+}
+
+/* PUBLIC HOMEPAGE TABLET */
+
+@media screen and (max-width: 1050px) {
+
+    #websiteHeader.public-header {
+        flex-wrap: wrap;
+        gap: 15px 20px;
+    }
+
+    .public-navigation {
+        order: 3;
+        width: 100%;
+        justify-content: center;
+    }
+
+    .public-navigation ul {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .hero-section {
+        gap: 25px;
+    }
+
+    .benefits-grid,
+    .savings-plans-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .footer-main {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+/* PUBLIC HOMEPAGE MOBILE */
+
+@media screen and (max-width: 700px) {
+
+    #websiteHeader.public-header {
+        position: relative;
+
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+
+        gap: 14px;
+        padding: 17px 16px;
+    }
+
+    .brand-area {
+        justify-content: center;
+    }
+
+    .public-navigation {
+        order: initial;
+
+        display: block;
+        width: 100%;
+
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .public-navigation ul {
+        flex-wrap: nowrap;
+        justify-content: flex-start;
+
+        width: max-content;
+        min-width: 100%;
+        gap: 21px;
+    }
+
+    .public-navigation a {
+        white-space: nowrap;
+        font-size: 11px;
+    }
+
+    .header-actions {
+        width: 100%;
+    }
+
+    .header-actions a {
+        flex: 1;
+    }
+
+    #publicMain > .hero-section {
+        grid-template-columns: 1fr;
+        gap: 25px;
+
+        min-height: auto;
+        padding: 60px 22px;
+    }
+
+    .hero-content {
+        text-align: center;
+    }
+
+    .hero-content h1 {
+        font-size: clamp(38px, 10vw, 49px);
+    }
+
+    .hero-description {
+        font-size: 13px;
+    }
+
+    .hero-actions {
+        flex-direction: column;
+    }
+
+    .hero-actions a {
+        width: 100%;
+    }
+
+    .hero-trust-text {
+        justify-content: center;
+    }
+
+    .hero-visual {
+        min-height: 310px;
+        margin-top: 10px;
+    }
+
+    .hero-finance-card {
+        width: min(100%, 330px);
+        padding: 22px;
+    }
+
+    .hero-floating-note {
+        right: 0;
+        bottom: 0;
+    }
+
+    #publicMain > section:not(.hero-section) {
+        padding: 58px 20px;
+    }
+
+    .section-heading {
+        margin-bottom: 30px;
+    }
+
+    .about-content,
+    #faq .about-content {
+        grid-template-columns: 1fr;
+        gap: 14px;
+    }
+
+    .benefits-grid,
+    .savings-plans-grid {
+        grid-template-columns: 1fr;
+        gap: 14px;
+    }
+
+    .savings-plan-card {
+        min-height: 250px;
+    }
+
+    #websiteFooter.public-footer {
+        padding: 45px 22px 20px;
+    }
+
+    .footer-main {
+        grid-template-columns: 1fr;
+        gap: 28px;
+    }
+
+    .footer-bottom {
+        flex-direction: column;
+        text-align: center;
+    }
+}
+
+/* VERY SMALL PHONES */
+
+@media screen and (max-width: 390px) {
+
+    .brand-text strong {
+        font-size: 17px;
+    }
+
+    .brand-symbol {
+        width: 40px;
+        height: 40px;
+    }
+
+    .hero-content h1 {
+        font-size: 35px;
+    }
+
+    .hero-floating-note {
+        right: -5px;
+        padding: 10px;
+    }
+
+    .hero-floating-note small {
+        font-size: 8px;
+    }
+}
+
+
+/* =========================================================
    4. GENERAL WEBSITE CONTENT
 ========================================================= */
 
