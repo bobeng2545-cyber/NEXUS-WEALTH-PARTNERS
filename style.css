@@ -3691,3 +3691,214 @@ body > #notificationMenu.notification-open {
     }
 
 }
+
+
+/* =====================================================
+   NEXUS WEALTH PARTNERS
+   FINAL FOOTER CORRECTION
+   STABLE PHONE LAYOUT - NO SIDEWAYS MOVEMENT
+===================================================== */
+
+@media screen and (max-width: 600px) {
+
+    /* FOOTER BACKGROUND */
+    #websiteFooter.public-footer,
+    .public-footer {
+        width: 100% !important;
+        max-width: 100% !important;
+
+        padding: 30px 12px 18px !important;
+
+        background: #0f45b9 !important;
+        color: #ffffff !important;
+
+        box-sizing: border-box !important;
+
+        overflow-x: clip !important;
+        overflow-y: visible !important;
+    }
+
+    /* THREE STABLE FOOTER COLUMNS */
+    .footer-main {
+        display: grid !important;
+
+        grid-template-columns:
+            minmax(0, 1.15fr)
+            minmax(0, 1fr)
+            minmax(0, 0.9fr) !important;
+
+        gap: 10px !important;
+
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+
+        margin: 0 auto !important;
+        padding: 0 !important;
+
+        box-sizing: border-box !important;
+
+        overflow: visible !important;
+
+        scroll-snap-type: none !important;
+        scroll-behavior: auto !important;
+
+        transform: none !important;
+        animation: none !important;
+    }
+
+    /* PREVENT FOOTER COLUMNS FROM SCROLLING */
+    .footer-main > * {
+        min-width: 0 !important;
+        max-width: 100% !important;
+        width: 100% !important;
+
+        box-sizing: border-box !important;
+
+        flex: initial !important;
+
+        scroll-snap-align: none !important;
+
+        transform: none !important;
+        animation: none !important;
+    }
+
+    /* FOOTER BRAND */
+    .footer-brand {
+        min-width: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    .footer-logo {
+        display: flex !important;
+        align-items: center !important;
+        gap: 5px !important;
+
+        width: 100% !important;
+        min-width: 0 !important;
+    }
+
+    .footer-logo .brand-symbol {
+        width: 27px !important;
+        height: 27px !important;
+        min-width: 27px !important;
+        flex: 0 0 27px !important;
+
+        font-size: 16px !important;
+    }
+
+    .footer-logo .brand-text {
+        min-width: 0 !important;
+    }
+
+    .footer-logo .brand-text strong {
+        color: #ffffff !important;
+        font-size: 12px !important;
+        overflow-wrap: anywhere !important;
+    }
+
+    .footer-logo .brand-text small {
+        color: #dbeafe !important;
+        font-size: 7px !important;
+        letter-spacing: 0.5px !important;
+    }
+
+    .footer-brand p {
+        color: #dbeafe !important;
+        font-size: 9px !important;
+        line-height: 1.6 !important;
+        margin-top: 12px !important;
+
+        overflow-wrap: anywhere !important;
+    }
+
+    /* FOOTER LINK COLUMNS */
+    .footer-links {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: flex-start !important;
+
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+
+        gap: 9px !important;
+
+        overflow: visible !important;
+
+        scroll-snap-type: none !important;
+        transform: none !important;
+        animation: none !important;
+    }
+
+    .footer-links h3 {
+        color: #eeec6a !important;
+        font-size: 11px !important;
+        line-height: 1.4 !important;
+        margin: 0 0 5px !important;
+
+        overflow-wrap: anywhere !important;
+    }
+
+    .footer-links a {
+        color: #ffffff !important;
+        font-size: 9px !important;
+        line-height: 1.5 !important;
+
+        max-width: 100% !important;
+
+        overflow-wrap: anywhere !important;
+        text-decoration: none !important;
+    }
+
+    .footer-links a:hover {
+        color: #eeec6a !important;
+    }
+
+    .footer-links p {
+        color: #dbeafe !important;
+        font-size: 9px !important;
+        line-height: 1.6 !important;
+        margin: 0 !important;
+
+        max-width: 100% !important;
+        overflow-wrap: anywhere !important;
+    }
+
+    /* FOOTER COPYRIGHT */
+    .footer-bottom {
+        display: flex !important;
+        flex-direction: column !important;
+
+        align-items: center !important;
+        justify-content: center !important;
+
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+
+        margin-top: 22px !important;
+        padding: 15px 5px 0 !important;
+        gap: 7px !important;
+
+        box-sizing: border-box !important;
+
+        text-align: center !important;
+
+        border-top: 1px solid rgba(255, 255, 255, 0.2) !important;
+
+        overflow-wrap: anywhere !important;
+
+        transform: none !important;
+        animation: none !important;
+    }
+
+    .footer-bottom p {
+        color: #ffffff !important;
+        font-size: 9px !important;
+        line-height: 1.5 !important;
+        margin: 0 !important;
+    }
+
+}
