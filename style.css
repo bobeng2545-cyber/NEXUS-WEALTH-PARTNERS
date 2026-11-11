@@ -1629,7 +1629,7 @@ form button[type="submit"] {
 
     color: var(--green-dark);
     background: var(--green-soft);
-    border-radius: 10px;
+    border-radius: 15px;
 
     font-size: 12px;
     font-weight: 800;
@@ -3887,4 +3887,37 @@ body > #notificationMenu.notification-open {
         margin: 0 !important;
     }
 
+}
+
+
+/* =========================================
+   SAVINGS TARGET DETAILS - 2 ROWS, 2 COLUMNS
+========================================= */
+
+.savings-target-details {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: repeat(2, auto);
+    gap: 15px;
+    width: 100%;
+}
+
+.savings-target-details > div {
+    width: 100%;
+    min-width: 0;
+    margin: 0 !important;
+    padding: 15px;
+    box-sizing: border-box;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 600px) {
+    .savings-target-details {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+    }
+
+    .savings-target-details > div {
+        padding: 12px;
+    }
 }
