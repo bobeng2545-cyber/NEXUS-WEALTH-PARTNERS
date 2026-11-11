@@ -1865,7 +1865,8 @@ tbody tr:hover {
 #websiteFooter {
     padding: 48px 22px;
     color: var(--white);
-    background: #0d1732;
+    background: radial-gradient(circle at 85% 15%, rgba(36, 190, 143, .2), transparent 30%),
+       linear-gradient(125deg, #0d1835, #172b55 55%, #1d4260);
     text-align: center;
 }
 
