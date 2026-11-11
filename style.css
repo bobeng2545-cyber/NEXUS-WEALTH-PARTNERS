@@ -2702,39 +2702,6 @@ body > #notificationMenu.notification-open {
         padding: 18px;
     }
 
-    /* Final CTA */
-
-    .final-cta-section {
-        padding: 48px 20px !important;
-        text-align: center;
-    }
-
-    .final-cta-section h2 {
-        font-size: clamp(26px, 7vw, 34px);
-        line-height: 1.25;
-    }
-
-    .final-cta-section p {
-        font-size: 14px;
-        line-height: 1.8;
-    }
-
-    .cta-button {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-
-        width: 100%;
-        max-width: 320px;
-        min-height: 52px;
-
-        margin: 22px auto 0;
-        padding: 14px 20px;
-
-        border-radius: 11px;
-        font-size: 14px;
-    }
-
     /* Footer */
 
     #websiteFooter.public-footer,
