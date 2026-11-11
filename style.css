@@ -1615,7 +1615,7 @@ form button[type="submit"] {
 .wallet-actions {
     display: flex;
     flex-wrap: wrap;
-    gap: 12px;
+    gap: 25px;
     margin-top: 20px;
 }
 
