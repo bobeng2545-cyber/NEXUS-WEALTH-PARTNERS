@@ -3510,3 +3510,163 @@ body > #notificationMenu.notification-open {
         animation: none !important;
     }
 }
+
+
+/* =====================================================
+   NEXUS WEALTH PARTNERS
+   PHONE VIEW - HORIZONTAL CARD LAYOUT
+   Desktop and tablet remain unchanged
+===================================================== */
+
+@media screen and (max-width: 600px) {
+
+    /* ABOUT US AND FAQ CARDS */
+    #about .about-content,
+    #faq .about-content {
+
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+
+        gap: 14px !important;
+
+        overflow-x: auto !important;
+        overflow-y: hidden !important;
+
+        padding: 10px 16px 20px !important;
+
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    #about .about-feature,
+    #faq .about-feature {
+
+        flex: 0 0 82% !important;
+        min-width: 82% !important;
+
+        scroll-snap-align: start;
+
+        box-sizing: border-box;
+    }
+
+
+    /* THE NEXUS EXPERIENCE */
+    .benefits-grid {
+
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+
+        gap: 14px !important;
+
+        overflow-x: auto !important;
+        overflow-y: hidden !important;
+
+        padding: 10px 16px 20px !important;
+
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .benefit-card {
+
+        flex: 0 0 82% !important;
+        min-width: 82% !important;
+
+        scroll-snap-align: start;
+
+        box-sizing: border-box;
+    }
+
+
+    /* SAVINGS OPTIONS */
+    .savings-plans-grid {
+
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+
+        gap: 14px !important;
+
+        overflow-x: auto !important;
+        overflow-y: hidden !important;
+
+        padding: 10px 16px 20px !important;
+
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .savings-plan-card {
+
+        flex: 0 0 82% !important;
+        min-width: 82% !important;
+
+        scroll-snap-align: start;
+
+        box-sizing: border-box;
+    }
+
+
+    /* FOOTER SECTIONS */
+    .footer-main {
+
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+
+        gap: 24px !important;
+
+        overflow-x: auto !important;
+        overflow-y: hidden !important;
+
+        padding: 10px 16px 20px !important;
+
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .footer-brand,
+    .footer-links {
+
+        flex: 0 0 75% !important;
+        min-width: 75% !important;
+
+        scroll-snap-align: start;
+
+        box-sizing: border-box;
+    }
+
+
+    /* FOOTER COPYRIGHT */
+    .footer-bottom {
+
+        display: flex !important;
+        flex-direction: column !important;
+
+        align-items: flex-start !important;
+        gap: 8px !important;
+    }
+
+
+    /* HIDE HORIZONTAL SCROLLBAR */
+    #about .about-content,
+    #faq .about-content,
+    .benefits-grid,
+    .savings-plans-grid,
+    .footer-main {
+
+        scrollbar-width: none;
+    }
+
+    #about .about-content::-webkit-scrollbar,
+    #faq .about-content::-webkit-scrollbar,
+    .benefits-grid::-webkit-scrollbar,
+    .savings-plans-grid::-webkit-scrollbar,
+    .footer-main::-webkit-scrollbar {
+
+        display: none;
+    }
+
+}
