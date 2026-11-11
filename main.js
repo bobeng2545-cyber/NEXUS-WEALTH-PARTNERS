@@ -1011,6 +1011,13 @@ function displayMemberInformation(user, profile) {
 
     const memberId = profile?.member_id || "Pending";
 
+    // Use the saved Supabase status.
+    // New accounts default to Active.
+    const accountStatus =
+        profile?.status ||
+        user.user_metadata?.status ||
+        "Active";
+
     if (getElement("memberFirstName")) {
         getElement("memberFirstName").textContent = firstName;
     }
@@ -1038,6 +1045,14 @@ function displayMemberInformation(user, profile) {
     if (getElement("profileMemberId")) {
         getElement("profileMemberId").textContent = memberId;
     }
+
+    // Display Account Status
+    const statusElement = getElement("accountStatus");
+
+    if (statusElement) {
+        statusElement.textContent = accountStatus;
+    }
+
 }
 
 
@@ -1049,7 +1064,7 @@ async function loadMemberProfile(user) {
 
     const { data, error } = await nexusSupabase
         .from("profiles")
-        .select("full_name, phone, member_id")
+        .select("full_name, phone, member_id, status")
         .eq("id", user.id)
         .maybeSingle();
 
@@ -1285,14 +1300,15 @@ if (registrationForm) {
         try {
 
             const { data, error } = await nexusSupabase.auth.signUp({
-                email,
-                password,
-                options: {
-                    data: {
-                        full_name: fullName,
-                        phone: phone
-                    }
-                }
+               email,
+               password,
+               options: {
+                  data: {
+                     full_name: fullName,
+                     phone: phone,
+                     status: "Active"
+                  }
+               }
             });
 
             if (error) throw error;
