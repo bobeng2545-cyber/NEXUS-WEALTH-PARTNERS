@@ -578,6 +578,28 @@
 
             <p>Secure. Transparent. Reliable.</p>
 
+            
+<script>
+    // Redirect Paystack callbacks to the member account page
+    // while preserving the payment reference.
+
+    const paymentUrl = new URL(window.location.href);
+
+    const paymentReference =
+        paymentUrl.searchParams.get("reference") ||
+        paymentUrl.searchParams.get("trxref");
+
+    if (
+        paymentReference &&
+        /^NEXUS_[a-f0-9]{32}$/i.test(paymentReference)
+    ) {
+        window.location.replace(
+            "account.html" + paymentUrl.search + "#login"
+        );
+    }
+</script>
+
+            
         </div>
 
     </footer>
