@@ -1,4 +1,4 @@
-
+```html
 <!DOCTYPE html>
 <html lang="en">
 
@@ -7,6 +7,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <meta name="description" content="Nexus Wealth Partners Administration Dashboard">
+
+    <meta name="theme-color" content="#087443">
 
     <title>Nexus Wealth Partners | Admin Dashboard</title>
 
@@ -119,28 +121,70 @@
 
             <nav class="admin-navigation">
 
-                <button class="admin-nav-link active" data-page="overview">
+                <button
+                    type="button"
+                    class="admin-nav-link active"
+                    data-page="overview"
+                >
                     <span>▦</span>
                     <span>Overview</span>
                 </button>
 
-                <button class="admin-nav-link" data-page="members">
+                <button
+                    type="button"
+                    class="admin-nav-link"
+                    data-page="members"
+                >
                     <span>♙</span>
                     <span>Members</span>
                 </button>
 
-                <button class="admin-nav-link" data-page="withdrawals">
+                <button
+                    type="button"
+                    class="admin-nav-link"
+                    data-page="withdrawals"
+                >
                     <span>⇧</span>
                     <span>Withdrawal Requests</span>
-                    <span id="pendingWithdrawalBadge" class="nav-badge" hidden>0</span>
+
+                    <span
+                        id="pendingWithdrawalBadge"
+                        class="nav-badge"
+                        hidden
+                    >0</span>
                 </button>
 
-                <button class="admin-nav-link" data-page="transactions">
+                <!-- DEPOSITS NAVIGATION -->
+
+                <button
+                    type="button"
+                    class="admin-nav-link"
+                    data-page="deposits"
+                >
+                    <span>↙</span>
+                    <span>Deposits</span>
+
+                    <span
+                        id="pendingDepositBadge"
+                        class="nav-badge"
+                        hidden
+                    >0</span>
+                </button>
+
+                <button
+                    type="button"
+                    class="admin-nav-link"
+                    data-page="transactions"
+                >
                     <span>⇄</span>
                     <span>Transactions</span>
                 </button>
 
-                <button class="admin-nav-link" data-page="savings">
+                <button
+                    type="button"
+                    class="admin-nav-link"
+                    data-page="savings"
+                >
                     <span>◈</span>
                     <span>Savings Management</span>
                 </button>
@@ -301,7 +345,11 @@
 
                         </div>
 
-                        <button class="panel-action" data-page="withdrawals">
+                        <button
+                            type="button"
+                            class="panel-action"
+                            data-page="withdrawals"
+                        >
                             Manage Withdrawals →
                         </button>
 
@@ -354,7 +402,11 @@
                             <p>The latest member withdrawal requests.</p>
                         </div>
 
-                        <button class="text-action" data-page="withdrawals">
+                        <button
+                            type="button"
+                            class="text-action"
+                            data-page="withdrawals"
+                        >
                             View All
                         </button>
 
@@ -535,6 +587,173 @@
 
 
             <!-- =================================
+                 DEPOSITS PAGE
+            ================================== -->
+
+            <section id="page-deposits" class="admin-page">
+
+                <div class="page-intro">
+
+                    <div>
+                        <h2>Deposits Management</h2>
+                        <p>Monitor and review all member deposit transactions.</p>
+                    </div>
+
+                    <button
+                        type="button"
+                        class="panel-action"
+                        id="refreshDepositsButton"
+                    >
+                        ↻ Refresh Deposits
+                    </button>
+
+                </div>
+
+
+                <!-- DEPOSIT STATISTICS -->
+
+                <div class="statistics-grid">
+
+                    <article class="stat-card">
+
+                        <div class="stat-icon deposits-icon">◷</div>
+
+                        <p>Pending Deposits</p>
+
+                        <h3 id="adminPendingDeposits">0</h3>
+
+                        <span>Awaiting payment verification</span>
+
+                    </article>
+
+
+                    <article class="stat-card">
+
+                        <div class="stat-icon wallet-icon">✓</div>
+
+                        <p>Successful Deposits</p>
+
+                        <h3 id="adminSuccessfulDeposits">0</h3>
+
+                        <span>Confirmed payments</span>
+
+                    </article>
+
+
+                    <article class="stat-card">
+
+                        <div class="stat-icon withdrawals-icon">×</div>
+
+                        <p>Failed Deposits</p>
+
+                        <h3 id="adminFailedDeposits">0</h3>
+
+                        <span>Unsuccessful transactions</span>
+
+                    </article>
+
+
+                    <article class="stat-card">
+
+                        <div class="stat-icon members-icon">GH₵</div>
+
+                        <p>Total Successful Deposits</p>
+
+                        <h3 id="adminDepositTotal">GH₵0.00</h3>
+
+                        <span>Confirmed deposit value</span>
+
+                    </article>
+
+                </div>
+
+
+                <!-- DEPOSIT RECORDS -->
+
+                <div class="admin-panel">
+
+                    <div class="panel-heading">
+
+                        <div>
+                            <h3>All Deposit Transactions</h3>
+                            <p>View deposit references, member details and payment status.</p>
+                        </div>
+
+                    </div>
+
+                    <div class="table-container">
+
+                        <table>
+
+                            <thead>
+
+                                <tr>
+                                    <th>Reference</th>
+                                    <th>Member</th>
+                                    <th>Amount</th>
+                                    <th>Payment Method</th>
+                                    <th>Payment Phone</th>
+                                    <th>Status</th>
+                                    <th>Date &amp; Time</th>
+                                </tr>
+
+                            </thead>
+
+                            <tbody id="depositsTable">
+
+                                <tr>
+                                    <td colspan="7" class="empty-table">
+                                        Deposit transactions will appear here.
+                                    </td>
+                                </tr>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+
+                <!-- PAYMENT SECURITY INFORMATION -->
+
+                <div class="admin-panel">
+
+                    <div class="panel-heading">
+
+                        <div>
+                            <h3>Deposit Verification Security</h3>
+                            <p>Important information about member payments.</p>
+                        </div>
+
+                    </div>
+
+                    <div class="platform-information">
+
+                        <div>
+                            <span>Payment provider</span>
+                            <strong>Paystack</strong>
+                        </div>
+
+                        <div>
+                            <span>Verification method</span>
+                            <strong>Server-side Paystack verification</strong>
+                        </div>
+
+                        <div>
+                            <span>Wallet crediting</span>
+                            <strong>Only after successful verification</strong>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================
                  TRANSACTIONS PAGE
             ================================== -->
 
@@ -685,3 +904,4 @@
 
 </body>
 </html>
+```
