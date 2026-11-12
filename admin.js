@@ -1,4 +1,4 @@
-```javascript
+
 /* =========================================
    NEXUS WEALTH PARTNERS
    COMPLETE ADMINISTRATOR DASHBOARD
