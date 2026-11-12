@@ -1305,14 +1305,22 @@
          JAVASCRIPT CONNECTIONS
     ====================================== -->
 
-    <script>
-        // Open the login screen by default when no
-        // account section is specified in the URL.
+    
+<script>
+    // Set the login screen by default without removing
+    // Paystack's payment reference from the URL.
 
-        if (!window.location.hash) {
-            history.replaceState(null, "", "#login");
-        }
-    </script>
+    if (!window.location.hash) {
+        history.replaceState(
+            null,
+            "",
+            window.location.pathname +
+            window.location.search +
+            "#login"
+        );
+    }
+</script>
+
 
 
     <!-- SUPABASE LIBRARY -->
