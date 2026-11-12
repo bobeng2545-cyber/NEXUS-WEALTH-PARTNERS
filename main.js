@@ -1,3 +1,4 @@
+
 /* =========================================
    NEXUS WEALTH PARTNERS
    COMPLETE MAIN JAVASCRIPT
@@ -357,7 +358,7 @@ function setMobileDashboardView(screen, shouldScroll = true) {
             "#memberProfile"
         ]
 
-           };
+    };
 
     if (!screenSections[screen]) {
         screen = "home";
@@ -627,34 +628,17 @@ function showMemberDashboard() {
 
 let nexusNotificationsInitialized = false;
 
-
 /* MOVE NOTIFICATION POPUP OUTSIDE DASHBOARD */
 
-function moveNexusNotificationMenu() {
+document.addEventListener("DOMContentLoaded", function () {
 
     const notificationMenu = getElement("notificationMenu");
 
-    if (
-        notificationMenu &&
-        notificationMenu.parentElement !== document.body
-    ) {
+    if (notificationMenu && notificationMenu.parentElement !== document.body) {
         document.body.appendChild(notificationMenu);
     }
-}
 
-if (document.readyState === "loading") {
-
-    document.addEventListener(
-        "DOMContentLoaded",
-        moveNexusNotificationMenu,
-        { once: true }
-    );
-
-} else {
-
-    moveNexusNotificationMenu();
-
-}
+});
 
 
 /* FORMAT NOTIFICATION DATE */
@@ -702,13 +686,13 @@ async function loadNexusNotifications(user) {
     const notificationList = getElement("notificationList");
     const markAllButton = getElement("markAllNotifications");
 
-    if (!notificationList) return;
+    if (!user || !notificationList) return;
 
     try {
 
         const { data, error } = await nexusSupabase
             .from("nexus_notifications")
-            .select("*")
+            .select("id, title, message, type, is_read, created_at")
             .eq("user_id", user.id)
             .order("created_at", { ascending: false })
             .limit(50);
@@ -721,18 +705,16 @@ async function loadNexusNotifications(user) {
             notification => !notification.is_read
         ).length;
 
-        /* CONTROL NOTIFICATION RIPPLE */
-
-        const notificationButton = getElement("notificationButton");
-
-        if (notificationButton) {
-
-            notificationButton.classList.toggle(
-                "has-unread",
-                unreadCount > 0
-            );
-
-        }
+       /* CONTROL NOTIFICATION RIPPLE */
+       
+       const notificationButton = getElement("notificationButton");
+       
+       if (notificationButton) {
+          notificationButton.classList.toggle(
+             "has-unread",
+             unreadCount > 0
+          );
+       }
 
         /* UPDATE UNREAD COUNT */
 
@@ -988,8 +970,7 @@ function initializeNexusNotifications() {
 
         if (
             notificationArea &&
-            !notificationArea.contains(event.target) &&
-            !notificationMenu.contains(event.target)
+            !notificationArea.contains(event.target)
         ) {
             closeNexusNotificationMenu();
         }
@@ -1009,360 +990,6 @@ function initializeNexusNotifications() {
     nexusNotificationsInitialized = true;
 }
 
-/* FORMAT NOTIFICATION DATE */
-
-function formatNotificationDate(dateValue) {
-
-    if (!dateValue) return "";
-
-    const date = new Date(dateValue);
-
-    if (Number.isNaN(date.getTime())) return "";
-
-    return date.toLocaleString("en-GH", {
-        day: "numeric",
-        month: "short",
-        year: "numeric",
-        hour: "2-digit",
-        minute: "2-digit"
-    });
-}
-
-
-/* CLOSE NOTIFICATION MENU */
-
-function closeNexusNotificationMenu() {
-
-    const menu = getElement("notificationMenu");
-    const button = getElement("notificationButton");
-
-    if (menu) {
-        menu.hidden = true;
-    }
-
-    if (button) {
-        button.setAttribute("aria-expanded", "false");
-    }
-}
-
-
-/* LOAD MEMBER NOTIFICATIONS */
-
-async function loadNexusNotifications(user) {
-
-    const notificationCount = getElement("notificationCount");
-    const notificationList = getElement("notificationList");
-    const markAllButton = getElement("markAllNotifications");
-
-    if (!user || !notificationList) return;
-
-    try {
-
-        const { data, error } = await nexusSupabase
-            .from("nexus_notifications")
-            .select("id, title, message, type, is_read, created_at")
-            .eq("user_id", user.id)
-            .order("created_at", { ascending: false })
-            .limit(50);
-
-        if (error) throw error;
-
-        const notifications = data || [];
-
-        const unreadCount = notifications.filter(
-            notification => !notification.is_read
-        ).length;
-
-        /* CONTROL NOTIFICATION RIPPLE */
-
-        const notificationButton = getElement("notificationButton");
-
-        if (notificationButton) {
-            notificationButton.classList.toggle(
-                "has-unread",
-                unreadCount > 0
-            );
-        }
-
-        /* UPDATE UNREAD COUNT */
-
-        if (notificationCount) {
-
-            notificationCount.textContent =
-                unreadCount > 99 ? "99+" : String(unreadCount);
-
-            notificationCount.hidden = unreadCount === 0;
-        }
-
-        /* UPDATE MARK ALL BUTTON */
-
-        if (markAllButton) {
-            markAllButton.disabled = unreadCount === 0;
-        }
-
-        notificationList.replaceChildren();
-
-        /* EMPTY NOTIFICATION MESSAGE */
-
-        if (notifications.length === 0) {
-
-            const empty = document.createElement("div");
-            empty.className = "empty-notifications";
-
-            const icon = document.createElement("span");
-            icon.textContent = "🔔";
-
-            const message = document.createElement("p");
-            message.textContent = "No notifications yet.";
-
-            empty.append(icon, message);
-            notificationList.appendChild(empty);
-
-            return;
-        }
-
-        /* DISPLAY NOTIFICATIONS */
-
-        notifications.forEach(notification => {
-
-            const item = document.createElement("div");
-
-            item.className = "nexus-notification-item";
-
-            if (!notification.is_read) {
-                item.classList.add("unread");
-            }
-
-            item.dataset.notificationId = notification.id;
-
-            const content = document.createElement("div");
-            content.className = "nexus-notification-content";
-
-            const title = document.createElement("h4");
-            title.textContent = notification.title || "Notification";
-
-            const message = document.createElement("p");
-            message.textContent = notification.message || "";
-
-            const date = document.createElement("small");
-            date.textContent = formatNotificationDate(
-                notification.created_at
-            );
-
-            content.append(title, message, date);
-
-            const status = document.createElement("span");
-            status.className = "nexus-notification-status";
-            status.textContent = notification.is_read ? "" : "●";
-
-            item.append(content, status);
-
-            /* MARK INDIVIDUAL NOTIFICATION AS READ */
-
-            item.addEventListener("click", async function() {
-
-                if (!notification.is_read) {
-                    await markNexusNotificationRead(notification.id);
-                }
-
-            });
-
-            notificationList.appendChild(item);
-
-        });
-
-    } catch (error) {
-
-        console.error("Notification loading error:", error);
-
-        notificationList.innerHTML = `
-            <div class="empty-notifications">
-                <span>⚠️</span>
-                <p>Unable to load notifications.</p>
-            </div>
-        `;
-    }
-}
-
-
-/* MARK ONE NOTIFICATION AS READ */
-
-async function markNexusNotificationRead(notificationId) {
-
-    try {
-
-        const { error } = await nexusSupabase.rpc(
-            "mark_nexus_notification_read",
-            {
-                p_notification_id: notificationId
-            }
-        );
-
-        if (error) throw error;
-
-        const { data, error: authError } =
-            await nexusSupabase.auth.getUser();
-
-        if (authError) throw authError;
-
-        if (data.user) {
-            await loadNexusNotifications(data.user);
-        }
-
-    } catch (error) {
-
-        console.error(
-            "Could not mark notification as read:",
-            error
-        );
-
-        showMessage("Unable to update this notification.");
-
-    }
-}
-
-
-/* MARK ALL NOTIFICATIONS AS READ */
-
-async function markAllNexusNotificationsRead() {
-
-    const button = getElement("markAllNotifications");
-
-    if (button) {
-        button.disabled = true;
-    }
-
-    try {
-
-        const { error } = await nexusSupabase.rpc(
-            "mark_all_nexus_notifications_read"
-        );
-
-        if (error) throw error;
-
-        const { data, error: authError } =
-            await nexusSupabase.auth.getUser();
-
-        if (authError) throw authError;
-
-        if (data.user) {
-            await loadNexusNotifications(data.user);
-        }
-
-    } catch (error) {
-
-        console.error(
-            "Could not mark all notifications as read:",
-            error
-        );
-
-        if (button) {
-            button.disabled = false;
-        }
-
-        showMessage("Unable to mark all notifications as read.");
-
-    }
-}
-
-
-/* INITIALIZE NOTIFICATION BELL */
-
-function initializeNexusNotifications() {
-
-    if (nexusNotificationsInitialized) return;
-
-    const notificationButton = getElement("notificationButton");
-    const notificationMenu = getElement("notificationMenu");
-    const markAllButton = getElement("markAllNotifications");
-
-    if (!notificationButton || !notificationMenu) {
-
-        console.warn(
-            "Notification HTML elements were not found."
-        );
-
-        return;
-    }
-
-    /* OPEN AND CLOSE MENU */
-
-    notificationButton.addEventListener("click", async function() {
-
-        const isOpening = notificationMenu.hidden;
-
-        notificationMenu.hidden = !isOpening;
-
-        notificationButton.setAttribute(
-            "aria-expanded",
-            String(isOpening)
-        );
-
-        /* REFRESH NOTIFICATIONS WHEN OPENED */
-
-        if (isOpening) {
-
-            const { data, error } =
-                await nexusSupabase.auth.getUser();
-
-            if (error) {
-                console.error("Notification user check error:", error);
-                return;
-            }
-
-            if (data.user) {
-                await loadNexusNotifications(data.user);
-            }
-
-        }
-
-    });
-
-    /* MARK ALL AS READ */
-
-    if (markAllButton) {
-
-        markAllButton.addEventListener("click", function() {
-            markAllNexusNotificationsRead();
-        });
-
-    }
-
-    /* CLOSE MENU WHEN CLICKING OUTSIDE */
-
-    document.addEventListener("click", function(event) {
-
-        const notificationArea = notificationButton.closest(
-            ".notification-area"
-        );
-
-        const clickedInsideNotificationArea =
-            notificationArea && notificationArea.contains(event.target);
-
-        const clickedInsideNotificationMenu =
-            notificationMenu.contains(event.target);
-
-        if (
-            !clickedInsideNotificationArea &&
-            !clickedInsideNotificationMenu
-        ) {
-            closeNexusNotificationMenu();
-        }
-
-    });
-
-    /* CLOSE MENU WITH ESCAPE KEY */
-
-    document.addEventListener("keydown", function(event) {
-
-        if (event.key === "Escape") {
-            closeNexusNotificationMenu();
-        }
-
-    });
-
-    nexusNotificationsInitialized = true;
-}
 
 /* =========================================
    13. DISPLAY MEMBER INFORMATION
@@ -1383,6 +1010,13 @@ function displayMemberInformation(user, profile) {
         "";
 
     const memberId = profile?.member_id || "Pending";
+
+    // Use the saved Supabase status.
+    // New accounts default to Active.
+    const accountStatus =
+        profile?.status ||
+        user.user_metadata?.status ||
+        "Active";
 
     if (getElement("memberFirstName")) {
         getElement("memberFirstName").textContent = firstName;
@@ -1411,6 +1045,14 @@ function displayMemberInformation(user, profile) {
     if (getElement("profileMemberId")) {
         getElement("profileMemberId").textContent = memberId;
     }
+
+    // Display Account Status
+    const statusElement = getElement("accountStatus");
+
+    if (statusElement) {
+        statusElement.textContent = accountStatus;
+    }
+
 }
 
 
@@ -1422,7 +1064,7 @@ async function loadMemberProfile(user) {
 
     const { data, error } = await nexusSupabase
         .from("profiles")
-        .select("full_name, phone, member_id")
+        .select("full_name, phone, member_id, status")
         .eq("id", user.id)
         .maybeSingle();
 
@@ -1445,7 +1087,7 @@ async function loadMemberProfile(user) {
 
 /* =========================================
    15. LOAD MEMBER WALLET
-   DISPLAY SUPABASE WALLET BALANCE (NO DOUBLE DEDUCTION)
+   DISPLAY BALANCE AFTER PENDING WITHDRAWALS
 ========================================= */
 
 async function loadMemberWallet(user) {
@@ -1470,12 +1112,7 @@ async function loadMemberWallet(user) {
     const deposits = Number(data.total_deposits) || 0;
     const withdrawals = Number(data.total_withdrawals) || 0;
 
-    /*
-       The submit_withdrawal_request database function already deducts
-       the requested amount from wallets.balance immediately.
-       Therefore, pending requests are displayed for information only.
-       DO NOT subtract them from the wallet balance again.
-    */
+    /* LOAD PENDING AND PROCESSING WITHDRAWALS */
 
     const {
         data: requests,
@@ -1491,14 +1128,23 @@ async function loadMemberWallet(user) {
         throw requestError;
     }
 
+    /* CALCULATE TOTAL RESERVED WITHDRAWALS */
+
     const pendingWithdrawals = (requests || []).reduce(
-        (total, request) => total + (Number(request.amount) || 0),
+        (total, request) => {
+            return total + (Number(request.amount) || 0);
+        },
         0
     );
 
-    // Supabase balance is already reduced by any pending withdrawal.
-    const currentBalance = actualBalance;
-    const availableBalance = actualBalance;
+    /* DISPLAY BALANCE AFTER WITHDRAWAL REQUESTS */
+
+    const currentBalance = Math.max(
+        0,
+        actualBalance - pendingWithdrawals
+    );
+
+    const availableBalance = currentBalance;
 
     /* DISPLAY WALLET BALANCE */
 
@@ -1654,14 +1300,15 @@ if (registrationForm) {
         try {
 
             const { data, error } = await nexusSupabase.auth.signUp({
-                email,
-                password,
-                options: {
-                    data: {
-                        full_name: fullName,
-                        phone: phone
-                    }
-                }
+               email,
+               password,
+               options: {
+                  data: {
+                     full_name: fullName,
+                     phone: phone,
+                     status: "Active"
+                  }
+               }
             });
 
             if (error) throw error;
@@ -1702,7 +1349,8 @@ if (registrationForm) {
 ========================================= */
 
 if (loginForm) {
-       loginForm.addEventListener("submit", async function(event) {
+
+    loginForm.addEventListener("submit", async function(event) {
 
         event.preventDefault();
 
@@ -1878,6 +1526,7 @@ async function logoutMember() {
 window.logoutMember = logoutMember;
 
 
+
 /* =========================================
    23. AUTHENTICATION STATE
 ========================================= */
@@ -2019,8 +1668,7 @@ async function loadMemberTransactions(user) {
                     "Deposit - " +
                     (
                         depositMethods[transaction.payment_method] ||
-                        transaction.payment_method ||
-                        "Payment method"
+                        transaction.payment_method
                     );
 
                 amountCell.textContent =
@@ -2032,8 +1680,7 @@ async function loadMemberTransactions(user) {
                     "Withdrawal - " +
                     (
                         withdrawalMethods[transaction.withdrawal_method] ||
-                        transaction.withdrawal_method ||
-                        "Payment method"
+                        transaction.withdrawal_method
                     );
 
                 amountCell.textContent =
@@ -2050,7 +1697,8 @@ async function loadMemberTransactions(user) {
             statusCell.textContent =
                 statuses[transaction.status] ||
                 transaction.status;
-                       statusCell.className =
+
+            statusCell.className =
                 "transaction-status status-" + transaction.status;
 
             const receiptButton = document.createElement("button");
@@ -2401,8 +2049,6 @@ if (depositForm) {
 
 const withdrawalForm = getElement("withdrawalForm");
 
-const withdrawalForm = getElement("withdrawalForm");
-
 if (withdrawalForm) {
 
     withdrawalForm.addEventListener("submit", async function(event) {
@@ -2495,7 +2141,7 @@ if (withdrawalForm) {
                 "Amount: " + formatMoney(amount) + "\n" +
                 "Status: Pending\n" +
                 "Request ID: " + data.request_id + "\n\n" +
-                "The requested amount has been deducted from your wallet balance immediately. Your request is now awaiting review and payment."
+                "Your money is reserved while the request awaits review. It is not yet paid out."
             );
 
             console.log(
@@ -2918,6 +2564,8 @@ initializeTransactionFilters();
 initializeWebsite();
 
 
+
+
 /* =========================================
    INITIALIZE WEBSITE
 ========================================= */
@@ -2988,3 +2636,4 @@ async function initializeWebsite() {
 
     }
 }
+
