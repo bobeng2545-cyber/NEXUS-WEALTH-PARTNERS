@@ -1590,8 +1590,10 @@ document.addEventListener("keydown", event => {
 });
 
 
+
 /* =========================================
    19. DISPLAY WITHDRAWAL REQUESTS
+   SHOW RECIPIENT NAME AND ACCOUNT NUMBER
 ========================================= */
 
 function displayAdminWithdrawals(
@@ -1634,6 +1636,7 @@ function displayAdminWithdrawals(
     }
 
     sortedWithdrawals.forEach((request, index) => {
+
         const memberName = getAdminMemberName(
             request.user_id,
             profiles
@@ -1644,19 +1647,27 @@ function displayAdminWithdrawals(
 
         const row = document.createElement("tr");
 
+        /* REQUEST ID */
+
         row.appendChild(
             createAdminTableCell(requestId)
         );
 
+        /* MEMBER NAME */
+
         row.appendChild(
             createAdminTableCell(memberName)
         );
+
+        /* WITHDRAWAL AMOUNT */
 
         row.appendChild(
             createAdminTableCell(
                 formatNexusAdminMoney(request.amount)
             )
         );
+
+        /* PAYMENT METHOD */
 
         row.appendChild(
             createAdminTableCell(
@@ -1666,13 +1677,72 @@ function displayAdminWithdrawals(
             )
         );
 
-        row.appendChild(
-            createAdminTableCell(request.payment_details)
+        /* =====================================
+           RECIPIENT NAME AND ACCOUNT NUMBER
+        ===================================== */
+
+        const paymentDetailsCell =
+            document.createElement("td");
+
+        const paymentDetails =
+            String(request.payment_details || "").trim();
+
+        const accountNameMatch =
+            paymentDetails.match(
+                /Account Name:\s*(.*?)\s*\|\s*Account Number:/i
+            );
+
+        const accountNumberMatch =
+            paymentDetails.match(
+                /Account Number:\s*(.*)$/i
+            );
+
+        const accountName =
+            accountNameMatch
+                ? accountNameMatch[1].trim()
+                : "";
+
+        const accountNumber =
+            accountNumberMatch
+                ? accountNumberMatch[1].trim()
+                : paymentDetails;
+
+        const accountNameLine =
+            document.createElement("div");
+
+        accountNameLine.textContent =
+            "Account Name: " +
+            (accountName || "—");
+
+        const accountNumberLine =
+            document.createElement("div");
+
+        accountNumberLine.textContent =
+            "Account Number: " +
+            (accountNumber || "—");
+
+        paymentDetailsCell.appendChild(
+            accountNameLine
         );
+
+        paymentDetailsCell.appendChild(
+            accountNumberLine
+        );
+
+        paymentDetailsCell.className =
+            "withdrawal-payment-details";
+
+        row.appendChild(paymentDetailsCell);
+
+        /* WITHDRAWAL STATUS */
 
         row.appendChild(
             createAdminStatusCell(request.status)
         );
+
+        /* =====================================
+           ADMIN WITHDRAWAL ACTIONS
+        ===================================== */
 
         const actionCell =
             document.createElement("td");
@@ -1680,14 +1750,20 @@ function displayAdminWithdrawals(
         const status =
             normalizeAdminStatus(request.status);
 
-        if (status === "pending" || status === "processing") {
+        if (
+            status === "pending" ||
+            status === "processing"
+        ) {
+
             if (status === "pending") {
+
                 const processButton =
                     document.createElement("button");
 
                 processButton.type = "button";
                 processButton.textContent = "Process";
-                processButton.className = "admin-action-button";
+                processButton.className =
+                    "admin-action-button";
 
                 processButton.addEventListener("click", () => {
                     reviewNexusWithdrawal(
@@ -1715,19 +1791,27 @@ function displayAdminWithdrawals(
             });
 
             actionCell.appendChild(rejectButton);
+
         } else {
             actionCell.textContent = "No action";
         }
 
         row.appendChild(actionCell);
 
-        const dateTimeCell = createAdminTableCell(
-            formatAdminDateTime(
-                getAdminFinancialDate(request, "withdrawal")
-            )
-        );
+        /* DATE AND TIME */
 
-        dateTimeCell.className = "withdrawal-date-time";
+        const dateTimeCell =
+            createAdminTableCell(
+                formatAdminDateTime(
+                    getAdminFinancialDate(
+                        request,
+                        "withdrawal"
+                    )
+                )
+            );
+
+        dateTimeCell.className =
+            "withdrawal-date-time";
 
         if (request.created_at) {
             const requestDate =
@@ -1741,11 +1825,18 @@ function displayAdminWithdrawals(
 
         row.appendChild(dateTimeCell);
 
+        /* MAIN WITHDRAWAL TABLE */
+
         if (table) {
             table.appendChild(row);
         }
 
+        /* =====================================
+           RECENT WITHDRAWALS TABLE
+        ===================================== */
+
         if (index < 5 && recentTable) {
+
             const recentRow =
                 document.createElement("tr");
 
@@ -1780,7 +1871,13 @@ function displayAdminWithdrawals(
             recentTable.appendChild(recentRow);
         }
     });
+
+    console.log(
+        "Admin withdrawal requests displayed:",
+        sortedWithdrawals.length
+    );
 }
+
 
 
 /* =========================================
