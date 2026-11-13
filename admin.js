@@ -400,17 +400,30 @@ async function showAdminDashboard(email) {
 
     }
 
-    if (data !== true) {
+   if (data !== true) {
 
-        await nexusAdminSupabase.auth.signOut();
+    await nexusAdminSupabase.auth.signOut();
 
-        showAdminLogin();
+    showAdminLogin();
 
-        throw new Error(
-            "Your account is not registered as an authorized administrator."
-        );
+    throw new Error(
+        "Your account is not registered as an authorized administrator."
+    );
 
-    }
+}
+
+    /* SAVE THE AUTHENTICATED ADMINISTRATOR ID */
+
+const { data: adminUserData, error: adminUserError } =
+    await nexusAdminSupabase.auth.getUser();
+
+if (adminUserError || !adminUserData.user) {
+    throw new Error(
+        "Could not verify the administrator account."
+    );
+}
+
+currentAdminUserId = adminUserData.user.id;
 
     if (adminLoginScreen) {
         adminLoginScreen.hidden = true;
@@ -853,6 +866,7 @@ let adminWalletsCache = [];
 let adminDepositsCache = [];
 let adminWithdrawalsCache = [];
 let adminDepositsAvailable = true;
+let currentAdminUserId = null;
 
 
 /* =========================================
@@ -1179,6 +1193,220 @@ function openAdminMemberProfile(userId) {
 
 }
 
+/* =========================================
+   MEMBER ACCOUNT STATUS MANAGEMENT
+========================================= */
+
+const suspendMemberButton =
+    document.getElementById("suspendMemberButton");
+
+const activateMemberButton =
+    document.getElementById("activateMemberButton");
+
+
+/* SHOW THE CORRECT ACCOUNT ACTION */
+
+function updateMemberAccountActionButtons(profile) {
+
+    if (!suspendMemberButton || !activateMemberButton) {
+        return;
+    }
+
+    suspendMemberButton.hidden = true;
+    activateMemberButton.hidden = true;
+
+    suspendMemberButton.disabled = false;
+    activateMemberButton.disabled = false;
+
+    if (!profile) return;
+
+    /*
+       NEVER SHOW ACCOUNT CONTROLS
+       ON THE CURRENT ADMINISTRATOR'S PROFILE.
+    */
+
+    if (
+        profile.id === currentAdminUserId ||
+        String(profile.email || "").toLowerCase() ===
+            AUTHORIZED_ADMIN_EMAIL
+    ) {
+        return;
+    }
+
+    const status = normalizeAdminStatus(profile.status);
+
+    if (status === "active") {
+
+        suspendMemberButton.hidden = false;
+
+    } else if (status === "suspended") {
+
+        activateMemberButton.hidden = false;
+
+    }
+
+}
+
+
+/* CHANGE MEMBER ACCOUNT STATUS */
+
+async function updateNexusMemberStatus(newStatus) {
+
+    const profile = adminProfilesCache.find(
+        member =>
+            member.id ===
+            document.getElementById("memberProfileModal")
+                ?.dataset.memberId
+    );
+
+    if (!profile) {
+
+        alert("Member information could not be found.");
+
+        return;
+
+    }
+
+    if (
+        !["Active", "Suspended"].includes(newStatus)
+    ) {
+        alert("Invalid account status.");
+        return;
+    }
+
+    if (
+        profile.id === currentAdminUserId ||
+        String(profile.email || "").toLowerCase() ===
+            AUTHORIZED_ADMIN_EMAIL
+    ) {
+        alert("Administrator accounts cannot be changed here.");
+        return;
+    }
+
+    const action =
+        newStatus === "Suspended"
+            ? "suspend"
+            : "activate";
+
+    const confirmed = window.confirm(
+        newStatus === "Suspended"
+
+            ? `Are you sure you want to suspend ${profile.full_name || "this member"}? The member will not be able to initiate new deposits or withdrawals.`
+
+            : `Are you sure you want to activate ${profile.full_name || "this member"}?`
+    );
+
+    if (!confirmed) return;
+
+    const button =
+        newStatus === "Suspended"
+            ? suspendMemberButton
+            : activateMemberButton;
+
+    const originalText = button?.textContent || "";
+
+    if (button) {
+        button.disabled = true;
+        button.textContent = "Updating...";
+    }
+
+    try {
+
+        const { data, error } =
+            await nexusAdminSupabase.rpc(
+                "admin_update_member_status",
+                {
+                    p_user_id: profile.id,
+                    p_new_status: newStatus
+                }
+            );
+
+        if (error) {
+            throw error;
+        }
+
+        if (!data || data.success !== true) {
+            throw new Error(
+                data?.message ||
+                "The member account status could not be updated."
+            );
+        }
+
+        /*
+           UPDATE THE LOCAL MEMBER RECORD.
+        */
+
+        profile.status = newStatus;
+
+        /*
+           REFRESH THE MEMBER DIRECTORY.
+        */
+
+        displayAdminMembers(adminProfilesCache);
+
+        /*
+           REFRESH THE OPEN PROFILE.
+        */
+
+        openAdminMemberProfile(profile.id);
+
+        alert(
+           data.message ||
+           `Member account ${newStatus.toLowerCase()} successfully.`
+        );
+
+        console.log(
+            "Member account status updated:",
+            data
+        );
+
+    } catch (error) {
+
+        console.error(
+            "Member account status update error:",
+            error
+        );
+
+        alert(
+            error.message ||
+            "Unable to update the member account."
+        );
+
+    } finally {
+
+        if (button) {
+            button.disabled = false;
+            button.textContent = originalText;
+        }
+
+    }
+
+}
+
+
+/* SUSPEND BUTTON */
+
+if (suspendMemberButton) {
+
+    suspendMemberButton.addEventListener(
+        "click",
+        () => updateNexusMemberStatus("Suspended")
+    );
+
+}
+
+
+/* ACTIVATE BUTTON */
+
+if (activateMemberButton) {
+
+    activateMemberButton.addEventListener(
+        "click",
+        () => updateNexusMemberStatus("Active")
+    );
+
+}
+
 
 /* =========================================
    MEMBER TRANSACTION HISTORY
@@ -1324,6 +1552,16 @@ function closeAdminMemberProfile() {
 
     const modal =
         document.getElementById("memberProfileModal");
+
+   /* REMEMBER WHICH MEMBER IS OPEN */
+
+if (modal) {
+    modal.dataset.memberId = userId;
+}
+
+/* DISPLAY THE CORRECT ACCOUNT ACTION */
+
+updateMemberAccountActionButtons(profile);
 
     if (modal) {
 
