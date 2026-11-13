@@ -446,62 +446,104 @@
 
 
             <!-- =================================
-                 MEMBERS PAGE
-            ================================== -->
+     MEMBERS MANAGEMENT PAGE
+================================== -->
 
-            <section id="page-members" class="admin-page">
+<section id="page-members" class="admin-page">
 
-                <div class="page-intro">
+    <div class="page-intro">
+        <div>
+            <h2>Members Management</h2>
+            <p>Search members, inspect their profiles and monitor their financial activities.</p>
+        </div>
+    </div>
 
-                    <div>
-                        <h2>Members Management</h2>
-                        <p>View registered members and their account information.</p>
-                    </div>
+    <!-- MEMBER STATISTICS -->
 
-                </div>
+    <div class="statistics-grid">
 
-                <div class="admin-panel">
+        <article class="stat-card">
+            <div class="stat-icon members-icon">♙</div>
+            <p>Total Members</p>
+            <h3 id="memberManagementTotal">0</h3>
+            <span>Registered accounts</span>
+        </article>
 
-                    <div class="panel-heading">
+        <article class="stat-card">
+            <div class="stat-icon wallet-icon">▣</div>
+            <p>Total Member Wallets</p>
+            <h3 id="memberManagementWallets">GH₵0.00</h3>
+            <span>Combined wallet balances</span>
+        </article>
 
-                        <div>
-                            <h3>Registered Members</h3>
-                            <p>Member accounts on the platform.</p>
-                        </div>
+    </div>
 
-                    </div>
+    <!-- MEMBER DIRECTORY -->
 
-                    <div class="table-container">
+    <div class="admin-panel">
 
-                        <table>
+        <div class="panel-heading">
+            <div>
+                <h3>Registered Members</h3>
+                <p>Search and open a member's account information.</p>
+            </div>
+        </div>
 
-                            <thead>
-                                <tr>
-                                    <th>Member ID</th>
-                                    <th>Full Name</th>
-                                    <th>Email</th>
-                                    <th>Phone</th>
-                                    <th>Joined</th>
-                                </tr>
-                            </thead>
+        <div class="member-search-area">
+            <input
+                type="search"
+                id="memberSearchInput"
+                placeholder="Search by name, email, phone or Member ID..."
+                autocomplete="off"
+                aria-label="Search members"
+            >
 
-                            <tbody id="membersTable">
+            <button
+                type="button"
+                id="clearMemberSearch"
+                class="panel-action"
+            >
+                Clear Search
+            </button>
+        </div>
 
-                                <tr>
-                                    <td colspan="5" class="empty-table">
-                                        Members will appear here.
-                                    </td>
-                                </tr>
+        <p id="memberSearchResults" class="member-search-results">
+            Loading members...
+        </p>
 
-                            </tbody>
+        <div class="table-container">
 
-                        </table>
+            <table>
 
-                    </div>
+                <thead>
+                    <tr>
+                        <th>Member ID</th>
+                        <th>Full Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Joined</th>
+                        <th>Account Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
 
-                </div>
+                <tbody id="membersTable">
 
-            </section>
+                    <tr>
+                        <td colspan="7" class="empty-table">
+                            Members will appear here.
+                        </td>
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</section>
 
 
             <!-- =================================
@@ -872,6 +914,159 @@
 
             </section>
 
+            <!-- =================================
+     MEMBER PROFILE MODAL
+================================== -->
+
+<div
+    id="memberProfileModal"
+    class="member-profile-modal"
+    hidden
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="memberProfileTitle"
+>
+
+    <div class="member-profile-card">
+
+        <div class="member-profile-header">
+
+            <div>
+                <p>MEMBER ACCOUNT</p>
+                <h2 id="memberProfileTitle">Member Profile</h2>
+            </div>
+
+            <button
+                type="button"
+                id="closeMemberProfile"
+                class="member-profile-close"
+                aria-label="Close member profile"
+            >
+                ×
+            </button>
+
+        </div>
+
+        <!-- MEMBER DETAILS -->
+
+        <div class="member-profile-section">
+
+            <h3>Personal Information</h3>
+
+            <div class="member-profile-grid">
+
+                <div>
+                    <span>Member ID</span>
+                    <strong id="profileMemberId">—</strong>
+                </div>
+
+                <div>
+                    <span>Full Name</span>
+                    <strong id="profileMemberName">—</strong>
+                </div>
+
+                <div>
+                    <span>Email Address</span>
+                    <strong id="profileMemberEmail">—</strong>
+                </div>
+
+                <div>
+                    <span>Phone Number</span>
+                    <strong id="profileMemberPhone">—</strong>
+                </div>
+
+                <div>
+                    <span>Registration Date</span>
+                    <strong id="profileMemberJoined">—</strong>
+                </div>
+
+                <div>
+                    <span>Account Status</span>
+                    <strong id="profileMemberStatus">—</strong>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- WALLET DETAILS -->
+
+        <div class="member-profile-section">
+
+            <h3>Wallet Information</h3>
+
+            <div class="member-wallet-grid">
+
+                <div>
+                    <span>Current Balance</span>
+                    <strong id="profileWalletBalance">GH₵0.00</strong>
+                </div>
+
+                <div>
+                    <span>Total Deposits</span>
+                    <strong id="profileWalletDeposits">GH₵0.00</strong>
+                </div>
+
+                <div>
+                    <span>Total Withdrawals</span>
+                    <strong id="profileWalletWithdrawals">GH₵0.00</strong>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- MEMBER TRANSACTIONS -->
+
+        <div class="member-profile-section">
+
+            <h3>Transaction History</h3>
+
+            <div class="table-container">
+
+                <table>
+
+                    <thead>
+                        <tr>
+                            <th>Reference</th>
+                            <th>Type</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="memberProfileTransactions">
+
+                        <tr>
+                            <td colspan="5" class="empty-table">
+                                Select a member to view transactions.
+                            </td>
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+        <div class="member-profile-footer">
+
+            <button
+                type="button"
+                id="closeMemberProfileFooter"
+                class="panel-action"
+            >
+                Close Profile
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
 
             <!-- =================================
                  FOOTER
