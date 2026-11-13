@@ -920,3 +920,332 @@ tbody tr:hover {
     }
 
 }
+
+
+/* =========================================
+   NEXUS WEALTH PARTNERS
+   MEMBER MANAGEMENT
+========================================= */
+
+/* MEMBER SEARCH */
+
+.member-search-area {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 14px;
+}
+
+.member-search-area input {
+    flex: 1;
+    min-width: 0;
+    height: 45px;
+    padding: 0 15px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    outline: none;
+    color: var(--text);
+    background: #ffffff;
+    font-size: 12px;
+    transition: 0.2s;
+}
+
+.member-search-area input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(18, 168, 121, 0.1);
+}
+
+.member-search-area .panel-action {
+    width: auto;
+    min-width: 115px;
+    padding: 0 16px;
+    margin: 0;
+    height: 45px;
+}
+
+.member-search-results {
+    margin-bottom: 14px;
+    color: var(--muted);
+    font-size: 11px;
+}
+
+/* MEMBER TABLE */
+
+#membersTable td {
+    vertical-align: middle;
+}
+
+#membersTable td:first-child {
+    color: var(--primary);
+    font-weight: 800;
+}
+
+.member-status {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 75px;
+    padding: 6px 10px;
+    border-radius: 20px;
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: capitalize;
+}
+
+.member-status.active {
+    background: #e4f7ef;
+    color: #087b53;
+}
+
+.member-status.suspended {
+    background: #fff0f0;
+    color: #c43b3b;
+}
+
+.member-status.pending {
+    background: #fff5df;
+    color: #a36a0b;
+}
+
+.member-status.unknown {
+    background: #edf1f5;
+    color: #64748b;
+}
+
+.view-member-button {
+    border: none;
+    border-radius: 7px;
+    padding: 9px 13px;
+    background: #e9f8f2;
+    color: var(--accent-dark);
+    font-size: 10px;
+    font-weight: 800;
+    white-space: nowrap;
+    transition: 0.2s;
+}
+
+.view-member-button:hover {
+    background: var(--accent);
+    color: white;
+}
+
+/* MEMBER PROFILE MODAL */
+
+.member-profile-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 3000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    background: rgba(5, 20, 35, 0.72);
+    backdrop-filter: blur(4px);
+    overflow-y: auto;
+}
+
+.member-profile-card {
+    width: 100%;
+    max-width: 900px;
+    max-height: 92vh;
+    overflow-y: auto;
+    background: #ffffff;
+    border-radius: 15px;
+    box-shadow: 0 25px 80px rgba(0, 0, 0, 0.25);
+}
+
+.member-profile-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    padding: 24px 27px;
+    background: var(--primary-dark);
+    color: white;
+    border-radius: 15px 15px 0 0;
+}
+
+.member-profile-header p {
+    color: #9eb2c5;
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    margin-bottom: 7px;
+}
+
+.member-profile-header h2 {
+    font-size: 20px;
+    color: white;
+}
+
+.member-profile-close {
+    width: 38px;
+    height: 38px;
+    flex-shrink: 0;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.08);
+    color: white;
+    font-size: 25px;
+    line-height: 1;
+}
+
+.member-profile-close:hover {
+    background: rgba(255, 255, 255, 0.18);
+}
+
+/* PROFILE SECTIONS */
+
+.member-profile-section {
+    padding: 23px 27px;
+    border-bottom: 1px solid var(--border);
+}
+
+.member-profile-section h3 {
+    color: var(--primary);
+    font-size: 13px;
+    margin-bottom: 18px;
+}
+
+.member-profile-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.member-profile-grid > div,
+.member-wallet-grid > div {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    min-width: 0;
+    padding: 14px;
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    background: #fbfcfe;
+}
+
+.member-profile-grid span,
+.member-wallet-grid span {
+    color: var(--muted);
+    font-size: 10px;
+}
+
+.member-profile-grid strong,
+.member-wallet-grid strong {
+    color: var(--primary);
+    font-size: 12px;
+    overflow-wrap: anywhere;
+}
+
+/* WALLET INFORMATION */
+
+.member-wallet-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 13px;
+}
+
+.member-wallet-grid > div {
+    background: #f1faf6;
+    border-color: #dcefe6;
+}
+
+.member-wallet-grid strong {
+    color: var(--accent-dark);
+    font-size: 17px;
+}
+
+/* MEMBER TRANSACTION HISTORY */
+
+#memberProfileTransactions td {
+    vertical-align: middle;
+}
+
+#memberProfileTransactions td:first-child {
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.member-profile-footer {
+    display: flex;
+    justify-content: flex-end;
+    padding: 18px 27px 24px;
+}
+
+.member-profile-footer .panel-action {
+    width: auto;
+    min-width: 130px;
+    padding: 0 18px;
+    margin: 0;
+}
+
+/* MEMBER MANAGEMENT RESPONSIVENESS */
+
+@media (max-width: 700px) {
+
+    .member-profile-modal {
+        align-items: flex-start;
+        padding: 10px;
+    }
+
+    .member-profile-card {
+        max-height: calc(100vh - 20px);
+    }
+
+    .member-profile-header {
+        padding: 19px;
+    }
+
+    .member-profile-section {
+        padding: 19px;
+    }
+
+    .member-profile-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+    }
+
+    .member-wallet-grid {
+        grid-template-columns: 1fr;
+        gap: 9px;
+    }
+
+    .member-wallet-grid > div {
+        padding: 12px;
+    }
+
+    .member-wallet-grid strong {
+        font-size: 16px;
+    }
+
+    .member-profile-footer {
+        padding: 15px 19px 20px;
+    }
+
+}
+
+@media (max-width: 480px) {
+
+    .member-search-area {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .member-search-area input {
+        width: 100%;
+    }
+
+    .member-search-area .panel-action {
+        width: 100%;
+    }
+
+    .member-profile-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .member-profile-header h2 {
+        font-size: 17px;
+    }
+
+}
