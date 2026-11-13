@@ -1492,3 +1492,164 @@ tbody tr:hover {
     }
 
 }
+
+/* =========================================
+   GLOBAL ADMIN DATE FILTER
+========================================= */
+
+.admin-date-filter {
+    width: 100%;
+    margin: 0 0 24px;
+    padding: 20px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    box-shadow: var(--shadow);
+}
+
+.date-filter-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    margin-bottom: 18px;
+}
+
+.date-filter-heading h3 {
+    margin: 0 0 5px;
+    color: var(--primary);
+    font-size: 16px;
+    font-weight: 800;
+}
+
+.date-filter-heading p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+#adminDateFilterSummary {
+    padding: 8px 12px;
+    border-radius: 20px;
+    background: rgba(18, 168, 121, 0.10);
+    color: var(--accent-dark);
+    font-size: 11px;
+    font-weight: 800;
+    white-space: nowrap;
+}
+
+.date-filter-controls {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(140px, 1fr)) auto;
+    align-items: end;
+    gap: 13px;
+}
+
+.date-filter-field {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    min-width: 0;
+}
+
+.date-filter-field label {
+    color: var(--text);
+    font-size: 11px;
+    font-weight: 800;
+}
+
+.date-filter-field select,
+.date-filter-field input {
+    width: 100%;
+    min-height: 42px;
+    padding: 9px 11px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    outline: none;
+    background: #fff;
+    color: var(--text);
+    font-family: inherit;
+    font-size: 12px;
+}
+
+.date-filter-field select:focus,
+.date-filter-field input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(18, 168, 121, 0.10);
+}
+
+.date-filter-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.date-filter-actions button {
+    min-height: 42px;
+    padding: 9px 14px;
+    border: none;
+    border-radius: 8px;
+    background: var(--accent);
+    color: #fff;
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.2s ease;
+    white-space: nowrap;
+}
+
+.date-filter-actions button:hover {
+    background: var(--accent-dark);
+    transform: translateY(-1px);
+}
+
+#resetAdminDateFilter {
+    background: var(--primary);
+}
+
+#resetAdminDateFilter:hover {
+    background: var(--primary-dark);
+}
+
+#adminDateFilterMessage {
+    min-height: 16px;
+    margin: 10px 0 0;
+    color: var(--danger);
+    font-size: 11px;
+    font-weight: 700;
+}
+
+@media (max-width: 900px) {
+    .date-filter-controls {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .date-filter-actions {
+        grid-column: 1 / -1;
+    }
+}
+
+@media (max-width: 520px) {
+    .admin-date-filter {
+        padding: 15px;
+    }
+
+    .date-filter-heading {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .date-filter-controls {
+        grid-template-columns: 1fr;
+    }
+
+    .date-filter-actions {
+        grid-column: auto;
+    }
+
+    .date-filter-actions button {
+        flex: 1;
+    }
+}
