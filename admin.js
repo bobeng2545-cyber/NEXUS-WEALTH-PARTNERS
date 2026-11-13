@@ -1337,7 +1337,104 @@ function displayAdminSavings(
 ========================================= */
 
 
+/* =========================================
+   SECURE ADMIN DEPOSIT VERIFICATION
+========================================= */
+
+async function verifyNexusDeposit(depositId, button) {
+
+    if (!depositId) {
+        alert("Deposit ID is missing.");
+        return;
+    }
+
+    const confirmed = window.confirm(
+        "Verify this deposit directly with Paystack and credit the member's wallet only if payment is confirmed?"
+    );
+
+    if (!confirmed) return;
+
+    const originalText = button
+        ? button.textContent
+        : "Verify";
+
+    if (button) {
+        button.disabled = true;
+        button.textContent = "Verifying...";
+    }
+
+    try {
+
+        const { data, error } =
+            await nexusAdminSupabase.functions.invoke(
+                "nexus-admin-verify-deposit",
+                {
+                    body: {
+                        deposit_id: depositId
+                    }
+                }
+            );
+
+        if (error) {
+            let details = "";
+
+            try {
+                const response = error.context;
+
+                if (response && typeof response.json === "function") {
+                    const result = await response.json();
+                    details = result.message || "";
+                }
+            } catch (_) {
+                // Keep the original function error.
+            }
+
+            throw new Error(
+                details || error.message ||
+                "Could not contact the verification service."
+            );
+        }
+
+        if (!data || data.success !== true) {
+            throw new Error(
+                data?.message || "Deposit verification was unsuccessful."
+            );
+        }
+
+        alert(
+            data.already_processed
+                ? "This deposit was already credited. No additional credit was made."
+                : "Deposit verified successfully. The member's wallet has been credited."
+        );
+
+        await loadAdminDashboardData();
+
+    } catch (error) {
+
+        console.error(
+            "Nexus deposit verification error:",
+            error
+        );
+
+        alert(
+            error.message ||
+            "Deposit verification failed. Please try again."
+        );
+
+    } finally {
+
+        if (button) {
+            button.disabled = false;
+            button.textContent = originalText;
+        }
+
+    }
+
+}
+
+
 /* DISPLAY DEPOSIT RECORDS */
+
 
 function displayAdminDeposits(
     deposits = [],
@@ -1353,7 +1450,7 @@ function displayAdminDeposits(
 
         showAdminTableMessage(
             "depositsTable",
-            7,
+            8,
             "No deposit transactions found."
         );
 
@@ -1365,22 +1462,13 @@ function displayAdminDeposits(
 
     deposits.forEach(deposit => {
 
-        const row =
-            document.createElement("tr");
-
-        /*
-           PAYMENT REFERENCE
-        */
+        const row = document.createElement("tr");
 
         row.appendChild(
             createAdminTableCell(
                 deposit.reference || deposit.id
             )
         );
-
-        /*
-           MEMBER NAME
-        */
 
         row.appendChild(
             createAdminTableCell(
@@ -1391,21 +1479,11 @@ function displayAdminDeposits(
             )
         );
 
-        /*
-           DEPOSIT AMOUNT
-        */
-
         row.appendChild(
             createAdminTableCell(
-                formatNexusAdminMoney(
-                    deposit.amount
-                )
+                formatNexusAdminMoney(deposit.amount)
             )
         );
-
-        /*
-           PAYMENT METHOD
-        */
 
         row.appendChild(
             createAdminTableCell(
@@ -1415,45 +1493,58 @@ function displayAdminDeposits(
             )
         );
 
-        /*
-           PAYMENT PHONE
-        */
-
         row.appendChild(
             createAdminTableCell(
                 deposit.payment_phone
             )
         );
 
-        /*
-           PAYMENT STATUS
-        */
+        row.appendChild(
+            createAdminStatusCell(deposit.status)
+        );
 
         row.appendChild(
-            createAdminStatusCell(
-                deposit.status
+            createAdminTableCell(
+                formatAdminDateTime(deposit.created_at)
             )
         );
 
-        /*
-           DATE AND TIME
-        */
+        const actionCell = document.createElement("td");
 
-        const dateCell =
-            createAdminTableCell(
-                formatAdminDateTime(
-                    deposit.created_at
-                )
-            );
+        const status =
+            normalizeAdminStatus(deposit.status);
 
-        if (deposit.created_at) {
+        if (status === "pending") {
 
-            dateCell.title =
-                String(deposit.created_at);
+            const verifyButton =
+                document.createElement("button");
+
+            verifyButton.type = "button";
+            verifyButton.textContent = "Verify Deposit";
+            verifyButton.className = "admin-action-button";
+
+            verifyButton.addEventListener("click", () => {
+
+                verifyNexusDeposit(
+                    deposit.id,
+                    verifyButton
+                );
+
+            });
+
+            actionCell.appendChild(verifyButton);
+
+        } else if (status === "successful") {
+
+            actionCell.textContent = "Credited";
+
+        } else {
+
+            actionCell.textContent = "No action";
 
         }
 
-        row.appendChild(dateCell);
+        row.appendChild(actionCell);
 
         table.appendChild(row);
 
@@ -1465,6 +1556,7 @@ function displayAdminDeposits(
     );
 
 }
+
 
 
 /* =========================================
@@ -2489,3 +2581,44 @@ checkAdminSession();
 console.log(
     "Nexus Wealth Partners Admin Dashboard initialized."
 );
+
+if (refreshDepositsButton) {
+
+    refreshDepositsButton.addEventListener(
+        "click",
+        async function() {
+
+            refreshDepositsButton.disabled = true;
+
+            const originalText =
+                refreshDepositsButton.textContent;
+
+            refreshDepositsButton.textContent =
+                "Refreshing...";
+
+            try {
+
+                await loadAdminDashboardData();
+
+            } catch (error) {
+
+                console.error(
+                    "Deposit refresh error:",
+                    error
+                );
+
+                alert("Could not refresh dashboard records.");
+
+            } finally {
+
+                refreshDepositsButton.disabled = false;
+
+                refreshDepositsButton.textContent =
+                    originalText;
+
+            }
+
+        }
+    );
+
+}
