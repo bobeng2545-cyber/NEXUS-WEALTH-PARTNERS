@@ -1427,3 +1427,317 @@ tbody tr:hover {
     }
 
 }
+
+/* =========================================
+   NEXUS WEALTH PARTNERS
+   PROFESSIONAL ADMIN BUTTON SYSTEM
+========================================= */
+
+/* GENERAL BUTTON BEHAVIOUR */
+
+button {
+    font-family: inherit;
+    -webkit-tap-highlight-color: transparent;
+}
+
+button:focus-visible {
+    outline: 3px solid rgba(18, 168, 121, 0.30);
+    outline-offset: 3px;
+}
+
+button:disabled {
+    opacity: 0.55;
+    cursor: not-allowed !important;
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+/* =========================================
+   PRIMARY ACTION BUTTONS
+========================================= */
+
+.panel-action,
+#adminLoginButton {
+    background: linear-gradient(
+        135deg,
+        #12a879,
+        #07865e
+    );
+
+    color: #ffffff;
+    border: none;
+    border-radius: 9px;
+    font-weight: 700;
+
+    transition:
+        background 0.25s ease,
+        transform 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+.panel-action:hover:not(:disabled),
+#adminLoginButton:hover:not(:disabled) {
+    background: linear-gradient(
+        135deg,
+        #0d966b,
+        #066d4d
+    );
+
+    transform: translateY(-2px);
+
+    box-shadow: 0 6px 15px rgba(18, 168, 121, 0.20);
+}
+
+.panel-action:active:not(:disabled),
+#adminLoginButton:active:not(:disabled) {
+    transform: scale(0.98);
+}
+
+/* =========================================
+   TEXT ACTION BUTTONS
+========================================= */
+
+.text-action {
+    padding: 8px 12px;
+    border-radius: 7px;
+    transition: 0.2s ease;
+}
+
+.text-action:hover:not(:disabled) {
+    background: #e4f7ef;
+    color: #087b53;
+}
+
+/* =========================================
+   MEMBER SEARCH BUTTON
+========================================= */
+
+.member-search-area .panel-action {
+    min-height: 45px;
+    padding: 0 20px;
+}
+
+/* =========================================
+   VIEW MEMBER BUTTON
+========================================= */
+
+.view-member-button {
+    border: 1px solid #ccebdd;
+    border-radius: 8px;
+
+    background: #e9f8f2;
+    color: #07865e;
+
+    padding: 10px 15px;
+
+    font-size: 11px;
+    font-weight: 800;
+
+    transition: 0.25s ease;
+}
+
+.view-member-button:hover:not(:disabled) {
+    background: #12a879;
+    border-color: #12a879;
+    color: #ffffff;
+
+    transform: translateY(-2px);
+
+    box-shadow: 0 5px 12px rgba(18, 168, 121, 0.18);
+}
+
+/* =========================================
+   MEMBER ACCOUNT ACTION BUTTONS
+========================================= */
+
+.member-suspend-button,
+.member-activate-button {
+    min-height: 43px;
+    border-radius: 9px;
+
+    padding: 11px 18px;
+
+    font-size: 12px;
+    font-weight: 800;
+
+    transition: 0.25s ease;
+}
+
+.member-suspend-button {
+    background: #fff0f0;
+    color: #c62828;
+    border: 1px solid #ffd0d0;
+}
+
+.member-suspend-button:hover:not(:disabled) {
+    background: #dc4545;
+    color: #ffffff;
+    border-color: #dc4545;
+
+    transform: translateY(-2px);
+    box-shadow: 0 5px 12px rgba(220, 69, 69, 0.18);
+}
+
+.member-activate-button {
+    background: #e4f7ef;
+    color: #087b53;
+    border: 1px solid #c5ead9;
+}
+
+.member-activate-button:hover:not(:disabled) {
+    background: #12a879;
+    color: #ffffff;
+    border-color: #12a879;
+
+    transform: translateY(-2px);
+    box-shadow: 0 5px 12px rgba(18, 168, 121, 0.18);
+}
+
+/* =========================================
+   FINANCIAL TRANSACTION ACTION BUTTONS
+========================================= */
+
+.admin-action-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-width: 145px;
+    min-height: 39px;
+
+    padding: 10px 15px;
+
+    border: none;
+    border-radius: 9px;
+
+    color: #ffffff;
+
+    font-size: 11px;
+    font-weight: 800;
+    font-family: inherit;
+
+    cursor: pointer;
+
+    transition:
+        background 0.25s ease,
+        transform 0.25s ease,
+        box-shadow 0.25s ease,
+        opacity 0.25s ease;
+}
+
+/* REVERSE DEPOSIT / CANCEL WITHDRAWAL */
+
+.admin-action-button.reject {
+    background: linear-gradient(
+        135deg,
+        #dc4545,
+        #a91f1f
+    );
+
+    box-shadow: 0 4px 10px rgba(220, 69, 69, 0.16);
+}
+
+.admin-action-button.reject:hover:not(:disabled) {
+    background: linear-gradient(
+        135deg,
+        #c52f2f,
+        #861818
+    );
+
+    transform: translateY(-2px);
+
+    box-shadow: 0 7px 16px rgba(220, 69, 69, 0.25);
+}
+
+.admin-action-button.reject:active:not(:disabled) {
+    transform: scale(0.97);
+}
+
+/* PROCESSING STATE */
+
+.admin-action-button:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* TRANSACTION ACTION COLUMN */
+
+#transactionsTable td:last-child {
+    min-width: 160px;
+    vertical-align: middle;
+}
+
+/* =========================================
+   CLOSE BUTTON
+========================================= */
+
+.member-profile-close {
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.member-profile-close:hover {
+    background: rgba(255, 255, 255, 0.20);
+    transform: rotate(90deg);
+}
+
+/* =========================================
+   SIDEBAR BUTTONS
+========================================= */
+
+.admin-nav-link,
+.logout-button,
+.sidebar-toggle {
+    transition:
+        background 0.2s ease,
+        color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.admin-nav-link:active,
+.logout-button:active {
+    transform: scale(0.98);
+}
+
+/* =========================================
+   RESPONSIVE BUTTON STYLING
+========================================= */
+
+@media (max-width: 600px) {
+
+    .admin-action-button {
+        min-width: 125px;
+        min-height: 37px;
+        padding: 9px 11px;
+        font-size: 10px;
+    }
+
+    #transactionsTable td:last-child {
+        min-width: 135px;
+    }
+
+    .member-suspend-button,
+    .member-activate-button {
+        min-height: 42px;
+        padding: 10px 14px;
+    }
+
+    .view-member-button {
+        padding: 9px 11px;
+    }
+
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    button,
+    .admin-action-button,
+    .view-member-button,
+    .member-suspend-button,
+    .member-activate-button {
+        transition: none !important;
+    }
+
+}
