@@ -2488,6 +2488,155 @@ function updateAdminDepositStatistics(
    22. DISPLAY ALL FINANCIAL TRANSACTIONS
 ========================================= */
 
+/*
+   REVERSE A FINANCIAL TRANSACTION SAFELY
+
+   Successful deposits:
+   - Deduct the deposit amount from the member wallet.
+   - Reduce the member's recorded total deposits.
+   - Mark the deposit as reversed.
+
+   Pending withdrawals:
+   - Cancel the pending request.
+   - Do not deduct or refund wallet money because the
+     current withdrawal request process does not deduct
+     the wallet balance when the request is submitted.
+
+   Processing and completed withdrawals cannot be reversed
+   from this table. They require payout verification.
+*/
+
+async function reverseNexusTransaction(
+    transactionType,
+    transactionId,
+    amount,
+    button
+) {
+
+    const cleanType = String(
+        transactionType || ""
+    ).trim().toLowerCase();
+
+    const cleanId = String(
+        transactionId || ""
+    ).trim();
+
+    if (
+        !["deposit", "withdrawal"].includes(cleanType) ||
+        !cleanId
+    ) {
+        alert("The transaction details are invalid.");
+        return;
+    }
+
+    const reasonInput = prompt(
+        "Enter the reason for this transaction reversal.\n\n" +
+        "The reason must contain at least 5 characters."
+    );
+
+    if (reasonInput === null) {
+        return;
+    }
+
+    const cleanReason = reasonInput.trim();
+
+    if (cleanReason.length < 5) {
+        alert("Please enter a reason with at least 5 characters.");
+        return;
+    }
+
+    const amountText = formatNexusAdminMoney(amount);
+
+    let confirmationMessage = "";
+
+    if (cleanType === "deposit") {
+
+        confirmationMessage =
+            "You are about to REVERSE this successful deposit.\n\n" +
+            "Amount: " + amountText + "\n\n" +
+            "The amount will be deducted from the member's wallet " +
+            "and the recorded total deposits.\n\n" +
+            "This action cannot be undone through this button. " +
+            "Continue only if you have verified the transaction.";
+
+    } else {
+
+        confirmationMessage =
+            "You are about to CANCEL this pending withdrawal.\n\n" +
+            "Amount: " + amountText + "\n\n" +
+            "The member's wallet balance will NOT be changed. " +
+            "The pending withdrawal request will be cancelled.\n\n" +
+            "Continue?";
+
+    }
+
+    if (!confirm(confirmationMessage)) {
+        return;
+    }
+
+    const originalButtonText = button
+        ? button.textContent
+        : "";
+
+    if (button) {
+        button.disabled = true;
+        button.textContent = "Processing...";
+    }
+
+    try {
+
+        const { data, error } =
+            await nexusAdminSupabase.rpc(
+                "admin_reverse_nexus_transaction",
+                {
+                    p_transaction_type: cleanType,
+                    p_transaction_id: cleanId,
+                    p_reason: cleanReason
+                }
+            );
+
+        if (error) {
+            throw error;
+        }
+
+        if (!data || data.success !== true) {
+            throw new Error(
+                data?.message ||
+                "The transaction reversal was not completed."
+            );
+        }
+
+        alert(
+            data.message ||
+            "The transaction was processed successfully."
+        );
+
+        await loadAdminDashboardData();
+
+    } catch (error) {
+
+        console.error(
+            "Nexus transaction reversal error:",
+            error
+        );
+
+        alert(
+            error.message ||
+            "Unable to process this transaction. Please try again."
+        );
+
+    } finally {
+
+        if (button) {
+            button.disabled = false;
+            button.textContent = originalButtonText;
+        }
+
+    }
+
+}
+
+
 function displayAdminTransactions(
     deposits = [],
     withdrawals = [],
@@ -2507,9 +2656,7 @@ function displayAdminTransactions(
 
     }
 
-    /*
-       CREATE TABLE HEADINGS
-    */
+    /* CREATE TABLE HEADINGS */
 
     const parentTable =
         table.closest("table");
@@ -2520,40 +2667,26 @@ function displayAdminTransactions(
             parentTable.querySelector("thead");
 
         if (!thead) {
-
-            thead =
-                document.createElement("thead");
-
+            thead = document.createElement("thead");
             parentTable.prepend(thead);
-
         }
 
         const headingRow =
             document.createElement("tr");
 
         [
-
             "Transaction Reference",
-
             "Member",
-
             "Transaction Type",
-
             "Amount",
-
             "Payment Method",
-
             "Status",
-
-            "Date & Time"
-
+            "Date & Time",
+            "Actions"
         ].forEach(heading => {
 
-            const th =
-                document.createElement("th");
-
+            const th = document.createElement("th");
             th.textContent = heading;
-
             headingRow.appendChild(th);
 
         });
@@ -2562,87 +2695,54 @@ function displayAdminTransactions(
 
     }
 
-
-    /*
-       COMBINE TRANSACTIONS
-    */
+    /* COMBINE DEPOSITS AND WITHDRAWALS */
 
     const transactions = [];
-
-
-    /* DEPOSITS */
 
     deposits.forEach(deposit => {
 
         transactions.push({
-
             id: deposit.id,
-
             reference: deposit.reference,
-
             user_id: deposit.user_id,
-
             type: "Deposit",
-
             amount: deposit.amount,
-
             payment_method: deposit.payment_method,
-
             status: deposit.status,
-
             created_at: deposit.created_at
-
         });
 
     });
-
-
-    /* WITHDRAWALS */
 
     withdrawals.forEach(withdrawal => {
 
         transactions.push({
-
             id: withdrawal.id,
-
             reference:
                 "WDR-" +
                 String(withdrawal.id).slice(0, 8),
-
             user_id: withdrawal.user_id,
-
             type: "Withdrawal",
-
             amount: withdrawal.amount,
-
             payment_method: withdrawal.withdrawal_method,
-
             status: withdrawal.status,
-
             created_at: withdrawal.created_at
-
         });
 
     });
 
-
-    /*
-       NEWEST FIRST
-    */
+    /* NEWEST TRANSACTIONS FIRST */
 
     transactions.sort((a, b) => {
-
         return new Date(b.created_at || 0) -
             new Date(a.created_at || 0);
-
     });
-
 
     if (!transactions.length) {
 
         showAdminTableMessage(
             "transactionsTable",
-            7,
+            8,
             "No financial transactions have been recorded yet."
         );
 
@@ -2652,30 +2752,21 @@ function displayAdminTransactions(
 
     table.replaceChildren();
 
-
-    /*
-       DISPLAY TRANSACTIONS
-    */
+    /* DISPLAY TRANSACTIONS */
 
     transactions.forEach(transaction => {
 
-        const row =
-            document.createElement("tr");
+        const row = document.createElement("tr");
 
-        /*
-           REFERENCE
-        */
+        /* TRANSACTION REFERENCE */
 
         row.appendChild(
             createAdminTableCell(
-                transaction.reference ||
-                transaction.id
+                transaction.reference || transaction.id
             )
         );
 
-        /*
-           MEMBER
-        */
+        /* MEMBER NAME */
 
         row.appendChild(
             createAdminTableCell(
@@ -2686,14 +2777,10 @@ function displayAdminTransactions(
             )
         );
 
-        /*
-           TYPE
-        */
+        /* TRANSACTION TYPE */
 
         const typeCell =
-            createAdminTableCell(
-                transaction.type
-            );
+            createAdminTableCell(transaction.type);
 
         typeCell.className =
             transaction.type === "Deposit"
@@ -2702,21 +2789,15 @@ function displayAdminTransactions(
 
         row.appendChild(typeCell);
 
-        /*
-           AMOUNT
-        */
+        /* AMOUNT */
 
         row.appendChild(
             createAdminTableCell(
-                formatNexusAdminMoney(
-                    transaction.amount
-                )
+                formatNexusAdminMoney(transaction.amount)
             )
         );
 
-        /*
-           PAYMENT METHOD
-        */
+        /* PAYMENT METHOD */
 
         row.appendChild(
             createAdminTableCell(
@@ -2726,27 +2807,81 @@ function displayAdminTransactions(
             )
         );
 
-        /*
-           STATUS
-        */
+        /* STATUS */
 
         row.appendChild(
-            createAdminStatusCell(
-                transaction.status
-            )
+            createAdminStatusCell(transaction.status)
         );
 
-        /*
-           DATE AND TIME
-        */
+        /* DATE AND TIME */
 
         row.appendChild(
             createAdminTableCell(
-                formatAdminDateTime(
-                    transaction.created_at
-                )
+                formatAdminDateTime(transaction.created_at)
             )
         );
+
+        /* TRANSACTION ACTIONS */
+
+        const actionCell = document.createElement("td");
+
+        const normalizedStatus = normalizeAdminStatus(
+            transaction.status
+        );
+
+        const isDeposit =
+            transaction.type === "Deposit";
+
+        const canReverseDeposit =
+            isDeposit &&
+            normalizedStatus === "successful";
+
+        const canCancelWithdrawal =
+            !isDeposit &&
+            normalizedStatus === "pending";
+
+        if (canReverseDeposit || canCancelWithdrawal) {
+
+            const actionButton =
+                document.createElement("button");
+
+            actionButton.type = "button";
+
+            actionButton.className =
+                "admin-action-button reject";
+
+            actionButton.textContent = isDeposit
+                ? "Reverse Deposit"
+                : "Cancel Withdrawal";
+
+            actionButton.addEventListener("click", () => {
+
+                reverseNexusTransaction(
+                    isDeposit ? "deposit" : "withdrawal",
+                    transaction.id,
+                    transaction.amount,
+                    actionButton
+                );
+
+            });
+
+            actionCell.appendChild(actionButton);
+
+        } else if (
+            !isDeposit &&
+            ["processing", "completed"].includes(normalizedStatus)
+        ) {
+
+            actionCell.textContent =
+                "Payout verification required";
+
+        } else {
+
+            actionCell.textContent = "No action";
+
+        }
+
+        row.appendChild(actionCell);
 
         table.appendChild(row);
 
@@ -2754,10 +2889,18 @@ function displayAdminTransactions(
 
     console.log(
         "Admin financial transactions displayed:",
-        transactions.length
+        {
+            deposits: deposits.length,
+            withdrawals: withdrawals.length,
+            total: transactions.length
+        }
     );
 
 }
+
+
+
+
 
 
 
