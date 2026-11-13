@@ -872,6 +872,620 @@ let currentAdminUserId = null;
 
 
 /* =========================================
+   GLOBAL FINANCIAL DATE FILTER
+   GHANA TIME: AFRICA/ACCRA
+========================================= */
+
+let adminDateFilterState = {
+    preset: "this_month",
+    from: "",
+    to: ""
+};
+
+const adminDateRangeSelect =
+    document.getElementById("adminDateRange");
+
+const adminDateFromInput =
+    document.getElementById("adminDateFrom");
+
+const adminDateToInput =
+    document.getElementById("adminDateTo");
+
+const applyAdminDateFilterButton =
+    document.getElementById("applyAdminDateFilter");
+
+const resetAdminDateFilterButton =
+    document.getElementById("resetAdminDateFilter");
+
+const adminDateFilterSummary =
+    document.getElementById("adminDateFilterSummary");
+
+const adminDateFilterMessage =
+    document.getElementById("adminDateFilterMessage");
+
+
+/* GET A DATE KEY IN GHANA LOCAL TIME */
+
+function getAdminGhanaDateKey(value = new Date()) {
+
+    const date = new Date(value);
+
+    if (Number.isNaN(date.getTime())) {
+        return "";
+    }
+
+    const parts = new Intl.DateTimeFormat("en-GB", {
+        timeZone: "Africa/Accra",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit"
+    }).formatToParts(date);
+
+    const values = {};
+
+    parts.forEach(part => {
+        values[part.type] = part.value;
+    });
+
+    return `${values.year}-${values.month}-${values.day}`;
+
+}
+
+
+/* GET TODAY IN GHANA TIME */
+
+function getAdminGhanaToday() {
+    return getAdminGhanaDateKey(new Date());
+}
+
+
+/* ADD OR SUBTRACT DAYS FROM A DATE KEY */
+
+function shiftAdminDateKey(dateKey, numberOfDays) {
+
+    const [year, month, day] =
+        dateKey.split("-").map(Number);
+
+    const date = new Date(
+        Date.UTC(year, month - 1, day)
+    );
+
+    date.setUTCDate(
+        date.getUTCDate() + numberOfDays
+    );
+
+    return [
+        date.getUTCFullYear(),
+        String(date.getUTCMonth() + 1).padStart(2, "0"),
+        String(date.getUTCDate()).padStart(2, "0")
+    ].join("-");
+
+}
+
+
+/* FORMAT A DATE KEY FOR THE FILTER SUMMARY */
+
+function formatAdminDateKey(dateKey) {
+
+    if (!dateKey) return "";
+
+    const [year, month, day] =
+        dateKey.split("-").map(Number);
+
+    const date = new Date(
+        Date.UTC(year, month - 1, day, 12)
+    );
+
+    return new Intl.DateTimeFormat("en-GH", {
+        timeZone: "Africa/Accra",
+        day: "numeric",
+        month: "short",
+        year: "numeric"
+    }).format(date);
+
+}
+
+
+/* GET THE EFFECTIVE FINANCIAL DATE */
+
+function getAdminFinancialDate(record, type) {
+
+    if (!record) return null;
+
+    const status =
+        normalizeAdminStatus(record.status);
+
+    if (type === "deposit") {
+
+        if (status === "successful") {
+            return record.paid_at || record.created_at;
+        }
+
+        return record.created_at;
+
+    }
+
+    if (type === "withdrawal") {
+
+        if (status === "completed") {
+            return record.completed_at || record.created_at;
+        }
+
+        return record.created_at;
+
+    }
+
+    return record.created_at;
+
+}
+
+
+/* CHECK WHETHER A RECORD FALLS WITHIN THE SELECTED PERIOD */
+
+function isAdminRecordWithinDateRange(record, type) {
+
+    const financialDate =
+        getAdminFinancialDate(record, type);
+
+    if (!financialDate) return false;
+
+    const recordDate =
+        getAdminGhanaDateKey(financialDate);
+
+    if (!recordDate) return false;
+
+    const { from, to } = adminDateFilterState;
+
+    if (from && recordDate < from) {
+        return false;
+    }
+
+    if (to && recordDate > to) {
+        return false;
+    }
+
+    return true;
+
+}
+
+
+/* FILTER DEPOSITS */
+
+function getAdminFilteredDeposits() {
+
+    return adminDepositsCache.filter(deposit =>
+        isAdminRecordWithinDateRange(
+            deposit,
+            "deposit"
+        )
+    );
+
+}
+
+
+/* FILTER WITHDRAWALS */
+
+function getAdminFilteredWithdrawals() {
+
+    return adminWithdrawalsCache.filter(withdrawal =>
+        isAdminRecordWithinDateRange(
+            withdrawal,
+            "withdrawal"
+        )
+    );
+
+}
+
+
+/* SET A QUICK DATE RANGE */
+
+function setAdminQuickDateRange(preset) {
+
+    const today = getAdminGhanaToday();
+
+    const [year, month, day] =
+        today.split("-").map(Number);
+
+    let from = "";
+    let to = today;
+
+    if (preset === "today") {
+
+        from = today;
+
+    } else if (preset === "yesterday") {
+
+        from = shiftAdminDateKey(today, -1);
+        to = from;
+
+    } else if (preset === "this_week") {
+
+        const date = new Date(
+            Date.UTC(year, month - 1, day)
+        );
+
+        const weekday = date.getUTCDay();
+
+        const daysSinceMonday =
+            weekday === 0 ? 6 : weekday - 1;
+
+        from = shiftAdminDateKey(
+            today,
+            -daysSinceMonday
+        );
+
+    } else if (preset === "this_month") {
+
+        from =
+            `${year}-${String(month).padStart(2, "0")}-01`;
+
+    } else if (preset === "this_year") {
+
+        from = `${year}-01-01`;
+
+    } else if (preset === "all_time") {
+
+        from = "";
+        to = "";
+
+    }
+
+    adminDateFilterState = {
+        preset,
+        from,
+        to
+    };
+
+    if (adminDateFromInput) {
+        adminDateFromInput.value = from;
+    }
+
+    if (adminDateToInput) {
+        adminDateToInput.value = to;
+    }
+
+    if (adminDateFilterMessage) {
+        adminDateFilterMessage.textContent = "";
+    }
+
+    renderAdminDateFilteredDashboard();
+
+}
+
+
+/* APPLY CUSTOM DATE RANGE */
+
+function applyAdminCustomDateRange() {
+
+    const from =
+        adminDateFromInput?.value || "";
+
+    const to =
+        adminDateToInput?.value || "";
+
+    if (!from || !to) {
+
+        if (adminDateFilterMessage) {
+            adminDateFilterMessage.textContent =
+                "Please select both the From Date and To Date.";
+        }
+
+        return;
+
+    }
+
+    if (from > to) {
+
+        if (adminDateFilterMessage) {
+            adminDateFilterMessage.textContent =
+                "The From Date cannot be later than the To Date.";
+        }
+
+        return;
+
+    }
+
+    adminDateFilterState = {
+        preset: "custom",
+        from,
+        to
+    };
+
+    if (adminDateRangeSelect) {
+        adminDateRangeSelect.value = "custom";
+    }
+
+    if (adminDateFilterMessage) {
+        adminDateFilterMessage.textContent = "";
+    }
+
+    renderAdminDateFilteredDashboard();
+
+}
+
+
+/* UPDATE THE DATE FILTER SUMMARY */
+
+function updateAdminDateFilterSummary() {
+
+    if (!adminDateFilterSummary) return;
+
+    const { preset, from, to } =
+        adminDateFilterState;
+
+    const labels = {
+        today: "Today",
+        yesterday: "Yesterday",
+        this_week: "This Week",
+        this_month: "This Month",
+        this_year: "This Year",
+        all_time: "All Time"
+    };
+
+    if (preset === "custom") {
+
+        adminDateFilterSummary.textContent =
+            `${formatAdminDateKey(from)} – ${formatAdminDateKey(to)}`;
+
+        return;
+
+    }
+
+    adminDateFilterSummary.textContent =
+        labels[preset] || "Selected Period";
+
+}
+
+
+/* RENDER ALL DATE-FILTERED FINANCIAL DASHBOARD DATA */
+
+function renderAdminDateFilteredDashboard() {
+
+    const deposits =
+        getAdminFilteredDeposits();
+
+    const withdrawals =
+        getAdminFilteredWithdrawals();
+
+    const profiles =
+        adminProfilesCache;
+
+    const depositsAvailable =
+        adminDepositsAvailable;
+
+    updateAdminDateFilterSummary();
+
+    /*
+       TOTAL SUCCESSFUL DEPOSITS
+    */
+
+    const successfulDeposits =
+        deposits.filter(deposit =>
+            normalizeAdminStatus(deposit.status) === "successful"
+        );
+
+    const totalDeposits =
+        successfulDeposits.reduce((total, deposit) => {
+            return total + getAdminNumber(deposit.amount);
+        }, 0);
+
+    const totalDepositsElement =
+        document.getElementById("totalDeposits");
+
+    if (totalDepositsElement) {
+        totalDepositsElement.textContent =
+            depositsAvailable
+                ? formatNexusAdminMoney(totalDeposits)
+                : "Unavailable";
+    }
+
+    /*
+       TOTAL COMPLETED WITHDRAWALS
+    */
+
+    const completedWithdrawals =
+        withdrawals.filter(withdrawal =>
+            normalizeAdminStatus(withdrawal.status) === "completed"
+        );
+
+    const totalWithdrawals =
+        completedWithdrawals.reduce((total, withdrawal) => {
+            return total + getAdminNumber(withdrawal.amount);
+        }, 0);
+
+    const totalWithdrawalsElement =
+        document.getElementById("totalWithdrawals");
+
+    if (totalWithdrawalsElement) {
+        totalWithdrawalsElement.textContent =
+            formatNexusAdminMoney(totalWithdrawals);
+    }
+
+    /*
+       WITHDRAWAL STATUS COUNTS
+    */
+
+    const pending =
+        withdrawals.filter(withdrawal =>
+            normalizeAdminStatus(withdrawal.status) === "pending"
+        ).length;
+
+    const processing =
+        withdrawals.filter(withdrawal =>
+            normalizeAdminStatus(withdrawal.status) === "processing"
+        ).length;
+
+    const completed =
+        completedWithdrawals.length;
+
+    const pendingElement =
+        document.getElementById("overviewPendingWithdrawals");
+
+    const processingElement =
+        document.getElementById("overviewProcessingWithdrawals");
+
+    const completedElement =
+        document.getElementById("overviewCompletedWithdrawals");
+
+    if (pendingElement) pendingElement.textContent = pending;
+    if (processingElement) processingElement.textContent = processing;
+    if (completedElement) completedElement.textContent = completed;
+
+    const withdrawalBadge =
+        document.getElementById("pendingWithdrawalBadge");
+
+    if (withdrawalBadge) {
+        withdrawalBadge.textContent = pending;
+        withdrawalBadge.hidden = pending === 0;
+    }
+
+    /*
+       REFRESH WITHDRAWAL TABLES
+    */
+
+    displayAdminWithdrawals(
+        withdrawals,
+        profiles
+    );
+
+    /*
+       REFRESH SAVINGS TOTALS
+
+       Current wallet balances remain unchanged.
+       Only the deposit and withdrawal totals are filtered.
+    */
+
+    displayAdminSavings(
+        adminWalletsCache,
+        profiles,
+        deposits,
+        withdrawals,
+        depositsAvailable
+    );
+
+    /*
+       REFRESH DEPOSIT TABLE AND STATISTICS
+    */
+
+    if (depositsAvailable) {
+
+        displayAdminDeposits(
+            deposits,
+            profiles
+        );
+
+    } else {
+
+        showAdminTableMessage(
+            "depositsTable",
+            8,
+            "Deposit records are currently unavailable."
+        );
+
+    }
+
+    updateAdminDepositStatistics(
+        deposits,
+        depositsAvailable
+    );
+
+    /*
+       REFRESH UNIFIED TRANSACTIONS
+    */
+
+    displayAdminTransactions(
+        deposits,
+        withdrawals,
+        profiles
+    );
+
+    /*
+       REFRESH OPEN MEMBER PROFILE
+    */
+
+    const openModal =
+        document.getElementById("memberProfileModal");
+
+    if (
+        openModal &&
+        !openModal.hidden &&
+        openModal.dataset.memberId
+    ) {
+        openAdminMemberProfile(
+            openModal.dataset.memberId
+        );
+    }
+
+}
+
+
+/* QUICK RANGE SELECTOR */
+
+if (adminDateRangeSelect) {
+
+    adminDateRangeSelect.addEventListener(
+        "change",
+        function() {
+
+            const preset = this.value;
+
+            if (preset === "custom") {
+
+                if (adminDateFilterMessage) {
+                    adminDateFilterMessage.textContent =
+                        "Choose your From Date and To Date, then click Apply Filter.";
+                }
+
+                return;
+
+            }
+
+            setAdminQuickDateRange(preset);
+
+        }
+    );
+
+}
+
+
+/* APPLY BUTTON */
+
+if (applyAdminDateFilterButton) {
+
+    applyAdminDateFilterButton.addEventListener(
+        "click",
+        applyAdminCustomDateRange
+    );
+
+}
+
+
+/* RESET BUTTON */
+
+if (resetAdminDateFilterButton) {
+
+    resetAdminDateFilterButton.addEventListener(
+        "click",
+        function() {
+
+            if (adminDateRangeSelect) {
+                adminDateRangeSelect.value = "this_month";
+            }
+
+            setAdminQuickDateRange("this_month");
+
+        }
+    );
+
+}
+
+
+/* INITIAL FILTER */
+
+setAdminQuickDateRange("this_month");
+
+
+/* =========================================
    MEMBER SEARCH AND DIRECTORY
 ========================================= */
 
@@ -1104,16 +1718,16 @@ function openAdminMemberProfile(userId) {
         getMemberDisplayBalance(wallet);
 
     const successfulDeposits =
-        getSuccessfulDepositsForMember(
-            userId,
-            adminDepositsCache
-        );
-
-    const completedWithdrawals =
-        getCompletedWithdrawalsForMember(
-            userId,
-            adminWithdrawalsCache
-        );
+       getSuccessfulDepositsForMember(
+          userId,
+          getAdminFilteredDeposits()
+       );
+   
+   const completedWithdrawals =
+      getCompletedWithdrawalsForMember(
+         userId,
+         getAdminFilteredWithdrawals()
+      );
 
     const setProfileValue = (elementId, value) => {
 
@@ -1180,27 +1794,136 @@ function openAdminMemberProfile(userId) {
         formatNexusAdminMoney(completedWithdrawals)
     );
 
-    displayAdminMemberTransactions(userId);
+   function displayAdminMemberTransactions(userId) {
 
-    const modal =
-       document.getElementById("memberProfileModal");
-   
-   if (modal) {
-      
-      // Remember the member whose profile is open.
-      modal.dataset.memberId = userId;
-      
-      // Display the correct Suspend or Activate button.
-      updateMemberAccountActionButtons(profile);
-      
-      modal.hidden = false;
-      
-      document.body.style.overflow = "hidden";
-   
-   }
+    const table =
+        document.getElementById("memberProfileTransactions");
+
+    if (!table) return;
+
+    const memberTransactions = [];
+
+    const filteredDeposits =
+        getAdminFilteredDeposits();
+
+    const filteredWithdrawals =
+        getAdminFilteredWithdrawals();
+
+    if (adminDepositsAvailable) {
+
+        filteredDeposits
+            .filter(deposit => deposit.user_id === userId)
+            .forEach(deposit => {
+
+                memberTransactions.push({
+
+                    reference:
+                        deposit.reference || deposit.id,
+
+                    type: "Deposit",
+
+                    amount: deposit.amount,
+
+                    status: deposit.status,
+
+                    created_at: getAdminFinancialDate(
+                        deposit,
+                        "deposit"
+                    )
+
+                });
+
+            });
+
+    }
+
+    filteredWithdrawals
+        .filter(withdrawal => withdrawal.user_id === userId)
+        .forEach(withdrawal => {
+
+            memberTransactions.push({
+
+                reference:
+                    "WDR-" +
+                    String(withdrawal.id).slice(0, 8),
+
+                type: "Withdrawal",
+
+                amount: withdrawal.amount,
+
+                status: withdrawal.status,
+
+                created_at: getAdminFinancialDate(
+                    withdrawal,
+                    "withdrawal"
+                )
+
+            });
+
+        });
+
+    memberTransactions.sort((a, b) => {
+        return new Date(b.created_at || 0) -
+            new Date(a.created_at || 0);
+    });
+
+    if (!memberTransactions.length) {
+
+        showAdminTableMessage(
+            "memberProfileTransactions",
+            5,
+            adminDepositsAvailable
+                ? "No transactions found for this member in the selected period."
+                : "Deposit history is currently unavailable."
+        );
+
+        return;
+
+    }
+
+    table.replaceChildren();
+
+    memberTransactions.forEach(transaction => {
+
+        const row = document.createElement("tr");
+
+        row.appendChild(
+            createAdminTableCell(transaction.reference)
+        );
+
+        const typeCell =
+            createAdminTableCell(transaction.type);
+
+        typeCell.className =
+            transaction.type === "Deposit"
+                ? "transaction-type deposit"
+                : "transaction-type withdrawal";
+
+        row.appendChild(typeCell);
+
+        row.appendChild(
+            createAdminTableCell(
+                formatNexusAdminMoney(transaction.amount)
+            )
+        );
+
+        row.appendChild(
+            createAdminStatusCell(transaction.status)
+        );
+
+        row.appendChild(
+            createAdminTableCell(
+                formatAdminDateTime(transaction.created_at)
+            )
+        );
+
+        table.appendChild(row);
+
+    });
 
 }
 
+   
 /* =========================================
    MEMBER ACCOUNT STATUS MANAGEMENT
 ========================================= */
@@ -1557,36 +2280,422 @@ function displayAdminMemberTransactions(userId) {
    CLOSE MEMBER PROFILE MODAL
 ========================================= */
 
-function closeAdminMemberProfile() {
+/* =========================================
+   MEMBER PROFILE MODAL
+========================================= */
+
+const suspendMemberButton =
+    document.getElementById("suspendMemberButton");
+
+const activateMemberButton =
+    document.getElementById("activateMemberButton");
+
+
+/* SHOW THE CORRECT ACCOUNT ACTION */
+
+function updateMemberAccountActionButtons(profile) {
+
+    if (!suspendMemberButton || !activateMemberButton) {
+        return;
+    }
+
+    suspendMemberButton.hidden = true;
+    activateMemberButton.hidden = true;
+
+    suspendMemberButton.disabled = false;
+    activateMemberButton.disabled = false;
+
+    if (!profile) return;
+
+    // Never allow the current administrator's account to be changed here.
+    if (
+        profile.id === currentAdminUserId ||
+        String(profile.email || "").toLowerCase() ===
+            AUTHORIZED_ADMIN_EMAIL
+    ) {
+        return;
+    }
+
+    const status = normalizeAdminStatus(profile.status);
+
+    if (status === "active") {
+        suspendMemberButton.hidden = false;
+    } else if (status === "suspended") {
+        activateMemberButton.hidden = false;
+    }
+
+}
+
+
+/* OPEN MEMBER PROFILE */
+
+function openAdminMemberProfile(userId) {
+
+    const profile = adminProfilesCache.find(
+        item => item.id === userId
+    );
+
+    if (!profile) {
+        alert("Member information could not be found.");
+        return;
+    }
 
     const modal =
         document.getElementById("memberProfileModal");
 
-    if (modal) {
+    if (!modal) {
+        console.error("Member profile modal was not found.");
+        return;
+    }
 
-        modal.hidden = true;
+    const wallet = adminWalletsCache.find(
+        item => item.user_id === userId
+    );
 
-        document.body.style.overflow = "";
+    const balance =
+        getMemberDisplayBalance(wallet);
 
-        // Clear the selected member after closing.
-        delete modal.dataset.memberId;
+    const successfulDeposits =
+        getSuccessfulDepositsForMember(
+            userId,
+            getAdminFilteredDeposits()
+        );
+
+    const completedWithdrawals =
+        getCompletedWithdrawalsForMember(
+            userId,
+            getAdminFilteredWithdrawals()
+        );
+
+    const setProfileValue = (elementId, value) => {
+
+        const element =
+            document.getElementById(elementId);
+
+        if (element) {
+            element.textContent =
+                value === null ||
+                value === undefined ||
+                value === ""
+                    ? "—"
+                    : String(value);
+        }
+
+    };
+
+    setProfileValue("profileMemberId", profile.member_id);
+    setProfileValue("profileMemberName", profile.full_name);
+    setProfileValue("profileMemberEmail", profile.email);
+    setProfileValue("profileMemberPhone", profile.phone);
+
+    setProfileValue(
+        "profileMemberJoined",
+        formatAdminDateTime(profile.created_at)
+    );
+
+    setProfileValue(
+        "profileMemberStatus",
+        profile.status || "Unknown"
+    );
+
+    setProfileValue(
+        "profileWalletBalance",
+        formatNexusAdminMoney(balance)
+    );
+
+    setProfileValue(
+        "profileWalletDeposits",
+        adminDepositsAvailable
+            ? formatNexusAdminMoney(successfulDeposits)
+            : "Unavailable"
+    );
+
+    setProfileValue(
+        "profileWalletWithdrawals",
+        formatNexusAdminMoney(completedWithdrawals)
+    );
+
+    // Remember which member is currently being viewed.
+    modal.dataset.memberId = userId;
+
+    // Display the correct account action.
+    updateMemberAccountActionButtons(profile);
+
+    // Load this member's transactions using the selected date filter.
+    displayAdminMemberTransactions(userId);
+
+    // Open the modal.
+    modal.hidden = false;
+    document.body.style.overflow = "hidden";
+
+}
+
+
+/* =========================================
+   MEMBER ACCOUNT STATUS MANAGEMENT
+========================================= */
+
+async function updateNexusMemberStatus(newStatus) {
+
+    const modal =
+        document.getElementById("memberProfileModal");
+
+    const userId = modal?.dataset.memberId;
+
+    const profile = adminProfilesCache.find(
+        member => member.id === userId
+    );
+
+    if (!profile) {
+        alert("Member information could not be found.");
+        return;
+    }
+
+    if (!["Active", "Suspended"].includes(newStatus)) {
+        alert("Invalid account status.");
+        return;
+    }
+
+    if (
+        profile.id === currentAdminUserId ||
+        String(profile.email || "").toLowerCase() ===
+            AUTHORIZED_ADMIN_EMAIL
+    ) {
+        alert("Administrator accounts cannot be changed here.");
+        return;
+    }
+
+    const confirmed = window.confirm(
+        newStatus === "Suspended"
+            ? `Are you sure you want to suspend ${profile.full_name || "this member"}? The member will not be able to initiate new deposits or withdrawals.`
+            : `Are you sure you want to activate ${profile.full_name || "this member"}?`
+    );
+
+    if (!confirmed) return;
+
+    const button =
+        newStatus === "Suspended"
+            ? suspendMemberButton
+            : activateMemberButton;
+
+    const originalText =
+        button?.textContent || "";
+
+    if (button) {
+        button.disabled = true;
+        button.textContent = "Updating...";
+    }
+
+    try {
+
+        const { data, error } =
+            await nexusAdminSupabase.rpc(
+                "admin_update_member_status",
+                {
+                    p_user_id: profile.id,
+                    p_new_status: newStatus
+                }
+            );
+
+        if (error) throw error;
+
+        if (!data || data.success !== true) {
+            throw new Error(
+                data?.message ||
+                "The member account status could not be updated."
+            );
+        }
+
+        profile.status = newStatus;
+
+        displayAdminMembers(adminProfilesCache);
+
+        openAdminMemberProfile(profile.id);
+
+        alert(
+            data.message ||
+            `Member account ${newStatus.toLowerCase()} successfully.`
+        );
+
+        console.log(
+            "Member account status updated:",
+            data
+        );
+
+    } catch (error) {
+
+        console.error(
+            "Member account status update error:",
+            error
+        );
+
+        alert(
+            error.message ||
+            "Unable to update the member account."
+        );
+
+    } finally {
+
+        if (button) {
+            button.disabled = false;
+            button.textContent = originalText;
+        }
 
     }
 
-    // Hide both account action buttons.
-    if (suspendMemberButton) {
+}
 
-        suspendMemberButton.hidden = true;
-        suspendMemberButton.disabled = false;
+
+/* SUSPEND BUTTON */
+
+if (suspendMemberButton) {
+
+    suspendMemberButton.addEventListener(
+        "click",
+        () => updateNexusMemberStatus("Suspended")
+    );
+
+}
+
+
+/* ACTIVATE BUTTON */
+
+if (activateMemberButton) {
+
+    activateMemberButton.addEventListener(
+        "click",
+        () => updateNexusMemberStatus("Active")
+    );
+
+}
+
+
+/* =========================================
+   MEMBER TRANSACTION HISTORY
+========================================= */
+
+function displayAdminMemberTransactions(userId) {
+
+    const table =
+        document.getElementById("memberProfileTransactions");
+
+    if (!table) return;
+
+    const memberTransactions = [];
+
+    const filteredDeposits =
+        getAdminFilteredDeposits();
+
+    const filteredWithdrawals =
+        getAdminFilteredWithdrawals();
+
+    if (adminDepositsAvailable) {
+
+        filteredDeposits
+            .filter(deposit => deposit.user_id === userId)
+            .forEach(deposit => {
+
+                memberTransactions.push({
+                    reference:
+                        deposit.reference || deposit.id,
+
+                    type: "Deposit",
+
+                    amount: deposit.amount,
+
+                    status: deposit.status,
+
+                    created_at: getAdminFinancialDate(
+                        deposit,
+                        "deposit"
+                    )
+                });
+
+            });
 
     }
 
-    if (activateMemberButton) {
+    filteredWithdrawals
+        .filter(withdrawal => withdrawal.user_id === userId)
+        .forEach(withdrawal => {
 
-        activateMemberButton.hidden = true;
-        activateMemberButton.disabled = false;
+            memberTransactions.push({
+                reference:
+                    "WDR-" +
+                    String(withdrawal.id).slice(0, 8),
+
+                type: "Withdrawal",
+
+                amount: withdrawal.amount,
+
+                status: withdrawal.status,
+
+                created_at: getAdminFinancialDate(
+                    withdrawal,
+                    "withdrawal"
+                )
+            });
+
+        });
+
+    memberTransactions.sort((a, b) => {
+        return new Date(b.created_at || 0) -
+            new Date(a.created_at || 0);
+    });
+
+    if (!memberTransactions.length) {
+
+        showAdminTableMessage(
+            "memberProfileTransactions",
+            5,
+            adminDepositsAvailable
+                ? "No transactions found for this member in the selected period."
+                : "Deposit history is currently unavailable."
+        );
+
+        return;
 
     }
+
+    table.replaceChildren();
+
+    memberTransactions.forEach(transaction => {
+
+        const row = document.createElement("tr");
+
+        row.appendChild(
+            createAdminTableCell(transaction.reference)
+        );
+
+        const typeCell =
+            createAdminTableCell(transaction.type);
+
+        typeCell.className =
+            transaction.type === "Deposit"
+                ? "transaction-type deposit"
+                : "transaction-type withdrawal";
+
+        row.appendChild(typeCell);
+
+        row.appendChild(
+            createAdminTableCell(
+                formatNexusAdminMoney(transaction.amount)
+            )
+        );
+
+        row.appendChild(
+            createAdminStatusCell(transaction.status)
+        );
+
+        row.appendChild(
+            createAdminTableCell(
+                formatAdminDateTime(transaction.created_at)
+            )
+        );
+
+        table.appendChild(row);
+
+    });
 
 }
 
@@ -1675,33 +2784,46 @@ function displayAdminWithdrawals(
     const recentTable =
         document.getElementById("recentWithdrawalsTable");
 
-    if (!withdrawals.length) {
+    // Sort by effective financial date, newest first.
+    const sortedWithdrawals = [...withdrawals].sort(
+        (a, b) => {
+
+            const dateA = new Date(
+                getAdminFinancialDate(a, "withdrawal") || 0
+            ).getTime();
+
+            const dateB = new Date(
+                getAdminFinancialDate(b, "withdrawal") || 0
+            ).getTime();
+
+            return dateB - dateA;
+
+        }
+    );
+
+    if (!sortedWithdrawals.length) {
 
         showAdminTableMessage(
             "withdrawalsTable",
             8,
-            "No withdrawal requests found."
+            "No withdrawal requests found in the selected period."
         );
 
         showAdminTableMessage(
             "recentWithdrawalsTable",
             5,
-            "No withdrawal requests found."
+            "No withdrawal requests found in the selected period."
         );
 
         return;
 
     }
 
-    if (table) {
-        table.replaceChildren();
-    }
+    if (table) table.replaceChildren();
 
-    if (recentTable) {
-        recentTable.replaceChildren();
-    }
+    if (recentTable) recentTable.replaceChildren();
 
-    withdrawals.forEach((request, index) => {
+    sortedWithdrawals.forEach((request, index) => {
 
         const memberName = getAdminMemberName(
             request.user_id,
@@ -1736,9 +2858,7 @@ function displayAdminWithdrawals(
         );
 
         row.appendChild(
-            createAdminTableCell(
-                request.payment_details
-            )
+            createAdminTableCell(request.payment_details)
         );
 
         row.appendChild(
@@ -1762,27 +2882,21 @@ function displayAdminWithdrawals(
                     document.createElement("button");
 
                 processButton.type = "button";
-
                 processButton.textContent = "Process";
-
                 processButton.className =
                     "admin-action-button";
 
                 processButton.addEventListener(
                     "click",
                     () => {
-
                         reviewNexusWithdrawal(
                             request.id,
                             "processing"
                         );
-
                     }
                 );
 
-                actionCell.appendChild(
-                    processButton
-                );
+                actionCell.appendChild(processButton);
 
             }
 
@@ -1790,27 +2904,21 @@ function displayAdminWithdrawals(
                 document.createElement("button");
 
             rejectButton.type = "button";
-
             rejectButton.textContent = "Reject";
-
             rejectButton.className =
                 "admin-action-button reject";
 
             rejectButton.addEventListener(
                 "click",
                 () => {
-
                     reviewNexusWithdrawal(
                         request.id,
                         "rejected"
                     );
-
                 }
             );
 
-            actionCell.appendChild(
-                rejectButton
-            );
+            actionCell.appendChild(rejectButton);
 
         } else {
 
@@ -1820,24 +2928,25 @@ function displayAdminWithdrawals(
 
         row.appendChild(actionCell);
 
+        const effectiveDate =
+            getAdminFinancialDate(request, "withdrawal");
+
         const dateTimeCell =
             createAdminTableCell(
-                formatAdminDateTime(request.created_at)
+                formatAdminDateTime(effectiveDate)
             );
 
         dateTimeCell.className =
             "withdrawal-date-time";
 
-        if (request.created_at) {
+        if (effectiveDate) {
 
             const requestDate =
-                new Date(request.created_at);
+                new Date(effectiveDate);
 
             if (!Number.isNaN(requestDate.getTime())) {
-
                 dateTimeCell.title =
                     requestDate.toISOString();
-
             }
 
         }
@@ -1877,8 +2986,7 @@ function displayAdminWithdrawals(
 
             recentRow.appendChild(
                 createAdminTableCell(
-                    String(request.status || "")
-                        .toUpperCase()
+                    String(request.status || "").toUpperCase()
                 )
             );
 
@@ -2701,35 +3809,43 @@ function displayAdminTransactions(
 
     deposits.forEach(deposit => {
 
-        transactions.push({
-            id: deposit.id,
-            reference: deposit.reference,
-            user_id: deposit.user_id,
-            type: "Deposit",
-            amount: deposit.amount,
-            payment_method: deposit.payment_method,
-            status: deposit.status,
-            created_at: deposit.created_at
-        });
+    transactions.push({
+        id: deposit.id,
+        reference: deposit.reference,
+        user_id: deposit.user_id,
+        type: "Deposit",
+        amount: deposit.amount,
+        payment_method: deposit.payment_method,
+        status: deposit.status,
 
+        created_at: getAdminFinancialDate(
+            deposit,
+            "deposit"
+        )
     });
+
+});
 
     withdrawals.forEach(withdrawal => {
 
-        transactions.push({
-            id: withdrawal.id,
-            reference:
-                "WDR-" +
-                String(withdrawal.id).slice(0, 8),
-            user_id: withdrawal.user_id,
-            type: "Withdrawal",
-            amount: withdrawal.amount,
-            payment_method: withdrawal.withdrawal_method,
-            status: withdrawal.status,
-            created_at: withdrawal.created_at
-        });
+    transactions.push({
+        id: withdrawal.id,
+        reference:
+            "WDR-" +
+            String(withdrawal.id).slice(0, 8),
+        user_id: withdrawal.user_id,
+        type: "Withdrawal",
+        amount: withdrawal.amount,
+        payment_method: withdrawal.withdrawal_method,
+        status: withdrawal.status,
 
+        created_at: getAdminFinancialDate(
+            withdrawal,
+            "withdrawal"
+        )
     });
+
+});
 
     /* NEWEST TRANSACTIONS FIRST */
 
@@ -3079,151 +4195,11 @@ async function loadAdminDashboardData() {
         }
 
         /*
-           TOTAL SUCCESSFUL DEPOSITS
-        */
+   APPLY THE SELECTED DATE FILTER
+   TO ALL FINANCIAL DASHBOARD RECORDS
+*/
 
-        const totalDeposits =
-            deposits.reduce((sum, deposit) => {
-
-                if (
-                    normalizeAdminStatus(deposit.status) !==
-                    "successful"
-                ) {
-                    return sum;
-                }
-
-                return sum +
-                    getAdminNumber(deposit.amount);
-
-            }, 0);
-
-        const totalDepositsElement =
-            document.getElementById("totalDeposits");
-
-        if (totalDepositsElement) {
-
-            totalDepositsElement.textContent =
-                depositsAvailable
-                    ? formatNexusAdminMoney(totalDeposits)
-                    : "Unavailable";
-
-        }
-
-        /*
-           TOTAL COMPLETED WITHDRAWALS
-        */
-
-        const completedWithdrawalRecords =
-            withdrawals.filter(request =>
-
-                normalizeAdminStatus(request.status) ===
-                "completed"
-
-            );
-
-        const totalWithdrawals =
-            completedWithdrawalRecords.reduce(
-                (sum, request) => {
-
-                    return sum +
-                        getAdminNumber(request.amount);
-
-                },
-                0
-            );
-
-        const totalWithdrawalsElement =
-            document.getElementById("totalWithdrawals");
-
-        if (totalWithdrawalsElement) {
-
-            totalWithdrawalsElement.textContent =
-                formatNexusAdminMoney(totalWithdrawals);
-
-        }
-
-        /*
-           WITHDRAWAL COUNTS
-        */
-
-        const pending =
-            withdrawals.filter(request =>
-
-                normalizeAdminStatus(request.status) ===
-                "pending"
-
-            ).length;
-
-        const processing =
-            withdrawals.filter(request =>
-
-                normalizeAdminStatus(request.status) ===
-                "processing"
-
-            ).length;
-
-        const completed =
-            completedWithdrawalRecords.length;
-
-        const pendingElement =
-            document.getElementById(
-                "overviewPendingWithdrawals"
-            );
-
-        const processingElement =
-            document.getElementById(
-                "overviewProcessingWithdrawals"
-            );
-
-        const completedElement =
-            document.getElementById(
-                "overviewCompletedWithdrawals"
-            );
-
-        if (pendingElement) {
-            pendingElement.textContent = pending;
-        }
-
-        if (processingElement) {
-            processingElement.textContent = processing;
-        }
-
-        if (completedElement) {
-            completedElement.textContent = completed;
-        }
-
-        /*
-           PENDING WITHDRAWAL BADGE
-        */
-
-        const withdrawalBadge =
-            document.getElementById(
-                "pendingWithdrawalBadge"
-            );
-
-        if (withdrawalBadge) {
-
-            withdrawalBadge.textContent = pending;
-
-            withdrawalBadge.hidden =
-                pending === 0;
-
-        }
-
-        /*
-           DISPLAY MEMBERS
-        */
-
-        displayAdminMembers(profiles);
-
-        /*
-           DISPLAY WITHDRAWALS
-        */
-
-        displayAdminWithdrawals(
-            withdrawals,
-            profiles
-        );
+renderAdminDateFilteredDashboard();
 
         /*
            DISPLAY SAVINGS
