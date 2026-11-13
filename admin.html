@@ -48,7 +48,6 @@
 
                 <div class="form-group">
                     <label for="adminEmail">Administrator Email</label>
-
                     <input
                         type="email"
                         id="adminEmail"
@@ -60,7 +59,6 @@
 
                 <div class="form-group">
                     <label for="adminPassword">Password</label>
-
                     <input
                         type="password"
                         id="adminPassword"
@@ -136,6 +134,23 @@
                 >
                     <span>♙</span>
                     <span>Members</span>
+                </button>
+
+                <!-- TELLERS NAVIGATION -->
+
+                <button
+                    type="button"
+                    class="admin-nav-link"
+                    data-page="tellers"
+                >
+                    <span>♧</span>
+                    <span>Tellers Management</span>
+
+                    <span
+                        id="tellerCountBadge"
+                        class="nav-badge"
+                        hidden
+                    >0</span>
                 </button>
 
                 <button
@@ -275,63 +290,63 @@
 
 
             <!-- =========================================
-     GLOBAL DASHBOARD DATE FILTER
-========================================= -->
+                 GLOBAL DASHBOARD DATE FILTER
+            ========================================== -->
 
-<section class="admin-date-filter" id="adminDateFilter">
+            <section class="admin-date-filter" id="adminDateFilter">
 
-    <div class="date-filter-heading">
-        <div>
-            <h3>Financial Date Filter</h3>
-            <p>Choose the period for the financial records displayed across your dashboard.</p>
-        </div>
+                <div class="date-filter-heading">
+                    <div>
+                        <h3>Financial Date Filter</h3>
+                        <p>Choose the period for the financial records displayed across your dashboard.</p>
+                    </div>
 
-        <span id="adminDateFilterSummary">
-            This Month
-        </span>
-    </div>
+                    <span id="adminDateFilterSummary">
+                        This Month
+                    </span>
+                </div>
 
-    <div class="date-filter-controls">
+                <div class="date-filter-controls">
 
-        <div class="date-filter-field">
-            <label for="adminDateRange">Quick Date Range</label>
+                    <div class="date-filter-field">
+                        <label for="adminDateRange">Quick Date Range</label>
 
-            <select id="adminDateRange">
-                <option value="today">Today</option>
-                <option value="yesterday">Yesterday</option>
-                <option value="this_week">This Week</option>
-                <option value="this_month" selected>This Month</option>
-                <option value="this_year">This Year</option>
-                <option value="custom">Custom Range</option>
-                <option value="all_time">All Time</option>
-            </select>
-        </div>
+                        <select id="adminDateRange">
+                            <option value="today">Today</option>
+                            <option value="yesterday">Yesterday</option>
+                            <option value="this_week">This Week</option>
+                            <option value="this_month" selected>This Month</option>
+                            <option value="this_year">This Year</option>
+                            <option value="custom">Custom Range</option>
+                            <option value="all_time">All Time</option>
+                        </select>
+                    </div>
 
-        <div class="date-filter-field">
-            <label for="adminDateFrom">From Date</label>
-            <input type="date" id="adminDateFrom">
-        </div>
+                    <div class="date-filter-field">
+                        <label for="adminDateFrom">From Date</label>
+                        <input type="date" id="adminDateFrom">
+                    </div>
 
-        <div class="date-filter-field">
-            <label for="adminDateTo">To Date</label>
-            <input type="date" id="adminDateTo">
-        </div>
+                    <div class="date-filter-field">
+                        <label for="adminDateTo">To Date</label>
+                        <input type="date" id="adminDateTo">
+                    </div>
 
-        <div class="date-filter-actions">
-            <button type="button" id="applyAdminDateFilter">
-                Apply Filter
-            </button>
+                    <div class="date-filter-actions">
+                        <button type="button" id="applyAdminDateFilter">
+                            Apply Filter
+                        </button>
 
-            <button type="button" id="resetAdminDateFilter">
-                Reset
-            </button>
-        </div>
+                        <button type="button" id="resetAdminDateFilter">
+                            Reset
+                        </button>
+                    </div>
 
-    </div>
+                </div>
 
-    <p id="adminDateFilterMessage" role="status"></p>
+                <p id="adminDateFilterMessage" role="status"></p>
 
-</section>
+            </section>
 
 
             <!-- =================================
@@ -612,6 +627,284 @@
                             </tbody>
 
                         </table>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================
+                 TELLERS MANAGEMENT PAGE
+            ================================== -->
+
+            <section id="page-tellers" class="admin-page">
+
+                <div class="page-intro">
+
+                    <div>
+                        <h2>Tellers Management</h2>
+                        <p>Create teller accounts, manage staff access and monitor teller records.</p>
+                    </div>
+
+                    <button
+                        type="button"
+                        class="panel-action"
+                        id="refreshTellersButton"
+                    >
+                        ↻ Refresh Tellers
+                    </button>
+
+                </div>
+
+
+                <!-- TELLER STATISTICS -->
+
+                <div class="statistics-grid">
+
+                    <article class="stat-card">
+                        <div class="stat-icon members-icon">♧</div>
+                        <p>Total Tellers</p>
+                        <h3 id="tellerTotalCount">0</h3>
+                        <span>All registered teller accounts</span>
+                    </article>
+
+                    <article class="stat-card">
+                        <div class="stat-icon deposits-icon">✓</div>
+                        <p>Active Tellers</p>
+                        <h3 id="activeTellerCount">0</h3>
+                        <span>Accounts permitted to access teller services</span>
+                    </article>
+
+                    <article class="stat-card">
+                        <div class="stat-icon withdrawals-icon">Ⅱ</div>
+                        <p>Suspended Tellers</p>
+                        <h3 id="suspendedTellerCount">0</h3>
+                        <span>Temporarily restricted accounts</span>
+                    </article>
+
+                    <article class="stat-card">
+                        <div class="stat-icon wallet-icon">⊘</div>
+                        <p>Inactive Tellers</p>
+                        <h3 id="inactiveTellerCount">0</h3>
+                        <span>Deactivated accounts</span>
+                    </article>
+
+                </div>
+
+
+                <!-- CREATE TELLER -->
+
+                <div class="admin-panel">
+
+                    <div class="panel-heading">
+
+                        <div>
+                            <h3>Create New Teller Account</h3>
+                            <p>Register a staff member and send an invitation to their email address.</p>
+                        </div>
+
+                    </div>
+
+                    <form id="createTellerForm">
+
+                        <div class="date-filter-controls">
+
+                            <div class="date-filter-field">
+                                <label for="tellerFullName">Teller Full Name</label>
+
+                                <input
+                                    type="text"
+                                    id="tellerFullName"
+                                    placeholder="Enter staff full name"
+                                    minlength="2"
+                                    maxlength="120"
+                                    autocomplete="name"
+                                    required
+                                >
+                            </div>
+
+                            <div class="date-filter-field">
+                                <label for="tellerEmail">Teller Email Address</label>
+
+                                <input
+                                    type="email"
+                                    id="tellerEmail"
+                                    placeholder="Enter staff email"
+                                    autocomplete="email"
+                                    required
+                                >
+                            </div>
+
+                            <div class="date-filter-field">
+                                <label for="tellerPhone">Teller Phone Number</label>
+
+                                <input
+                                    type="tel"
+                                    id="tellerPhone"
+                                    placeholder="Enter phone number"
+                                    minlength="7"
+                                    maxlength="25"
+                                    autocomplete="tel"
+                                    required
+                                >
+                            </div>
+
+                        </div>
+
+                        <div class="date-filter-actions">
+
+                            <button
+                                type="submit"
+                                id="createTellerButton"
+                            >
+                                + Create Teller Account
+                            </button>
+
+                        </div>
+
+                        <p
+                            id="createTellerMessage"
+                            class="admin-message"
+                            role="status"
+                            aria-live="polite"
+                        ></p>
+
+                    </form>
+
+                    <div class="platform-information">
+
+                        <div>
+                            <span>Account creation</span>
+                            <strong>Administrator controlled</strong>
+                        </div>
+
+                        <div>
+                            <span>Password setup</span>
+                            <strong>Email invitation</strong>
+                        </div>
+
+                        <div>
+                            <span>Member passwords</span>
+                            <strong>Never visible to tellers</strong>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- TELLER DIRECTORY -->
+
+                <div class="admin-panel">
+
+                    <div class="panel-heading">
+
+                        <div>
+                            <h3>Registered Teller Accounts</h3>
+                            <p>View teller details, account codes and access status.</p>
+                        </div>
+
+                    </div>
+
+                    <div class="member-search-area">
+
+                        <input
+                            type="search"
+                            id="tellerSearchInput"
+                            placeholder="Search by teller name, email, phone or teller code..."
+                            autocomplete="off"
+                            aria-label="Search tellers"
+                        >
+
+                    </div>
+
+                    <p
+                        id="tellerSearchResults"
+                        class="member-search-results"
+                        role="status"
+                    >
+                        Teller records will appear here.
+                    </p>
+
+                    <div class="table-container">
+
+                        <table>
+
+                            <thead>
+                                <tr>
+                                    <th>Teller Code</th>
+                                    <th>Full Name</th>
+                                    <th>Email Address</th>
+                                    <th>Phone Number</th>
+                                    <th>Date Created</th>
+                                    <th>Account Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+
+                            <tbody id="tellersTable">
+
+                                <tr>
+                                    <td colspan="7" class="empty-table">
+                                        No teller records loaded yet.
+                                    </td>
+                                </tr>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+
+                <!-- TELLER SECURITY INFORMATION -->
+
+                <div class="admin-panel">
+
+                    <div class="panel-heading">
+
+                        <div>
+                            <h3>Teller Access &amp; Security</h3>
+                            <p>Important controls governing teller activities.</p>
+                        </div>
+
+                    </div>
+
+                    <div class="platform-information">
+
+                        <div>
+                            <span>Deposits</span>
+                            <strong>Subject to administrator approval</strong>
+                        </div>
+
+                        <div>
+                            <span>Withdrawals</span>
+                            <strong>Subject to administrator approval</strong>
+                        </div>
+
+                        <div>
+                            <span>Member registration</span>
+                            <strong>Permitted through teller dashboard</strong>
+                        </div>
+
+                        <div>
+                            <span>Wallet balance editing</span>
+                            <strong>Not permitted</strong>
+                        </div>
+
+                        <div>
+                            <span>Transaction approval</span>
+                            <strong>Administrator only</strong>
+                        </div>
+
+                        <div>
+                            <span>Teller transaction attribution</span>
+                            <strong>Pending secure database integration</strong>
+                        </div>
 
                     </div>
 
