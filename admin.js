@@ -1488,4 +1488,1004 @@ function updateAdminDepositStatistics(
 
     const failedElement =
         document.getElementById(
-            "adminFailed
+            "adminFailedDeposits"
+        );
+
+    const totalElement =
+        document.getElementById(
+            "adminDepositTotal"
+        );
+
+    const badge =
+        document.getElementById(
+            "pendingDepositBadge"
+        );
+
+    if (!depositsAvailable) {
+
+        if (pendingElement) {
+            pendingElement.textContent = "—";
+        }
+
+        if (successfulElement) {
+            successfulElement.textContent = "—";
+        }
+
+        if (failedElement) {
+            failedElement.textContent = "—";
+        }
+
+        if (totalElement) {
+            totalElement.textContent = "Unavailable";
+        }
+
+        if (badge) {
+            badge.hidden = true;
+        }
+
+        return;
+
+    }
+
+    const pendingDeposits =
+        deposits.filter(deposit =>
+
+            normalizeAdminStatus(deposit.status) ===
+                "pending"
+
+        );
+
+    const successfulDeposits =
+        deposits.filter(deposit =>
+
+            normalizeAdminStatus(deposit.status) ===
+                "successful"
+
+        );
+
+    const failedDeposits =
+        deposits.filter(deposit =>
+
+            normalizeAdminStatus(deposit.status) ===
+                "failed"
+
+        );
+
+    const successfulTotal =
+        successfulDeposits.reduce(
+            (total, deposit) => {
+
+                return total +
+                    getAdminNumber(deposit.amount);
+
+            },
+            0
+        );
+
+    if (pendingElement) {
+
+        pendingElement.textContent =
+            pendingDeposits.length.toLocaleString("en-GH");
+
+    }
+
+    if (successfulElement) {
+
+        successfulElement.textContent =
+            successfulDeposits.length.toLocaleString("en-GH");
+
+    }
+
+    if (failedElement) {
+
+        failedElement.textContent =
+            failedDeposits.length.toLocaleString("en-GH");
+
+    }
+
+    if (totalElement) {
+
+        totalElement.textContent =
+            formatNexusAdminMoney(successfulTotal);
+
+    }
+
+    if (badge) {
+
+        badge.textContent =
+            pendingDeposits.length;
+
+        badge.hidden =
+            pendingDeposits.length === 0;
+
+    }
+
+}
+
+
+/* =========================================
+   22. DISPLAY ALL FINANCIAL TRANSACTIONS
+========================================= */
+
+function displayAdminTransactions(
+    deposits = [],
+    withdrawals = [],
+    profiles = []
+) {
+
+    const table =
+        document.getElementById("transactionsTable");
+
+    if (!table) {
+
+        console.error(
+            "The transactionsTable element was not found."
+        );
+
+        return;
+
+    }
+
+    /*
+       CREATE TABLE HEADINGS
+    */
+
+    const parentTable =
+        table.closest("table");
+
+    if (parentTable) {
+
+        let thead =
+            parentTable.querySelector("thead");
+
+        if (!thead) {
+
+            thead =
+                document.createElement("thead");
+
+            parentTable.prepend(thead);
+
+        }
+
+        const headingRow =
+            document.createElement("tr");
+
+        [
+
+            "Transaction Reference",
+
+            "Member",
+
+            "Transaction Type",
+
+            "Amount",
+
+            "Payment Method",
+
+            "Status",
+
+            "Date & Time"
+
+        ].forEach(heading => {
+
+            const th =
+                document.createElement("th");
+
+            th.textContent = heading;
+
+            headingRow.appendChild(th);
+
+        });
+
+        thead.replaceChildren(headingRow);
+
+    }
+
+
+    /*
+       COMBINE TRANSACTIONS
+    */
+
+    const transactions = [];
+
+
+    /* DEPOSITS */
+
+    deposits.forEach(deposit => {
+
+        transactions.push({
+
+            id: deposit.id,
+
+            reference: deposit.reference,
+
+            user_id: deposit.user_id,
+
+            type: "Deposit",
+
+            amount: deposit.amount,
+
+            payment_method: deposit.payment_method,
+
+            status: deposit.status,
+
+            created_at: deposit.created_at
+
+        });
+
+    });
+
+
+    /* WITHDRAWALS */
+
+    withdrawals.forEach(withdrawal => {
+
+        transactions.push({
+
+            id: withdrawal.id,
+
+            reference:
+                "WDR-" +
+                String(withdrawal.id).slice(0, 8),
+
+            user_id: withdrawal.user_id,
+
+            type: "Withdrawal",
+
+            amount: withdrawal.amount,
+
+            payment_method: withdrawal.withdrawal_method,
+
+            status: withdrawal.status,
+
+            created_at: withdrawal.created_at
+
+        });
+
+    });
+
+
+    /*
+       NEWEST FIRST
+    */
+
+    transactions.sort((a, b) => {
+
+        return new Date(b.created_at || 0) -
+            new Date(a.created_at || 0);
+
+    });
+
+
+    if (!transactions.length) {
+
+        showAdminTableMessage(
+            "transactionsTable",
+            7,
+            "No financial transactions have been recorded yet."
+        );
+
+        return;
+
+    }
+
+    table.replaceChildren();
+
+
+    /*
+       DISPLAY TRANSACTIONS
+    */
+
+    transactions.forEach(transaction => {
+
+        const row =
+            document.createElement("tr");
+
+        /*
+           REFERENCE
+        */
+
+        row.appendChild(
+            createAdminTableCell(
+                transaction.reference ||
+                transaction.id
+            )
+        );
+
+        /*
+           MEMBER
+        */
+
+        row.appendChild(
+            createAdminTableCell(
+                getAdminMemberName(
+                    transaction.user_id,
+                    profiles
+                )
+            )
+        );
+
+        /*
+           TYPE
+        */
+
+        const typeCell =
+            createAdminTableCell(
+                transaction.type
+            );
+
+        typeCell.className =
+            transaction.type === "Deposit"
+                ? "transaction-type deposit"
+                : "transaction-type withdrawal";
+
+        row.appendChild(typeCell);
+
+        /*
+           AMOUNT
+        */
+
+        row.appendChild(
+            createAdminTableCell(
+                formatNexusAdminMoney(
+                    transaction.amount
+                )
+            )
+        );
+
+        /*
+           PAYMENT METHOD
+        */
+
+        row.appendChild(
+            createAdminTableCell(
+                getAdminPaymentMethodLabel(
+                    transaction.payment_method
+                )
+            )
+        );
+
+        /*
+           STATUS
+        */
+
+        row.appendChild(
+            createAdminStatusCell(
+                transaction.status
+            )
+        );
+
+        /*
+           DATE AND TIME
+        */
+
+        row.appendChild(
+            createAdminTableCell(
+                formatAdminDateTime(
+                    transaction.created_at
+                )
+            )
+        );
+
+        table.appendChild(row);
+
+    });
+
+    console.log(
+        "Admin financial transactions displayed:",
+        transactions.length
+    );
+
+}
+
+
+/* =========================================
+   23. LOAD ALL DASHBOARD RECORDS
+========================================= */
+
+let adminDashboardLoading = false;
+
+async function loadAdminDashboardData() {
+
+    if (adminDashboardLoading) {
+        console.log(
+            "Dashboard data loading is already in progress."
+        );
+
+        return;
+    }
+
+    adminDashboardLoading = true;
+
+    if (refreshDepositsButton) {
+
+        refreshDepositsButton.disabled = true;
+
+        refreshDepositsButton.textContent =
+            "Refreshing...";
+
+    }
+
+    try {
+
+        console.log(
+            "Loading Nexus admin dashboard data..."
+        );
+
+
+        /*
+           LOAD ALL FOUR TABLES
+        */
+
+        const [
+
+            profilesResult,
+
+            walletsResult,
+
+            withdrawalsResult,
+
+            depositsResult
+
+        ] = await Promise.all([
+
+            nexusAdminSupabase
+                .from("profiles")
+                .select(
+                    "id, full_name, phone, member_id, email, created_at"
+                )
+                .order(
+                    "created_at",
+                    { ascending: false }
+                ),
+
+            nexusAdminSupabase
+                .from("wallets")
+                .select(
+                    "id, user_id, balance, total_deposits, total_withdrawals"
+                ),
+
+            nexusAdminSupabase
+                .from("withdrawal_requests")
+                .select(
+                    "id, user_id, amount, withdrawal_method, payment_details, status, created_at, completed_at"
+                )
+                .order(
+                    "created_at",
+                    { ascending: false }
+                ),
+
+            nexusAdminSupabase
+                .from("deposit_transactions")
+                .select(
+                    "id, user_id, amount, payment_method, payment_phone, reference, status, created_at, paid_at"
+                )
+                .order(
+                    "created_at",
+                    { ascending: false }
+                )
+
+        ]);
+
+
+        /*
+           CHECK REQUIRED TABLES
+        */
+
+        if (profilesResult.error) {
+            throw profilesResult.error;
+        }
+
+        if (walletsResult.error) {
+            throw walletsResult.error;
+        }
+
+        if (withdrawalsResult.error) {
+            throw withdrawalsResult.error;
+        }
+
+
+        /*
+           EXTRACT DATA
+        */
+
+        const profiles =
+            profilesResult.data || [];
+
+        const wallets =
+            walletsResult.data || [];
+
+        const withdrawals =
+            withdrawalsResult.data || [];
+
+        const depositsAvailable =
+            !depositsResult.error;
+
+        const deposits =
+            depositsAvailable
+                ? (depositsResult.data || [])
+                : [];
+
+
+        if (depositsResult.error) {
+
+            console.error(
+                "Deposit transaction loading error:",
+                depositsResult.error
+            );
+
+        }
+
+
+        /* =====================================
+           TOTAL MEMBERS
+        ===================================== */
+
+        const totalMembersElement =
+            document.getElementById(
+                "totalMembers"
+            );
+
+        if (totalMembersElement) {
+
+            totalMembersElement.textContent =
+                profiles.length.toLocaleString("en-GH");
+
+        }
+
+
+        /* =====================================
+           TOTAL WALLET BALANCES
+        ===================================== */
+
+        /*
+           Actual wallet balances are used directly.
+
+           Do not subtract pending withdrawals again.
+        */
+
+        const totalBalances =
+            wallets.reduce((sum, wallet) => {
+
+                return sum +
+                    getMemberDisplayBalance(wallet);
+
+            }, 0);
+
+        const totalWalletBalancesElement =
+            document.getElementById(
+                "totalWalletBalances"
+            );
+
+        if (totalWalletBalancesElement) {
+
+            totalWalletBalancesElement.textContent =
+                formatNexusAdminMoney(totalBalances);
+
+        }
+
+
+        /* =====================================
+           TOTAL SUCCESSFUL DEPOSITS
+        ===================================== */
+
+        const totalDeposits =
+            deposits.reduce((sum, deposit) => {
+
+                if (
+                    normalizeAdminStatus(deposit.status) !==
+                    "successful"
+                ) {
+
+                    return sum;
+
+                }
+
+                return sum +
+                    getAdminNumber(deposit.amount);
+
+            }, 0);
+
+        const totalDepositsElement =
+            document.getElementById(
+                "totalDeposits"
+            );
+
+        if (totalDepositsElement) {
+
+            totalDepositsElement.textContent =
+                depositsAvailable
+                    ? formatNexusAdminMoney(totalDeposits)
+                    : "Unavailable";
+
+        }
+
+
+        /* =====================================
+           TOTAL COMPLETED WITHDRAWALS
+        ===================================== */
+
+        const completedWithdrawalRecords =
+            withdrawals.filter(request =>
+
+                normalizeAdminStatus(request.status) ===
+                    "completed"
+
+            );
+
+        const totalWithdrawals =
+            completedWithdrawalRecords.reduce(
+                (sum, request) => {
+
+                    return sum +
+                        getAdminNumber(request.amount);
+
+                },
+                0
+            );
+
+        const totalWithdrawalsElement =
+            document.getElementById(
+                "totalWithdrawals"
+            );
+
+        if (totalWithdrawalsElement) {
+
+            totalWithdrawalsElement.textContent =
+                formatNexusAdminMoney(totalWithdrawals);
+
+        }
+
+
+        /* =====================================
+           WITHDRAWAL COUNTS
+        ===================================== */
+
+        const pending =
+            withdrawals.filter(request =>
+
+                normalizeAdminStatus(request.status) ===
+                    "pending"
+
+            ).length;
+
+        const processing =
+            withdrawals.filter(request =>
+
+                normalizeAdminStatus(request.status) ===
+                    "processing"
+
+            ).length;
+
+        const completed =
+            completedWithdrawalRecords.length;
+
+
+        const pendingElement =
+            document.getElementById(
+                "overviewPendingWithdrawals"
+            );
+
+        const processingElement =
+            document.getElementById(
+                "overviewProcessingWithdrawals"
+            );
+
+        const completedElement =
+            document.getElementById(
+                "overviewCompletedWithdrawals"
+            );
+
+
+        if (pendingElement) {
+            pendingElement.textContent = pending;
+        }
+
+        if (processingElement) {
+            processingElement.textContent = processing;
+        }
+
+        if (completedElement) {
+            completedElement.textContent = completed;
+        }
+
+
+        /* =====================================
+           PENDING WITHDRAWAL BADGE
+        ===================================== */
+
+        const withdrawalBadge =
+            document.getElementById(
+                "pendingWithdrawalBadge"
+            );
+
+        if (withdrawalBadge) {
+
+            withdrawalBadge.textContent =
+                pending;
+
+            withdrawalBadge.hidden =
+                pending === 0;
+
+        }
+
+
+        /* =====================================
+           DISPLAY MEMBERS
+        ===================================== */
+
+        displayAdminMembers(profiles);
+
+
+        /* =====================================
+           DISPLAY WITHDRAWALS
+        ===================================== */
+
+        displayAdminWithdrawals(
+            withdrawals,
+            profiles
+        );
+
+
+        /* =====================================
+           DISPLAY SAVINGS
+        ===================================== */
+
+        displayAdminSavings(
+
+            wallets,
+
+            profiles,
+
+            deposits,
+
+            withdrawals,
+
+            depositsAvailable
+
+        );
+
+
+        /* =====================================
+           DISPLAY DEPOSITS
+        ===================================== */
+
+        if (depositsAvailable) {
+
+            displayAdminDeposits(
+                deposits,
+                profiles
+            );
+
+        } else {
+
+            showAdminTableMessage(
+                "depositsTable",
+                7,
+                "Unable to load deposits. Check Supabase permissions: " +
+                depositsResult.error.message
+            );
+
+        }
+
+
+        /* =====================================
+           UPDATE DEPOSIT STATISTICS
+        ===================================== */
+
+        updateAdminDepositStatistics(
+            deposits,
+            depositsAvailable
+        );
+
+
+        /* =====================================
+           DISPLAY TRANSACTIONS
+        ===================================== */
+
+        displayAdminTransactions(
+            deposits,
+            withdrawals,
+            profiles
+        );
+
+
+        /* =====================================
+           DASHBOARD SUMMARY
+        ===================================== */
+
+        console.log(
+            "Nexus admin dashboard data loaded.",
+            {
+
+                members: profiles.length,
+
+                wallets: wallets.length,
+
+                totalWalletBalances: totalBalances,
+
+                totalSuccessfulDeposits:
+                    depositsAvailable
+                        ? totalDeposits
+                        : "Unavailable",
+
+                totalCompletedWithdrawals:
+                    totalWithdrawals,
+
+                depositTransactions:
+                    deposits.length,
+
+                withdrawalRequests:
+                    withdrawals.length,
+
+                totalFinancialTransactions:
+                    deposits.length + withdrawals.length,
+
+                pendingWithdrawals:
+                    pending,
+
+                processingWithdrawals:
+                    processing,
+
+                completedWithdrawals:
+                    completed
+
+            }
+        );
+
+    } finally {
+
+        adminDashboardLoading = false;
+
+        if (refreshDepositsButton) {
+
+            refreshDepositsButton.disabled = false;
+
+            refreshDepositsButton.textContent =
+                "↻ Refresh Deposits";
+
+        }
+
+    }
+
+}
+
+
+/* =========================================
+   24. REFRESH DEPOSIT BUTTON
+========================================= */
+
+if (refreshDepositsButton) {
+
+    refreshDepositsButton.addEventListener(
+        "click",
+        async function() {
+
+            try {
+
+                await loadAdminDashboardData();
+
+            } catch (error) {
+
+                console.error(
+                    "Deposit refresh error:",
+                    error
+                );
+
+                alert(
+                    "Unable to refresh deposit records: " +
+                    error.message
+                );
+
+            }
+
+        }
+    );
+
+}
+
+
+/* =========================================
+   25. ADMIN WITHDRAWAL REVIEW
+========================================= */
+
+async function reviewNexusWithdrawal(
+    requestId,
+    action
+) {
+
+    if (
+        !["processing", "rejected"].includes(action)
+    ) {
+
+        alert("Invalid withdrawal action.");
+
+        return;
+
+    }
+
+    const confirmationMessage =
+        action === "rejected"
+
+            ? "Are you sure you want to reject this withdrawal? The database function must safely restore the customer's wallet balance."
+
+            : "Are you sure you want to move this withdrawal to processing?";
+
+    const confirmed =
+        window.confirm(confirmationMessage);
+
+    if (!confirmed) return;
+
+    try {
+
+        const { data, error } =
+            await nexusAdminSupabase.rpc(
+                "admin_review_withdrawal",
+                {
+
+                    p_request_id: requestId,
+
+                    p_action: action
+
+                }
+            );
+
+        if (error) {
+            throw error;
+        }
+
+        if (!data || data.success !== true) {
+
+            throw new Error(
+                data?.message ||
+                "Withdrawal update failed."
+            );
+
+        }
+
+        alert(
+            data.message ||
+            (
+                action === "rejected"
+
+                    ? "Withdrawal rejected successfully."
+
+                    : "Withdrawal moved to processing successfully."
+            )
+        );
+
+        /*
+           RELOAD ALL DASHBOARD RECORDS
+
+           This refreshes wallet balances,
+           withdrawal status and statistics.
+        */
+
+        await loadAdminDashboardData();
+
+    } catch (error) {
+
+        console.error(
+            "Withdrawal review error:",
+            error
+        );
+
+        alert(
+            "Unable to update withdrawal: " +
+            error.message
+        );
+
+    }
+
+}
+
+
+/* =========================================
+   26. START ADMIN DASHBOARD
+========================================= */
+
+checkAdminSession();
+
+console.log(
+    "Nexus Wealth Partners Admin Dashboard initialized."
+);
