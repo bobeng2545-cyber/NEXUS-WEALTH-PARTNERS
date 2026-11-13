@@ -838,23 +838,103 @@ nexusAdminSupabase.auth.onAuthStateChange(
 );
 
 
+
 /* =========================================
-   16. LOAD MEMBERS
+   16. MEMBER MANAGEMENT
+========================================= */
+
+/*
+   Cached dashboard records.
+   These are populated by loadAdminDashboardData().
+*/
+
+let adminProfilesCache = [];
+let adminWalletsCache = [];
+let adminDepositsCache = [];
+let adminWithdrawalsCache = [];
+let adminDepositsAvailable = true;
+
+
+/* =========================================
+   MEMBER SEARCH AND DIRECTORY
 ========================================= */
 
 function displayAdminMembers(profiles = []) {
 
-    const table =
-        document.getElementById("membersTable");
+    const table = document.getElementById("membersTable");
 
     if (!table) return;
 
-    if (!profiles.length) {
+    const searchInput =
+        document.getElementById("memberSearchInput");
+
+    const searchTerm = String(
+        searchInput?.value || ""
+    ).trim().toLowerCase();
+
+    const filteredProfiles = profiles.filter(profile => {
+
+        const searchableValues = [
+            profile.member_id,
+            profile.full_name,
+            profile.email,
+            profile.phone
+        ];
+
+        return searchableValues.some(value =>
+            String(value || "")
+                .toLowerCase()
+                .includes(searchTerm)
+        );
+
+    });
+
+    const resultsLabel =
+        document.getElementById("memberSearchResults");
+
+    if (resultsLabel) {
+
+        resultsLabel.textContent =
+            searchTerm
+                ? `${filteredProfiles.length} matching member(s) found.`
+                : `${profiles.length} registered member(s).`;
+
+    }
+
+    const totalElement =
+        document.getElementById("memberManagementTotal");
+
+    if (totalElement) {
+
+        totalElement.textContent =
+            profiles.length.toLocaleString("en-GH");
+
+    }
+
+    const walletTotalElement =
+        document.getElementById("memberManagementWallets");
+
+    if (walletTotalElement) {
+
+        const totalWallets = adminWalletsCache.reduce(
+            (sum, wallet) =>
+                sum + getMemberDisplayBalance(wallet),
+            0
+        );
+
+        walletTotalElement.textContent =
+            formatNexusAdminMoney(totalWallets);
+
+    }
+
+    if (!filteredProfiles.length) {
 
         showAdminTableMessage(
             "membersTable",
-            5,
-            "No registered members found."
+            7,
+            searchTerm
+                ? "No members match your search."
+                : "No registered members found."
         );
 
         return;
@@ -863,32 +943,24 @@ function displayAdminMembers(profiles = []) {
 
     table.replaceChildren();
 
-    profiles.forEach(profile => {
+    filteredProfiles.forEach(profile => {
 
         const row = document.createElement("tr");
 
         row.appendChild(
-            createAdminTableCell(
-                profile.member_id
-            )
+            createAdminTableCell(profile.member_id)
         );
 
         row.appendChild(
-            createAdminTableCell(
-                profile.full_name
-            )
+            createAdminTableCell(profile.full_name)
         );
 
         row.appendChild(
-            createAdminTableCell(
-                profile.email
-            )
+            createAdminTableCell(profile.email)
         );
 
         row.appendChild(
-            createAdminTableCell(
-                profile.phone
-            )
+            createAdminTableCell(profile.phone)
         );
 
         row.appendChild(
@@ -897,11 +969,430 @@ function displayAdminMembers(profiles = []) {
             )
         );
 
+        const normalizedStatus =
+            normalizeAdminStatus(profile.status);
+
+        const statusCell =
+            document.createElement("td");
+
+        const statusLabel =
+            document.createElement("span");
+
+        statusLabel.className =
+            "member-status " +
+            (
+                ["active", "suspended", "pending"]
+                    .includes(normalizedStatus)
+                    ? normalizedStatus
+                    : "unknown"
+            );
+
+        statusLabel.textContent =
+            profile.status || "Unknown";
+
+        statusCell.appendChild(statusLabel);
+
+        row.appendChild(statusCell);
+
+        const actionCell =
+            document.createElement("td");
+
+        const viewButton =
+            document.createElement("button");
+
+        viewButton.type = "button";
+
+        viewButton.className =
+            "view-member-button";
+
+        viewButton.textContent =
+            "View Profile";
+
+        viewButton.addEventListener("click", () => {
+
+            openAdminMemberProfile(profile.id);
+
+        });
+
+        actionCell.appendChild(viewButton);
+
+        row.appendChild(actionCell);
+
         table.appendChild(row);
 
     });
 
 }
+
+
+/* =========================================
+   MEMBER SEARCH EVENTS
+========================================= */
+
+const memberSearchInput =
+    document.getElementById("memberSearchInput");
+
+const clearMemberSearch =
+    document.getElementById("clearMemberSearch");
+
+if (memberSearchInput) {
+
+    memberSearchInput.addEventListener("input", () => {
+
+        displayAdminMembers(adminProfilesCache);
+
+    });
+
+}
+
+if (clearMemberSearch) {
+
+    clearMemberSearch.addEventListener("click", () => {
+
+        if (memberSearchInput) {
+            memberSearchInput.value = "";
+        }
+
+        displayAdminMembers(adminProfilesCache);
+
+        memberSearchInput?.focus();
+
+    });
+
+}
+
+
+/* =========================================
+   MEMBER PROFILE MODAL
+========================================= */
+
+function openAdminMemberProfile(userId) {
+
+    const profile = adminProfilesCache.find(
+        item => item.id === userId
+    );
+
+    if (!profile) {
+
+        alert("Member information could not be found.");
+
+        return;
+
+    }
+
+    const wallet = adminWalletsCache.find(
+        item => item.user_id === userId
+    );
+
+    const balance =
+        getMemberDisplayBalance(wallet);
+
+    const successfulDeposits =
+        getSuccessfulDepositsForMember(
+            userId,
+            adminDepositsCache
+        );
+
+    const completedWithdrawals =
+        getCompletedWithdrawalsForMember(
+            userId,
+            adminWithdrawalsCache
+        );
+
+    const setProfileValue = (elementId, value) => {
+
+        const element =
+            document.getElementById(elementId);
+
+        if (element) {
+
+            element.textContent =
+                value === null ||
+                value === undefined ||
+                value === ""
+                    ? "—"
+                    : String(value);
+
+        }
+
+    };
+
+    setProfileValue(
+        "profileMemberId",
+        profile.member_id
+    );
+
+    setProfileValue(
+        "profileMemberName",
+        profile.full_name
+    );
+
+    setProfileValue(
+        "profileMemberEmail",
+        profile.email
+    );
+
+    setProfileValue(
+        "profileMemberPhone",
+        profile.phone
+    );
+
+    setProfileValue(
+        "profileMemberJoined",
+        formatAdminDateTime(profile.created_at)
+    );
+
+    setProfileValue(
+        "profileMemberStatus",
+        profile.status || "Unknown"
+    );
+
+    setProfileValue(
+        "profileWalletBalance",
+        formatNexusAdminMoney(balance)
+    );
+
+    setProfileValue(
+        "profileWalletDeposits",
+        adminDepositsAvailable
+            ? formatNexusAdminMoney(successfulDeposits)
+            : "Unavailable"
+    );
+
+    setProfileValue(
+        "profileWalletWithdrawals",
+        formatNexusAdminMoney(completedWithdrawals)
+    );
+
+    displayAdminMemberTransactions(userId);
+
+    const modal =
+        document.getElementById("memberProfileModal");
+
+    if (modal) {
+
+        modal.hidden = false;
+
+        document.body.style.overflow = "hidden";
+
+    }
+
+}
+
+
+/* =========================================
+   MEMBER TRANSACTION HISTORY
+========================================= */
+
+function displayAdminMemberTransactions(userId) {
+
+    const table =
+        document.getElementById(
+            "memberProfileTransactions"
+        );
+
+    if (!table) return;
+
+    const memberTransactions = [];
+
+    if (adminDepositsAvailable) {
+
+        adminDepositsCache
+
+            .filter(deposit =>
+                deposit.user_id === userId
+            )
+
+            .forEach(deposit => {
+
+                memberTransactions.push({
+
+                    reference:
+                        deposit.reference || deposit.id,
+
+                    type: "Deposit",
+
+                    amount: deposit.amount,
+
+                    status: deposit.status,
+
+                    created_at: deposit.created_at
+
+                });
+
+            });
+
+    }
+
+    adminWithdrawalsCache
+
+        .filter(withdrawal =>
+            withdrawal.user_id === userId
+        )
+
+        .forEach(withdrawal => {
+
+            memberTransactions.push({
+
+                reference:
+                    "WDR-" +
+                    String(withdrawal.id).slice(0, 8),
+
+                type: "Withdrawal",
+
+                amount: withdrawal.amount,
+
+                status: withdrawal.status,
+
+                created_at: withdrawal.created_at
+
+            });
+
+        });
+
+    memberTransactions.sort((a, b) => {
+
+        return new Date(b.created_at || 0) -
+            new Date(a.created_at || 0);
+
+    });
+
+    if (!memberTransactions.length) {
+
+        showAdminTableMessage(
+            "memberProfileTransactions",
+            5,
+            adminDepositsAvailable
+                ? "No transactions found for this member."
+                : "Deposit history is currently unavailable."
+        );
+
+        return;
+
+    }
+
+    table.replaceChildren();
+
+    memberTransactions.forEach(transaction => {
+
+        const row = document.createElement("tr");
+
+        row.appendChild(
+            createAdminTableCell(
+                transaction.reference
+            )
+        );
+
+        const typeCell =
+            createAdminTableCell(transaction.type);
+
+        typeCell.className =
+            transaction.type === "Deposit"
+                ? "transaction-type deposit"
+                : "transaction-type withdrawal";
+
+        row.appendChild(typeCell);
+
+        row.appendChild(
+            createAdminTableCell(
+                formatNexusAdminMoney(transaction.amount)
+            )
+        );
+
+        row.appendChild(
+            createAdminStatusCell(transaction.status)
+        );
+
+        row.appendChild(
+            createAdminTableCell(
+                formatAdminDateTime(transaction.created_at)
+            )
+        );
+
+        table.appendChild(row);
+
+    });
+
+}
+
+
+/* =========================================
+   CLOSE MEMBER PROFILE MODAL
+========================================= */
+
+function closeAdminMemberProfile() {
+
+    const modal =
+        document.getElementById("memberProfileModal");
+
+    if (modal) {
+
+        modal.hidden = true;
+
+        document.body.style.overflow = "";
+
+    }
+
+}
+
+const closeMemberProfile =
+    document.getElementById("closeMemberProfile");
+
+const closeMemberProfileFooter =
+    document.getElementById("closeMemberProfileFooter");
+
+const memberProfileModal =
+    document.getElementById("memberProfileModal");
+
+if (closeMemberProfile) {
+
+    closeMemberProfile.addEventListener(
+        "click",
+        closeAdminMemberProfile
+    );
+
+}
+
+if (closeMemberProfileFooter) {
+
+    closeMemberProfileFooter.addEventListener(
+        "click",
+        closeAdminMemberProfile
+    );
+
+}
+
+if (memberProfileModal) {
+
+    memberProfileModal.addEventListener(
+        "click",
+        event => {
+
+            if (event.target === memberProfileModal) {
+
+                closeAdminMemberProfile();
+
+            }
+
+        }
+    );
+
+}
+
+document.addEventListener("keydown", event => {
+
+    if (
+        event.key === "Escape" &&
+        memberProfileModal &&
+        !memberProfileModal.hidden
+    ) {
+
+        closeAdminMemberProfile();
+
+    }
+
+});
+
 
 
 /* =========================================
@@ -2024,7 +2515,7 @@ async function loadAdminDashboardData() {
             nexusAdminSupabase
                 .from("profiles")
                 .select(
-                    "id, full_name, phone, member_id, email, created_at"
+                   "id, full_name, phone, member_id, email, status, created_at"
                 )
                 .order(
                     "created_at",
@@ -2097,6 +2588,21 @@ async function loadAdminDashboardData() {
             depositsAvailable
                 ? (depositsResult.data || [])
                 : [];
+
+       
+/* =====================================
+   CACHE MEMBER MANAGEMENT RECORDS
+===================================== */
+
+adminProfilesCache = profiles;
+
+adminWalletsCache = wallets;
+
+adminDepositsCache = deposits;
+
+adminWithdrawalsCache = withdrawals;
+
+adminDepositsAvailable = depositsAvailable;
 
 
         if (depositsResult.error) {
@@ -2439,40 +2945,6 @@ async function loadAdminDashboardData() {
         }
 
     }
-
-}
-
-
-/* =========================================
-   24. REFRESH DEPOSIT BUTTON
-========================================= */
-
-if (refreshDepositsButton) {
-
-    refreshDepositsButton.addEventListener(
-        "click",
-        async function() {
-
-            try {
-
-                await loadAdminDashboardData();
-
-            } catch (error) {
-
-                console.error(
-                    "Deposit refresh error:",
-                    error
-                );
-
-                alert(
-                    "Unable to refresh deposit records: " +
-                    error.message
-                );
-
-            }
-
-        }
-    );
 
 }
 
