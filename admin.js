@@ -88,6 +88,8 @@ const adminPageTitles = {
 
     transactions: "Transactions",
 
+    trash: "Transaction Trash",
+
     savings: "Savings Management"
 
 };
@@ -2187,8 +2189,10 @@ async function verifyNexusDeposit(depositId, button) {
 }
 
 
-/* DISPLAY DEPOSIT RECORDS */
-
+/* =========================================
+   DISPLAY DEPOSIT RECORDS
+   WITH MOVE-TO-TRASH BUTTON
+========================================= */
 
 function displayAdminDeposits(
     deposits = [],
@@ -2263,7 +2267,10 @@ function displayAdminDeposits(
             )
         );
 
-        const actionCell = document.createElement("td");
+        /* ACTION BUTTONS */
+
+        const actionCell =
+            document.createElement("td");
 
         const status =
             normalizeAdminStatus(deposit.status);
@@ -2274,8 +2281,11 @@ function displayAdminDeposits(
                 document.createElement("button");
 
             verifyButton.type = "button";
+
             verifyButton.textContent = "Verify Deposit";
-            verifyButton.className = "admin-action-button";
+
+            verifyButton.className =
+                "admin-action-button";
 
             verifyButton.addEventListener("click", () => {
 
@@ -2290,7 +2300,12 @@ function displayAdminDeposits(
 
         } else if (status === "successful") {
 
-            actionCell.textContent = "Credited";
+            const creditedLabel =
+                document.createElement("span");
+
+            creditedLabel.textContent = "Credited";
+
+            actionCell.appendChild(creditedLabel);
 
         } else {
 
@@ -2298,16 +2313,36 @@ function displayAdminDeposits(
 
         }
 
+        /* MOVE TRANSACTION TO TRASH */
+
+        const deleteButton =
+            document.createElement("button");
+
+        deleteButton.type = "button";
+
+        deleteButton.textContent = "Delete";
+
+        deleteButton.className =
+            "admin-action-button reject";
+
+        deleteButton.style.marginLeft = "6px";
+
+        deleteButton.addEventListener("click", () => {
+
+            moveDepositToTrash(
+                deposit.id,
+                deleteButton
+            );
+
+        });
+
+        actionCell.appendChild(deleteButton);
+
         row.appendChild(actionCell);
 
         table.appendChild(row);
 
     });
-
-    console.log(
-        "Nexus deposit records displayed:",
-        deposits.length
-    );
 
 }
 
@@ -2801,17 +2836,16 @@ async function loadAdminDashboardData() {
                     { ascending: false }
                 ),
 
-            nexusAdminSupabase
-                .from("deposit_transactions")
-                .select(
-                    "id, user_id, amount, payment_method, payment_phone, reference, status, created_at, paid_at"
-                )
-                .order(
-                    "created_at",
-                    { ascending: false }
-                )
-
-        ]);
+      nexusAdminSupabase
+           .from("deposit_transactions")
+           .select(
+              "id, user_id, amount, payment_method, payment_phone, reference, status, created_at, paid_at, deleted_at"
+           )
+           .is("deleted_at", null)
+           .order(
+              "created_at",
+              { ascending: false }
+           )
 
 
         /*
@@ -3122,7 +3156,7 @@ adminDepositsAvailable = depositsAvailable;
 
             showAdminTableMessage(
                 "depositsTable",
-                7,
+                8,
                 "Unable to load deposits. Check Supabase permissions: " +
                 depositsResult.error.message
             );
@@ -3149,6 +3183,10 @@ adminDepositsAvailable = depositsAvailable;
             withdrawals,
             profiles
         );
+
+       /* LOAD TRASH COUNT AND RECORDS */
+       
+       await loadAdminTrash();
 
 
         /* =====================================
@@ -3306,6 +3344,478 @@ async function reviewNexusWithdrawal(
 
 }
 
+
+/* =========================================
+   NEXUS WEALTH PARTNERS
+   DEPOSIT TRANSACTION TRASH MANAGEMENT
+========================================= */
+
+
+/* =========================================
+   1. TRASH ELEMENTS
+========================================= */
+
+const refreshTrashButton =
+    document.getElementById("refreshTrashButton");
+
+const trashTransactionsTable =
+    document.getElementById("trashTransactionsTable");
+
+const trashCountBadge =
+    document.getElementById("trashCountBadge");
+
+
+/* =========================================
+   2. MOVE DEPOSIT TO TRASH
+========================================= */
+
+async function moveDepositToTrash(
+    depositId,
+    button
+) {
+
+    if (!depositId) {
+
+        alert("Transaction ID is missing.");
+
+        return;
+
+    }
+
+    const confirmed = window.confirm(
+        "Move this deposit transaction to Trash? You can restore it later. This action will not change the member's wallet balance."
+    );
+
+    if (!confirmed) return;
+
+    const originalText =
+        button?.textContent || "Delete";
+
+    if (button) {
+
+        button.disabled = true;
+
+        button.textContent = "Moving...";
+
+    }
+
+    try {
+
+        const { data, error } =
+            await nexusAdminSupabase.rpc(
+                "admin_trash_deposit",
+                {
+                    p_deposit_id: depositId
+                }
+            );
+
+        if (error) {
+            throw error;
+        }
+
+        if (!data || data.success !== true) {
+
+            throw new Error(
+                data?.message ||
+                "Could not move this transaction to Trash."
+            );
+
+        }
+
+        alert(
+            data.message ||
+            "Transaction moved to Trash successfully."
+        );
+
+        /*
+           REFRESH DASHBOARD DATA.
+
+           This removes the transaction from the
+           active Deposits and Transactions lists.
+        */
+
+        await loadAdminDashboardData();
+
+        /*
+           REFRESH TRASH.
+        */
+
+        await loadAdminTrash();
+
+    } catch (error) {
+
+        console.error(
+            "Move deposit to Trash error:",
+            error
+        );
+
+        alert(
+            error.message ||
+            "Unable to move this transaction to Trash."
+        );
+
+    } finally {
+
+        if (button) {
+
+            button.disabled = false;
+
+            button.textContent = originalText;
+
+        }
+
+    }
+
+}
+
+
+/* =========================================
+   3. LOAD TRASH RECORDS
+========================================= */
+
+async function loadAdminTrash() {
+
+    if (!trashTransactionsTable) return;
+
+    if (trashCountBadge) {
+        trashCountBadge.hidden = true;
+    }
+
+    showAdminTableMessage(
+        "trashTransactionsTable",
+        7,
+        "Loading deleted transactions..."
+    );
+
+    try {
+
+        const { data, error } =
+            await nexusAdminSupabase.rpc(
+                "admin_list_deposit_trash"
+            );
+
+        if (error) {
+            throw error;
+        }
+
+        const trashRecords = data || [];
+
+        /*
+           UPDATE TRASH COUNT
+        */
+
+        if (trashCountBadge) {
+
+            trashCountBadge.textContent =
+                trashRecords.length;
+
+            trashCountBadge.hidden =
+                trashRecords.length === 0;
+
+        }
+
+        if (!trashRecords.length) {
+
+            showAdminTableMessage(
+                "trashTransactionsTable",
+                7,
+                "Your Trash is empty."
+            );
+
+            return;
+
+        }
+
+        trashTransactionsTable.replaceChildren();
+
+        trashRecords.forEach(deposit => {
+
+            const row =
+                document.createElement("tr");
+
+            /*
+               REFERENCE
+            */
+
+            row.appendChild(
+                createAdminTableCell(
+                    deposit.reference || deposit.id
+                )
+            );
+
+            /*
+               MEMBER
+            */
+
+            row.appendChild(
+                createAdminTableCell(
+                    getAdminMemberName(
+                        deposit.user_id,
+                        adminProfilesCache
+                    )
+                )
+            );
+
+            /*
+               AMOUNT
+            */
+
+            row.appendChild(
+                createAdminTableCell(
+                    formatNexusAdminMoney(
+                        deposit.amount
+                    )
+                )
+            );
+
+            /*
+               PAYMENT METHOD
+            */
+
+            row.appendChild(
+                createAdminTableCell(
+                    getAdminPaymentMethodLabel(
+                        deposit.payment_method
+                    )
+                )
+            );
+
+            /*
+               STATUS
+            */
+
+            row.appendChild(
+                createAdminStatusCell(
+                    deposit.status
+                )
+            );
+
+            /*
+               DELETED DATE
+            */
+
+            row.appendChild(
+                createAdminTableCell(
+                    formatAdminDateTime(
+                        deposit.deleted_at
+                    )
+                )
+            );
+
+            /*
+               ACTIONS
+            */
+
+            const actionCell =
+                document.createElement("td");
+
+            /*
+               RESTORE BUTTON
+            */
+
+            const restoreButton =
+                document.createElement("button");
+
+            restoreButton.type = "button";
+
+            restoreButton.textContent = "Restore";
+
+            restoreButton.className =
+                "admin-action-button";
+
+            restoreButton.addEventListener("click", () => {
+
+                restoreDepositFromTrash(
+                    deposit.id,
+                    restoreButton
+                );
+
+            });
+
+            actionCell.appendChild(restoreButton);
+
+            row.appendChild(actionCell);
+
+            trashTransactionsTable.appendChild(row);
+
+        });
+
+        console.log(
+            "Nexus Trash loaded:",
+            trashRecords.length
+        );
+
+    } catch (error) {
+
+        console.error(
+            "Trash loading error:",
+            error
+        );
+
+        showAdminTableMessage(
+            "trashTransactionsTable",
+            7,
+            "Unable to load Trash: " + error.message
+        );
+
+    }
+
+}
+
+
+/* =========================================
+   4. RESTORE DEPOSIT FROM TRASH
+========================================= */
+
+async function restoreDepositFromTrash(
+    depositId,
+    button
+) {
+
+    if (!depositId) {
+
+        alert("Transaction ID is missing.");
+
+        return;
+
+    }
+
+    const confirmed = window.confirm(
+        "Restore this deposit transaction? It will return to the Deposits page."
+    );
+
+    if (!confirmed) return;
+
+    const originalText =
+        button?.textContent || "Restore";
+
+    if (button) {
+
+        button.disabled = true;
+
+        button.textContent = "Restoring...";
+
+    }
+
+    try {
+
+        const { data, error } =
+            await nexusAdminSupabase.rpc(
+                "admin_restore_deposit",
+                {
+                    p_deposit_id: depositId
+                }
+            );
+
+        if (error) {
+            throw error;
+        }
+
+        if (!data || data.success !== true) {
+
+            throw new Error(
+                data?.message ||
+                "Could not restore this transaction."
+            );
+
+        }
+
+        alert(
+            data.message ||
+            "Transaction restored successfully."
+        );
+
+        /*
+           REFRESH ACTIVE RECORDS.
+        */
+
+        await loadAdminDashboardData();
+
+        /*
+           REFRESH TRASH.
+        */
+
+        await loadAdminTrash();
+
+    } catch (error) {
+
+        console.error(
+            "Restore deposit error:",
+            error
+        );
+
+        alert(
+            error.message ||
+            "Unable to restore this transaction."
+        );
+
+    } finally {
+
+        if (button) {
+
+            button.disabled = false;
+
+            button.textContent = originalText;
+
+        }
+
+    }
+
+}
+
+
+/* =========================================
+   5. REFRESH TRASH BUTTON
+========================================= */
+
+if (refreshTrashButton) {
+
+    refreshTrashButton.addEventListener(
+        "click",
+        async function() {
+
+            refreshTrashButton.disabled = true;
+
+            const originalText =
+                refreshTrashButton.textContent;
+
+            refreshTrashButton.textContent =
+                "Refreshing...";
+
+            try {
+
+                await loadAdminTrash();
+
+            } finally {
+
+                refreshTrashButton.disabled = false;
+
+                refreshTrashButton.textContent =
+                    originalText;
+
+            }
+
+        }
+    );
+
+}
+
+
+/* =========================================
+   6. LOAD TRASH WHEN OPENED
+========================================= */
+
+document.querySelectorAll(
+    '[data-page="trash"]'
+).forEach(button => {
+
+    button.addEventListener("click", () => {
+
+        loadAdminTrash();
+
+    });
+
+});
 
 /* =========================================
    26. START ADMIN DASHBOARD
