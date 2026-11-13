@@ -1169,8 +1169,6 @@ const suspendMemberButton =
 const activateMemberButton =
     document.getElementById("activateMemberButton");
 
-const memberProfileModal =
-    document.getElementById("memberProfileModal");
 
 
 /* UPDATE MEMBER ACTION BUTTONS */
