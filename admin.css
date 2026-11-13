@@ -1324,3 +1324,106 @@ tbody tr:hover {
     }
 
 }
+
+/* =========================================
+   FINANCIAL TRANSACTION ACTION BUTTONS
+========================================= */
+
+.admin-action-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+
+    padding: 10px 16px;
+    min-width: 145px;
+
+    border: none;
+    border-radius: 9px;
+
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 700;
+    font-family: inherit;
+
+    cursor: pointer;
+
+    transition:
+        background 0.25s ease,
+        transform 0.25s ease,
+        box-shadow 0.25s ease,
+        opacity 0.25s ease;
+}
+
+/* REVERSE DEPOSIT BUTTON */
+
+.admin-action-button.reject {
+    background: linear-gradient(
+        135deg,
+        #dc2626,
+        #991b1b
+    );
+
+    box-shadow:
+        0 4px 10px rgba(220, 38, 38, 0.18);
+}
+
+/* HOVER EFFECT */
+
+.admin-action-button.reject:hover:not(:disabled) {
+    background: linear-gradient(
+        135deg,
+        #b91c1c,
+        #7f1d1d
+    );
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 7px 16px rgba(220, 38, 38, 0.28);
+}
+
+/* CLICK EFFECT */
+
+.admin-action-button.reject:active:not(:disabled) {
+    transform: scale(0.97);
+}
+
+/* DISABLED / PROCESSING STATE */
+
+.admin-action-button:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* KEYBOARD ACCESSIBILITY */
+
+.admin-action-button:focus-visible {
+    outline: 3px solid rgba(8, 116, 67, 0.35);
+    outline-offset: 3px;
+}
+
+/* ACTION COLUMN */
+
+#transactionsTable td:last-child {
+    min-width: 160px;
+    vertical-align: middle;
+}
+
+/* MOBILE RESPONSIVENESS */
+
+@media (max-width: 600px) {
+
+    .admin-action-button {
+        min-width: 125px;
+        padding: 9px 11px;
+        font-size: 11px;
+    }
+
+    #transactionsTable td:last-child {
+        min-width: 135px;
+    }
+
+}
