@@ -274,6 +274,66 @@
             </header>
 
 
+            <!-- =========================================
+     GLOBAL DASHBOARD DATE FILTER
+========================================= -->
+
+<section class="admin-date-filter" id="adminDateFilter">
+
+    <div class="date-filter-heading">
+        <div>
+            <h3>Financial Date Filter</h3>
+            <p>Choose the period for the financial records displayed across your dashboard.</p>
+        </div>
+
+        <span id="adminDateFilterSummary">
+            This Month
+        </span>
+    </div>
+
+    <div class="date-filter-controls">
+
+        <div class="date-filter-field">
+            <label for="adminDateRange">Quick Date Range</label>
+
+            <select id="adminDateRange">
+                <option value="today">Today</option>
+                <option value="yesterday">Yesterday</option>
+                <option value="this_week">This Week</option>
+                <option value="this_month" selected>This Month</option>
+                <option value="this_year">This Year</option>
+                <option value="custom">Custom Range</option>
+                <option value="all_time">All Time</option>
+            </select>
+        </div>
+
+        <div class="date-filter-field">
+            <label for="adminDateFrom">From Date</label>
+            <input type="date" id="adminDateFrom">
+        </div>
+
+        <div class="date-filter-field">
+            <label for="adminDateTo">To Date</label>
+            <input type="date" id="adminDateTo">
+        </div>
+
+        <div class="date-filter-actions">
+            <button type="button" id="applyAdminDateFilter">
+                Apply Filter
+            </button>
+
+            <button type="button" id="resetAdminDateFilter">
+                Reset
+            </button>
+        </div>
+
+    </div>
+
+    <p id="adminDateFilterMessage" role="status"></p>
+
+</section>
+
+
             <!-- =================================
                  OVERVIEW PAGE
             ================================== -->
