@@ -2835,17 +2835,19 @@ async function loadAdminDashboardData() {
                     "created_at",
                     { ascending: false }
                 ),
-
+           
       nexusAdminSupabase
-           .from("deposit_transactions")
-           .select(
+         .from("deposit_transactions")
+         .select(
               "id, user_id, amount, payment_method, payment_phone, reference, status, created_at, paid_at, deleted_at"
-           )
-           .is("deleted_at", null)
-           .order(
+          )
+          .is("deleted_at", null)
+          .order(
               "created_at",
               { ascending: false }
-           )
+          )
+
+        ]);
 
 
         /*
