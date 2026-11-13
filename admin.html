@@ -7,7 +7,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <meta name="description" content="Nexus Wealth Partners Administration Dashboard">
-
     <meta name="theme-color" content="#087443">
 
     <title>Nexus Wealth Partners | Admin Dashboard</title>
@@ -171,6 +170,8 @@
                     >0</span>
                 </button>
 
+                <!-- TRANSACTIONS NAVIGATION -->
+
                 <button
                     type="button"
                     class="admin-nav-link"
@@ -178,6 +179,23 @@
                 >
                     <span>⇄</span>
                     <span>Transactions</span>
+                </button>
+
+                <!-- TRASH NAVIGATION -->
+
+                <button
+                    type="button"
+                    class="admin-nav-link"
+                    data-page="trash"
+                >
+                    <span>🗑</span>
+                    <span>Trash</span>
+
+                    <span
+                        id="trashCountBadge"
+                        class="nav-badge"
+                        hidden
+                    >0</span>
                 </button>
 
                 <button
@@ -446,104 +464,100 @@
 
 
             <!-- =================================
-     MEMBERS MANAGEMENT PAGE
-================================== -->
+                 MEMBERS MANAGEMENT PAGE
+            ================================== -->
 
-<section id="page-members" class="admin-page">
+            <section id="page-members" class="admin-page">
 
-    <div class="page-intro">
-        <div>
-            <h2>Members Management</h2>
-            <p>Search members, inspect their profiles and monitor their financial activities.</p>
-        </div>
-    </div>
+                <div class="page-intro">
+                    <div>
+                        <h2>Members Management</h2>
+                        <p>Search members, inspect their profiles and monitor their financial activities.</p>
+                    </div>
+                </div>
 
-    <!-- MEMBER STATISTICS -->
+                <div class="statistics-grid">
 
-    <div class="statistics-grid">
+                    <article class="stat-card">
+                        <div class="stat-icon members-icon">♙</div>
+                        <p>Total Members</p>
+                        <h3 id="memberManagementTotal">0</h3>
+                        <span>Registered accounts</span>
+                    </article>
 
-        <article class="stat-card">
-            <div class="stat-icon members-icon">♙</div>
-            <p>Total Members</p>
-            <h3 id="memberManagementTotal">0</h3>
-            <span>Registered accounts</span>
-        </article>
+                    <article class="stat-card">
+                        <div class="stat-icon wallet-icon">▣</div>
+                        <p>Total Member Wallets</p>
+                        <h3 id="memberManagementWallets">GH₵0.00</h3>
+                        <span>Combined wallet balances</span>
+                    </article>
 
-        <article class="stat-card">
-            <div class="stat-icon wallet-icon">▣</div>
-            <p>Total Member Wallets</p>
-            <h3 id="memberManagementWallets">GH₵0.00</h3>
-            <span>Combined wallet balances</span>
-        </article>
+                </div>
 
-    </div>
+                <div class="admin-panel">
 
-    <!-- MEMBER DIRECTORY -->
+                    <div class="panel-heading">
+                        <div>
+                            <h3>Registered Members</h3>
+                            <p>Search and open a member's account information.</p>
+                        </div>
+                    </div>
 
-    <div class="admin-panel">
+                    <div class="member-search-area">
+                        <input
+                            type="search"
+                            id="memberSearchInput"
+                            placeholder="Search by name, email, phone or Member ID..."
+                            autocomplete="off"
+                            aria-label="Search members"
+                        >
 
-        <div class="panel-heading">
-            <div>
-                <h3>Registered Members</h3>
-                <p>Search and open a member's account information.</p>
-            </div>
-        </div>
+                        <button
+                            type="button"
+                            id="clearMemberSearch"
+                            class="panel-action"
+                        >
+                            Clear Search
+                        </button>
+                    </div>
 
-        <div class="member-search-area">
-            <input
-                type="search"
-                id="memberSearchInput"
-                placeholder="Search by name, email, phone or Member ID..."
-                autocomplete="off"
-                aria-label="Search members"
-            >
+                    <p id="memberSearchResults" class="member-search-results">
+                        Loading members...
+                    </p>
 
-            <button
-                type="button"
-                id="clearMemberSearch"
-                class="panel-action"
-            >
-                Clear Search
-            </button>
-        </div>
+                    <div class="table-container">
 
-        <p id="memberSearchResults" class="member-search-results">
-            Loading members...
-        </p>
+                        <table>
 
-        <div class="table-container">
+                            <thead>
+                                <tr>
+                                    <th>Member ID</th>
+                                    <th>Full Name</th>
+                                    <th>Email</th>
+                                    <th>Phone</th>
+                                    <th>Joined</th>
+                                    <th>Account Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
 
-            <table>
+                            <tbody id="membersTable">
 
-                <thead>
-                    <tr>
-                        <th>Member ID</th>
-                        <th>Full Name</th>
-                        <th>Email</th>
-                        <th>Phone</th>
-                        <th>Joined</th>
-                        <th>Account Status</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
+                                <tr>
+                                    <td colspan="7" class="empty-table">
+                                        Members will appear here.
+                                    </td>
+                                </tr>
 
-                <tbody id="membersTable">
+                            </tbody>
 
-                    <tr>
-                        <td colspan="7" class="empty-table">
-                            Members will appear here.
-                        </td>
-                    </tr>
+                        </table>
 
-                </tbody>
+                    </div>
 
-            </table>
+                </div>
 
-        </div>
-
-    </div>
-
-</section>
+            </section>
 
 
             <!-- =================================
@@ -561,9 +575,6 @@
 
                 </div>
 
-
-                <!-- WITHDRAWAL RULES -->
-
                 <div class="withdrawal-rules">
 
                     <div>
@@ -577,9 +588,6 @@
                     </div>
 
                 </div>
-
-
-                <!-- ALL WITHDRAWAL REQUESTS -->
 
                 <div class="admin-panel">
 
@@ -651,66 +659,37 @@
 
                 </div>
 
-
-                <!-- DEPOSIT STATISTICS -->
-
                 <div class="statistics-grid">
 
                     <article class="stat-card">
-
                         <div class="stat-icon deposits-icon">◷</div>
-
                         <p>Pending Deposits</p>
-
                         <h3 id="adminPendingDeposits">0</h3>
-
                         <span>Awaiting payment verification</span>
-
                     </article>
 
-
                     <article class="stat-card">
-
                         <div class="stat-icon wallet-icon">✓</div>
-
                         <p>Successful Deposits</p>
-
                         <h3 id="adminSuccessfulDeposits">0</h3>
-
                         <span>Confirmed payments</span>
-
                     </article>
 
-
                     <article class="stat-card">
-
                         <div class="stat-icon withdrawals-icon">×</div>
-
                         <p>Failed Deposits</p>
-
                         <h3 id="adminFailedDeposits">0</h3>
-
                         <span>Unsuccessful transactions</span>
-
                     </article>
 
-
                     <article class="stat-card">
-
                         <div class="stat-icon members-icon">GH₵</div>
-
                         <p>Total Successful Deposits</p>
-
                         <h3 id="adminDepositTotal">GH₵0.00</h3>
-
                         <span>Confirmed deposit value</span>
-
                     </article>
 
                 </div>
-
-
-                <!-- DEPOSIT RECORDS -->
 
                 <div class="admin-panel">
 
@@ -728,7 +707,6 @@
                         <table>
 
                             <thead>
-
                                 <tr>
                                     <th>Reference</th>
                                     <th>Member</th>
@@ -739,13 +717,12 @@
                                     <th>Date &amp; Time</th>
                                     <th>Action</th>
                                 </tr>
-
                             </thead>
 
                             <tbody id="depositsTable">
 
                                 <tr>
-                                    <td colspan="7" class="empty-table">
+                                    <td colspan="8" class="empty-table">
                                         Deposit transactions will appear here.
                                     </td>
                                 </tr>
@@ -757,9 +734,6 @@
                     </div>
 
                 </div>
-
-
-                <!-- PAYMENT SECURITY INFORMATION -->
 
                 <div class="admin-panel">
 
@@ -857,6 +831,92 @@
 
 
             <!-- =================================
+                 TRASH PAGE
+            ================================== -->
+
+            <section id="page-trash" class="admin-page">
+
+                <div class="page-intro">
+
+                    <div>
+                        <h2>Transaction Trash</h2>
+                        <p>Manage deposit transactions you have moved to Trash.</p>
+                    </div>
+
+                    <button
+                        type="button"
+                        class="panel-action"
+                        id="refreshTrashButton"
+                    >
+                        ↻ Refresh Trash
+                    </button>
+
+                </div>
+
+                <div class="admin-panel">
+
+                    <div class="panel-heading">
+
+                        <div>
+                            <h3>Deleted Deposit Transactions</h3>
+                            <p>Restore transactions or permanently delete eligible records.</p>
+                        </div>
+
+                    </div>
+
+                    <div class="table-container">
+
+                        <table>
+
+                            <thead>
+                                <tr>
+                                    <th>Reference</th>
+                                    <th>Member</th>
+                                    <th>Amount</th>
+                                    <th>Payment Method</th>
+                                    <th>Status</th>
+                                    <th>Date Deleted</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+
+                            <tbody id="trashTransactionsTable">
+
+                                <tr>
+                                    <td colspan="7" class="empty-table">
+                                        No deleted transactions.
+                                    </td>
+                                </tr>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+                <div class="admin-panel">
+
+                    <div class="panel-heading">
+
+                        <div>
+                            <h3>Trash Security</h3>
+                            <p>
+                                Restoring a transaction returns it to the Deposits page.
+                                Successful and other protected financial records cannot
+                                be permanently deleted.
+                            </p>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================
                  SAVINGS PAGE
             ================================== -->
 
@@ -914,182 +974,177 @@
 
             </section>
 
+
             <!-- =================================
-     MEMBER PROFILE MODAL
-================================== -->
+                 MEMBER PROFILE MODAL
+            ================================== -->
 
-<div
-    id="memberProfileModal"
-    class="member-profile-modal"
-    hidden
-    role="dialog"
-    aria-modal="true"
-    aria-labelledby="memberProfileTitle"
->
-
-    <div class="member-profile-card">
-
-        <div class="member-profile-header">
-
-            <div>
-                <p>MEMBER ACCOUNT</p>
-                <h2 id="memberProfileTitle">Member Profile</h2>
-            </div>
-
-            <button
-                type="button"
-                id="closeMemberProfile"
-                class="member-profile-close"
-                aria-label="Close member profile"
+            <div
+                id="memberProfileModal"
+                class="member-profile-modal"
+                hidden
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="memberProfileTitle"
             >
-                ×
-            </button>
 
-        </div>
+                <div class="member-profile-card">
 
-        <!-- MEMBER DETAILS -->
+                    <div class="member-profile-header">
 
-        <div class="member-profile-section">
+                        <div>
+                            <p>MEMBER ACCOUNT</p>
+                            <h2 id="memberProfileTitle">Member Profile</h2>
+                        </div>
 
-            <h3>Personal Information</h3>
+                        <button
+                            type="button"
+                            id="closeMemberProfile"
+                            class="member-profile-close"
+                            aria-label="Close member profile"
+                        >
+                            ×
+                        </button>
 
-            <div class="member-profile-grid">
+                    </div>
 
-                <div>
-                    <span>Member ID</span>
-                    <strong id="profileMemberId">—</strong>
-                </div>
+                    <div class="member-profile-section">
 
-                <div>
-                    <span>Full Name</span>
-                    <strong id="profileMemberName">—</strong>
-                </div>
+                        <h3>Personal Information</h3>
 
-                <div>
-                    <span>Email Address</span>
-                    <strong id="profileMemberEmail">—</strong>
-                </div>
+                        <div class="member-profile-grid">
 
-                <div>
-                    <span>Phone Number</span>
-                    <strong id="profileMemberPhone">—</strong>
-                </div>
+                            <div>
+                                <span>Member ID</span>
+                                <strong id="profileMemberId">—</strong>
+                            </div>
 
-                <div>
-                    <span>Registration Date</span>
-                    <strong id="profileMemberJoined">—</strong>
-                </div>
+                            <div>
+                                <span>Full Name</span>
+                                <strong id="profileMemberName">—</strong>
+                            </div>
 
-                <div>
-                    <span>Account Status</span>
-                    <strong id="profileMemberStatus">—</strong>
+                            <div>
+                                <span>Email Address</span>
+                                <strong id="profileMemberEmail">—</strong>
+                            </div>
+
+                            <div>
+                                <span>Phone Number</span>
+                                <strong id="profileMemberPhone">—</strong>
+                            </div>
+
+                            <div>
+                                <span>Registration Date</span>
+                                <strong id="profileMemberJoined">—</strong>
+                            </div>
+
+                            <div>
+                                <span>Account Status</span>
+                                <strong id="profileMemberStatus">—</strong>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="member-profile-section">
+
+                        <h3>Wallet Information</h3>
+
+                        <div class="member-wallet-grid">
+
+                            <div>
+                                <span>Current Balance</span>
+                                <strong id="profileWalletBalance">GH₵0.00</strong>
+                            </div>
+
+                            <div>
+                                <span>Total Deposits</span>
+                                <strong id="profileWalletDeposits">GH₵0.00</strong>
+                            </div>
+
+                            <div>
+                                <span>Total Withdrawals</span>
+                                <strong id="profileWalletWithdrawals">GH₵0.00</strong>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="member-profile-section">
+
+                        <h3>Transaction History</h3>
+
+                        <div class="table-container">
+
+                            <table>
+
+                                <thead>
+                                    <tr>
+                                        <th>Reference</th>
+                                        <th>Type</th>
+                                        <th>Amount</th>
+                                        <th>Status</th>
+                                        <th>Date</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody id="memberProfileTransactions">
+
+                                    <tr>
+                                        <td colspan="5" class="empty-table">
+                                            Select a member to view transactions.
+                                        </td>
+                                    </tr>
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+                    </div>
+
+                    <div class="member-profile-footer">
+
+                        <div class="member-account-actions">
+
+                            <button
+                                type="button"
+                                id="suspendMemberButton"
+                                class="member-suspend-button"
+                                hidden
+                            >
+                                Suspend Account
+                            </button>
+
+                            <button
+                                type="button"
+                                id="activateMemberButton"
+                                class="member-activate-button"
+                                hidden
+                            >
+                                Activate Account
+                            </button>
+
+                        </div>
+
+                        <button
+                            type="button"
+                            id="closeMemberProfileFooter"
+                            class="panel-action"
+                        >
+                            Close Profile
+                        </button>
+
+                    </div>
+
                 </div>
 
             </div>
 
-        </div>
-
-        <!-- WALLET DETAILS -->
-
-        <div class="member-profile-section">
-
-            <h3>Wallet Information</h3>
-
-            <div class="member-wallet-grid">
-
-                <div>
-                    <span>Current Balance</span>
-                    <strong id="profileWalletBalance">GH₵0.00</strong>
-                </div>
-
-                <div>
-                    <span>Total Deposits</span>
-                    <strong id="profileWalletDeposits">GH₵0.00</strong>
-                </div>
-
-                <div>
-                    <span>Total Withdrawals</span>
-                    <strong id="profileWalletWithdrawals">GH₵0.00</strong>
-                </div>
-
-            </div>
-
-        </div>
-
-        <!-- MEMBER TRANSACTIONS -->
-
-        <div class="member-profile-section">
-
-            <h3>Transaction History</h3>
-
-            <div class="table-container">
-
-                <table>
-
-                    <thead>
-                        <tr>
-                            <th>Reference</th>
-                            <th>Type</th>
-                            <th>Amount</th>
-                            <th>Status</th>
-                            <th>Date</th>
-                        </tr>
-                    </thead>
-
-                    <tbody id="memberProfileTransactions">
-
-                        <tr>
-                            <td colspan="5" class="empty-table">
-                                Select a member to view transactions.
-                            </td>
-                        </tr>
-
-                    </tbody>
-
-                </table>
-
-            </div>
-
-        </div>
-        
-        
-        <div class="member-profile-footer">
-            
-            <div class="member-account-actions">
-                
-                <button
-                    type="button"
-                    id="suspendMemberButton"
-                    class="member-suspend-button"
-                    hidden
-                >
-                    Suspend Account
-                </button>
-                
-                <button
-                    type="button"
-                    id="activateMemberButton"
-                    class="member-activate-button"
-                    hidden
-                >
-                    Activate Account
-                </button>
-            
-            </div>
-            
-            <button
-                type="button"
-                id="closeMemberProfileFooter"
-                class="panel-action"
-            >
-                Close Profile
-            </button>
-        
-        </div>
-    
-    </div>
-
-</div>
 
             <!-- =================================
                  FOOTER
@@ -1123,4 +1178,3 @@
 
 </body>
 </html>
-```
