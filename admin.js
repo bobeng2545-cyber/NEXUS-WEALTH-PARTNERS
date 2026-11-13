@@ -400,28 +400,28 @@ async function showAdminDashboard(email) {
 
     }
 
-   if (data !== true) {
+    if (data !== true) {
 
-    await nexusAdminSupabase.auth.signOut();
+        await nexusAdminSupabase.auth.signOut();
 
-    showAdminLogin();
+        showAdminLogin();
 
-    throw new Error(
-        "Your account is not registered as an authorized administrator."
-    );
+        throw new Error(
+            "Your account is not registered as an authorized administrator."
+        );
 
-}
+    }
 
-    /* SAVE THE AUTHENTICATED ADMINISTRATOR ID */
-
-const { data: adminUserData, error: adminUserError } =
-    await nexusAdminSupabase.auth.getUser();
-
-if (adminUserError || !adminUserData.user) {
-    throw new Error(
-        "Could not verify the administrator account."
-    );
-}
+   /* SAVE THE AUTHENTICATED ADMINISTRATOR ID */
+   
+   const { data: adminUserData, error: adminUserError } =
+      await nexusAdminSupabase.auth.getUser();
+   
+   if (adminUserError || !adminUserData.user) {
+      throw new Error(
+         "Could not verify the administrator account."
+      );
+   }
 
 currentAdminUserId = adminUserData.user.id;
 
@@ -1354,7 +1354,7 @@ async function updateNexusMemberStatus(newStatus) {
            data.message ||
            `Member account ${newStatus.toLowerCase()} successfully.`
         );
-
+       
         console.log(
             "Member account status updated:",
             data
