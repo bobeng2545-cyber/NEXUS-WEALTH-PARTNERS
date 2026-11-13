@@ -41,6 +41,19 @@ input {
 
 button {
     cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+}
+
+button:focus-visible {
+    outline: 3px solid rgba(18, 168, 121, 0.30);
+    outline-offset: 3px;
+}
+
+button:disabled {
+    opacity: 0.55;
+    cursor: not-allowed !important;
+    transform: none !important;
+    box-shadow: none !important;
 }
 
 [hidden] {
@@ -168,20 +181,17 @@ button {
     height: 50px;
     border: none;
     border-radius: 9px;
-    background: var(--accent);
+    background: linear-gradient(135deg, #12a879, #07865e);
     color: white;
     font-weight: 700;
     margin-top: 8px;
-    transition: 0.2s;
+    transition: 0.25s ease;
 }
 
-#adminLoginButton:hover {
-    background: var(--accent-dark);
-}
-
-#adminLoginButton:disabled {
-    opacity: 0.65;
-    cursor: not-allowed;
+#adminLoginButton:hover:not(:disabled) {
+    background: linear-gradient(135deg, #0d966b, #066d4d);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(18, 168, 121, 0.20);
 }
 
 .admin-message {
@@ -612,14 +622,21 @@ button {
     height: 42px;
     border: none;
     border-radius: 8px;
-    background: #e9f8f2;
-    color: var(--accent-dark);
+    background: linear-gradient(135deg, #12a879, #07865e);
+    color: white;
     font-size: 11px;
     font-weight: 800;
+    transition: 0.25s ease;
 }
 
-.panel-action:hover {
-    background: #d9f2e8;
+.panel-action:hover:not(:disabled) {
+    background: linear-gradient(135deg, #0d966b, #066d4d);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(18, 168, 121, 0.20);
+}
+
+.panel-action:active:not(:disabled) {
+    transform: scale(0.98);
 }
 
 .platform-information {
@@ -658,6 +675,14 @@ button {
     color: var(--accent-dark);
     font-size: 11px;
     font-weight: 800;
+    padding: 8px 12px;
+    border-radius: 7px;
+    transition: 0.2s ease;
+}
+
+.text-action:hover:not(:disabled) {
+    background: #e4f7ef;
+    color: #087b53;
 }
 
 .recent-panel {
@@ -761,7 +786,431 @@ tbody tr:hover {
 
 
 /* =========================================
-   MOBILE RESPONSIVENESS
+   MEMBER SEARCH
+========================================= */
+
+.member-search-area {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 14px;
+}
+
+.member-search-area input {
+    flex: 1;
+    min-width: 0;
+    height: 45px;
+    padding: 0 15px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    outline: none;
+    color: var(--text);
+    background: #ffffff;
+    font-size: 12px;
+    transition: 0.2s;
+}
+
+.member-search-area input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(18, 168, 121, 0.1);
+}
+
+.member-search-area .panel-action {
+    width: auto;
+    min-width: 115px;
+    padding: 0 16px;
+    margin: 0;
+    height: 45px;
+}
+
+.member-search-results {
+    margin-bottom: 14px;
+    color: var(--muted);
+    font-size: 11px;
+}
+
+
+/* =========================================
+   MEMBER TABLE
+========================================= */
+
+#membersTable td {
+    vertical-align: middle;
+}
+
+#membersTable td:first-child {
+    color: var(--primary);
+    font-weight: 800;
+}
+
+.member-status {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 75px;
+    padding: 6px 10px;
+    border-radius: 20px;
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: capitalize;
+}
+
+.member-status.active {
+    background: #e4f7ef;
+    color: #087b53;
+}
+
+.member-status.suspended {
+    background: #fff0f0;
+    color: #c43b3b;
+}
+
+.member-status.pending {
+    background: #fff5df;
+    color: #a36a0b;
+}
+
+.member-status.unknown {
+    background: #edf1f5;
+    color: #64748b;
+}
+
+.view-member-button {
+    border: 1px solid #ccebdd;
+    border-radius: 8px;
+    padding: 9px 12px;
+    background: #e9f8f2;
+    color: #07865e;
+    font-size: 10px;
+    font-weight: 800;
+    white-space: nowrap;
+    transition: 0.25s ease;
+}
+
+.view-member-button:hover:not(:disabled) {
+    background: #12a879;
+    border-color: #12a879;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 12px rgba(18, 168, 121, 0.18);
+}
+
+
+/* =========================================
+   MEMBER PROFILE MODAL
+========================================= */
+
+.member-profile-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 3000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    background: rgba(5, 20, 35, 0.72);
+    backdrop-filter: blur(4px);
+    overflow-y: auto;
+}
+
+.member-profile-card {
+    width: 100%;
+    max-width: 900px;
+    max-height: 92vh;
+    overflow-y: auto;
+    background: #ffffff;
+    border-radius: 15px;
+    box-shadow: 0 25px 80px rgba(0, 0, 0, 0.25);
+}
+
+.member-profile-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    padding: 24px 27px;
+    background: var(--primary-dark);
+    color: white;
+    border-radius: 15px 15px 0 0;
+}
+
+.member-profile-header p {
+    color: #9eb2c5;
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    margin-bottom: 7px;
+}
+
+.member-profile-header h2 {
+    font-size: 20px;
+    color: white;
+}
+
+.member-profile-close {
+    width: 38px;
+    height: 38px;
+    flex-shrink: 0;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.08);
+    color: white;
+    font-size: 25px;
+    line-height: 1;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.member-profile-close:hover {
+    background: rgba(255, 255, 255, 0.20);
+    transform: rotate(90deg);
+}
+
+
+/* =========================================
+   PROFILE SECTIONS
+========================================= */
+
+.member-profile-section {
+    padding: 23px 27px;
+    border-bottom: 1px solid var(--border);
+}
+
+.member-profile-section h3 {
+    color: var(--primary);
+    font-size: 13px;
+    margin-bottom: 18px;
+}
+
+.member-profile-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.member-profile-grid > div,
+.member-wallet-grid > div {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    min-width: 0;
+    padding: 14px;
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    background: #fbfcfe;
+}
+
+.member-profile-grid span,
+.member-wallet-grid span {
+    color: var(--muted);
+    font-size: 10px;
+}
+
+.member-profile-grid strong,
+.member-wallet-grid strong {
+    color: var(--primary);
+    font-size: 12px;
+    overflow-wrap: anywhere;
+}
+
+
+/* =========================================
+   WALLET INFORMATION
+========================================= */
+
+.member-wallet-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 13px;
+}
+
+.member-wallet-grid > div {
+    background: #f1faf6;
+    border-color: #dcefe6;
+}
+
+.member-wallet-grid strong {
+    color: var(--accent-dark);
+    font-size: 17px;
+}
+
+
+/* =========================================
+   MEMBER TRANSACTION HISTORY
+========================================= */
+
+#memberProfileTransactions td {
+    vertical-align: middle;
+}
+
+#memberProfileTransactions td:first-child {
+    font-size: 10px;
+    font-weight: 700;
+}
+
+
+/* =========================================
+   MEMBER PROFILE FOOTER
+========================================= */
+
+.member-profile-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    flex-wrap: wrap;
+    padding: 18px 27px 24px;
+}
+
+.member-profile-footer .panel-action {
+    width: auto;
+    min-width: 130px;
+    padding: 0 18px;
+    margin: 0;
+}
+
+.member-account-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.member-suspend-button,
+.member-activate-button {
+    min-height: 43px;
+    border-radius: 9px;
+    padding: 11px 16px;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: 0.25s ease;
+}
+
+.member-suspend-button {
+    background: #fff0f0;
+    color: #c62828;
+    border: 1px solid #ffd0d0;
+}
+
+.member-suspend-button:hover:not(:disabled) {
+    background: #dc4545;
+    color: white;
+    border-color: #dc4545;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 12px rgba(220, 69, 69, 0.18);
+}
+
+.member-activate-button {
+    background: #e4f7ef;
+    color: #087b53;
+    border: 1px solid #c5ead9;
+}
+
+.member-activate-button:hover:not(:disabled) {
+    background: #12a879;
+    color: white;
+    border-color: #12a879;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 12px rgba(18, 168, 121, 0.18);
+}
+
+
+/* =========================================
+   FINANCIAL TRANSACTION ACTION BUTTONS
+========================================= */
+
+.admin-action-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    /* COMPACT BUTTON WIDTH */
+    width: auto;
+    min-width: 0;
+    min-height: 34px;
+
+    padding: 7px 10px;
+
+    border: none;
+    border-radius: 7px;
+
+    color: white;
+    font-size: 10px;
+    font-weight: 800;
+    font-family: inherit;
+
+    white-space: nowrap;
+    cursor: pointer;
+
+    transition:
+        background 0.25s ease,
+        transform 0.25s ease,
+        box-shadow 0.25s ease,
+        opacity 0.25s ease;
+}
+
+/* REVERSE DEPOSIT / CANCEL WITHDRAWAL */
+
+.admin-action-button.reject {
+    background: linear-gradient(135deg, #dc4545, #a91f1f);
+    box-shadow: 0 3px 8px rgba(220, 69, 69, 0.16);
+}
+
+.admin-action-button.reject:hover:not(:disabled) {
+    background: linear-gradient(135deg, #c52f2f, #861818);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 12px rgba(220, 69, 69, 0.22);
+}
+
+.admin-action-button.reject:active:not(:disabled) {
+    transform: scale(0.97);
+}
+
+.admin-action-button:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.admin-action-button:focus-visible {
+    outline: 3px solid rgba(8, 116, 67, 0.35);
+    outline-offset: 3px;
+}
+
+/* TRANSACTION ACTION COLUMN */
+
+#transactionsTable td:last-child {
+    min-width: 105px;
+    width: 1%;
+    vertical-align: middle;
+    padding-left: 8px;
+    padding-right: 8px;
+}
+
+
+/* =========================================
+   SIDEBAR BUTTONS
+========================================= */
+
+.admin-nav-link,
+.logout-button,
+.sidebar-toggle {
+    transition:
+        background 0.2s ease,
+        color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.admin-nav-link:active,
+.logout-button:active {
+    transform: scale(0.98);
+}
+
+
+/* =========================================
+   RESPONSIVE DESIGN
 ========================================= */
 
 @media (max-width: 1100px) {
@@ -776,6 +1225,7 @@ tbody tr:hover {
     }
 
 }
+
 
 @media (max-width: 850px) {
 
@@ -801,6 +1251,51 @@ tbody tr:hover {
     }
 
 }
+
+
+@media (max-width: 700px) {
+
+    .member-profile-modal {
+        align-items: flex-start;
+        padding: 10px;
+    }
+
+    .member-profile-card {
+        max-height: calc(100vh - 20px);
+    }
+
+    .member-profile-header {
+        padding: 19px;
+    }
+
+    .member-profile-section {
+        padding: 19px;
+    }
+
+    .member-profile-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+    }
+
+    .member-wallet-grid {
+        grid-template-columns: 1fr;
+        gap: 9px;
+    }
+
+    .member-wallet-grid > div {
+        padding: 12px;
+    }
+
+    .member-wallet-grid strong {
+        font-size: 16px;
+    }
+
+    .member-profile-footer {
+        padding: 15px 19px 20px;
+    }
+
+}
+
 
 @media (max-width: 600px) {
 
@@ -907,323 +1402,29 @@ tbody tr:hover {
         line-height: 1.5;
     }
 
-}
-
-@media (max-width: 360px) {
-
-    .statistics-grid {
-        grid-template-columns: 1fr;
+    .admin-action-button {
+        min-width: 0;
+        min-height: 32px;
+        padding: 7px 9px;
+        font-size: 9px;
     }
 
-    .withdrawal-summary {
-        grid-template-columns: 1fr;
+    #transactionsTable td:last-child {
+        min-width: 95px;
     }
 
-}
-
-
-/* =========================================
-   NEXUS WEALTH PARTNERS
-   MEMBER MANAGEMENT
-========================================= */
-
-/* MEMBER SEARCH */
-
-.member-search-area {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 14px;
-}
-
-.member-search-area input {
-    flex: 1;
-    min-width: 0;
-    height: 45px;
-    padding: 0 15px;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    outline: none;
-    color: var(--text);
-    background: #ffffff;
-    font-size: 12px;
-    transition: 0.2s;
-}
-
-.member-search-area input:focus {
-    border-color: var(--accent);
-    box-shadow: 0 0 0 3px rgba(18, 168, 121, 0.1);
-}
-
-.member-search-area .panel-action {
-    width: auto;
-    min-width: 115px;
-    padding: 0 16px;
-    margin: 0;
-    height: 45px;
-}
-
-.member-search-results {
-    margin-bottom: 14px;
-    color: var(--muted);
-    font-size: 11px;
-}
-
-/* MEMBER TABLE */
-
-#membersTable td {
-    vertical-align: middle;
-}
-
-#membersTable td:first-child {
-    color: var(--primary);
-    font-weight: 800;
-}
-
-.member-status {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 75px;
-    padding: 6px 10px;
-    border-radius: 20px;
-    font-size: 10px;
-    font-weight: 800;
-    text-transform: capitalize;
-}
-
-.member-status.active {
-    background: #e4f7ef;
-    color: #087b53;
-}
-
-.member-status.suspended {
-    background: #fff0f0;
-    color: #c43b3b;
-}
-
-.member-status.pending {
-    background: #fff5df;
-    color: #a36a0b;
-}
-
-.member-status.unknown {
-    background: #edf1f5;
-    color: #64748b;
-}
-
-.view-member-button {
-    border: none;
-    border-radius: 7px;
-    padding: 9px 13px;
-    background: #e9f8f2;
-    color: var(--accent-dark);
-    font-size: 10px;
-    font-weight: 800;
-    white-space: nowrap;
-    transition: 0.2s;
-}
-
-.view-member-button:hover {
-    background: var(--accent);
-    color: white;
-}
-
-/* MEMBER PROFILE MODAL */
-
-.member-profile-modal {
-    position: fixed;
-    inset: 0;
-    z-index: 3000;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
-    background: rgba(5, 20, 35, 0.72);
-    backdrop-filter: blur(4px);
-    overflow-y: auto;
-}
-
-.member-profile-card {
-    width: 100%;
-    max-width: 900px;
-    max-height: 92vh;
-    overflow-y: auto;
-    background: #ffffff;
-    border-radius: 15px;
-    box-shadow: 0 25px 80px rgba(0, 0, 0, 0.25);
-}
-
-.member-profile-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 15px;
-    padding: 24px 27px;
-    background: var(--primary-dark);
-    color: white;
-    border-radius: 15px 15px 0 0;
-}
-
-.member-profile-header p {
-    color: #9eb2c5;
-    font-size: 9px;
-    font-weight: 800;
-    letter-spacing: 1.5px;
-    margin-bottom: 7px;
-}
-
-.member-profile-header h2 {
-    font-size: 20px;
-    color: white;
-}
-
-.member-profile-close {
-    width: 38px;
-    height: 38px;
-    flex-shrink: 0;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 8px;
-    background: rgba(255, 255, 255, 0.08);
-    color: white;
-    font-size: 25px;
-    line-height: 1;
-}
-
-.member-profile-close:hover {
-    background: rgba(255, 255, 255, 0.18);
-}
-
-/* PROFILE SECTIONS */
-
-.member-profile-section {
-    padding: 23px 27px;
-    border-bottom: 1px solid var(--border);
-}
-
-.member-profile-section h3 {
-    color: var(--primary);
-    font-size: 13px;
-    margin-bottom: 18px;
-}
-
-.member-profile-grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 18px;
-}
-
-.member-profile-grid > div,
-.member-wallet-grid > div {
-    display: flex;
-    flex-direction: column;
-    gap: 7px;
-    min-width: 0;
-    padding: 14px;
-    border: 1px solid var(--border);
-    border-radius: 9px;
-    background: #fbfcfe;
-}
-
-.member-profile-grid span,
-.member-wallet-grid span {
-    color: var(--muted);
-    font-size: 10px;
-}
-
-.member-profile-grid strong,
-.member-wallet-grid strong {
-    color: var(--primary);
-    font-size: 12px;
-    overflow-wrap: anywhere;
-}
-
-/* WALLET INFORMATION */
-
-.member-wallet-grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 13px;
-}
-
-.member-wallet-grid > div {
-    background: #f1faf6;
-    border-color: #dcefe6;
-}
-
-.member-wallet-grid strong {
-    color: var(--accent-dark);
-    font-size: 17px;
-}
-
-/* MEMBER TRANSACTION HISTORY */
-
-#memberProfileTransactions td {
-    vertical-align: middle;
-}
-
-#memberProfileTransactions td:first-child {
-    font-size: 10px;
-    font-weight: 700;
-}
-
-.member-profile-footer {
-    display: flex;
-    justify-content: flex-end;
-    padding: 18px 27px 24px;
-}
-
-.member-profile-footer .panel-action {
-    width: auto;
-    min-width: 130px;
-    padding: 0 18px;
-    margin: 0;
-}
-
-/* MEMBER MANAGEMENT RESPONSIVENESS */
-
-@media (max-width: 700px) {
-
-    .member-profile-modal {
-        align-items: flex-start;
-        padding: 10px;
+    .member-suspend-button,
+    .member-activate-button {
+        min-height: 42px;
+        padding: 10px 14px;
     }
 
-    .member-profile-card {
-        max-height: calc(100vh - 20px);
-    }
-
-    .member-profile-header {
-        padding: 19px;
-    }
-
-    .member-profile-section {
-        padding: 19px;
-    }
-
-    .member-profile-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 10px;
-    }
-
-    .member-wallet-grid {
-        grid-template-columns: 1fr;
-        gap: 9px;
-    }
-
-    .member-wallet-grid > div {
-        padding: 12px;
-    }
-
-    .member-wallet-grid strong {
-        font-size: 16px;
-    }
-
-    .member-profile-footer {
-        padding: 15px 19px 20px;
+    .view-member-button {
+        padding: 9px 11px;
     }
 
 }
+
 
 @media (max-width: 480px) {
 
@@ -1248,65 +1449,6 @@ tbody tr:hover {
         font-size: 17px;
     }
 
-}
-
-
-/* =========================================
-   MEMBER ACCOUNT MANAGEMENT BUTTONS
-========================================= */
-
-.member-profile-footer {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 15px;
-    flex-wrap: wrap;
-}
-
-.member-account-actions {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.member-suspend-button,
-.member-activate-button {
-    border: none;
-    border-radius: 8px;
-    padding: 12px 18px;
-    font-family: inherit;
-    font-size: 13px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: 0.2s ease;
-}
-
-.member-suspend-button {
-    background: #fee2e2;
-    color: #b91c1c;
-}
-
-.member-suspend-button:hover {
-    background: #fecaca;
-}
-
-.member-activate-button {
-    background: #dcfce7;
-    color: #15803d;
-}
-
-.member-activate-button:hover {
-    background: #bbf7d0;
-}
-
-.member-suspend-button:disabled,
-.member-activate-button:disabled {
-    opacity: 0.55;
-    cursor: not-allowed;
-}
-
-@media (max-width: 480px) {
-
     .member-profile-footer {
         align-items: stretch;
         flex-direction: column;
@@ -1325,410 +1467,19 @@ tbody tr:hover {
 
 }
 
-/* =========================================
-   FINANCIAL TRANSACTION ACTION BUTTONS
-========================================= */
 
-.admin-action-button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 7px;
+@media (max-width: 360px) {
 
-    padding: 10px 16px;
-    min-width: 145px;
-
-    border: none;
-    border-radius: 9px;
-
-    color: #ffffff;
-    font-size: 12px;
-    font-weight: 700;
-    font-family: inherit;
-
-    cursor: pointer;
-
-    transition:
-        background 0.25s ease,
-        transform 0.25s ease,
-        box-shadow 0.25s ease,
-        opacity 0.25s ease;
-}
-
-/* REVERSE DEPOSIT BUTTON */
-
-.admin-action-button.reject {
-    background: linear-gradient(
-        135deg,
-        #dc2626,
-        #991b1b
-    );
-
-    box-shadow:
-        0 4px 10px rgba(220, 38, 38, 0.18);
-}
-
-/* HOVER EFFECT */
-
-.admin-action-button.reject:hover:not(:disabled) {
-    background: linear-gradient(
-        135deg,
-        #b91c1c,
-        #7f1d1d
-    );
-
-    transform: translateY(-2px);
-
-    box-shadow:
-        0 7px 16px rgba(220, 38, 38, 0.28);
-}
-
-/* CLICK EFFECT */
-
-.admin-action-button.reject:active:not(:disabled) {
-    transform: scale(0.97);
-}
-
-/* DISABLED / PROCESSING STATE */
-
-.admin-action-button:disabled {
-    opacity: 0.55;
-    cursor: not-allowed;
-    transform: none;
-    box-shadow: none;
-}
-
-/* KEYBOARD ACCESSIBILITY */
-
-.admin-action-button:focus-visible {
-    outline: 3px solid rgba(8, 116, 67, 0.35);
-    outline-offset: 3px;
-}
-
-/* ACTION COLUMN */
-
-#transactionsTable td:last-child {
-    min-width: 160px;
-    vertical-align: middle;
-}
-
-/* MOBILE RESPONSIVENESS */
-
-@media (max-width: 600px) {
-
-    .admin-action-button {
-        min-width: 125px;
-        padding: 9px 11px;
-        font-size: 11px;
+    .statistics-grid {
+        grid-template-columns: 1fr;
     }
 
-    #transactionsTable td:last-child {
-        min-width: 135px;
+    .withdrawal-summary {
+        grid-template-columns: 1fr;
     }
 
 }
 
-/* =========================================
-   NEXUS WEALTH PARTNERS
-   PROFESSIONAL ADMIN BUTTON SYSTEM
-========================================= */
-
-/* GENERAL BUTTON BEHAVIOUR */
-
-button {
-    font-family: inherit;
-    -webkit-tap-highlight-color: transparent;
-}
-
-button:focus-visible {
-    outline: 3px solid rgba(18, 168, 121, 0.30);
-    outline-offset: 3px;
-}
-
-button:disabled {
-    opacity: 0.55;
-    cursor: not-allowed !important;
-    transform: none !important;
-    box-shadow: none !important;
-}
-
-/* =========================================
-   PRIMARY ACTION BUTTONS
-========================================= */
-
-.panel-action,
-#adminLoginButton {
-    background: linear-gradient(
-        135deg,
-        #12a879,
-        #07865e
-    );
-
-    color: #ffffff;
-    border: none;
-    border-radius: 9px;
-    font-weight: 400;
-
-    transition:
-        background 0.25s ease,
-        transform 0.25s ease,
-        box-shadow 0.25s ease;
-}
-
-.panel-action:hover:not(:disabled),
-#adminLoginButton:hover:not(:disabled) {
-    background: linear-gradient(
-        135deg,
-        #0d966b,
-        #066d4d
-    );
-
-    transform: translateY(-2px);
-
-    box-shadow: 0 6px 15px rgba(18, 168, 121, 0.20);
-}
-
-.panel-action:active:not(:disabled),
-#adminLoginButton:active:not(:disabled) {
-    transform: scale(0.98);
-}
-
-/* =========================================
-   TEXT ACTION BUTTONS
-========================================= */
-
-.text-action {
-    padding: 8px 12px;
-    border-radius: 7px;
-    transition: 0.2s ease;
-}
-
-.text-action:hover:not(:disabled) {
-    background: #e4f7ef;
-    color: #087b53;
-}
-
-/* =========================================
-   MEMBER SEARCH BUTTON
-========================================= */
-
-.member-search-area .panel-action {
-    min-height: 45px;
-    padding: 0 20px;
-}
-
-/* =========================================
-   VIEW MEMBER BUTTON
-========================================= */
-
-.view-member-button {
-    border: 1px solid #ccebdd;
-    border-radius: 8px;
-
-    background: #e9f8f2;
-    color: #07865e;
-
-    padding: 10px 15px;
-
-    font-size: 11px;
-    font-weight: 800;
-
-    transition: 0.25s ease;
-}
-
-.view-member-button:hover:not(:disabled) {
-    background: #12a879;
-    border-color: #12a879;
-    color: #ffffff;
-
-    transform: translateY(-2px);
-
-    box-shadow: 0 5px 12px rgba(18, 168, 121, 0.18);
-}
-
-/* =========================================
-   MEMBER ACCOUNT ACTION BUTTONS
-========================================= */
-
-.member-suspend-button,
-.member-activate-button {
-    min-height: 43px;
-    border-radius: 9px;
-
-    padding: 11px 18px;
-
-    font-size: 12px;
-    font-weight: 800;
-
-    transition: 0.25s ease;
-}
-
-.member-suspend-button {
-    background: #fff0f0;
-    color: #c62828;
-    border: 1px solid #ffd0d0;
-}
-
-.member-suspend-button:hover:not(:disabled) {
-    background: #dc4545;
-    color: #ffffff;
-    border-color: #dc4545;
-
-    transform: translateY(-2px);
-    box-shadow: 0 5px 12px rgba(220, 69, 69, 0.18);
-}
-
-.member-activate-button {
-    background: #e4f7ef;
-    color: #087b53;
-    border: 1px solid #c5ead9;
-}
-
-.member-activate-button:hover:not(:disabled) {
-    background: #12a879;
-    color: #ffffff;
-    border-color: #12a879;
-
-    transform: translateY(-2px);
-    box-shadow: 0 5px 12px rgba(18, 168, 121, 0.18);
-}
-
-/* =========================================
-   FINANCIAL TRANSACTION ACTION BUTTONS
-========================================= */
-
-.admin-action-button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-
-    min-width: 145px;
-    min-height: 39px;
-
-    padding: 10px 15px;
-
-    border: none;
-    border-radius: 9px;
-
-    color: #ffffff;
-
-    font-size: 11px;
-    font-weight: 800;
-    font-family: inherit;
-
-    cursor: pointer;
-
-    transition:
-        background 0.25s ease,
-        transform 0.25s ease,
-        box-shadow 0.25s ease,
-        opacity 0.25s ease;
-}
-
-/* REVERSE DEPOSIT / CANCEL WITHDRAWAL */
-
-.admin-action-button.reject {
-    background: linear-gradient(
-        135deg,
-        #dc4545,
-        #a91f1f
-    );
-
-    box-shadow: 0 4px 10px rgba(220, 69, 69, 0.16);
-}
-
-.admin-action-button.reject:hover:not(:disabled) {
-    background: linear-gradient(
-        135deg,
-        #c52f2f,
-        #861818
-    );
-
-    transform: translateY(-2px);
-
-    box-shadow: 0 7px 16px rgba(220, 69, 69, 0.25);
-}
-
-.admin-action-button.reject:active:not(:disabled) {
-    transform: scale(0.97);
-}
-
-/* PROCESSING STATE */
-
-.admin-action-button:disabled {
-    opacity: 0.55;
-    cursor: not-allowed;
-    transform: none;
-    box-shadow: none;
-}
-
-/* TRANSACTION ACTION COLUMN */
-
-#transactionsTable td:last-child {
-    min-width: 160px;
-    vertical-align: middle;
-}
-
-/* =========================================
-   CLOSE BUTTON
-========================================= */
-
-.member-profile-close {
-    cursor: pointer;
-    transition: 0.2s ease;
-}
-
-.member-profile-close:hover {
-    background: rgba(255, 255, 255, 0.20);
-    transform: rotate(90deg);
-}
-
-/* =========================================
-   SIDEBAR BUTTONS
-========================================= */
-
-.admin-nav-link,
-.logout-button,
-.sidebar-toggle {
-    transition:
-        background 0.2s ease,
-        color 0.2s ease,
-        transform 0.2s ease;
-}
-
-.admin-nav-link:active,
-.logout-button:active {
-    transform: scale(0.98);
-}
-
-/* =========================================
-   RESPONSIVE BUTTON STYLING
-========================================= */
-
-@media (max-width: 600px) {
-
-    .admin-action-button {
-        min-width: 125px;
-        min-height: 37px;
-        padding: 9px 11px;
-        font-size: 10px;
-    }
-
-    #transactionsTable td:last-child {
-        min-width: 135px;
-    }
-
-    .member-suspend-button,
-    .member-activate-button {
-        min-height: 42px;
-        padding: 10px 14px;
-    }
-
-    .view-member-button {
-        padding: 9px 11px;
-    }
-
-}
 
 @media (prefers-reduced-motion: reduce) {
 
