@@ -2078,6 +2078,7 @@ if (depositForm) {
 }
 
 
+
 /* =========================================
    27. MEMBER WITHDRAWAL REQUEST
 ========================================= */
@@ -2097,37 +2098,89 @@ if (withdrawalForm) {
         const method =
             getElement("withdrawMethod")?.value;
 
-        const paymentDetails =
+        const accountName =
+            getElement("withdrawAccountName")?.value.trim();
+
+        const accountNumber =
             getElement("withdrawPhone")?.value.trim();
 
         const note =
             getElement("withdrawNote")?.value.trim() || null;
 
+
+        /* VALIDATE WITHDRAWAL AMOUNT */
+
         if (!Number.isFinite(amount) || amount <= 0) {
-            showMessage("Please enter a valid withdrawal amount.");
+
+            showMessage(
+                "Please enter a valid withdrawal amount."
+            );
+
             return;
         }
+
+
+        /* VALIDATE WITHDRAWAL METHOD */
 
         if (!method) {
-            showMessage("Please select a withdrawal method.");
+
+            showMessage(
+                "Please select a withdrawal method."
+            );
+
             return;
         }
 
-        if (!paymentDetails || paymentDetails.length < 5) {
-            showMessage("Please enter valid payment details.");
+
+        /* VALIDATE RECIPIENT NAME */
+
+        if (!accountName || accountName.length < 2) {
+
+            showMessage(
+                "Please enter the recipient's full account name."
+            );
+
             return;
         }
+
+
+        /* VALIDATE ACCOUNT NUMBER */
+
+        if (!accountNumber || accountNumber.length < 5) {
+
+            showMessage(
+                "Please enter a valid mobile money or bank account number."
+            );
+
+            return;
+        }
+
+
+        /* COMBINE RECIPIENT DETAILS */
+
+        const paymentDetails =
+            "Account Name: " + accountName +
+            " | Account Number: " + accountNumber;
+
+
+        /* DISABLE SUBMIT BUTTON */
 
         const submitButton = withdrawalForm.querySelector(
             'button[type="submit"]'
         );
 
         if (submitButton) {
+
             submitButton.disabled = true;
-            submitButton.textContent = "Submitting Request...";
+
+            submitButton.textContent =
+                "Submitting Request...";
         }
 
+
         try {
+
+            /* VERIFY AUTHENTICATED MEMBER */
 
             const {
                 data: authData,
@@ -2137,10 +2190,14 @@ if (withdrawalForm) {
             if (authError) throw authError;
 
             if (!authData.user) {
+
                 throw new Error(
                     "Your session has expired. Please log in again."
                 );
             }
+
+
+            /* SUBMIT WITHDRAWAL REQUEST */
 
             const {
                 data,
@@ -2158,49 +2215,81 @@ if (withdrawalForm) {
             if (error) throw error;
 
             if (!data || data.success !== true) {
+
                 throw new Error(
                     data?.message ||
                     "Your withdrawal request could not be submitted."
                 );
             }
 
+
+            /* CLEAR FORM */
+
             withdrawalForm.reset();
 
+
+            /* REFRESH MEMBER INFORMATION */
+
             await loadMemberWallet(authData.user);
+
             await loadMemberTransactions(authData.user);
+
             await loadPendingWithdrawals(authData.user);
+
             await loadNexusNotifications(authData.user);
+
+
+            /* SUCCESS MESSAGE */
 
             showMessage(
                 "Withdrawal request submitted successfully!\n\n" +
+
                 "Amount: " + formatMoney(amount) + "\n" +
+
+                "Recipient Name: " + accountName + "\n" +
+
+                "Account Number: " + accountNumber + "\n" +
+
+                "Withdrawal Method: " + method + "\n" +
+
                 "Status: Pending\n" +
+
                 "Request ID: " + data.request_id + "\n\n" +
+
                 "Your money is reserved while the request awaits review. It is not yet paid out."
             );
+
 
             console.log(
                 "Withdrawal request submitted:",
                 data
             );
 
+
         } catch (error) {
 
-            console.error("Withdrawal request error:", error);
+            console.error(
+                "Withdrawal request error:",
+                error
+            );
 
             showMessage(
                 error.message ||
                 "Unable to submit your withdrawal request. Please try again."
             );
 
+
         } finally {
 
             if (submitButton) {
+
                 submitButton.disabled = false;
+
                 submitButton.textContent =
                     "Submit Withdrawal Request";
             }
         }
+
     });
 }
 
