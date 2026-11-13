@@ -1181,15 +1181,21 @@ function openAdminMemberProfile(userId) {
     displayAdminMemberTransactions(userId);
 
     const modal =
-        document.getElementById("memberProfileModal");
-
-    if (modal) {
-
-        modal.hidden = false;
-
-        document.body.style.overflow = "hidden";
-
-    }
+       document.getElementById("memberProfileModal");
+   
+   if (modal) {
+      
+      // Remember the member whose profile is open.
+      modal.dataset.memberId = userId;
+      
+      // Display the correct Suspend or Activate button.
+      updateMemberAccountActionButtons(profile);
+      
+      modal.hidden = false;
+      
+      document.body.style.overflow = "hidden";
+   
+   }
 
 }
 
@@ -1544,6 +1550,7 @@ function displayAdminMemberTransactions(userId) {
 }
 
 
+
 /* =========================================
    CLOSE MEMBER PROFILE MODAL
 ========================================= */
@@ -1553,25 +1560,38 @@ function closeAdminMemberProfile() {
     const modal =
         document.getElementById("memberProfileModal");
 
-   /* REMEMBER WHICH MEMBER IS OPEN */
-
-if (modal) {
-    modal.dataset.memberId = userId;
-}
-
-/* DISPLAY THE CORRECT ACCOUNT ACTION */
-
-updateMemberAccountActionButtons(profile);
-
     if (modal) {
 
         modal.hidden = true;
 
         document.body.style.overflow = "";
 
+        // Clear the selected member after closing.
+        delete modal.dataset.memberId;
+
+    }
+
+    // Hide both account action buttons.
+    if (suspendMemberButton) {
+
+        suspendMemberButton.hidden = true;
+        suspendMemberButton.disabled = false;
+
+    }
+
+    if (activateMemberButton) {
+
+        activateMemberButton.hidden = true;
+        activateMemberButton.disabled = false;
+
     }
 
 }
+
+
+/* =========================================
+   MEMBER PROFILE CLOSE EVENT LISTENERS
+========================================= */
 
 const closeMemberProfile =
     document.getElementById("closeMemberProfile");
@@ -1582,6 +1602,7 @@ const closeMemberProfileFooter =
 const memberProfileModal =
     document.getElementById("memberProfileModal");
 
+
 if (closeMemberProfile) {
 
     closeMemberProfile.addEventListener(
@@ -1591,6 +1612,7 @@ if (closeMemberProfile) {
 
 }
 
+
 if (closeMemberProfileFooter) {
 
     closeMemberProfileFooter.addEventListener(
@@ -1599,6 +1621,7 @@ if (closeMemberProfileFooter) {
     );
 
 }
+
 
 if (memberProfileModal) {
 
@@ -1617,6 +1640,7 @@ if (memberProfileModal) {
 
 }
 
+
 document.addEventListener("keydown", event => {
 
     if (
@@ -1630,6 +1654,7 @@ document.addEventListener("keydown", event => {
     }
 
 });
+
 
 
 
