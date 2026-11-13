@@ -2760,6 +2760,7 @@ function displayAdminTransactions(
 }
 
 
+
 /* =========================================
    23. LOAD ALL DASHBOARD RECORDS
 ========================================= */
@@ -2772,19 +2773,14 @@ async function loadAdminDashboardData() {
         console.log(
             "Dashboard data loading is already in progress."
         );
-
         return;
     }
 
     adminDashboardLoading = true;
 
     if (refreshDepositsButton) {
-
         refreshDepositsButton.disabled = true;
-
-        refreshDepositsButton.textContent =
-            "Refreshing...";
-
+        refreshDepositsButton.textContent = "Refreshing...";
     }
 
     try {
@@ -2793,27 +2789,21 @@ async function loadAdminDashboardData() {
             "Loading Nexus admin dashboard data..."
         );
 
-
         /*
            LOAD ALL FOUR TABLES
         */
 
         const [
-
             profilesResult,
-
             walletsResult,
-
             withdrawalsResult,
-
             depositsResult
-
         ] = await Promise.all([
 
             nexusAdminSupabase
                 .from("profiles")
                 .select(
-                   "id, full_name, phone, member_id, email, status, created_at"
+                    "id, full_name, phone, member_id, email, status, created_at"
                 )
                 .order(
                     "created_at",
@@ -2835,20 +2825,19 @@ async function loadAdminDashboardData() {
                     "created_at",
                     { ascending: false }
                 ),
-           
-      nexusAdminSupabase
-         .from("deposit_transactions")
-         .select(
-              "id, user_id, amount, payment_method, payment_phone, reference, status, created_at, paid_at, deleted_at"
-          )
-          .is("deleted_at", null)
-          .order(
-              "created_at",
-              { ascending: false }
-          )
+
+            nexusAdminSupabase
+                .from("deposit_transactions")
+                .select(
+                    "id, user_id, amount, payment_method, payment_phone, reference, status, created_at, paid_at, deleted_at"
+                )
+                .is("deleted_at", null)
+                .order(
+                    "created_at",
+                    { ascending: false }
+                )
 
         ]);
-
 
         /*
            CHECK REQUIRED TABLES
@@ -2865,7 +2854,6 @@ async function loadAdminDashboardData() {
         if (withdrawalsResult.error) {
             throw withdrawalsResult.error;
         }
-
 
         /*
            EXTRACT DATA
@@ -2888,21 +2876,19 @@ async function loadAdminDashboardData() {
                 ? (depositsResult.data || [])
                 : [];
 
-       
-/* =====================================
-   CACHE MEMBER MANAGEMENT RECORDS
-===================================== */
+        /*
+           CACHE MEMBER MANAGEMENT RECORDS
+        */
 
-adminProfilesCache = profiles;
+        adminProfilesCache = profiles;
 
-adminWalletsCache = wallets;
+        adminWalletsCache = wallets;
 
-adminDepositsCache = deposits;
+        adminDepositsCache = deposits;
 
-adminWithdrawalsCache = withdrawals;
+        adminWithdrawalsCache = withdrawals;
 
-adminDepositsAvailable = depositsAvailable;
-
+        adminDepositsAvailable = depositsAvailable;
 
         if (depositsResult.error) {
 
@@ -2913,15 +2899,12 @@ adminDepositsAvailable = depositsAvailable;
 
         }
 
-
-        /* =====================================
+        /*
            TOTAL MEMBERS
-        ===================================== */
+        */
 
         const totalMembersElement =
-            document.getElementById(
-                "totalMembers"
-            );
+            document.getElementById("totalMembers");
 
         if (totalMembersElement) {
 
@@ -2930,15 +2913,8 @@ adminDepositsAvailable = depositsAvailable;
 
         }
 
-
-        /* =====================================
-           TOTAL WALLET BALANCES
-        ===================================== */
-
         /*
-           Actual wallet balances are used directly.
-
-           Do not subtract pending withdrawals again.
+           TOTAL WALLET BALANCES
         */
 
         const totalBalances =
@@ -2950,9 +2926,7 @@ adminDepositsAvailable = depositsAvailable;
             }, 0);
 
         const totalWalletBalancesElement =
-            document.getElementById(
-                "totalWalletBalances"
-            );
+            document.getElementById("totalWalletBalances");
 
         if (totalWalletBalancesElement) {
 
@@ -2961,10 +2935,9 @@ adminDepositsAvailable = depositsAvailable;
 
         }
 
-
-        /* =====================================
+        /*
            TOTAL SUCCESSFUL DEPOSITS
-        ===================================== */
+        */
 
         const totalDeposits =
             deposits.reduce((sum, deposit) => {
@@ -2973,9 +2946,7 @@ adminDepositsAvailable = depositsAvailable;
                     normalizeAdminStatus(deposit.status) !==
                     "successful"
                 ) {
-
                     return sum;
-
                 }
 
                 return sum +
@@ -2984,9 +2955,7 @@ adminDepositsAvailable = depositsAvailable;
             }, 0);
 
         const totalDepositsElement =
-            document.getElementById(
-                "totalDeposits"
-            );
+            document.getElementById("totalDeposits");
 
         if (totalDepositsElement) {
 
@@ -2997,16 +2966,15 @@ adminDepositsAvailable = depositsAvailable;
 
         }
 
-
-        /* =====================================
+        /*
            TOTAL COMPLETED WITHDRAWALS
-        ===================================== */
+        */
 
         const completedWithdrawalRecords =
             withdrawals.filter(request =>
 
                 normalizeAdminStatus(request.status) ===
-                    "completed"
+                "completed"
 
             );
 
@@ -3022,9 +2990,7 @@ adminDepositsAvailable = depositsAvailable;
             );
 
         const totalWithdrawalsElement =
-            document.getElementById(
-                "totalWithdrawals"
-            );
+            document.getElementById("totalWithdrawals");
 
         if (totalWithdrawalsElement) {
 
@@ -3033,16 +2999,15 @@ adminDepositsAvailable = depositsAvailable;
 
         }
 
-
-        /* =====================================
+        /*
            WITHDRAWAL COUNTS
-        ===================================== */
+        */
 
         const pending =
             withdrawals.filter(request =>
 
                 normalizeAdminStatus(request.status) ===
-                    "pending"
+                "pending"
 
             ).length;
 
@@ -3050,13 +3015,12 @@ adminDepositsAvailable = depositsAvailable;
             withdrawals.filter(request =>
 
                 normalizeAdminStatus(request.status) ===
-                    "processing"
+                "processing"
 
             ).length;
 
         const completed =
             completedWithdrawalRecords.length;
-
 
         const pendingElement =
             document.getElementById(
@@ -3073,7 +3037,6 @@ adminDepositsAvailable = depositsAvailable;
                 "overviewCompletedWithdrawals"
             );
 
-
         if (pendingElement) {
             pendingElement.textContent = pending;
         }
@@ -3086,10 +3049,9 @@ adminDepositsAvailable = depositsAvailable;
             completedElement.textContent = completed;
         }
 
-
-        /* =====================================
+        /*
            PENDING WITHDRAWAL BADGE
-        ===================================== */
+        */
 
         const withdrawalBadge =
             document.getElementById(
@@ -3098,54 +3060,43 @@ adminDepositsAvailable = depositsAvailable;
 
         if (withdrawalBadge) {
 
-            withdrawalBadge.textContent =
-                pending;
+            withdrawalBadge.textContent = pending;
 
             withdrawalBadge.hidden =
                 pending === 0;
 
         }
 
-
-        /* =====================================
+        /*
            DISPLAY MEMBERS
-        ===================================== */
+        */
 
         displayAdminMembers(profiles);
 
-
-        /* =====================================
+        /*
            DISPLAY WITHDRAWALS
-        ===================================== */
+        */
 
         displayAdminWithdrawals(
             withdrawals,
             profiles
         );
 
-
-        /* =====================================
+        /*
            DISPLAY SAVINGS
-        ===================================== */
+        */
 
         displayAdminSavings(
-
             wallets,
-
             profiles,
-
             deposits,
-
             withdrawals,
-
             depositsAvailable
-
         );
 
-
-        /* =====================================
+        /*
            DISPLAY DEPOSITS
-        ===================================== */
+        */
 
         if (depositsAvailable) {
 
@@ -3165,20 +3116,18 @@ adminDepositsAvailable = depositsAvailable;
 
         }
 
-
-        /* =====================================
+        /*
            UPDATE DEPOSIT STATISTICS
-        ===================================== */
+        */
 
         updateAdminDepositStatistics(
             deposits,
             depositsAvailable
         );
 
-
-        /* =====================================
+        /*
            DISPLAY TRANSACTIONS
-        ===================================== */
+        */
 
         displayAdminTransactions(
             deposits,
@@ -3186,19 +3135,19 @@ adminDepositsAvailable = depositsAvailable;
             profiles
         );
 
-       /* LOAD TRASH COUNT AND RECORDS */
-       
-       await loadAdminTrash();
+        /*
+           LOAD TRASH RECORDS
+        */
 
+        await loadAdminTrash();
 
-        /* =====================================
+        /*
            DASHBOARD SUMMARY
-        ===================================== */
+        */
 
         console.log(
             "Nexus admin dashboard data loaded.",
             {
-
                 members: profiles.length,
 
                 wallets: wallets.length,
@@ -3222,17 +3171,22 @@ adminDepositsAvailable = depositsAvailable;
                 totalFinancialTransactions:
                     deposits.length + withdrawals.length,
 
-                pendingWithdrawals:
-                    pending,
+                pendingWithdrawals: pending,
 
-                processingWithdrawals:
-                    processing,
+                processingWithdrawals: processing,
 
-                completedWithdrawals:
-                    completed
-
+                completedWithdrawals: completed
             }
         );
+
+    } catch (error) {
+
+        console.error(
+            "Dashboard data loading error:",
+            error
+        );
+
+        throw error;
 
     } finally {
 
@@ -3250,6 +3204,7 @@ adminDepositsAvailable = depositsAvailable;
     }
 
 }
+
 
 
 /* =========================================
