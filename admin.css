@@ -1653,3 +1653,38 @@ tbody tr:hover {
         flex: 1;
     }
 }
+
+
+/* =========================================
+   ADMIN SIDEBAR - VERTICAL SCROLL FIX
+========================================= */
+
+.admin-sidebar {
+    height: 100vh;
+    height: 100dvh;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+    scrollbar-color: #52677d transparent;
+}
+
+/* Keep the sidebar navigation accessible */
+.admin-sidebar nav {
+    min-height: 0;
+    overflow: visible;
+}
+
+/* Chrome, Edge and other WebKit browsers */
+.admin-sidebar::-webkit-scrollbar {
+    width: 6px;
+}
+
+.admin-sidebar::-webkit-scrollbar-thumb {
+    background: #52677d;
+    border-radius: 10px;
+}
+
+.admin-sidebar::-webkit-scrollbar-track {
+    background: transparent;
+}
