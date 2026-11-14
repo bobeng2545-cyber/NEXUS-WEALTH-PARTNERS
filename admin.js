@@ -635,32 +635,47 @@ const adminPageTitles = {
     settings: "Administrator Settings"
 };
 
+
 function adminNavigate(page) {
-    if (!adminPageTitles[page]) return;
+    if (!adminPageTitles[page]) {
+        console.error("Unknown dashboard page:", page);
+        return;
+    }
 
     nexusAdminState.currentPage = page;
 
-    adminElements("[data-page]").forEach(button => {
-        if (button.dataset.page === page) {
-            button.classList.add("active");
-        } else {
-            button.classList.remove("active");
-        }
+    // Update sidebar navigation buttons
+    document.querySelectorAll("[data-page]").forEach(button => {
+        const isActive = button.dataset.page === page;
+
+        button.classList.toggle("active", isActive);
+        button.setAttribute(
+            "aria-current",
+            isActive ? "page" : "false"
+        );
     });
 
+    // Show the selected dashboard section
     Object.keys(adminPageTitles).forEach(name => {
-        const section = adminElement(`page-${name}`);
+        const section = document.getElementById(`page-${name}`);
 
-        if (section) {
-            section.hidden = name !== page;
+        if (!section) {
+            console.warn(`Dashboard section not found: page-${name}`);
+            return;
         }
+
+        const isActive = name === page;
+
+        section.hidden = !isActive;
+        section.classList.toggle("active", isActive);
+
+        // Ensure CSS cannot accidentally keep the section hidden
+        section.style.display = isActive ? "block" : "none";
     });
 
-    adminText(
-        "adminPageTitle",
-        adminPageTitles[page]
-    );
+    adminText("adminPageTitle", adminPageTitles[page]);
 
+    // Load page-specific records
     if (page === "trash") {
         adminLoadTrash();
     }
@@ -685,12 +700,19 @@ function adminNavigate(page) {
         adminRenderTellers();
     }
 
+    // Close mobile sidebar after navigation
     const sidebar = adminElement("adminSidebar");
 
     if (sidebar && window.innerWidth <= 900) {
         sidebar.classList.remove("open");
+
+        adminElement("sidebarToggle")?.setAttribute(
+            "aria-expanded",
+            "false"
+        );
     }
 }
+
 
 
 /* =========================================================
