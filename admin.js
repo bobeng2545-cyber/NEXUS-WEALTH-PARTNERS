@@ -378,13 +378,17 @@ function showAdminLogin() {
 }
 
 
+
 /* =========================================================
    9. ADMIN PAGE NAVIGATION
 ========================================================= */
 
 function showAdminPage(pageName) {
-    const selectedPage =
-        document.getElementById("page-" + pageName);
+
+    // Validate requested page
+    const selectedPage = document.getElementById(
+        "page-" + pageName
+    );
 
     if (!selectedPage) {
         console.error(
@@ -394,18 +398,22 @@ function showAdminPage(pageName) {
         return;
     }
 
+    // Remove active state from all pages
     document.querySelectorAll(".admin-page")
         .forEach(page => {
             page.classList.remove("active");
         });
 
+    // Remove active state from all navigation links
     document.querySelectorAll(".admin-nav-link")
         .forEach(link => {
             link.classList.remove("active");
         });
 
+    // Activate selected page
     selectedPage.classList.add("active");
 
+    // Activate matching navigation link
     const activeLink = document.querySelector(
         '.admin-nav-link[data-page="' + pageName + '"]'
     );
@@ -414,42 +422,72 @@ function showAdminPage(pageName) {
         activeLink.classList.add("active");
     }
 
-    if (adminPageTitle) {
+    // Update page title
+    if (typeof adminPageTitle !== "undefined" &&
+        adminPageTitle) {
+
         adminPageTitle.textContent =
             adminPageTitles[pageName] ||
             "Admin Dashboard";
     }
 
-    if (adminSidebar) {
+    // Close mobile sidebar
+    if (typeof adminSidebar !== "undefined" &&
+        adminSidebar) {
+
         adminSidebar.classList.remove("open");
     }
 
-    if (pageName === "trash") {
-        loadAdminTrash();
+    // Load page-specific data
+    switch (pageName) {
+
+        case "trash":
+            loadAdminTrash();
+            break;
+
+        case "tellers":
+            loadAdminTellers();
+            break;
+
+        case "notifications":
+            if (typeof loadAdminNotifications === "function") {
+                loadAdminNotifications().catch(error => {
+                    console.error(
+                        "Failed to load admin notifications:",
+                        error
+                    );
+                });
+            }
+            break;
+
+        case "reports":
+            if (typeof renderNexusAdminReports === "function") {
+                renderNexusAdminReports();
+            }
+            break;
     }
-
-    if (pageName === "tellers") {
-        loadAdminTellers();
-    }
-}
-
-if (pageName === "notifications") {
-    loadAdminNotifications().catch(error => {
-        console.error(error);
-    });
-}
-
-if (pageName === "reports") {
-    renderNexusAdminReports();
 }
 
 
-document.querySelectorAll("[data-page]")
+// =========================================================
+// ADMIN NAVIGATION CLICK EVENTS
+// =========================================================
+
+document.querySelectorAll(".admin-nav-link[data-page]")
     .forEach(button => {
-        button.addEventListener("click", function() {
-            showAdminPage(this.dataset.page);
+
+        button.addEventListener("click", function(event) {
+
+            event.preventDefault();
+
+            const pageName = this.dataset.page;
+
+            if (pageName) {
+                showAdminPage(pageName);
+            }
         });
     });
+
 
 
 /* =========================================================
