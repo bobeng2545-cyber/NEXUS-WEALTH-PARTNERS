@@ -3921,3 +3921,27 @@ body > #notificationMenu.notification-open {
         padding: 12px;
     }
 }
+
+/* KEEP MEMBER NAVIGATION IN ONE HORIZONTAL ROW */
+.member-navigation {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+}
+
+.member-navigation a {
+    flex: 0 0 auto !important;
+    white-space: nowrap;
+}
+
+/* Keep scrollbar unobtrusive */
+.member-navigation::-webkit-scrollbar {
+    height: 4px;
+}
