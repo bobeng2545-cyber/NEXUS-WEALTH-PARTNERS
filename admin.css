@@ -2,7 +2,7 @@
 /* =========================================================
    NEXUS WEALTH PARTNERS
    COMPLETE PROFESSIONAL ADMIN DASHBOARD CSS
-   Responsive | Desktop | Tablet | Mobile
+   Corrected Sidebar | Desktop | Tablet | Mobile
 ========================================================= */
 
 
@@ -339,20 +339,32 @@ textarea {
 ========================================================= */
 
 .admin-dashboard {
+    display: flex;
+
     min-height: 100vh;
     min-height: 100dvh;
+
+    width: 100%;
+    overflow-x: hidden;
 }
 
 
 /* =========================================================
    5. SIDEBAR
+   FIXED TOP LOGO
+   SCROLLABLE MIDDLE NAVIGATION
+   FIXED BOTTOM SIGN OUT
 ========================================================= */
 
 .admin-sidebar {
     width: var(--sidebar-width);
+    min-width: var(--sidebar-width);
+    max-width: var(--sidebar-width);
 
     position: fixed;
-    inset: 0 auto 0 0;
+    top: 0;
+    left: 0;
+    bottom: 0;
 
     height: 100vh;
     height: 100dvh;
@@ -363,38 +375,27 @@ textarea {
     display: flex;
     flex-direction: column;
 
-    padding: 27px 17px;
+    padding: 25px 16px 18px;
 
     z-index: 1000;
 
-    overflow-y: auto !important;
-    overflow-x: hidden !important;
+    /* Important: the sidebar itself must not scroll */
+    overflow: hidden !important;
 
     overscroll-behavior: contain;
-
-    scrollbar-width: thin;
-    scrollbar-color: #52677d transparent;
 
     transition: transform 0.3s ease;
 }
 
-.admin-sidebar::-webkit-scrollbar {
-    width: 6px;
-}
 
-.admin-sidebar::-webkit-scrollbar-thumb {
-    background: #52677d;
-    border-radius: 10px;
-}
-
-.admin-sidebar::-webkit-scrollbar-track {
-    background: transparent;
-}
+/* SIDEBAR BRAND */
 
 .sidebar-brand {
-    flex-shrink: 0;
+    flex: 0 0 auto;
 
-    padding: 0 8px 35px;
+    min-height: 65px;
+
+    padding: 0 8px 22px;
 
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
@@ -408,8 +409,13 @@ textarea {
     color: #9eb2c5;
 }
 
+
+/* NAVIGATION LABEL */
+
 .sidebar-label {
-    margin: 30px 10px 13px;
+    flex: 0 0 auto;
+
+    margin: 22px 10px 12px;
 
     color: #8399ae;
 
@@ -418,20 +424,58 @@ textarea {
     letter-spacing: 1.5px;
 }
 
+
+/* NAVIGATION AREA */
+
 .admin-navigation,
 .admin-sidebar nav {
     display: flex;
     flex-direction: column;
-    gap: 7px;
+
+    gap: 6px;
 
     min-height: 0;
-    overflow: visible;
+
+    /* Navigation takes available middle space */
+    flex: 1 1 auto;
+
+    /* Navigation scrolls independently */
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    overscroll-behavior: contain;
+
+    scrollbar-width: thin;
+    scrollbar-color: #52677d transparent;
 }
+
+
+/* NAVIGATION SCROLLBAR */
+
+.admin-navigation::-webkit-scrollbar,
+.admin-sidebar nav::-webkit-scrollbar {
+    width: 5px;
+}
+
+.admin-navigation::-webkit-scrollbar-thumb,
+.admin-sidebar nav::-webkit-scrollbar-thumb {
+    background: #52677d;
+    border-radius: 10px;
+}
+
+.admin-navigation::-webkit-scrollbar-track,
+.admin-sidebar nav::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+
+/* NAVIGATION BUTTONS */
 
 .admin-nav-link {
     width: 100%;
-    min-height: 48px;
-    flex-shrink: 0;
+    min-height: 46px;
+
+    flex: 0 0 auto;
 
     border: none;
     border-radius: 9px;
@@ -472,6 +516,9 @@ textarea {
     font-weight: 700;
 }
 
+
+/* NAVIGATION BADGES */
+
 .nav-badge {
     margin-left: auto;
 
@@ -493,20 +540,38 @@ textarea {
     font-weight: 800;
 }
 
+
+/* BOTTOM SIDEBAR AREA */
+
 .sidebar-bottom {
+    /* Pushes this section to the bottom */
     margin-top: auto;
-    padding-top: 25px;
+
+    /* Never allow this section to shrink */
+    flex: 0 0 auto;
+
+    width: 100%;
+
+    padding-top: 14px;
+    margin-bottom: 0;
 
     display: flex;
     flex-direction: column;
-    gap: 8px;
 
-    flex-shrink: 0;
+    gap: 7px;
+
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+
+    background: var(--primary-dark);
 }
+
+
+/* WEBSITE AND LOGOUT LINKS */
 
 .sidebar-website-link,
 .logout-button {
-    min-height: 44px;
+    width: 100%;
+    min-height: 43px;
 
     display: flex;
     align-items: center;
@@ -527,6 +592,8 @@ textarea {
     font-size: 12px;
     font-weight: 600;
 
+    text-align: left;
+
     transition: var(--transition);
 }
 
@@ -540,20 +607,45 @@ textarea {
     color: #ffaaaa;
 }
 
+.logout-button:hover {
+    background: rgba(220, 69, 69, 0.15);
+    color: #ffcccc;
+}
+
+
+/* SIDEBAR BUTTON INTERACTIONS */
+
+.admin-nav-link,
+.logout-button,
+.sidebar-toggle {
+    transition: var(--transition);
+}
+
+.admin-nav-link:active,
+.logout-button:active {
+    transform: scale(0.98);
+}
+
 
 /* =========================================================
    6. MAIN CONTENT
 ========================================================= */
 
 .admin-main {
+    width: calc(100% - var(--sidebar-width));
+
     margin-left: var(--sidebar-width);
 
     min-height: 100vh;
+    min-width: 0;
 
     padding: 0 35px 25px;
-
-    min-width: 0;
 }
+
+
+/* =========================================================
+   7. TOP BAR
+========================================================= */
 
 .admin-topbar {
     min-height: 85px;
@@ -648,7 +740,7 @@ textarea {
 
 
 /* =========================================================
-   7. PAGE SECTIONS
+   8. PAGE SECTIONS
 ========================================================= */
 
 .admin-page {
@@ -702,7 +794,7 @@ textarea {
 
 
 /* =========================================================
-   8. STATISTICS CARDS
+   9. STATISTICS CARDS
 ========================================================= */
 
 .statistics-grid {
@@ -788,7 +880,7 @@ textarea {
 
 
 /* =========================================================
-   9. PANELS
+   10. PANELS
 ========================================================= */
 
 .overview-grid {
@@ -975,7 +1067,7 @@ textarea {
 
 
 /* =========================================================
-   10. WITHDRAWAL RULES
+   11. WITHDRAWAL RULES
 ========================================================= */
 
 .withdrawal-rules {
@@ -1017,7 +1109,7 @@ textarea {
 
 
 /* =========================================================
-   11. TABLES
+   12. TABLES
 ========================================================= */
 
 .table-container {
@@ -1086,7 +1178,7 @@ tbody tr:hover {
 
 
 /* =========================================================
-   12. FOOTER
+   13. FOOTER
 ========================================================= */
 
 .admin-footer {
@@ -1106,7 +1198,7 @@ tbody tr:hover {
 
 
 /* =========================================================
-   13. MEMBER SEARCH
+   14. MEMBER SEARCH
 ========================================================= */
 
 .member-search-area {
@@ -1167,7 +1259,7 @@ tbody tr:hover {
 
 
 /* =========================================================
-   14. MEMBER TABLE
+   15. MEMBER TABLE
 ========================================================= */
 
 #membersTable td {
@@ -1249,7 +1341,7 @@ tbody tr:hover {
 
 
 /* =========================================================
-   15. MEMBER PROFILE MODAL
+   16. MEMBER PROFILE MODAL
 ========================================================= */
 
 .member-profile-modal {
@@ -1348,7 +1440,7 @@ tbody tr:hover {
 
 
 /* =========================================================
-   16. PROFILE SECTIONS
+   17. PROFILE SECTIONS
 ========================================================= */
 
 .member-profile-section {
@@ -1408,7 +1500,7 @@ tbody tr:hover {
 
 
 /* =========================================================
-   17. WALLET INFORMATION
+   18. WALLET INFORMATION
 ========================================================= */
 
 .member-wallet-grid {
@@ -1431,7 +1523,7 @@ tbody tr:hover {
 
 
 /* =========================================================
-   18. MEMBER TRANSACTION HISTORY
+   19. MEMBER TRANSACTION HISTORY
 ========================================================= */
 
 #memberProfileTransactions td {
@@ -1445,7 +1537,7 @@ tbody tr:hover {
 
 
 /* =========================================================
-   19. MEMBER PROFILE FOOTER
+   20. MEMBER PROFILE FOOTER
 ========================================================= */
 
 .member-profile-footer {
@@ -1533,7 +1625,7 @@ tbody tr:hover {
 
 
 /* =========================================================
-   20. FINANCIAL TRANSACTION ACTION BUTTONS
+   21. FINANCIAL TRANSACTION ACTION BUTTONS
 ========================================================= */
 
 .admin-action-button {
@@ -1613,22 +1705,6 @@ tbody tr:hover {
 
     padding-left: 8px;
     padding-right: 8px;
-}
-
-
-/* =========================================================
-   21. SIDEBAR BUTTON INTERACTIONS
-========================================================= */
-
-.admin-nav-link,
-.logout-button,
-.sidebar-toggle {
-    transition: var(--transition);
-}
-
-.admin-nav-link:active,
-.logout-button:active {
-    transform: scale(0.98);
 }
 
 
@@ -1809,7 +1885,6 @@ tbody tr:hover {
 
 /* =========================================================
    23. ADDITIONAL ADMIN PAGE COMPONENTS
-   Profit | Interest | Reports | Notifications | Settings
 ========================================================= */
 
 #page-profit-interest,
@@ -1834,9 +1909,6 @@ tbody tr:hover {
     max-width: 100%;
 }
 
-
-/* Reports and settings form controls */
-
 #page-reports input,
 #page-reports select,
 #page-settings input,
@@ -1847,18 +1919,12 @@ tbody tr:hover {
     max-width: 100%;
 }
 
-
-/* Notification content */
-
 #page-notifications .admin-panel,
 #page-settings .admin-panel,
 #page-reports .admin-panel,
 #page-profit-interest .admin-panel {
     margin-bottom: 20px;
 }
-
-
-/* Report export button */
 
 #exportAdminReport {
     min-height: 42px;
@@ -1872,9 +1938,7 @@ tbody tr:hover {
 ========================================================= */
 
 
-/* ---------------------------------------------------------
-   LARGE TABLETS AND SMALL LAPTOPS
---------------------------------------------------------- */
+/* LARGE TABLETS AND SMALL LAPTOPS */
 
 @media (max-width: 1100px) {
 
@@ -1894,13 +1958,10 @@ tbody tr:hover {
     .date-filter-actions {
         grid-column: 1 / -1;
     }
-
 }
 
 
-/* ---------------------------------------------------------
-   TABLETS
---------------------------------------------------------- */
+/* TABLETS */
 
 @media (max-width: 850px) {
 
@@ -1915,6 +1976,7 @@ tbody tr:hover {
     }
 
     .admin-main {
+        width: 100%;
         margin-left: 0;
 
         padding-left: 20px;
@@ -1927,13 +1989,10 @@ tbody tr:hover {
         justify-content: center;
         align-items: center;
     }
-
 }
 
 
-/* ---------------------------------------------------------
-   SMALL TABLETS AND LARGE PHONES
---------------------------------------------------------- */
+/* SMALL TABLETS AND LARGE PHONES */
 
 @media (max-width: 700px) {
 
@@ -1976,13 +2035,10 @@ tbody tr:hover {
     .member-profile-footer {
         padding: 15px 19px 20px;
     }
-
 }
 
 
-/* ---------------------------------------------------------
-   MOBILE PHONES
---------------------------------------------------------- */
+/* MOBILE PHONES */
 
 @media (max-width: 600px) {
 
@@ -2134,13 +2190,10 @@ tbody tr:hover {
     .date-filter-actions button {
         flex: 1;
     }
-
 }
 
 
-/* ---------------------------------------------------------
-   SMALL PHONES
---------------------------------------------------------- */
+/* SMALL PHONES */
 
 @media (max-width: 480px) {
 
@@ -2201,13 +2254,10 @@ tbody tr:hover {
     .date-filter-actions button {
         width: 100%;
     }
-
 }
 
 
-/* ---------------------------------------------------------
-   VERY SMALL PHONES
---------------------------------------------------------- */
+/* VERY SMALL PHONES */
 
 @media (max-width: 360px) {
 
@@ -2231,7 +2281,6 @@ tbody tr:hover {
     .login-card {
         padding: 24px 18px;
     }
-
 }
 
 
@@ -2249,5 +2298,4 @@ tbody tr:hover {
         animation-iteration-count: 1 !important;
         transition-duration: 0.01ms !important;
     }
-
 }
