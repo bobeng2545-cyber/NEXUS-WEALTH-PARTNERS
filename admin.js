@@ -4212,3 +4212,497 @@ console.log(
     "Nexus Wealth Partners Admin Dashboard initialized."
 );
 
+
+/* =====================================================
+   NEXUS WEALTH PARTNERS
+   TELLER MANAGEMENT
+   Connects to create-nexus-teller Edge Function
+===================================================== */
+
+/* ADD TELLER PAGE TITLE */
+adminPageTitles.tellers = "Teller Management";
+
+
+/* TELLER ELEMENTS */
+const tellerForm = document.getElementById("createTellerForm");
+const tellerNameInput = document.getElementById("tellerFullName");
+const tellerEmailInput = document.getElementById("tellerEmail");
+const tellerPhoneInput = document.getElementById("tellerPhone");
+const tellerCreateButton = document.getElementById("createTellerButton");
+const tellerCreateMessage = document.getElementById("createTellerMessage");
+
+const tellerSearch = document.getElementById("tellerSearchInput");
+const tellerSearchResults = document.getElementById("tellerSearchResults");
+const tellerTable = document.getElementById("tellersTable");
+
+const tellerRefreshButton = document.getElementById("refreshTellersButton");
+
+const tellerTotalCount = document.getElementById("tellerTotalCount");
+const activeTellerCount = document.getElementById("activeTellerCount");
+const suspendedTellerCount = document.getElementById("suspendedTellerCount");
+const inactiveTellerCount = document.getElementById("inactiveTellerCount");
+const tellerCountBadge = document.getElementById("tellerCountBadge");
+
+let nexusTellersCache = [];
+
+
+/* SHOW TELLER MESSAGE */
+function showTellerMessage(message, type = "info") {
+    if (!tellerCreateMessage) return;
+
+    tellerCreateMessage.textContent = message;
+    tellerCreateMessage.className = "form-message " + type;
+}
+
+
+/* LOAD TELLER DIRECTORY */
+async function loadNexusTellers() {
+
+    if (!tellerTable) return;
+
+    showAdminTableMessage(
+        "tellersTable",
+        7,
+        "Loading teller records..."
+    );
+
+    try {
+
+        const { data, error } = await nexusAdminSupabase
+            .from("nexus_tellers")
+            .select(`
+                user_id,
+                teller_code,
+                full_name,
+                email,
+                phone,
+                status,
+                created_at
+            `)
+            .order("created_at", { ascending: false });
+
+        if (error) throw error;
+
+        nexusTellersCache = data || [];
+
+        updateNexusTellerStatistics();
+        displayNexusTellers();
+
+        console.log(
+            "Nexus teller records loaded:",
+            nexusTellersCache.length
+        );
+
+    } catch (error) {
+
+        console.error("Teller loading error:", error);
+
+        showAdminTableMessage(
+            "tellersTable",
+            7,
+            "Unable to load teller records: " + error.message
+        );
+
+    }
+}
+
+
+/* UPDATE TELLER STATISTICS */
+function updateNexusTellerStatistics() {
+
+    const total = nexusTellersCache.length;
+
+    const active = nexusTellersCache.filter(
+        teller => normalizeAdminStatus(teller.status) === "active"
+    ).length;
+
+    const suspended = nexusTellersCache.filter(
+        teller => normalizeAdminStatus(teller.status) === "suspended"
+    ).length;
+
+    const inactive = nexusTellersCache.filter(
+        teller => normalizeAdminStatus(teller.status) === "inactive"
+    ).length;
+
+    if (tellerTotalCount) tellerTotalCount.textContent = total;
+    if (activeTellerCount) activeTellerCount.textContent = active;
+    if (suspendedTellerCount) suspendedTellerCount.textContent = suspended;
+    if (inactiveTellerCount) inactiveTellerCount.textContent = inactive;
+
+    if (tellerCountBadge) {
+        tellerCountBadge.textContent = total;
+        tellerCountBadge.hidden = total === 0;
+    }
+}
+
+
+/* DISPLAY TELLER DIRECTORY */
+function displayNexusTellers() {
+
+    if (!tellerTable) return;
+
+    const searchTerm = String(
+        tellerSearch?.value || ""
+    ).trim().toLowerCase();
+
+    const filteredTellers = nexusTellersCache.filter(teller => {
+
+        const values = [
+            teller.full_name,
+            teller.teller_code,
+            teller.email,
+            teller.phone,
+            teller.status
+        ];
+
+        return values.some(value =>
+            String(value || "")
+                .toLowerCase()
+                .includes(searchTerm)
+        );
+    });
+
+    if (tellerSearchResults) {
+        tellerSearchResults.textContent =
+            `${filteredTellers.length} teller(s) found.`;
+    }
+
+    if (!filteredTellers.length) {
+
+        showAdminTableMessage(
+            "tellersTable",
+            7,
+            searchTerm
+                ? "No tellers match your search."
+                : "No teller accounts have been created yet."
+        );
+
+        return;
+    }
+
+    tellerTable.replaceChildren();
+
+    filteredTellers.forEach(teller => {
+
+        const row = document.createElement("tr");
+
+        row.appendChild(
+            createAdminTableCell(teller.full_name)
+        );
+
+        row.appendChild(
+            createAdminTableCell(teller.teller_code)
+        );
+
+        row.appendChild(
+            createAdminTableCell(teller.email)
+        );
+
+        row.appendChild(
+            createAdminTableCell(teller.phone)
+        );
+
+        row.appendChild(
+            createAdminTableCell(
+                formatAdminDate(teller.created_at)
+            )
+        );
+
+        const statusCell = document.createElement("td");
+        const statusLabel = document.createElement("span");
+
+        const status = normalizeAdminStatus(teller.status);
+
+        statusLabel.className =
+            "member-status " +
+            (
+                ["active", "suspended", "inactive"].includes(status)
+                    ? status
+                    : "unknown"
+            );
+
+        statusLabel.textContent = teller.status || "Unknown";
+
+        statusCell.appendChild(statusLabel);
+        row.appendChild(statusCell);
+
+        const actionCell = document.createElement("td");
+
+        const statusSelect = document.createElement("select");
+        statusSelect.className = "teller-status-select";
+        statusSelect.setAttribute(
+            "aria-label",
+            "Change status for " + teller.full_name
+        );
+
+        [
+            { value: "active", label: "Active" },
+            { value: "suspended", label: "Suspended" },
+            { value: "inactive", label: "Inactive" }
+        ].forEach(optionData => {
+
+            const option = document.createElement("option");
+            option.value = optionData.value;
+            option.textContent = optionData.label;
+
+            if (optionData.value === status) {
+                option.selected = true;
+            }
+
+            statusSelect.appendChild(option);
+        });
+
+        const updateButton = document.createElement("button");
+        updateButton.type = "button";
+        updateButton.className = "admin-action-button";
+        updateButton.textContent = "Update";
+
+        updateButton.addEventListener("click", async () => {
+
+            const newStatus = statusSelect.value;
+
+            if (newStatus === status) {
+                alert("This teller already has that status.");
+                return;
+            }
+
+            await updateNexusTellerStatus(
+                teller.user_id,
+                newStatus,
+                updateButton
+            );
+        });
+
+        actionCell.appendChild(statusSelect);
+        actionCell.appendChild(updateButton);
+
+        row.appendChild(actionCell);
+
+        tellerTable.appendChild(row);
+    });
+}
+
+
+/* CREATE TELLER ACCOUNT */
+if (tellerForm) {
+
+    tellerForm.addEventListener("submit", async function(event) {
+
+        event.preventDefault();
+
+        const fullName = String(
+            tellerNameInput?.value || ""
+        ).trim();
+
+        const email = String(
+            tellerEmailInput?.value || ""
+        ).trim().toLowerCase();
+
+        const phone = String(
+            tellerPhoneInput?.value || ""
+        ).trim();
+
+        if (!fullName || !email || !phone) {
+            showTellerMessage(
+                "Please complete all teller information.",
+                "error"
+            );
+            return;
+        }
+
+        if (tellerCreateButton) {
+            tellerCreateButton.disabled = true;
+            tellerCreateButton.textContent = "Creating Teller...";
+        }
+
+        showTellerMessage(
+            "Creating teller account and sending invitation...",
+            "info"
+        );
+
+        try {
+
+            const { data, error } =
+                await nexusAdminSupabase.functions.invoke(
+                    "create-nexus-teller",
+                    {
+                        body: {
+                            full_name: fullName,
+                            email: email,
+                            phone: phone
+                        }
+                    }
+                );
+
+            if (error) {
+
+                let message = error.message;
+
+                if (error.context) {
+                    try {
+                        const responseBody =
+                            await error.context.json();
+
+                        message =
+                            responseBody.message || message;
+                    } catch (_) {
+                        // Retain the original error message.
+                    }
+                }
+
+                throw new Error(message);
+            }
+
+            if (!data || data.success !== true) {
+                throw new Error(
+                    data?.message ||
+                    "Teller account creation failed."
+                );
+            }
+
+            showTellerMessage(
+                data.message ||
+                "Teller account created successfully.",
+                "success"
+            );
+
+            tellerForm.reset();
+
+            await loadNexusTellers();
+
+        } catch (error) {
+
+            console.error(
+                "Create teller error:",
+                error
+            );
+
+            showTellerMessage(
+                error.message ||
+                "Could not create the teller account.",
+                "error"
+            );
+
+        } finally {
+
+            if (tellerCreateButton) {
+                tellerCreateButton.disabled = false;
+                tellerCreateButton.textContent = "Create Teller";
+            }
+        }
+    });
+}
+
+
+/* UPDATE TELLER STATUS */
+async function updateNexusTellerStatus(
+    userId,
+    newStatus,
+    button
+) {
+
+    if (!userId) {
+        alert("Teller account ID is missing.");
+        return;
+    }
+
+    const confirmed = window.confirm(
+        `Change this teller's status to ${newStatus.toUpperCase()}?`
+    );
+
+    if (!confirmed) return;
+
+    const originalText = button?.textContent || "Update";
+
+    if (button) {
+        button.disabled = true;
+        button.textContent = "Updating...";
+    }
+
+    try {
+
+        const { data, error } =
+            await nexusAdminSupabase.rpc(
+                "admin_update_nexus_teller_status",
+                {
+                    p_user_id: userId,
+                    p_new_status: newStatus
+                }
+            );
+
+        if (error) throw error;
+
+        if (!data || data.success !== true) {
+            throw new Error(
+                data?.message ||
+                "Teller status could not be updated."
+            );
+        }
+
+        alert(
+            data.message ||
+            "Teller status updated successfully."
+        );
+
+        await loadNexusTellers();
+
+    } catch (error) {
+
+        console.error(
+            "Teller status update error:",
+            error
+        );
+
+        alert(
+            error.message ||
+            "Unable to update teller status."
+        );
+
+    } finally {
+
+        if (button) {
+            button.disabled = false;
+            button.textContent = originalText;
+        }
+    }
+}
+
+
+/* TELLER SEARCH */
+if (tellerSearch) {
+    tellerSearch.addEventListener(
+        "input",
+        displayNexusTellers
+    );
+}
+
+
+/* REFRESH TELLER DIRECTORY */
+if (tellerRefreshButton) {
+
+    tellerRefreshButton.addEventListener("click", async () => {
+
+        tellerRefreshButton.disabled = true;
+
+        const originalText = tellerRefreshButton.textContent;
+        tellerRefreshButton.textContent = "Refreshing...";
+
+        try {
+            await loadNexusTellers();
+        } finally {
+            tellerRefreshButton.disabled = false;
+            tellerRefreshButton.textContent = originalText;
+        }
+    });
+}
+
+
+/* LOAD TELLERS WHEN TELLER PAGE OPENS */
+document.querySelectorAll(
+    '[data-page="tellers"]'
+).forEach(link => {
+
+    link.addEventListener("click", () => {
+        loadNexusTellers();
+    });
+});
