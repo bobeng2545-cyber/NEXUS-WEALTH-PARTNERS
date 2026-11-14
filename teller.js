@@ -1592,6 +1592,7 @@ newTestWithdrawalButton.addEventListener("click", function () {
 });
 
 
+
 /* =========================================================
    20. LOAD TEST WITHDRAWAL HISTORY
 ========================================================= */
@@ -1610,15 +1611,7 @@ async function loadTestWithdrawalHistory() {
 
     hideMessage(testWithdrawalHistoryMessage);
 
-
     try {
-
-        /*
-           This RPC returns only records belonging
-           to the currently authenticated teller.
-
-           Payment details are not returned.
-        */
 
         const { data, error } = await tellerSupabase.rpc(
             "list_my_teller_test_withdrawals",
@@ -1627,20 +1620,17 @@ async function loadTestWithdrawalHistory() {
             }
         );
 
-
         if (error) {
             throw error;
         }
 
-
         const withdrawals = Array.isArray(data) ? data : [];
-
 
         if (withdrawals.length === 0) {
 
             testWithdrawalHistoryBody.innerHTML = `
                 <tr>
-                    <td colspan="6" class="empty-state">
+                    <td colspan="7" class="empty-state">
                         You have not recorded any test withdrawals yet.
                     </td>
                 </tr>
@@ -1649,14 +1639,12 @@ async function loadTestWithdrawalHistory() {
             return;
         }
 
-
         const methodLabels = {
             mtn_momo: "MTN MoMo",
             telecel_cash: "Telecel Cash",
             at_money: "AT Money",
             bank: "Bank"
         };
-
 
         testWithdrawalHistoryBody.innerHTML =
             withdrawals.map(withdrawal => {
@@ -1668,8 +1656,20 @@ async function loadTestWithdrawalHistory() {
 
                 const status =
                     String(withdrawal.status || "simulated")
-                        .toUpperCase();
+                        .toLowerCase();
 
+                const cancelButton =
+                    status === "simulated"
+                        ? `
+                            <button
+                                type="button"
+                                class="danger-button cancel-test-withdrawal-button"
+                                data-reference="${escapeHTML(withdrawal.test_reference)}"
+                            >
+                                Cancel
+                            </button>
+                        `
+                        : "—";
 
                 return `
                     <tr>
@@ -1702,13 +1702,16 @@ async function loadTestWithdrawalHistory() {
                         </td>
 
                         <td>
-                            ${escapeHTML(status)}
+                            ${escapeHTML(status.toUpperCase())}
+                        </td>
+
+                        <td>
+                            ${cancelButton}
                         </td>
                     </tr>
                 `;
 
             }).join("");
-
 
     } catch (error) {
 
@@ -1719,7 +1722,7 @@ async function loadTestWithdrawalHistory() {
 
         testWithdrawalHistoryBody.innerHTML = `
             <tr>
-                <td colspan="6" class="empty-state">
+                <td colspan="7" class="empty-state">
                     Could not load test withdrawal history.
                 </td>
             </tr>
@@ -1737,10 +1740,105 @@ async function loadTestWithdrawalHistory() {
 }
 
 
+/* =========================================================
+   20.1 CANCEL TEST WITHDRAWAL
+========================================================= */
+
+testWithdrawalHistoryBody.addEventListener(
+    "click",
+    async function (event) {
+
+        const button = event.target.closest(
+            ".cancel-test-withdrawal-button"
+        );
+
+        if (!button) return;
+
+        const reference = button.dataset.reference;
+
+        if (!reference) {
+            alert("Test withdrawal reference is missing.");
+            return;
+        }
+
+        if (!currentTeller || !currentUser) {
+            alert("Your teller session is unavailable. Please sign in again.");
+            return;
+        }
+
+        const confirmed = window.confirm(
+            "CANCEL TEST WITHDRAWAL?\n\n" +
+            `Reference: ${reference}\n\n` +
+            "This will change the test transaction status to CANCELLED.\n\n" +
+            "No real money will be transferred or refunded.\n\n" +
+            "Do you want to continue?"
+        );
+
+        if (!confirmed) return;
+
+        const originalText = button.textContent;
+
+        button.disabled = true;
+        button.textContent = "Cancelling...";
+
+        try {
+
+            const { data, error } = await tellerSupabase.rpc(
+                "cancel_teller_test_withdrawal",
+                {
+                    p_test_reference: reference
+                }
+            );
+
+            if (error) {
+                throw error;
+            }
+
+            if (!data || data.success !== true) {
+                throw new Error(
+                    data?.message ||
+                    "The test withdrawal could not be cancelled."
+                );
+            }
+
+            showMessage(
+                testWithdrawalHistoryMessage,
+                "Test withdrawal cancelled successfully. No real money was affected.",
+                "success"
+            );
+
+            await loadTestWithdrawalHistory();
+
+        } catch (error) {
+
+            console.error(
+                "Test withdrawal cancellation error:",
+                error
+            );
+
+            alert(
+                error.message ||
+                "Unable to cancel the test withdrawal."
+            );
+
+            button.disabled = false;
+            button.textContent = originalText;
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   20.2 REFRESH TEST WITHDRAWAL HISTORY
+========================================================= */
+
 refreshTestWithdrawalHistoryButton.addEventListener(
     "click",
     loadTestWithdrawalHistory
 );
+
 
 
 /* =========================================================
