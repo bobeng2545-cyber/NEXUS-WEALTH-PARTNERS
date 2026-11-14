@@ -1529,6 +1529,7 @@
 
 
             
+
 <!-- =====================================
      PLATFORM SETTINGS
 ====================================== -->
@@ -1549,6 +1550,7 @@
     </div>
 
     <!-- SETTINGS STATUS -->
+
     <div
         id="adminSettingsMessage"
         class="settings-message"
@@ -1558,7 +1560,11 @@
         Loading platform settings...
     </div>
 
-    <!-- GENERAL SETTINGS -->
+
+    <!-- =====================================
+         GENERAL PLATFORM SETTINGS
+    ====================================== -->
+
     <div class="admin-panel">
 
         <div class="panel-heading">
@@ -1624,7 +1630,175 @@
 
     </div>
 
-    <!-- OPERATIONAL SETTINGS -->
+
+    <!-- =====================================
+         DEPOSIT CONTROLS
+    ====================================== -->
+
+    <div class="admin-panel">
+
+        <div class="panel-heading">
+            <div>
+                <h3>Deposit Controls</h3>
+                <p>
+                    Control deposit availability and permitted deposit amounts
+                    across Paystack and teller transactions.
+                </p>
+            </div>
+        </div>
+
+        <form id="nexusDepositSettingsForm">
+
+            <!-- CURRENT DEPOSIT STATUS -->
+
+            <div class="platform-information">
+
+                <div>
+                    <span>Deposit Availability</span>
+                    <strong id="nexusDepositStatus">
+                        Loading...
+                    </strong>
+                </div>
+
+                <div>
+                    <span>Minimum Deposit</span>
+                    <strong id="nexusCurrentMinimumDeposit">
+                        GH₵10.00
+                    </strong>
+                </div>
+
+                <div>
+                    <span>Maximum Deposit</span>
+                    <strong id="nexusCurrentMaximumDeposit">
+                        GH₵10,000.00
+                    </strong>
+                </div>
+
+            </div>
+
+            <div class="form-group">
+
+                <label for="nexusDepositsEnabled">
+                    New Deposits
+                </label>
+
+                <div class="deposit-toggle-row">
+
+                    <label class="deposit-toggle-label">
+                        <input
+                            type="checkbox"
+                            id="nexusDepositsEnabled"
+                            checked
+                        >
+
+                        <span>
+                            Allow members to initiate new deposits
+                        </span>
+                    </label>
+
+                </div>
+
+                <small>
+                    Turning this off blocks new Paystack and teller deposits.
+                    Valid payments already initiated can still be completed.
+                </small>
+
+            </div>
+
+            <div class="date-filter-controls">
+
+                <div class="date-filter-field">
+
+                    <label for="nexusMinimumDeposit">
+                        Minimum Deposit (GH₵)
+                    </label>
+
+                    <input
+                        type="number"
+                        id="nexusMinimumDeposit"
+                        min="0.01"
+                        max="100000000"
+                        step="0.01"
+                        value="10"
+                        required
+                    >
+
+                </div>
+
+                <div class="date-filter-field">
+
+                    <label for="nexusMaximumDeposit">
+                        Maximum Deposit (GH₵)
+                    </label>
+
+                    <input
+                        type="number"
+                        id="nexusMaximumDeposit"
+                        min="0.01"
+                        max="100000000"
+                        step="0.01"
+                        value="10000"
+                        required
+                    >
+
+                </div>
+
+            </div>
+
+            <p
+                id="nexusDepositSettingsMessage"
+                class="admin-message"
+                role="status"
+                aria-live="polite"
+            ></p>
+
+            <div class="date-filter-actions">
+
+                <button
+                    type="submit"
+                    id="saveNexusDepositSettings"
+                >
+                    Save Deposit Controls
+                </button>
+
+                <button
+                    type="button"
+                    id="reloadNexusDepositSettings"
+                    class="panel-action"
+                >
+                    Reload Saved Settings
+                </button>
+
+            </div>
+
+        </form>
+
+        <div class="platform-information">
+
+            <div>
+                <span>Payment channels controlled</span>
+                <strong>Paystack and Teller</strong>
+            </div>
+
+            <div>
+                <span>Amount validation</span>
+                <strong>Server-side enforcement</strong>
+            </div>
+
+            <div>
+                <span>Wallet crediting</span>
+                <strong>Verified transactions only</strong>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================
+         OPERATIONAL SETTINGS
+    ====================================== -->
+
     <div class="admin-panel">
 
         <div class="panel-heading">
@@ -1645,6 +1819,7 @@
     </div>
 
 </section>
+
 
 
 
