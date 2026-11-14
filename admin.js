@@ -4942,6 +4942,17 @@ if (
 
 
 /* =========================================================
+   40. START ADMIN DASHBOARD
+========================================================= */
+
+checkAdminSession();
+
+console.log(
+    "Nexus Wealth Partners Admin Dashboard initialized."
+);
+
+
+/* =========================================================
    NEXUS WEALTH PARTNERS
    42. PLATFORM SETTINGS
 ========================================================= */
@@ -5233,14 +5244,3 @@ function initializeNexusPlatformSettings() {
 }
 
 initializeNexusPlatformSettings();
-
-
-/* =========================================================
-   40. START ADMIN DASHBOARD
-========================================================= */
-
-checkAdminSession();
-
-console.log(
-    "Nexus Wealth Partners Admin Dashboard initialized."
-);
