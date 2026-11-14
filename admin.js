@@ -4952,9 +4952,11 @@ console.log(
 );
 
 
+
 /* =========================================================
    NEXUS WEALTH PARTNERS
    42. PLATFORM SETTINGS
+   General Settings + Deposit Controls
 ========================================================= */
 
 const NEXUS_SETTINGS_DEFAULTS = {
@@ -4967,7 +4969,7 @@ let nexusSettingsLoaded = false;
 
 
 /* =========================================================
-   42.1 SETTINGS MESSAGE
+   42.1 GENERAL SETTINGS MESSAGE
 ========================================================= */
 
 function showNexusSettingsMessage(message, type = "info") {
@@ -4979,77 +4981,301 @@ function showNexusSettingsMessage(message, type = "info") {
     if (!element) return;
 
     element.textContent = message;
-
     element.dataset.type = type;
 }
 
 
 /* =========================================================
-   42.2 LOAD SETTINGS
+   42.2 DEPOSIT SETTINGS MESSAGE
+========================================================= */
+
+function showNexusDepositSettingsMessage(
+    message,
+    type = "info"
+) {
+
+    const element = document.getElementById(
+        "nexusDepositSettingsMessage"
+    );
+
+    if (!element) return;
+
+    element.textContent = message;
+    element.dataset.type = type;
+}
+
+
+/* =========================================================
+   42.3 ADMINISTRATOR VERIFICATION
+========================================================= */
+
+async function getNexusSettingsAdmin() {
+
+    const {
+        data: authData,
+        error: authError
+    } = await nexusAdminSupabase.auth.getUser();
+
+    if (authError) throw authError;
+
+    const user = authData?.user;
+
+    if (!user) {
+
+        throw new Error(
+            "Administrator session has expired. Please log in again."
+        );
+    }
+
+    const {
+        data: isAdmin,
+        error: adminError
+    } = await nexusAdminSupabase.rpc(
+        "is_nexus_admin"
+    );
+
+    if (adminError) throw adminError;
+
+    if (isAdmin !== true) {
+
+        throw new Error(
+            "Access denied. Only authorized Nexus administrators can change platform settings."
+        );
+    }
+
+    return user;
+}
+
+
+/* =========================================================
+   42.4 LOAD ALL PLATFORM SETTINGS
 ========================================================= */
 
 async function loadNexusPlatformSettings() {
 
-    const form = document.getElementById(
+    const generalForm = document.getElementById(
         "nexusGeneralSettingsForm"
     );
 
-    if (!form) return;
+    const depositForm = document.getElementById(
+        "nexusDepositSettingsForm"
+    );
+
+    if (!generalForm && !depositForm) return;
 
     showNexusSettingsMessage(
         "Loading platform settings..."
     );
 
+    showNexusDepositSettingsMessage(
+        "Loading deposit controls..."
+    );
+
     try {
 
-        const { data, error } =
-            await nexusAdminSupabase
-                .from("nexus_platform_settings")
-                .select("setting_key, setting_value");
+        const {
+            data,
+            error
+        } = await nexusAdminSupabase
+            .from("nexus_platform_settings")
+            .select("setting_key, setting_value");
 
         if (error) throw error;
 
-        const settings = {
-            ...NEXUS_SETTINGS_DEFAULTS
-        };
+        const settingsMap = new Map();
 
         (data || []).forEach(row => {
 
-            if (
-                Object.prototype.hasOwnProperty.call(
-                    settings,
-                    row.setting_key
-                )
-            ) {
+            settingsMap.set(
+                row.setting_key,
+                row.setting_value
+            );
 
-                settings[row.setting_key] =
-                    row.setting_value;
-            }
         });
 
-        document.getElementById(
-            "nexusPlatformName"
-        ).value = settings.platform_name || "";
 
-        document.getElementById(
-            "nexusSupportEmail"
-        ).value = settings.support_email || "";
+        /* -----------------------------------------
+           GENERAL SETTINGS
+        ----------------------------------------- */
 
-        document.getElementById(
-            "nexusSupportPhone"
-        ).value = settings.support_phone || "";
+        if (generalForm) {
+
+            const settings = {
+                ...NEXUS_SETTINGS_DEFAULTS
+            };
+
+            [
+                "platform_name",
+                "support_email",
+                "support_phone"
+            ].forEach(key => {
+
+                if (settingsMap.has(key)) {
+
+                    settings[key] = settingsMap.get(key);
+                }
+
+            });
+
+            const platformName = document.getElementById(
+                "nexusPlatformName"
+            );
+
+            const supportEmail = document.getElementById(
+                "nexusSupportEmail"
+            );
+
+            const supportPhone = document.getElementById(
+                "nexusSupportPhone"
+            );
+
+            if (platformName) {
+                platformName.value =
+                    settings.platform_name || "";
+            }
+
+            if (supportEmail) {
+                supportEmail.value =
+                    settings.support_email || "";
+            }
+
+            if (supportPhone) {
+                supportPhone.value =
+                    settings.support_phone || "";
+            }
+
+            showNexusSettingsMessage(
+                "General platform settings loaded successfully.",
+                "success"
+            );
+        }
+
+
+        /* -----------------------------------------
+           DEPOSIT SETTINGS
+        ----------------------------------------- */
+
+        if (depositForm) {
+
+            const enabled = settingsMap.get(
+                "deposits_enabled"
+            );
+
+            const minimum = settingsMap.get(
+                "minimum_deposit"
+            );
+
+            const maximum = settingsMap.get(
+                "maximum_deposit"
+            );
+
+            const validDepositSettings =
+                typeof enabled === "boolean" &&
+                typeof minimum === "number" &&
+                typeof maximum === "number" &&
+                Number.isFinite(minimum) &&
+                Number.isFinite(maximum) &&
+                minimum > 0 &&
+                maximum >= minimum &&
+                Number.isInteger(minimum * 100) &&
+                Number.isInteger(maximum * 100);
+
+            if (!validDepositSettings) {
+
+                showNexusDepositSettingsMessage(
+                    "Deposit settings are missing or invalid. Review the values and save valid settings.",
+                    "error"
+                );
+
+                const status = document.getElementById(
+                    "nexusDepositStatus"
+                );
+
+                if (status) {
+                    status.textContent = "Unavailable";
+                }
+
+            } else {
+
+                const enabledInput = document.getElementById(
+                    "nexusDepositsEnabled"
+                );
+
+                const minimumInput = document.getElementById(
+                    "nexusMinimumDeposit"
+                );
+
+                const maximumInput = document.getElementById(
+                    "nexusMaximumDeposit"
+                );
+
+                if (enabledInput) {
+                    enabledInput.checked = enabled;
+                }
+
+                if (minimumInput) {
+                    minimumInput.value = minimum;
+                }
+
+                if (maximumInput) {
+                    maximumInput.value = maximum;
+                }
+
+                const status = document.getElementById(
+                    "nexusDepositStatus"
+                );
+
+                const currentMinimum = document.getElementById(
+                    "nexusCurrentMinimumDeposit"
+                );
+
+                const currentMaximum = document.getElementById(
+                    "nexusCurrentMaximumDeposit"
+                );
+
+                if (status) {
+                    status.textContent = enabled
+                        ? "Enabled"
+                        : "Disabled";
+                }
+
+                if (currentMinimum) {
+
+                    currentMinimum.textContent =
+                        "GH₵" + minimum.toLocaleString(
+                            "en-GH",
+                            {
+                                minimumFractionDigits: 2,
+                                maximumFractionDigits: 2
+                            }
+                        );
+                }
+
+                if (currentMaximum) {
+
+                    currentMaximum.textContent =
+                        "GH₵" + maximum.toLocaleString(
+                            "en-GH",
+                            {
+                                minimumFractionDigits: 2,
+                                maximumFractionDigits: 2
+                            }
+                        );
+                }
+
+                showNexusDepositSettingsMessage(
+                    "Saved deposit controls loaded successfully.",
+                    "success"
+                );
+            }
+        }
 
         nexusSettingsLoaded = true;
-
-        showNexusSettingsMessage(
-            "Platform settings loaded successfully.",
-            "success"
-        );
 
     } catch (error) {
 
         console.error(
-            "Nexus settings loading error:",
+            "Nexus platform settings loading error:",
             error
         );
 
@@ -5058,12 +5284,18 @@ async function loadNexusPlatformSettings() {
             error.message,
             "error"
         );
+
+        showNexusDepositSettingsMessage(
+            "Could not load deposit controls: " +
+            error.message,
+            "error"
+        );
     }
 }
 
 
 /* =========================================================
-   42.3 SAVE ONE SETTING
+   42.5 SAVE ONE GENERAL SETTING
 ========================================================= */
 
 async function saveNexusPlatformSetting(
@@ -5072,33 +5304,11 @@ async function saveNexusPlatformSetting(
     description
 ) {
 
-    const { data: authData, error: authError } =
-        await nexusAdminSupabase.auth.getUser();
+    const user = await getNexusSettingsAdmin();
 
-    if (authError) throw authError;
-
-    const user = authData?.user;
-
-    if (!user) {
-        throw new Error(
-            "Administrator session has expired. Please log in again."
-        );
-    }
-
-    const { data: isAdmin, error: adminError } =
-        await nexusAdminSupabase.rpc(
-            "is_nexus_admin"
-        );
-
-    if (adminError) throw adminError;
-
-    if (isAdmin !== true) {
-        throw new Error(
-            "Administrator permission could not be verified."
-        );
-    }
-
-    const { error } = await nexusAdminSupabase
+    const {
+        error
+    } = await nexusAdminSupabase
         .from("nexus_platform_settings")
         .upsert(
             {
@@ -5118,7 +5328,7 @@ async function saveNexusPlatformSetting(
 
 
 /* =========================================================
-   42.4 SAVE GENERAL SETTINGS
+   42.6 SAVE GENERAL SETTINGS
 ========================================================= */
 
 async function saveNexusGeneralSettings(event) {
@@ -5129,22 +5339,26 @@ async function saveNexusGeneralSettings(event) {
         "saveNexusGeneralSettings"
     );
 
+    if (!button) return;
+
+    const originalText = button.textContent;
+
     const platformName = document.getElementById(
         "nexusPlatformName"
-    ).value.trim();
+    )?.value.trim();
 
     const supportEmail = document.getElementById(
         "nexusSupportEmail"
-    ).value.trim();
+    )?.value.trim();
 
     const supportPhone = document.getElementById(
         "nexusSupportPhone"
-    ).value.trim();
+    )?.value.trim();
 
     if (!platformName) {
 
         showNexusSettingsMessage(
-            "Platform name is required.",
+            "Please enter the platform name.",
             "error"
         );
 
@@ -5157,40 +5371,40 @@ async function saveNexusGeneralSettings(event) {
     ) {
 
         showNexusSettingsMessage(
-            "Enter a valid support email address.",
+            "Please enter a valid support email address.",
             "error"
         );
 
         return;
     }
 
-    const originalText = button.textContent;
-
     button.disabled = true;
     button.textContent = "Saving...";
 
     showNexusSettingsMessage(
-        "Saving platform settings..."
+        "Saving general platform settings..."
     );
 
     try {
 
+        await getNexusSettingsAdmin();
+
         await saveNexusPlatformSetting(
             "platform_name",
             platformName,
-            "Official platform name"
+            "Name of the Nexus Wealth Partners platform."
         );
 
         await saveNexusPlatformSetting(
             "support_email",
             supportEmail,
-            "Platform customer support email"
+            "Official platform support email."
         );
 
         await saveNexusPlatformSetting(
             "support_phone",
             supportPhone,
-            "Platform customer support phone number"
+            "Official platform support telephone number."
         );
 
         showNexusSettingsMessage(
@@ -5201,7 +5415,7 @@ async function saveNexusGeneralSettings(event) {
     } catch (error) {
 
         console.error(
-            "Saving Nexus settings failed:",
+            "Saving Nexus general settings failed:",
             error
         );
 
@@ -5220,27 +5434,306 @@ async function saveNexusGeneralSettings(event) {
 
 
 /* =========================================================
-   42.5 INITIALIZE SETTINGS
+   42.7 SAVE DEPOSIT CONTROLS
+========================================================= */
+
+async function saveNexusDepositSettings(event) {
+
+    event.preventDefault();
+
+    const button = document.getElementById(
+        "saveNexusDepositSettings"
+    );
+
+    if (!button) return;
+
+    const originalText = button.textContent;
+
+    const enabledInput = document.getElementById(
+        "nexusDepositsEnabled"
+    );
+
+    const minimumInput = document.getElementById(
+        "nexusMinimumDeposit"
+    );
+
+    const maximumInput = document.getElementById(
+        "nexusMaximumDeposit"
+    );
+
+    if (!enabledInput || !minimumInput || !maximumInput) {
+
+        showNexusDepositSettingsMessage(
+            "Deposit settings form is incomplete.",
+            "error"
+        );
+
+        return;
+    }
+
+    const depositsEnabled = enabledInput.checked;
+
+    const minimumDeposit = Number(
+        minimumInput.value
+    );
+
+    const maximumDeposit = Number(
+        maximumInput.value
+    );
+
+    const validMinimum =
+        Number.isFinite(minimumDeposit) &&
+        minimumDeposit > 0 &&
+        Math.round(minimumDeposit * 100) ===
+            minimumDeposit * 100;
+
+    const validMaximum =
+        Number.isFinite(maximumDeposit) &&
+        maximumDeposit > 0 &&
+        Math.round(maximumDeposit * 100) ===
+            maximumDeposit * 100;
+
+    if (!validMinimum || !validMaximum) {
+
+        showNexusDepositSettingsMessage(
+            "Enter valid deposit amounts with no more than two decimal places.",
+            "error"
+        );
+
+        return;
+    }
+
+    if (maximumDeposit < minimumDeposit) {
+
+        showNexusDepositSettingsMessage(
+            "Maximum deposit cannot be lower than minimum deposit.",
+            "error"
+        );
+
+        return;
+    }
+
+    button.disabled = true;
+    button.textContent = "Saving...";
+
+    showNexusDepositSettingsMessage(
+        "Saving deposit controls..."
+    );
+
+    try {
+
+        const user = await getNexusSettingsAdmin();
+
+        const timestamp = new Date().toISOString();
+
+        const settingsToSave = [
+
+            {
+                setting_key: "deposits_enabled",
+                setting_value: depositsEnabled,
+                description:
+                    "Controls whether members can initiate new deposits.",
+                updated_by: user.id,
+                updated_at: timestamp
+            },
+
+            {
+                setting_key: "minimum_deposit",
+                setting_value: minimumDeposit,
+                description:
+                    "Minimum permitted deposit amount in Ghana cedis.",
+                updated_by: user.id,
+                updated_at: timestamp
+            },
+
+            {
+                setting_key: "maximum_deposit",
+                setting_value: maximumDeposit,
+                description:
+                    "Maximum permitted deposit amount in Ghana cedis.",
+                updated_by: user.id,
+                updated_at: timestamp
+            }
+
+        ];
+
+        const {
+            error
+        } = await nexusAdminSupabase
+            .from("nexus_platform_settings")
+            .upsert(
+                settingsToSave,
+                {
+                    onConflict: "setting_key"
+                }
+            );
+
+        if (error) throw error;
+
+
+        /* Update current status only after database success */
+
+        const status = document.getElementById(
+            "nexusDepositStatus"
+        );
+
+        const currentMinimum = document.getElementById(
+            "nexusCurrentMinimumDeposit"
+        );
+
+        const currentMaximum = document.getElementById(
+            "nexusCurrentMaximumDeposit"
+        );
+
+        if (status) {
+
+            status.textContent = depositsEnabled
+                ? "Enabled"
+                : "Disabled";
+        }
+
+        if (currentMinimum) {
+
+            currentMinimum.textContent =
+                "GH₵" + minimumDeposit.toLocaleString(
+                    "en-GH",
+                    {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                    }
+                );
+        }
+
+        if (currentMaximum) {
+
+            currentMaximum.textContent =
+                "GH₵" + maximumDeposit.toLocaleString(
+                    "en-GH",
+                    {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                    }
+                );
+        }
+
+        showNexusDepositSettingsMessage(
+            "Deposit controls saved successfully. New deposit requests will use these settings.",
+            "success"
+        );
+
+    } catch (error) {
+
+        console.error(
+            "Saving Nexus deposit settings failed:",
+            error
+        );
+
+        showNexusDepositSettingsMessage(
+            "Deposit controls could not be saved: " +
+            error.message,
+            "error"
+        );
+
+    } finally {
+
+        button.disabled = false;
+        button.textContent = originalText;
+    }
+}
+
+
+/* =========================================================
+   42.8 RELOAD DEPOSIT SETTINGS
+========================================================= */
+
+async function reloadNexusDepositSettings() {
+
+    const button = document.getElementById(
+        "reloadNexusDepositSettings"
+    );
+
+    if (button) {
+        button.disabled = true;
+    }
+
+    try {
+
+        await loadNexusPlatformSettings();
+
+    } finally {
+
+        if (button) {
+            button.disabled = false;
+        }
+    }
+}
+
+
+/* =========================================================
+   42.9 INITIALIZE PLATFORM SETTINGS
 ========================================================= */
 
 function initializeNexusPlatformSettings() {
 
-    const form = document.getElementById(
+    const generalForm = document.getElementById(
         "nexusGeneralSettingsForm"
     );
 
-    if (!form) return;
+    const depositForm = document.getElementById(
+        "nexusDepositSettingsForm"
+    );
 
-    if (form.dataset.initialized === "true") {
-        return;
+    const reloadButton = document.getElementById(
+        "reloadNexusDepositSettings"
+    );
+
+
+    /* General settings form */
+
+    if (
+        generalForm &&
+        generalForm.dataset.initialized !== "true"
+    ) {
+
+        generalForm.dataset.initialized = "true";
+
+        generalForm.addEventListener(
+            "submit",
+            saveNexusGeneralSettings
+        );
     }
 
-    form.dataset.initialized = "true";
 
-    form.addEventListener(
-        "submit",
-        saveNexusGeneralSettings
-    );
+    /* Deposit settings form */
+
+    if (
+        depositForm &&
+        depositForm.dataset.initialized !== "true"
+    ) {
+
+        depositForm.dataset.initialized = "true";
+
+        depositForm.addEventListener(
+            "submit",
+            saveNexusDepositSettings
+        );
+    }
+
+
+    /* Reload deposit settings button */
+
+    if (
+        reloadButton &&
+        reloadButton.dataset.initialized !== "true"
+    ) {
+
+        reloadButton.dataset.initialized = "true";
+
+        reloadButton.addEventListener(
+            "click",
+            reloadNexusDepositSettings
+        );
+    }
 }
 
 initializeNexusPlatformSettings();
@@ -5254,7 +5747,9 @@ document.querySelectorAll(
     '.admin-nav-link[data-page="settings"]'
 ).forEach(link => {
 
-    if (link.dataset.settingsLoaderAttached === "true") {
+    if (
+        link.dataset.settingsLoaderAttached === "true"
+    ) {
         return;
     }
 
@@ -5263,12 +5758,16 @@ document.querySelectorAll(
     link.addEventListener("click", () => {
 
         loadNexusPlatformSettings().catch(error => {
+
             console.error(
                 "Settings page loading failed:",
                 error
             );
+
         });
 
     });
+
 });
+
 
