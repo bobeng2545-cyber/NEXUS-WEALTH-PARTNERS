@@ -26,12 +26,14 @@
         <div class="brand-area">
 
             <a href="index.html" class="brand-logo">
+
                 <span class="brand-symbol">N</span>
 
                 <span class="brand-text">
                     <strong>NEXUS</strong>
                     <small>WEALTH PARTNERS</small>
                 </span>
+
             </a>
 
         </div>
@@ -586,6 +588,16 @@
                     <small>Profile</small>
                 </a>
 
+                <!-- CUSTOMER SUPPORT NAVIGATION -->
+
+                <a
+                    href="#memberSupport"
+                    data-screen="support"
+                >
+                    <span>💬</span>
+                    <small>Support</small>
+                </a>
+
             </nav>
 
 
@@ -865,16 +877,16 @@
 
 
                     <div class="information-item">
-                        
+
                         <span>Account Status</span>
-                        
+
                         <strong
                             id="accountStatus"
                             class="account-status"
-                            >
+                        >
                             Active
                         </strong>
-                    
+
                     </div>
 
 
@@ -894,136 +906,134 @@
 
 
 
-            
-<!-- =====================================
-     WITHDRAWAL
-====================================== -->
+            <!-- =====================================
+                 WITHDRAWAL
+            ====================================== -->
 
-<section
-    id="withdrawFunds"
-    class="dashboard-panel home-dashboard-content"
->
+            <section
+                id="withdrawFunds"
+                class="dashboard-panel home-dashboard-content"
+            >
 
-    <h3>Withdraw from My Wallet</h3>
+                <h3>Withdraw from My Wallet</h3>
 
-    <p>
-        Submit a request to withdraw money from your wallet.
-    </p>
+                <p>
+                    Submit a request to withdraw money from your wallet.
+                </p>
 
-    <div class="available-balance-card">
+                <div class="available-balance-card">
 
-        <span>Available Wallet Balance</span>
+                    <span>Available Wallet Balance</span>
 
-        <h2 id="availableBalance">
-            GHS 0.00
-        </h2>
+                    <h2 id="availableBalance">
+                        GHS 0.00
+                    </h2>
 
-    </div>
+                </div>
 
-    <form id="withdrawalForm">
+                <form id="withdrawalForm">
 
-        <label for="withdrawAmount">
-            Amount to Withdraw (GHS)
-        </label>
+                    <label for="withdrawAmount">
+                        Amount to Withdraw (GHS)
+                    </label>
 
-        <input
-            type="number"
-            id="withdrawAmount"
-            name="amount"
-            min="1"
-            step="0.01"
-            placeholder="Enter amount"
-            required
-        >
+                    <input
+                        type="number"
+                        id="withdrawAmount"
+                        name="amount"
+                        min="1"
+                        step="0.01"
+                        placeholder="Enter amount"
+                        required
+                    >
 
-        <label for="withdrawMethod">
-            Withdrawal Method
-        </label>
+                    <label for="withdrawMethod">
+                        Withdrawal Method
+                    </label>
 
-        <select
-            id="withdrawMethod"
-            name="method"
-            required
-        >
+                    <select
+                        id="withdrawMethod"
+                        name="method"
+                        required
+                    >
 
-            <option value="">
-                Select Withdrawal Method
-            </option>
+                        <option value="">
+                            Select Withdrawal Method
+                        </option>
 
-            <option value="mtn_momo">
-                MTN Mobile Money
-            </option>
+                        <option value="mtn_momo">
+                            MTN Mobile Money
+                        </option>
 
-            <option value="telecel_cash">
-                Telecel Cash
-            </option>
+                        <option value="telecel_cash">
+                            Telecel Cash
+                        </option>
 
-            <option value="at_money">
-                AT Money
-            </option>
+                        <option value="at_money">
+                            AT Money
+                        </option>
 
-            <option value="bank">
-                Bank Account
-            </option>
+                        <option value="bank">
+                            Bank Account
+                        </option>
 
-        </select>
+                    </select>
 
-        <label for="withdrawAccountName">
-            Recipient / Account Holder Name
-        </label>
+                    <label for="withdrawAccountName">
+                        Recipient / Account Holder Name
+                    </label>
 
-        <input
-            type="text"
-            id="withdrawAccountName"
-            name="accountName"
-            placeholder="Enter the registered account name"
-            autocomplete="name"
-            required
-        >
+                    <input
+                        type="text"
+                        id="withdrawAccountName"
+                        name="accountName"
+                        placeholder="Enter the registered account name"
+                        autocomplete="name"
+                        required
+                    >
 
-        <label for="withdrawPhone">
-            Mobile Money Number / Bank Account Number
-        </label>
+                    <label for="withdrawPhone">
+                        Mobile Money Number / Bank Account Number
+                    </label>
 
-        <input
-            type="text"
-            id="withdrawPhone"
-            name="phone"
-            placeholder="Enter mobile money or bank account number"
-            required
-        >
+                    <input
+                        type="text"
+                        id="withdrawPhone"
+                        name="phone"
+                        placeholder="Enter mobile money or bank account number"
+                        required
+                    >
 
-        <label for="withdrawNote">
-            Note (Optional)
-        </label>
+                    <label for="withdrawNote">
+                        Note (Optional)
+                    </label>
 
-        <textarea
-            id="withdrawNote"
-            name="note"
-            placeholder="Enter additional information"
-        ></textarea>
+                    <textarea
+                        id="withdrawNote"
+                        name="note"
+                        placeholder="Enter additional information"
+                    ></textarea>
 
-        <button type="submit">
-            Submit Withdrawal Request
-        </button>
+                    <button type="submit">
+                        Submit Withdrawal Request
+                    </button>
 
-    </form>
+                </form>
 
-    <div class="withdrawal-rules">
+                <div class="withdrawal-rules">
 
-        <h3>Withdrawal Rules</h3>
+                    <h3>Withdrawal Rules</h3>
 
-        <ul>
-            <li>Withdrawal requests are subject to approval.</li>
-            <li>Withdrawals must not exceed the available balance.</li>
-            <li>Ensure the recipient's name and account number are correct.</li>
-            <li>All transactions must be recorded.</li>
-        </ul>
+                    <ul>
+                        <li>Withdrawal requests are subject to approval.</li>
+                        <li>Withdrawals must not exceed the available balance.</li>
+                        <li>Ensure the recipient's name and account number are correct.</li>
+                        <li>All transactions must be recorded.</li>
+                    </ul>
 
-    </div>
+                </div>
 
-</section>
-
+            </section>
 
 
 
@@ -1306,6 +1316,284 @@
 
             </section>
 
+
+
+            <!-- =====================================
+                 CUSTOMER SUPPORT
+            ====================================== -->
+
+            <section
+                id="memberSupport"
+                class="dashboard-panel"
+            >
+
+                <!-- MOBILE SUPPORT HEADER -->
+
+                <div class="mobile-page-heading">
+
+                    <button
+                        type="button"
+                        class="mobile-back-button"
+                        onclick="showMobileDashboardScreen('home')"
+                        aria-label="Back to dashboard"
+                    >
+                        &#8592;
+                    </button>
+
+                    <h2>Customer Support</h2>
+
+                </div>
+
+
+                <!-- SUPPORT INTRODUCTION -->
+
+                <div class="support-page-intro">
+
+                    <h3 class="desktop-page-heading">
+                        Customer Support
+                    </h3>
+
+                    <p>
+                        Do you have an issue or need assistance?
+                        Submit a report and our active tellers
+                        or administrators will review and respond.
+                    </p>
+
+                </div>
+
+
+
+                <!-- CREATE NEW SUPPORT REPORT -->
+
+                <div class="support-create-card">
+
+                    <h3>Submit a New Report</h3>
+
+                    <p>
+                        Explain the issue you are experiencing.
+                    </p>
+
+
+                    <form id="supportTicketForm">
+
+                        <label for="supportSubject">
+                            Subject
+                        </label>
+
+                        <input
+                            type="text"
+                            id="supportSubject"
+                            name="subject"
+                            minlength="3"
+                            maxlength="150"
+                            placeholder="Briefly describe your issue"
+                            required
+                        >
+
+
+                        <label for="supportCategory">
+                            Report Category
+                        </label>
+
+                        <select
+                            id="supportCategory"
+                            name="category"
+                            required
+                        >
+
+                            <option value="">
+                                Select a category
+                            </option>
+
+                            <option value="Account">
+                                Account
+                            </option>
+
+                            <option value="Deposits">
+                                Deposits
+                            </option>
+
+                            <option value="Withdrawals">
+                                Withdrawals
+                            </option>
+
+                            <option value="Wallet">
+                                Wallet
+                            </option>
+
+                            <option value="Transactions">
+                                Transactions
+                            </option>
+
+                            <option value="Technical Issue">
+                                Technical Issue
+                            </option>
+
+                            <option value="Other">
+                                Other
+                            </option>
+
+                        </select>
+
+
+                        <label for="supportMessage">
+                            Describe Your Issue
+                        </label>
+
+                        <textarea
+                            id="supportMessage"
+                            name="message"
+                            rows="5"
+                            maxlength="5000"
+                            placeholder="Explain the issue you are experiencing..."
+                            required
+                        ></textarea>
+
+
+                        <button
+                            type="submit"
+                            id="supportSubmitButton"
+                        >
+                            Submit Report
+                        </button>
+
+                    </form>
+
+                </div>
+
+
+
+                <!-- CUSTOMER REPORT HISTORY -->
+
+                <div class="support-ticket-area">
+
+                    <div class="support-section-heading">
+
+                        <div>
+                            <h3>My Reports</h3>
+
+                            <p>
+                                View the reports you have submitted
+                                and check their progress.
+                            </p>
+                        </div>
+
+                        <button
+                            type="button"
+                            id="refreshSupportTickets"
+                        >
+                            Refresh Reports
+                        </button>
+
+                    </div>
+
+
+                    <div
+                        id="supportTicketList"
+                        aria-live="polite"
+                    >
+
+                        <p>
+                            Your reports will appear here.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- SUPPORT CONVERSATION -->
+
+                <div
+                    id="supportConversation"
+                    class="support-conversation"
+                    hidden
+                >
+
+                    <div class="support-conversation-heading">
+
+                        <div>
+
+                            <h3 id="supportConversationSubject">
+                                Report Conversation
+                            </h3>
+
+                            <p id="supportConversationStatus">
+                                Status
+                            </p>
+
+                        </div>
+
+                        <button
+                            type="button"
+                            id="closeSupportConversation"
+                        >
+                            Close Conversation
+                        </button>
+
+                    </div>
+
+
+                    <!-- MESSAGES -->
+
+                    <div
+                        id="supportMessageList"
+                        class="support-message-list"
+                        aria-live="polite"
+                    >
+
+                        <p>
+                            Messages will appear here.
+                        </p>
+
+                    </div>
+
+
+                    <!-- CUSTOMER REPLY -->
+
+                    <form id="supportReplyForm">
+
+                        <label for="supportReplyMessage">
+                            Reply to Support
+                        </label>
+
+                        <textarea
+                            id="supportReplyMessage"
+                            name="reply"
+                            rows="4"
+                            maxlength="5000"
+                            placeholder="Type your reply..."
+                            required
+                        ></textarea>
+
+
+                        <button
+                            type="submit"
+                            id="supportReplyButton"
+                        >
+                            Send Reply
+                        </button>
+
+                    </form>
+
+
+                    <!-- CLOSED REPORT NOTICE -->
+
+                    <p
+                        id="supportReplyClosedNotice"
+                        hidden
+                    >
+                        This report is closed. You cannot send
+                        another reply unless the support team
+                        reopens it.
+                    </p>
+
+                </div>
+
+            </section>
+
+
         </section>
 
     </main>
@@ -1316,21 +1604,23 @@
          JAVASCRIPT CONNECTIONS
     ====================================== -->
 
-    
-<script>
-    // Set the login screen by default without removing
-    // Paystack's payment reference from the URL.
 
-    if (!window.location.hash) {
-        history.replaceState(
-            null,
-            "",
-            window.location.pathname +
-            window.location.search +
-            "#login"
-        );
-    }
-</script>
+    <script>
+        // Set the login screen by default without removing
+        // Paystack's payment reference from the URL.
+
+        if (!window.location.hash) {
+
+            history.replaceState(
+                null,
+                "",
+                window.location.pathname +
+                window.location.search +
+                "#login"
+            );
+
+        }
+    </script>
 
 
 
@@ -1344,4 +1634,5 @@
     <script src="main.js"></script>
 
 </body>
+
 </html>
