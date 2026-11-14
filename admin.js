@@ -5244,3 +5244,31 @@ function initializeNexusPlatformSettings() {
 }
 
 initializeNexusPlatformSettings();
+
+
+/* =========================================================
+   43. SETTINGS PAGE NAVIGATION INTEGRATION
+========================================================= */
+
+document.querySelectorAll(
+    '.admin-nav-link[data-page="settings"]'
+).forEach(link => {
+
+    if (link.dataset.settingsLoaderAttached === "true") {
+        return;
+    }
+
+    link.dataset.settingsLoaderAttached = "true";
+
+    link.addEventListener("click", () => {
+
+        loadNexusPlatformSettings().catch(error => {
+            console.error(
+                "Settings page loading failed:",
+                error
+            );
+        });
+
+    });
+});
+
