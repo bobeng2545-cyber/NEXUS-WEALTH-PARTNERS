@@ -27,11 +27,8 @@ const nexusSupabase = window.supabase.createClient(
 );
 
 
-
-
 /* =========================================
-   NEXUS PAYSTACK PAYMENT CALLBACK
-   DIRECT AUTHENTICATED VERIFICATION
+   2. NEXUS PAYSTACK PAYMENT CALLBACK
 ========================================= */
 
 let nexusPaymentCallbackStarted = false;
@@ -58,7 +55,6 @@ async function handleNexusPaymentCallback() {
 
         console.log("NEXUS: Payment reference detected:", reference);
 
-        // Restore the customer's current login session.
         const {
             data: sessionData,
             error: sessionError
@@ -84,7 +80,6 @@ async function handleNexusPaymentCallback() {
 
         console.log("NEXUS: Customer authenticated.");
 
-        // Call the deployed verification Edge Function directly.
         const response = await fetch(
             `${SUPABASE_URL}/functions/v1/nexus-verify-deposit`,
             {
@@ -115,7 +110,6 @@ async function handleNexusPaymentCallback() {
             );
         }
 
-        // Remove the reference only after successful verification.
         url.searchParams.delete("reference");
         url.searchParams.delete("trxref");
 
@@ -133,7 +127,6 @@ async function handleNexusPaymentCallback() {
                 : "Deposit successful! Your wallet has been credited."
         );
 
-        // Refresh wallet and transaction history.
         await loadDashboard(session.user);
 
     } catch (error) {
@@ -152,10 +145,8 @@ async function handleNexusPaymentCallback() {
 }
 
 
-
-
 /* =========================================
-   2. GET HTML ELEMENTS
+   3. GET HTML ELEMENTS
 ========================================= */
 
 const websiteHeader = document.getElementById("websiteHeader");
@@ -180,7 +171,7 @@ const publicSections = [
 
 
 /* =========================================
-   3. HELPER FUNCTIONS
+   4. HELPER FUNCTIONS
 ========================================= */
 
 function getElement(id) {
@@ -205,7 +196,7 @@ function getFirstName(fullName) {
 
 
 /* =========================================
-   4. HIDE AUTHENTICATION SCREENS
+   5. HIDE AUTHENTICATION SCREENS
 ========================================= */
 
 function hideAuthenticationScreens() {
@@ -225,7 +216,7 @@ function hideAuthenticationScreens() {
 
 
 /* =========================================
-   5. HIDE MEMBER DASHBOARD
+   6. HIDE MEMBER DASHBOARD
 ========================================= */
 
 function hideMemberDashboard() {
@@ -239,7 +230,7 @@ function hideMemberDashboard() {
 
 
 /* =========================================
-   6. SHOW PUBLIC HOMEPAGE
+   7. SHOW PUBLIC HOMEPAGE
 ========================================= */
 
 function showPublicHome() {
@@ -265,7 +256,7 @@ function showPublicHome() {
 
 
 /* =========================================
-   7. SHOW LOGIN
+   8. SHOW LOGIN
 ========================================= */
 
 function showLogin() {
@@ -288,7 +279,7 @@ function showLogin() {
 
 
 /* =========================================
-   8. SHOW REGISTRATION
+   9. SHOW REGISTRATION
 ========================================= */
 
 function showRegistration() {
@@ -311,7 +302,7 @@ function showRegistration() {
 
 
 /* =========================================
-   9. SHOW FORGOT PASSWORD
+   10. SHOW FORGOT PASSWORD
 ========================================= */
 
 function showForgotPassword() {
@@ -336,8 +327,7 @@ function showForgotPassword() {
 
 
 /* =========================================
-   10. MOBILE DASHBOARD NAVIGATION
-   SHOW ONLY THE SELECTED SCREEN
+   11. MOBILE DASHBOARD NAVIGATION
 ========================================= */
 
 let currentDashboardView = "home";
@@ -357,7 +347,8 @@ function setMobileDashboardView(screen, shouldScroll = true) {
         transactions: "Transactions",
         pendingWithdrawals: "Pending Withdrawals",
         savings: "My Savings",
-        profile: "My Profile"
+        profile: "My Profile",
+        support: "Customer Support"
     };
 
     const allSections = [
@@ -365,7 +356,8 @@ function setMobileDashboardView(screen, shouldScroll = true) {
         "#pendingWithdrawals",
         "#memberTransactions",
         "#memberSavings",
-        "#memberProfile"
+        "#memberProfile",
+        "#memberSupport"
     ];
 
     const screenSections = {
@@ -389,6 +381,10 @@ function setMobileDashboardView(screen, shouldScroll = true) {
 
         profile: [
             "#memberProfile"
+        ],
+
+        support: [
+            "#memberSupport"
         ]
 
     };
@@ -413,8 +409,6 @@ function setMobileDashboardView(screen, shouldScroll = true) {
         });
 
     });
-
-    /* REMOVE SPECIAL SAVINGS DISPLAY CLASS */
 
     document.querySelectorAll(
         "#memberDashboard .dashboard-content-grid"
@@ -542,8 +536,6 @@ function setMobileDashboardView(screen, shouldScroll = true) {
 
     }
 
-    /* UPDATE TITLE AND BACK BUTTON */
-
     if (screenTitle) {
         screenTitle.textContent = screenTitles[screen];
     }
@@ -552,8 +544,6 @@ function setMobileDashboardView(screen, shouldScroll = true) {
         backButton.style.display =
             screen === "home" ? "none" : "flex";
     }
-
-    /* UPDATE ACTIVE NAVIGATION */
 
     document.querySelectorAll(
         ".member-navigation a[data-screen]"
@@ -566,8 +556,6 @@ function setMobileDashboardView(screen, shouldScroll = true) {
 
     });
 
-    /* SCROLL TO TOP */
-
     if (shouldScroll) {
 
         window.scrollTo({
@@ -576,7 +564,6 @@ function setMobileDashboardView(screen, shouldScroll = true) {
         });
 
     }
-
 }
 
 
@@ -624,7 +611,7 @@ window.addEventListener("resize", function() {
 
 
 /* =========================================
-   11. SHOW MEMBER DASHBOARD
+   12. SHOW MEMBER DASHBOARD
 ========================================= */
 
 function showMemberDashboard() {
@@ -656,25 +643,24 @@ function showMemberDashboard() {
 
 
 /* =========================================
-   12. NEXUS MEMBER NOTIFICATIONS
+   13. NEXUS MEMBER NOTIFICATIONS
 ========================================= */
 
 let nexusNotificationsInitialized = false;
-
-/* MOVE NOTIFICATION POPUP OUTSIDE DASHBOARD */
 
 document.addEventListener("DOMContentLoaded", function () {
 
     const notificationMenu = getElement("notificationMenu");
 
-    if (notificationMenu && notificationMenu.parentElement !== document.body) {
+    if (
+        notificationMenu &&
+        notificationMenu.parentElement !== document.body
+    ) {
         document.body.appendChild(notificationMenu);
     }
 
 });
 
-
-/* FORMAT NOTIFICATION DATE */
 
 function formatNotificationDate(dateValue) {
 
@@ -694,8 +680,6 @@ function formatNotificationDate(dateValue) {
 }
 
 
-/* CLOSE NOTIFICATION MENU */
-
 function closeNexusNotificationMenu() {
 
     const menu = getElement("notificationMenu");
@@ -710,8 +694,6 @@ function closeNexusNotificationMenu() {
     }
 }
 
-
-/* LOAD MEMBER NOTIFICATIONS */
 
 async function loadNexusNotifications(user) {
 
@@ -738,18 +720,16 @@ async function loadNexusNotifications(user) {
             notification => !notification.is_read
         ).length;
 
-       /* CONTROL NOTIFICATION RIPPLE */
-       
-       const notificationButton = getElement("notificationButton");
-       
-       if (notificationButton) {
-          notificationButton.classList.toggle(
-             "has-unread",
-             unreadCount > 0
-          );
-       }
+        const notificationButton = getElement("notificationButton");
 
-        /* UPDATE UNREAD COUNT */
+        if (notificationButton) {
+
+            notificationButton.classList.toggle(
+                "has-unread",
+                unreadCount > 0
+            );
+
+        }
 
         if (notificationCount) {
 
@@ -759,15 +739,11 @@ async function loadNexusNotifications(user) {
             notificationCount.hidden = unreadCount === 0;
         }
 
-        /* UPDATE MARK ALL BUTTON */
-
         if (markAllButton) {
             markAllButton.disabled = unreadCount === 0;
         }
 
         notificationList.replaceChildren();
-
-        /* EMPTY NOTIFICATION MESSAGE */
 
         if (notifications.length === 0) {
 
@@ -785,8 +761,6 @@ async function loadNexusNotifications(user) {
 
             return;
         }
-
-        /* DISPLAY NOTIFICATIONS */
 
         notifications.forEach(notification => {
 
@@ -822,8 +796,6 @@ async function loadNexusNotifications(user) {
 
             item.append(content, status);
 
-            /* MARK INDIVIDUAL NOTIFICATION AS READ */
-
             item.addEventListener("click", async function() {
 
                 if (!notification.is_read) {
@@ -840,17 +812,19 @@ async function loadNexusNotifications(user) {
 
         console.error("Notification loading error:", error);
 
-        notificationList.innerHTML = `
-            <div class="empty-notifications">
-                <span>⚠️</span>
-                <p>Unable to load notifications.</p>
-            </div>
-        `;
+        notificationList.replaceChildren();
+
+        const empty = document.createElement("div");
+        empty.className = "empty-notifications";
+
+        const message = document.createElement("p");
+        message.textContent = "Unable to load notifications.";
+
+        empty.appendChild(message);
+        notificationList.appendChild(empty);
     }
 }
 
-
-/* MARK ONE NOTIFICATION AS READ */
 
 async function markNexusNotificationRead(notificationId) {
 
@@ -886,8 +860,6 @@ async function markNexusNotificationRead(notificationId) {
     }
 }
 
-
-/* MARK ALL NOTIFICATIONS AS READ */
 
 async function markAllNexusNotificationsRead() {
 
@@ -931,8 +903,6 @@ async function markAllNexusNotificationsRead() {
 }
 
 
-/* INITIALIZE NOTIFICATION BELL */
-
 function initializeNexusNotifications() {
 
     if (nexusNotificationsInitialized) return;
@@ -950,8 +920,6 @@ function initializeNexusNotifications() {
         return;
     }
 
-    /* OPEN AND CLOSE MENU */
-
     notificationButton.addEventListener("click", async function() {
 
         const isOpening = notificationMenu.hidden;
@@ -962,8 +930,6 @@ function initializeNexusNotifications() {
             "aria-expanded",
             String(isOpening)
         );
-
-        /* REFRESH NOTIFICATIONS WHEN OPENED */
 
         if (isOpening) {
 
@@ -983,8 +949,6 @@ function initializeNexusNotifications() {
 
     });
 
-    /* MARK ALL AS READ */
-
     if (markAllButton) {
 
         markAllButton.addEventListener("click", function() {
@@ -992,8 +956,6 @@ function initializeNexusNotifications() {
         });
 
     }
-
-    /* CLOSE MENU WHEN CLICKING OUTSIDE */
 
     document.addEventListener("click", function(event) {
 
@@ -1010,8 +972,6 @@ function initializeNexusNotifications() {
 
     });
 
-    /* CLOSE MENU WITH ESCAPE KEY */
-
     document.addEventListener("keydown", function(event) {
 
         if (event.key === "Escape") {
@@ -1025,7 +985,7 @@ function initializeNexusNotifications() {
 
 
 /* =========================================
-   13. DISPLAY MEMBER INFORMATION
+   14. DISPLAY MEMBER INFORMATION
 ========================================= */
 
 function displayMemberInformation(user, profile) {
@@ -1044,8 +1004,6 @@ function displayMemberInformation(user, profile) {
 
     const memberId = profile?.member_id || "Pending";
 
-    // Use the saved Supabase status.
-    // New accounts default to Active.
     const accountStatus =
         profile?.status ||
         user.user_metadata?.status ||
@@ -1079,18 +1037,16 @@ function displayMemberInformation(user, profile) {
         getElement("profileMemberId").textContent = memberId;
     }
 
-    // Display Account Status
     const statusElement = getElement("accountStatus");
 
     if (statusElement) {
         statusElement.textContent = accountStatus;
     }
-
 }
 
 
 /* =========================================
-   14. LOAD MEMBER PROFILE
+   15. LOAD MEMBER PROFILE
 ========================================= */
 
 async function loadMemberProfile(user) {
@@ -1118,10 +1074,8 @@ async function loadMemberProfile(user) {
 }
 
 
-
 /* =========================================
-   15. LOAD MEMBER WALLET
-   DISPLAY ACTUAL AND AVAILABLE BALANCES
+   16. LOAD MEMBER WALLET
 ========================================= */
 
 async function loadMemberWallet(user) {
@@ -1145,8 +1099,6 @@ async function loadMemberWallet(user) {
         throw new Error("Your wallet record was not found.");
     }
 
-    /* ACTUAL WALLET BALANCE */
-
     const actualBalance = Number(data.balance) || 0;
 
     const deposits = Number(data.total_deposits) || 0;
@@ -1158,8 +1110,6 @@ async function loadMemberWallet(user) {
     ) {
         throw new Error("Your wallet balance is invalid.");
     }
-
-    /* LOAD PENDING AND PROCESSING WITHDRAWALS */
 
     const {
         data: requests,
@@ -1174,8 +1124,6 @@ async function loadMemberWallet(user) {
         console.error("Withdrawal loading error:", requestError);
         throw requestError;
     }
-
-    /* CALCULATE RESERVED WITHDRAWALS */
 
     const pendingWithdrawals = (requests || []).reduce(
         (total, request) => {
@@ -1192,25 +1140,12 @@ async function loadMemberWallet(user) {
         0
     );
 
-    /*
-       IMPORTANT:
-
-       Withdrawal submission does not deduct the wallet.
-
-       Pending and processing requests are logically reserved.
-
-       The actual wallet deduction happens only when the
-       authorized backend completes the withdrawal.
-    */
-
     const currentBalance = actualBalance;
 
     const availableBalance = Math.max(
         0,
         actualBalance - pendingWithdrawals
     );
-
-    /* DISPLAY ACTUAL WALLET BALANCE */
 
     [
         "walletBalance",
@@ -1227,8 +1162,6 @@ async function loadMemberWallet(user) {
 
     });
 
-    /* DISPLAY AVAILABLE BALANCE */
-
     [
         "walletAvailableBalance",
         "availableBalance"
@@ -1242,15 +1175,11 @@ async function loadMemberWallet(user) {
 
     });
 
-    /* DISPLAY PENDING WITHDRAWALS */
-
     const pendingCard = getElement("walletPendingWithdrawals");
 
     if (pendingCard) {
         pendingCard.textContent = formatMoney(pendingWithdrawals);
     }
-
-    /* DISPLAY TOTAL DEPOSITS */
 
     [
         "walletTotalDeposits",
@@ -1264,8 +1193,6 @@ async function loadMemberWallet(user) {
         }
 
     });
-
-    /* DISPLAY COMPLETED WITHDRAWALS */
 
     const totalWithdrawalsElement = getElement(
         "walletTotalWithdrawals"
@@ -1286,9 +1213,8 @@ async function loadMemberWallet(user) {
 }
 
 
-
 /* =========================================
-   16. LOAD MEMBER DASHBOARD DATA
+   17. LOAD MEMBER DASHBOARD DATA
 ========================================= */
 
 async function loadDashboard(user) {
@@ -1311,6 +1237,21 @@ async function loadDashboard(user) {
 
         await loadNexusNotifications(user);
 
+        /* CUSTOMER SUPPORT INITIALIZATION */
+
+        try {
+
+            await refreshNexusSupport();
+
+        } catch (supportError) {
+
+            console.error(
+                "Support initialization error:",
+                supportError
+            );
+
+        }
+
         console.log("Member dashboard loaded successfully.");
 
     } catch (error) {
@@ -1326,7 +1267,7 @@ async function loadDashboard(user) {
 
 
 /* =========================================
-   17. REGISTRATION
+   18. REGISTRATION
 ========================================= */
 
 if (registrationForm) {
@@ -1365,15 +1306,15 @@ if (registrationForm) {
         try {
 
             const { data, error } = await nexusSupabase.auth.signUp({
-               email,
-               password,
-               options: {
-                  data: {
-                     full_name: fullName,
-                     phone: phone,
-                     status: "Active"
-                  }
-               }
+                email,
+                password,
+                options: {
+                    data: {
+                        full_name: fullName,
+                        phone: phone,
+                        status: "Active"
+                    }
+                }
             });
 
             if (error) throw error;
@@ -1410,7 +1351,7 @@ if (registrationForm) {
 
 
 /* =========================================
-   18. MEMBER LOGIN
+   19. MEMBER LOGIN
 ========================================= */
 
 if (loginForm) {
@@ -1462,7 +1403,7 @@ if (loginForm) {
 
 
 /* =========================================
-   19. FORGOT PASSWORD
+   20. FORGOT PASSWORD
 ========================================= */
 
 if (forgotPasswordForm) {
@@ -1503,7 +1444,7 @@ if (forgotPasswordForm) {
 
 
 /* =========================================
-   20. NAVIGATION LINKS
+   21. NAVIGATION LINKS
 ========================================= */
 
 document.addEventListener("click", function(event) {
@@ -1550,7 +1491,7 @@ document.addEventListener("click", function(event) {
 
 
 /* =========================================
-   21. BACK TO HOME
+   22. BACK TO HOME
 ========================================= */
 
 function returnToHome() {
@@ -1565,7 +1506,7 @@ window.returnToHome = returnToHome;
 
 
 /* =========================================
-   22. LOGOUT
+   23. LOGOUT
 ========================================= */
 
 async function logoutMember() {
@@ -1591,10 +1532,8 @@ async function logoutMember() {
 window.logoutMember = logoutMember;
 
 
-
-
 /* =========================================
-   23. AUTHENTICATION STATE
+   24. AUTHENTICATION STATE
 ========================================= */
 
 nexusSupabase.auth.onAuthStateChange((event, session) => {
@@ -1626,9 +1565,8 @@ nexusSupabase.auth.onAuthStateChange((event, session) => {
 });
 
 
-
 /* =========================================
-   24. MEMBER TRANSACTION HISTORY
+   25. MEMBER TRANSACTION HISTORY
 ========================================= */
 
 async function loadMemberTransactions(user) {
@@ -1729,7 +1667,8 @@ async function loadMemberTransactions(user) {
                 successful: "Successful",
                 completed: "Payment Completed",
                 failed: "Failed",
-                rejected: "Rejected"
+                rejected: "Rejected",
+                reversed: "Reversed"
             };
 
             if (transaction.type === "deposit") {
@@ -1830,7 +1769,7 @@ async function loadMemberTransactions(user) {
 
 
 /* =========================================
-   25. LOAD PENDING WITHDRAWALS
+   26. LOAD PENDING WITHDRAWALS
 ========================================= */
 
 async function loadPendingWithdrawals(user) {
@@ -1870,16 +1809,12 @@ async function loadPendingWithdrawals(user) {
 
         const requests = data || [];
 
-        /* CALCULATE TOTAL RESERVED */
-
         const reservedTotal = requests.reduce(
             (total, request) => {
                 return total + (Number(request.amount) || 0);
             },
             0
         );
-
-        /* UPDATE PENDING WITHDRAWAL DISPLAYS */
 
         if (totalDisplay) {
             totalDisplay.textContent = formatMoney(reservedTotal);
@@ -1890,8 +1825,6 @@ async function loadPendingWithdrawals(user) {
         }
 
         if (!list) return;
-
-        /* NO PENDING WITHDRAWALS */
 
         if (requests.length === 0) {
 
@@ -1978,7 +1911,7 @@ async function loadPendingWithdrawals(user) {
 
 
 /* =========================================
-   26. MEMBER DEPOSIT PROCESSING
+   27. MEMBER DEPOSIT PROCESSING
 ========================================= */
 
 const depositForm = getElement("depositForm");
@@ -2113,9 +2046,8 @@ if (depositForm) {
 }
 
 
-
 /* =========================================
-   27. MEMBER WITHDRAWAL REQUEST
+   28. MEMBER WITHDRAWAL REQUEST
 ========================================= */
 
 const withdrawalForm = getElement("withdrawalForm");
@@ -2142,9 +2074,6 @@ if (withdrawalForm) {
         const note =
             getElement("withdrawNote")?.value.trim() || null;
 
-
-        /* VALIDATE WITHDRAWAL AMOUNT */
-
         if (!Number.isFinite(amount) || amount <= 0) {
 
             showMessage(
@@ -2153,9 +2082,6 @@ if (withdrawalForm) {
 
             return;
         }
-
-
-        /* VALIDATE WITHDRAWAL METHOD */
 
         if (!method) {
 
@@ -2166,9 +2092,6 @@ if (withdrawalForm) {
             return;
         }
 
-
-        /* VALIDATE RECIPIENT NAME */
-
         if (!accountName || accountName.length < 2) {
 
             showMessage(
@@ -2177,9 +2100,6 @@ if (withdrawalForm) {
 
             return;
         }
-
-
-        /* VALIDATE ACCOUNT NUMBER */
 
         if (!accountNumber || accountNumber.length < 5) {
 
@@ -2190,15 +2110,9 @@ if (withdrawalForm) {
             return;
         }
 
-
-        /* COMBINE RECIPIENT DETAILS */
-
         const paymentDetails =
             "Account Name: " + accountName +
             " | Account Number: " + accountNumber;
-
-
-        /* DISABLE SUBMIT BUTTON */
 
         const submitButton = withdrawalForm.querySelector(
             'button[type="submit"]'
@@ -2212,10 +2126,7 @@ if (withdrawalForm) {
                 "Submitting Request...";
         }
 
-
         try {
-
-            /* VERIFY AUTHENTICATED MEMBER */
 
             const {
                 data: authData,
@@ -2230,9 +2141,6 @@ if (withdrawalForm) {
                     "Your session has expired. Please log in again."
                 );
             }
-
-
-            /* SUBMIT WITHDRAWAL REQUEST */
 
             const {
                 data,
@@ -2257,13 +2165,7 @@ if (withdrawalForm) {
                 );
             }
 
-
-            /* CLEAR FORM */
-
             withdrawalForm.reset();
-
-
-            /* REFRESH MEMBER INFORMATION */
 
             await loadMemberWallet(authData.user);
 
@@ -2272,9 +2174,6 @@ if (withdrawalForm) {
             await loadPendingWithdrawals(authData.user);
 
             await loadNexusNotifications(authData.user);
-
-
-            /* SUCCESS MESSAGE */
 
             showMessage(
                 "Withdrawal request submitted successfully!\n\n" +
@@ -2294,12 +2193,10 @@ if (withdrawalForm) {
                 "Your money is reserved while the request awaits review. It is not yet paid out."
             );
 
-
             console.log(
                 "Withdrawal request submitted:",
                 data
             );
-
 
         } catch (error) {
 
@@ -2312,7 +2209,6 @@ if (withdrawalForm) {
                 error.message ||
                 "Unable to submit your withdrawal request. Please try again."
             );
-
 
         } finally {
 
@@ -2330,7 +2226,7 @@ if (withdrawalForm) {
 
 
 /* =========================================
-   28. MEMBER TRANSACTION FILTERS
+   29. MEMBER TRANSACTION FILTERS
 ========================================= */
 
 function initializeTransactionFilters() {
@@ -2408,7 +2304,7 @@ function initializeTransactionFilters() {
 
 
 /* =========================================
-   29. PROFESSIONAL TRANSACTION RECEIPT
+   30. PROFESSIONAL TRANSACTION RECEIPT
 ========================================= */
 
 function generateTransactionReceipt(transaction) {
@@ -2696,7 +2592,7 @@ function generateTransactionReceipt(transaction) {
 
 
 /* =========================================
-   30. RECEIPT TEXT SECURITY
+   31. RECEIPT TEXT SECURITY
 ========================================= */
 
 function escapeReceiptText(value) {
@@ -2715,14 +2611,663 @@ function escapeReceiptText(value) {
 
 
 /* =========================================
-   31. START WEBSITE
+   32. NEXUS CUSTOMER SUPPORT
+========================================= */
+
+let selectedSupportTicketId = null;
+let supportEventsInitialized = false;
+
+
+/* SUPPORT DATE FORMAT */
+
+function formatSupportDate(value) {
+
+    if (!value) return "Date unavailable";
+
+    const date = new Date(value);
+
+    if (Number.isNaN(date.getTime())) {
+        return "Date unavailable";
+    }
+
+    return date.toLocaleString("en-GH", {
+        dateStyle: "medium",
+        timeStyle: "short"
+    });
+}
+
+
+/* SAFE ELEMENT CREATION */
+
+function createSupportElement(tag, className, text) {
+
+    const element = document.createElement(tag);
+
+    if (className) {
+        element.className = className;
+    }
+
+    if (text !== undefined && text !== null) {
+        element.textContent = String(text);
+    }
+
+    return element;
+}
+
+
+/* VERIFY AUTHENTICATED USER */
+
+async function getSupportUser() {
+
+    const { data, error } =
+        await nexusSupabase.auth.getUser();
+
+    if (error) throw error;
+
+    if (!data.user) {
+
+        throw new Error(
+            "Your session has expired. Please log in again."
+        );
+    }
+
+    return data.user;
+}
+
+
+/* LOAD SUPPORT TICKETS */
+
+async function loadSupportTickets() {
+
+    const list = getElement("supportTicketList");
+
+    if (!list) return [];
+
+    list.replaceChildren(
+        createSupportElement(
+            "p",
+            "",
+            "Loading your reports..."
+        )
+    );
+
+    try {
+
+        await getSupportUser();
+
+        const { data, error } = await nexusSupabase.rpc(
+            "nexus_list_support_tickets",
+            {
+                p_limit: 100
+            }
+        );
+
+        if (error) throw error;
+
+        const tickets = data || [];
+
+        list.replaceChildren();
+
+        if (tickets.length === 0) {
+
+            list.appendChild(
+                createSupportElement(
+                    "p",
+                    "support-empty",
+                    "You have not submitted any reports yet."
+                )
+            );
+
+            return [];
+        }
+
+        tickets.forEach(ticket => {
+
+            const card = createSupportElement(
+                "article",
+                "support-ticket-card"
+            );
+
+            const heading = createSupportElement(
+                "h4",
+                "",
+                ticket.subject
+            );
+
+            const category = createSupportElement(
+                "p",
+                "support-ticket-category",
+                "Category: " + ticket.category
+            );
+
+            const statusValue = String(
+                ticket.status || "open"
+            );
+
+            const status = createSupportElement(
+                "span",
+                "support-status support-status-" + statusValue,
+                statusValue.replaceAll("_", " ")
+            );
+
+            const date = createSupportElement(
+                "small",
+                "",
+                "Last activity: " +
+                formatSupportDate(ticket.last_message_at)
+            );
+
+            const openButton = createSupportElement(
+                "button",
+                "support-open-button",
+                "Open Conversation"
+            );
+
+            openButton.type = "button";
+
+            openButton.addEventListener("click", function() {
+
+                openSupportConversation(ticket);
+
+            });
+
+            card.append(
+                heading,
+                category,
+                status,
+                date,
+                openButton
+            );
+
+            list.appendChild(card);
+
+        });
+
+        return tickets;
+
+    } catch (error) {
+
+        console.error(
+            "Support ticket loading error:",
+            error
+        );
+
+        list.replaceChildren(
+            createSupportElement(
+                "p",
+                "support-error",
+                error.message ||
+                "Unable to load your reports."
+            )
+        );
+
+        throw error;
+    }
+}
+
+
+/* SUBMIT NEW SUPPORT REPORT */
+
+async function submitSupportTicket(event) {
+
+    event.preventDefault();
+
+    const form = getElement("supportTicketForm");
+    const button = getElement("supportSubmitButton");
+
+    const subject =
+        getElement("supportSubject")?.value.trim();
+
+    const category =
+        getElement("supportCategory")?.value;
+
+    const message =
+        getElement("supportMessage")?.value.trim();
+
+    if (
+        !subject ||
+        subject.length < 3 ||
+        !category ||
+        !message
+    ) {
+
+        showMessage(
+            "Please enter a valid subject, category and message."
+        );
+
+        return;
+    }
+
+    if (message.length > 5000) {
+
+        showMessage(
+            "Your report message cannot exceed 5,000 characters."
+        );
+
+        return;
+    }
+
+    if (button) {
+
+        button.disabled = true;
+        button.textContent = "Submitting...";
+    }
+
+    try {
+
+        await getSupportUser();
+
+        const { data, error } = await nexusSupabase.rpc(
+            "nexus_submit_support_ticket",
+            {
+                p_subject: subject,
+                p_category: category,
+                p_message: message
+            }
+        );
+
+        if (error) throw error;
+
+        if (!data || data.success !== true) {
+
+            throw new Error(
+                data?.message ||
+                "Your report could not be submitted."
+            );
+        }
+
+        form.reset();
+
+        await loadSupportTickets();
+
+        showMessage(
+            "Your report has been submitted successfully. " +
+            "Our support team can now review and reply to it."
+        );
+
+    } catch (error) {
+
+        console.error(
+            "Support submission error:",
+            error
+        );
+
+        showMessage(
+            error.message ||
+            "Unable to submit your report."
+        );
+
+    } finally {
+
+        if (button) {
+
+            button.disabled = false;
+            button.textContent = "Submit Report";
+        }
+    }
+}
+
+
+/* OPEN SUPPORT CONVERSATION */
+
+async function openSupportConversation(ticket) {
+
+    const conversation = getElement("supportConversation");
+
+    const subject =
+        getElement("supportConversationSubject");
+
+    const status =
+        getElement("supportConversationStatus");
+
+    const messageList =
+        getElement("supportMessageList");
+
+    if (!conversation || !ticket) return;
+
+    selectedSupportTicketId = ticket.ticket_id;
+
+    if (subject) {
+        subject.textContent = ticket.subject;
+    }
+
+    if (status) {
+
+        status.textContent =
+            "Status: " +
+            String(ticket.status).replaceAll("_", " ");
+    }
+
+    conversation.hidden = false;
+
+    if (messageList) {
+
+        messageList.replaceChildren(
+            createSupportElement(
+                "p",
+                "",
+                "Loading conversation..."
+            )
+        );
+    }
+
+    await loadSupportMessages(
+        ticket.ticket_id,
+        ticket.status
+    );
+
+    conversation.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+    });
+}
+
+
+/* LOAD SUPPORT MESSAGES */
+
+async function loadSupportMessages(ticketId, ticketStatus) {
+
+    const messageList =
+        getElement("supportMessageList");
+
+    const replyForm =
+        getElement("supportReplyForm");
+
+    const closedNotice =
+        getElement("supportReplyClosedNotice");
+
+    const replyButton =
+        getElement("supportReplyButton");
+
+    if (!messageList || !ticketId) return;
+
+    try {
+
+        const { data, error } = await nexusSupabase.rpc(
+            "nexus_list_support_messages",
+            {
+                p_ticket_id: ticketId
+            }
+        );
+
+        if (error) throw error;
+
+        const messages = data || [];
+
+        messageList.replaceChildren();
+
+        if (messages.length === 0) {
+
+            messageList.appendChild(
+                createSupportElement(
+                    "p",
+                    "",
+                    "No messages are available in this conversation."
+                )
+            );
+        }
+
+        messages.forEach(message => {
+
+            const item = createSupportElement(
+                "div",
+                "support-message"
+            );
+
+            const sender = createSupportElement(
+                "strong",
+                "support-message-sender",
+                (message.sender_name || "Support") +
+                " (" + message.sender_role + ")"
+            );
+
+            const body = createSupportElement(
+                "p",
+                "support-message-body",
+                message.message
+            );
+
+            const date = createSupportElement(
+                "small",
+                "support-message-date",
+                formatSupportDate(message.created_at)
+            );
+
+            item.append(sender, body, date);
+
+            messageList.appendChild(item);
+
+        });
+
+        const isClosed = ticketStatus === "closed";
+
+        if (replyForm) {
+            replyForm.hidden = isClosed;
+        }
+
+        if (closedNotice) {
+            closedNotice.hidden = !isClosed;
+        }
+
+        if (replyButton) {
+            replyButton.disabled = isClosed;
+        }
+
+        const conversationStatus =
+            getElement("supportConversationStatus");
+
+        if (conversationStatus) {
+
+            conversationStatus.textContent =
+                "Status: " +
+                String(ticketStatus || "open").replaceAll("_", " ");
+        }
+
+    } catch (error) {
+
+        console.error(
+            "Support conversation loading error:",
+            error
+        );
+
+        messageList.replaceChildren(
+            createSupportElement(
+                "p",
+                "support-error",
+                error.message ||
+                "Unable to load this conversation."
+            )
+        );
+    }
+}
+
+
+/* SEND SUPPORT REPLY */
+
+async function submitSupportReply(event) {
+
+    event.preventDefault();
+
+    const button =
+        getElement("supportReplyButton");
+
+    const messageInput =
+        getElement("supportReplyMessage");
+
+    const message = messageInput?.value.trim();
+
+    if (!selectedSupportTicketId) {
+
+        showMessage("Please open a report first.");
+
+        return;
+    }
+
+    if (!message) {
+
+        showMessage("Enter a message before sending.");
+
+        return;
+    }
+
+    if (message.length > 5000) {
+
+        showMessage(
+            "Your reply cannot exceed 5,000 characters."
+        );
+
+        return;
+    }
+
+    if (button) {
+
+        button.disabled = true;
+        button.textContent = "Sending...";
+    }
+
+    try {
+
+        await getSupportUser();
+
+        const { data, error } = await nexusSupabase.rpc(
+            "nexus_reply_support_ticket",
+            {
+                p_ticket_id: selectedSupportTicketId,
+                p_message: message
+            }
+        );
+
+        if (error) throw error;
+
+        if (!data || data.success !== true) {
+
+            throw new Error(
+                data?.message ||
+                "Your reply could not be sent."
+            );
+        }
+
+        messageInput.value = "";
+
+        const currentTicketId = selectedSupportTicketId;
+
+        const tickets = await loadSupportTickets();
+
+        const currentTicket = tickets.find(
+            ticket =>
+                ticket.ticket_id === currentTicketId
+        );
+
+        await loadSupportMessages(
+            currentTicketId,
+            currentTicket?.status || data.status || "open"
+        );
+
+    } catch (error) {
+
+        console.error(
+            "Support reply error:",
+            error
+        );
+
+        showMessage(
+            error.message ||
+            "Unable to send your reply."
+        );
+
+    } finally {
+
+        if (button) {
+
+            button.disabled = false;
+            button.textContent = "Send Reply";
+        }
+    }
+}
+
+
+/* INITIALIZE SUPPORT EVENTS */
+
+function initializeNexusSupport() {
+
+    if (supportEventsInitialized) return;
+
+    const ticketForm =
+        getElement("supportTicketForm");
+
+    const replyForm =
+        getElement("supportReplyForm");
+
+    const refreshButton =
+        getElement("refreshSupportTickets");
+
+    const closeButton =
+        getElement("closeSupportConversation");
+
+    if (ticketForm) {
+
+        ticketForm.addEventListener(
+            "submit",
+            submitSupportTicket
+        );
+    }
+
+    if (replyForm) {
+
+        replyForm.addEventListener(
+            "submit",
+            submitSupportReply
+        );
+    }
+
+    if (refreshButton) {
+
+        refreshButton.addEventListener(
+            "click",
+            loadSupportTickets
+        );
+    }
+
+    if (closeButton) {
+
+        closeButton.addEventListener(
+            "click",
+            function() {
+
+                const conversation =
+                    getElement("supportConversation");
+
+                if (conversation) {
+                    conversation.hidden = true;
+                }
+
+                selectedSupportTicketId = null;
+
+            }
+        );
+    }
+
+    supportEventsInitialized = true;
+}
+
+
+/* REFRESH SUPPORT SYSTEM */
+
+async function refreshNexusSupport() {
+
+    initializeNexusSupport();
+
+    await loadSupportTickets();
+}
+
+
+/* =========================================
+   33. START WEBSITE
 ========================================= */
 
 initializeTransactionFilters();
 
 initializeWebsite();
-
-
 
 
 /* =========================================
@@ -2744,7 +3289,6 @@ async function initializeWebsite() {
 
             await loadDashboard(user);
 
-            // Verify a Paystack payment after restoring the session.
             await handleNexusPaymentCallback();
 
         } else {
@@ -2773,9 +3317,7 @@ async function initializeWebsite() {
 
                 showLogin();
 
-            } else if (
-                page === "#forgotpassword"
-            ) {
+            } else if (page === "#forgotpassword") {
 
                 showForgotPassword();
 
@@ -2795,4 +3337,3 @@ async function initializeWebsite() {
 
     }
 }
-
