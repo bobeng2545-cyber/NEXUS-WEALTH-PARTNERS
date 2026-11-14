@@ -72,6 +72,7 @@ const refreshDepositsButton =
     document.getElementById("refreshDepositsButton");
 
 
+
 /* =========================================
    4. DASHBOARD PAGE TITLES
 ========================================= */
@@ -84,8 +85,13 @@ const adminPageTitles = {
     deposits: "Deposits Management",
     transactions: "Transactions",
     trash: "Transaction Trash",
-    savings: "Savings Management"
+    savings: "Savings Management",
+    "profit-interest": "Profit & Interest",
+    reports: "Reports",
+    notifications: "Notifications",
+    settings: "Platform Settings"
 };
+
 
 
 /* =========================================
@@ -121,6 +127,7 @@ function createAdminTableCell(value) {
 }
 
 
+
 /* DISPLAY TABLE MESSAGE */
 
 function showAdminTableMessage(
@@ -142,6 +149,7 @@ function showAdminTableMessage(
     row.appendChild(cell);
     table.replaceChildren(row);
 }
+
 
 
 /* FORMAT DATE */
