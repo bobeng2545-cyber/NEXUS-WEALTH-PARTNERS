@@ -1213,6 +1213,7 @@ async function loadMemberWallet(user) {
 }
 
 
+
 /* =========================================
    17. LOAD MEMBER DASHBOARD DATA
 ========================================= */
@@ -1223,47 +1224,77 @@ async function loadDashboard(user) {
 
     showMemberDashboard();
 
-    try {
+    // Initialize support immediately so it is not blocked
+    // by an unrelated wallet or transaction loading error.
+    initializeNexusSupport();
 
-        initializeNexusNotifications();
+    initializeNexusNotifications();
 
-        await loadMemberProfile(user);
-
-        await loadMemberWallet(user);
-
-        await loadMemberTransactions(user);
-
-        await loadPendingWithdrawals(user);
-
-        await loadNexusNotifications(user);
-
-        /* CUSTOMER SUPPORT INITIALIZATION */
-
-        try {
-
-            await refreshNexusSupport();
-
-        } catch (supportError) {
-
-            console.error(
-                "Support initialization error:",
-                supportError
-            );
-
+    const dashboardTasks = [
+        {
+            name: "Member profile",
+            run: () => loadMemberProfile(user)
+        },
+        {
+            name: "Member wallet",
+            run: () => loadMemberWallet(user)
+        },
+        {
+            name: "Member transactions",
+            run: () => loadMemberTransactions(user)
+        },
+        {
+            name: "Pending withdrawals",
+            run: () => loadPendingWithdrawals(user)
+        },
+        {
+            name: "Notifications",
+            run: () => loadNexusNotifications(user)
+        },
+        {
+            name: "Customer support",
+            run: () => refreshNexusSupport()
         }
+    ];
 
-        console.log("Member dashboard loaded successfully.");
+    const results = await Promise.allSettled(
+        dashboardTasks.map(async task => {
+            try {
+                await task.run();
+                console.log(task.name + " loaded successfully.");
+            } catch (error) {
+                console.error(
+                    task.name + " loading error:",
+                    error
+                );
+                throw error;
+            }
+        })
+    );
 
-    } catch (error) {
+    const failedTasks = results
+        .map((result, index) => ({
+            result,
+            name: dashboardTasks[index].name
+        }))
+        .filter(item => item.result.status === "rejected");
 
-        console.error("Dashboard error:", error);
+    if (failedTasks.length > 0) {
+
+        console.error(
+            "Some dashboard sections failed:",
+            failedTasks
+        );
 
         showMessage(
-            error.message ||
-            "Unable to load your dashboard information."
+            "Your dashboard has loaded, but some sections could not be updated. " +
+            "Please refresh the affected sections."
         );
     }
+
+    console.log("NEXUS member dashboard initialization completed.");
 }
+
 
 
 /* =========================================
