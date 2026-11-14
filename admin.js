@@ -2,7 +2,7 @@
 /* =========================================================
    NEXUS WEALTH PARTNERS
    COMPLETE ADMINISTRATOR DASHBOARD
-   Supabase-connected implementation
+   Corrected Supabase-connected implementation
 ========================================================= */
 
 
@@ -34,7 +34,7 @@ const nexusAdminState = {
     user: null,
     currentPage: "overview",
 
-    dateRange: "all",
+    dateRange: "this_month",
     dateFrom: null,
     dateTo: null,
 
@@ -52,7 +52,27 @@ const nexusAdminState = {
 
 
 /* =========================================================
-   3. ELEMENT HELPERS
+   3. PAGE TITLES
+========================================================= */
+
+const adminPageTitles = {
+    overview: "Dashboard Overview",
+    members: "Members Management",
+    tellers: "Tellers Management",
+    withdrawals: "Withdrawal Requests",
+    deposits: "Deposits Management",
+    transactions: "Transactions",
+    trash: "Transaction Trash",
+    savings: "Savings Management",
+    "profit-interest": "Profit & Interest",
+    reports: "Reports",
+    notifications: "Administrator Notifications",
+    settings: "Administrator Settings"
+};
+
+
+/* =========================================================
+   4. ELEMENT HELPERS
 ========================================================= */
 
 function adminElement(id) {
@@ -66,18 +86,18 @@ function adminElements(selector) {
 function adminText(id, value) {
     const element = adminElement(id);
 
-    if (element) {
-        element.textContent =
-            value === null || value === undefined
-                ? "—"
-                : String(value);
-    }
+    if (!element) return;
+
+    element.textContent =
+        value === null || value === undefined
+            ? "—"
+            : String(value);
 }
 
 function adminShow(element, visible = true) {
-    if (element) {
-        element.hidden = !visible;
-    }
+    if (!element) return;
+
+    element.hidden = !visible;
 }
 
 function adminSetMessage(id, message, type = "info") {
@@ -87,12 +107,14 @@ function adminSetMessage(id, message, type = "info") {
 
     element.textContent = message;
     element.dataset.type = type;
+
     element.classList.remove(
         "success",
         "error",
         "info",
         "warning"
     );
+
     element.classList.add(type);
 }
 
@@ -111,7 +133,7 @@ function adminEscape(value) {
 
 
 /* =========================================================
-   4. GENERAL HELPERS
+   5. GENERAL HELPERS
 ========================================================= */
 
 function formatNexusAdminMoney(amount) {
@@ -164,18 +186,31 @@ function adminStatusBadge(status) {
     let className = "status-pending";
 
     if (
-        ["successful", "completed", "active", "approved", "delivered"]
-            .includes(normalized)
+        [
+            "successful",
+            "completed",
+            "active",
+            "approved",
+            "delivered"
+        ].includes(normalized)
     ) {
         className = "status-success";
     } else if (
-        ["failed", "rejected", "cancelled", "suspended", "inactive"]
-            .includes(normalized)
+        [
+            "failed",
+            "rejected",
+            "cancelled",
+            "suspended",
+            "inactive"
+        ].includes(normalized)
     ) {
         className = "status-danger";
     } else if (
-        ["processing", "pending", "preparing"]
-            .includes(normalized)
+        [
+            "processing",
+            "pending",
+            "preparing"
+        ].includes(normalized)
     ) {
         className = "status-pending";
     } else if (normalized === "reversed") {
@@ -222,12 +257,9 @@ function adminSetTableMessage(
     columnCount,
     message
 ) {
-    const table = adminElement(tableId);
+    const tbody = adminGetTableBody(tableId);
 
-    if (!table) return;
-
-    const tbody =
-        table.querySelector("tbody") || table;
+    if (!tbody) return;
 
     tbody.replaceChildren();
 
@@ -235,6 +267,7 @@ function adminSetTableMessage(
     const cell = document.createElement("td");
 
     cell.colSpan = columnCount;
+    cell.className = "empty-table";
     cell.textContent = message;
 
     row.appendChild(cell);
@@ -242,14 +275,19 @@ function adminSetTableMessage(
 }
 
 function adminGetTableBody(tableId) {
-    const table = adminElement(tableId);
+    const element = adminElement(tableId);
 
-    if (!table) return null;
+    if (!element) return null;
 
-    return table.querySelector("tbody") || table;
+    return element.querySelector("tbody") || element;
 }
 
-function adminRenderRows(tableId, columnCount, rows, renderer) {
+function adminRenderRows(
+    tableId,
+    columnCount,
+    rows,
+    renderer
+) {
     const tbody = adminGetTableBody(tableId);
 
     if (!tbody) return;
@@ -261,16 +299,20 @@ function adminRenderRows(tableId, columnCount, rows, renderer) {
         const cell = document.createElement("td");
 
         cell.colSpan = columnCount;
+        cell.className = "empty-table";
         cell.textContent = "No records found.";
 
         row.appendChild(cell);
         tbody.appendChild(row);
+
         return;
     }
 
     rows.forEach(record => {
         const row = document.createElement("tr");
+
         renderer(row, record);
+
         tbody.appendChild(row);
     });
 }
@@ -283,7 +325,10 @@ function adminSum(records, field) {
     );
 }
 
-function adminFilterByDate(records, field = "created_at") {
+function adminFilterByDate(
+    records,
+    field = "created_at"
+) {
     return records.filter(record => {
         const value = record[field];
 
@@ -338,9 +383,17 @@ function adminConfirm(message) {
     return window.confirm(message);
 }
 
+function adminShortId(value) {
+    if (!value) return "—";
+
+    return String(value).length > 12
+        ? `${String(value).slice(0, 8)}...`
+        : String(value);
+}
+
 
 /* =========================================================
-   5. AUTHENTICATION
+   6. AUTHENTICATION
 ========================================================= */
 
 async function adminLogin(event) {
@@ -361,6 +414,7 @@ async function adminLogin(event) {
             "Enter your email address and password.",
             "error"
         );
+
         return;
     }
 
@@ -385,11 +439,17 @@ async function adminLogin(event) {
         if (error) throw error;
 
         if (!data.user) {
-            throw new Error("Login could not be completed.");
+            throw new Error(
+                "Login could not be completed."
+            );
         }
 
-        const { data: isAdmin, error: adminError } =
-            await nexusAdminSupabase.rpc("is_nexus_admin");
+        const {
+            data: isAdmin,
+            error: adminError
+        } = await nexusAdminSupabase.rpc(
+            "is_nexus_admin"
+        );
 
         if (adminError) {
             await nexusAdminSupabase.auth.signOut();
@@ -417,10 +477,11 @@ async function adminLogin(event) {
             adminErrorMessage(error),
             "error"
         );
+
     } finally {
         if (button) {
             button.disabled = false;
-            button.textContent = "Login";
+            button.textContent = "Sign In to Dashboard";
         }
     }
 }
@@ -439,11 +500,16 @@ async function adminVerifySession() {
             return;
         }
 
-        const { data: isAdmin, error: adminError } =
-            await nexusAdminSupabase.rpc("is_nexus_admin");
+        const {
+            data: isAdmin,
+            error: adminError
+        } = await nexusAdminSupabase.rpc(
+            "is_nexus_admin"
+        );
 
         if (adminError || isAdmin !== true) {
             await nexusAdminSupabase.auth.signOut();
+
             adminShowLogin();
 
             adminSetMessage(
@@ -460,19 +526,37 @@ async function adminVerifySession() {
         await adminShowDashboard();
 
     } catch (error) {
-        console.error("Session verification error:", error);
+        console.error(
+            "Session verification error:",
+            error
+        );
+
         adminShowLogin();
     }
 }
 
 function adminShowLogin() {
-    adminShow(adminElement("adminLoginScreen"), true);
-    adminShow(adminElement("adminDashboard"), false);
+    adminShow(
+        adminElement("adminLoginScreen"),
+        true
+    );
+
+    adminShow(
+        adminElement("adminDashboard"),
+        false
+    );
 }
 
 async function adminShowDashboard() {
-    adminShow(adminElement("adminLoginScreen"), false);
-    adminShow(adminElement("adminDashboard"), true);
+    adminShow(
+        adminElement("adminLoginScreen"),
+        false
+    );
+
+    adminShow(
+        adminElement("adminDashboard"),
+        true
+    );
 
     adminText(
         "adminProfileEmail",
@@ -486,13 +570,18 @@ async function adminShowDashboard() {
         })
     );
 
+    // Apply the default date range selected in HTML.
+    adminSetDateRange("this_month", false);
+
     await adminLoadCoreData();
 
     adminNavigate("overview");
 }
 
 async function adminLogout() {
-    if (!adminConfirm("Are you sure you want to log out?")) {
+    if (!adminConfirm(
+        "Are you sure you want to log out?"
+    )) {
         return;
     }
 
@@ -511,7 +600,7 @@ async function adminLogout() {
 
 
 /* =========================================================
-   6. LOAD MAIN DATABASE RECORDS
+   7. LOAD MAIN DATABASE RECORDS
 ========================================================= */
 
 async function adminLoadCoreData() {
@@ -524,7 +613,9 @@ async function adminLoadCoreData() {
             nexusAdminSupabase
                 .from("profiles")
                 .select("*")
-                .order("created_at", { ascending: false })
+                .order("created_at", {
+                    ascending: false
+                })
                 .limit(2000),
 
             nexusAdminSupabase
@@ -536,25 +627,33 @@ async function adminLoadCoreData() {
                 .from("deposit_transactions")
                 .select("*")
                 .is("deleted_at", null)
-                .order("created_at", { ascending: false })
+                .order("created_at", {
+                    ascending: false
+                })
                 .limit(3000),
 
             nexusAdminSupabase
                 .from("withdrawal_requests")
                 .select("*")
-                .order("created_at", { ascending: false })
+                .order("created_at", {
+                    ascending: false
+                })
                 .limit(3000),
 
             nexusAdminSupabase
                 .from("nexus_tellers")
                 .select("*")
-                .order("created_at", { ascending: false })
+                .order("created_at", {
+                    ascending: false
+                })
                 .limit(1000),
 
             nexusAdminSupabase
                 .from("nexus_activity_logs")
                 .select("*")
-                .order("created_at", { ascending: false })
+                .order("created_at", {
+                    ascending: false
+                })
                 .limit(200)
         ]);
 
@@ -602,6 +701,8 @@ async function adminLoadCoreData() {
         adminRenderTransactions();
         adminRenderSavings();
 
+        adminUpdateDateSummary();
+
     } catch (error) {
         console.error(
             "Could not load administrator dashboard:",
@@ -617,65 +718,68 @@ async function adminLoadCoreData() {
 
 
 /* =========================================================
-   7. DASHBOARD NAVIGATION
+   8. DASHBOARD NAVIGATION
 ========================================================= */
-
-const adminPageTitles = {
-    overview: "Dashboard Overview",
-    members: "Members Management",
-    tellers: "Tellers Management",
-    withdrawals: "Withdrawal Requests",
-    deposits: "Deposits Management",
-    transactions: "Transactions",
-    trash: "Transaction Trash",
-    savings: "Savings Management",
-    "profit-interest": "Profit & Interest",
-    reports: "Reports",
-    notifications: "Administrator Notifications",
-    settings: "Administrator Settings"
-};
-
 
 function adminNavigate(page) {
     if (!adminPageTitles[page]) {
-        console.error("Unknown dashboard page:", page);
+        console.error(
+            "Unknown dashboard page:",
+            page
+        );
+
         return;
     }
 
     nexusAdminState.currentPage = page;
 
-    // Update sidebar navigation buttons
-    document.querySelectorAll("[data-page]").forEach(button => {
-        const isActive = button.dataset.page === page;
+    // Update sidebar buttons.
+    document.querySelectorAll(
+        ".admin-nav-link[data-page]"
+    ).forEach(button => {
+        const active =
+            button.dataset.page === page;
 
-        button.classList.toggle("active", isActive);
-        button.setAttribute(
-            "aria-current",
-            isActive ? "page" : "false"
+        button.classList.toggle(
+            "active",
+            active
         );
-    });
 
-    // Show the selected dashboard section
-    Object.keys(adminPageTitles).forEach(name => {
-        const section = document.getElementById(`page-${name}`);
-
-        if (!section) {
-            console.warn(`Dashboard section not found: page-${name}`);
-            return;
+        if (active) {
+            button.setAttribute(
+                "aria-current",
+                "page"
+            );
+        } else {
+            button.removeAttribute("aria-current");
         }
-
-        const isActive = name === page;
-
-        section.hidden = !isActive;
-        section.classList.toggle("active", isActive);
-
-        // Ensure CSS cannot accidentally keep the section hidden
-        section.style.display = isActive ? "block" : "none";
     });
 
-    adminText("adminPageTitle", adminPageTitles[page]);
+    // Display the selected page.
+    document.querySelectorAll(
+        "main.admin-main > section.admin-page"
+    ).forEach(section => {
+        const active =
+            section.id === `page-${page}`;
 
-    // Load page-specific records
+        section.hidden = !active;
+
+        section.classList.toggle(
+            "active",
+            active
+        );
+
+        section.style.display =
+            active ? "block" : "none";
+    });
+
+    // Update heading.
+    adminText(
+        "adminPageTitle",
+        adminPageTitles[page]
+    );
+
+    // Load page-specific records.
     if (page === "trash") {
         adminLoadTrash();
     }
@@ -700,28 +804,35 @@ function adminNavigate(page) {
         adminRenderTellers();
     }
 
-    // Close mobile sidebar after navigation
-    const sidebar = adminElement("adminSidebar");
+    // Close mobile sidebar after navigation.
+    const sidebar =
+        adminElement("adminSidebar");
 
-    if (sidebar && window.innerWidth <= 900) {
+    if (
+        sidebar &&
+        window.innerWidth <= 900
+    ) {
         sidebar.classList.remove("open");
 
-        adminElement("sidebarToggle")?.setAttribute(
-            "aria-expanded",
-            "false"
-        );
+        adminElement("sidebarToggle")
+            ?.setAttribute(
+                "aria-expanded",
+                "false"
+            );
     }
 }
 
 
-
 /* =========================================================
-   8. SIDEBAR
+   9. SIDEBAR
 ========================================================= */
 
 function adminToggleSidebar() {
-    const sidebar = adminElement("adminSidebar");
-    const toggle = adminElement("sidebarToggle");
+    const sidebar =
+        adminElement("adminSidebar");
+
+    const toggle =
+        adminElement("sidebarToggle");
 
     if (!sidebar) return;
 
@@ -739,10 +850,27 @@ function adminToggleSidebar() {
 
 
 /* =========================================================
-   9. DATE FILTER
+   10. DATE FILTER
 ========================================================= */
 
-function adminSetDateRange(range) {
+function adminLocalDateString(date) {
+    const year = date.getFullYear();
+
+    const month = String(
+        date.getMonth() + 1
+    ).padStart(2, "0");
+
+    const day = String(
+        date.getDate()
+    ).padStart(2, "0");
+
+    return `${year}-${month}-${day}`;
+}
+
+function adminSetDateRange(
+    range,
+    render = true
+) {
     const now = new Date();
 
     let from = null;
@@ -750,13 +878,17 @@ function adminSetDateRange(range) {
 
     const startOfDay = date => {
         const copy = new Date(date);
+
         copy.setHours(0, 0, 0, 0);
+
         return copy;
     };
 
     const endOfDay = date => {
         const copy = new Date(date);
+
         copy.setHours(23, 59, 59, 999);
+
         return copy;
     };
 
@@ -767,25 +899,30 @@ function adminSetDateRange(range) {
 
     if (range === "yesterday") {
         const yesterday = new Date(now);
-        yesterday.setDate(yesterday.getDate() - 1);
+
+        yesterday.setDate(
+            yesterday.getDate() - 1
+        );
 
         from = startOfDay(yesterday);
         to = endOfDay(yesterday);
     }
 
-    if (range === "week") {
+    if (range === "this_week") {
         const start = startOfDay(now);
+
         const day = start.getDay();
 
         start.setDate(
-            start.getDate() - (day === 0 ? 6 : day - 1)
+            start.getDate() -
+            (day === 0 ? 6 : day - 1)
         );
 
         from = start;
         to = endOfDay(now);
     }
 
-    if (range === "month") {
+    if (range === "this_month") {
         from = new Date(
             now.getFullYear(),
             now.getMonth(),
@@ -795,7 +932,7 @@ function adminSetDateRange(range) {
         to = endOfDay(now);
     }
 
-    if (range === "year") {
+    if (range === "this_year") {
         from = new Date(
             now.getFullYear(),
             0,
@@ -805,102 +942,146 @@ function adminSetDateRange(range) {
         to = endOfDay(now);
     }
 
+    if (
+        range === "all_time" ||
+        range === "all"
+    ) {
+        range = "all_time";
+
+        from = null;
+        to = null;
+    }
+
     nexusAdminState.dateRange = range;
+
     nexusAdminState.dateFrom =
-        from ? from.toISOString().slice(0, 10) : null;
+        from ? adminLocalDateString(from) : null;
 
     nexusAdminState.dateTo =
-        to ? to.toISOString().slice(0, 10) : null;
+        to ? adminLocalDateString(to) : null;
 
-    adminApplyDateFilter();
-}
+    const rangeSelect =
+        adminElement("adminDateRange");
 
-function adminApplyDateFilter() {
-    const range = adminElement("adminDateRange")?.value;
-    const fromInput = adminElement("adminDateFrom")?.value;
-    const toInput = adminElement("adminDateTo")?.value;
-
-    if (range && range !== "custom" && range !== "all") {
-        adminSetDateRange(range);
-        return;
+    if (rangeSelect) {
+        rangeSelect.value = range;
     }
 
-    if (range === "custom") {
-        nexusAdminState.dateRange = "custom";
-        nexusAdminState.dateFrom = fromInput || null;
-        nexusAdminState.dateTo = toInput || null;
-    } else {
-        nexusAdminState.dateRange = "all";
-        nexusAdminState.dateFrom = null;
-        nexusAdminState.dateTo = null;
+    adminShow(
+        adminElement("adminDateFrom"),
+        range === "custom"
+    );
+
+    adminShow(
+        adminElement("adminDateTo"),
+        range === "custom"
+    );
+
+    if (range !== "custom") {
+        adminElement("adminDateFrom").value =
+            nexusAdminState.dateFrom || "";
+
+        adminElement("adminDateTo").value =
+            nexusAdminState.dateTo || "";
     }
 
-    if (
-        nexusAdminState.dateFrom &&
-        nexusAdminState.dateTo &&
-        nexusAdminState.dateFrom > nexusAdminState.dateTo
-    ) {
+    if (render) {
+        adminRenderAllFilteredSections();
+
         adminSetMessage(
             "adminDateFilterMessage",
-            "The start date cannot be after the end date.",
-            "error"
+            "Date filter applied.",
+            "success"
         );
-        return;
     }
-
-    adminRenderAllFilteredSections();
-
-    adminSetMessage(
-        "adminDateFilterMessage",
-        "Date filter applied.",
-        "success"
-    );
 
     adminUpdateDateSummary();
 }
 
+function adminApplyDateFilter() {
+    const range =
+        adminElement("adminDateRange")?.value;
+
+    const fromInput =
+        adminElement("adminDateFrom")?.value;
+
+    const toInput =
+        adminElement("adminDateTo")?.value;
+
+    if (!range) return;
+
+    if (range === "custom") {
+        if (
+            fromInput &&
+            toInput &&
+            fromInput > toInput
+        ) {
+            adminSetMessage(
+                "adminDateFilterMessage",
+                "The start date cannot be after the end date.",
+                "error"
+            );
+
+            return;
+        }
+
+        nexusAdminState.dateRange = "custom";
+        nexusAdminState.dateFrom = fromInput || null;
+        nexusAdminState.dateTo = toInput || null;
+
+        adminRenderAllFilteredSections();
+
+        adminSetMessage(
+            "adminDateFilterMessage",
+            "Custom date filter applied.",
+            "success"
+        );
+
+        adminUpdateDateSummary();
+
+        return;
+    }
+
+    adminSetDateRange(range);
+}
+
 function adminResetDateFilter() {
-    nexusAdminState.dateRange = "all";
-    nexusAdminState.dateFrom = null;
-    nexusAdminState.dateTo = null;
-
-    const range = adminElement("adminDateRange");
-
-    if (range) range.value = "all";
-
-    if (adminElement("adminDateFrom")) {
-        adminElement("adminDateFrom").value = "";
-    }
-
-    if (adminElement("adminDateTo")) {
-        adminElement("adminDateTo").value = "";
-    }
-
-    adminRenderAllFilteredSections();
+    adminSetDateRange("all_time");
 
     adminSetMessage(
         "adminDateFilterMessage",
         "Showing all available dates.",
         "success"
     );
-
-    adminUpdateDateSummary();
 }
 
 function adminUpdateDateSummary() {
-    let summary = "All time";
+    let summary = "All Time";
 
     if (nexusAdminState.dateRange === "custom") {
         summary =
             `${nexusAdminState.dateFrom || "Start"} to ` +
             `${nexusAdminState.dateTo || "Today"}`;
-    } else if (nexusAdminState.dateRange !== "all") {
-        summary = adminStatusLabel(
-            nexusAdminState.dateRange
-        );
+    } else if (
+        nexusAdminState.dateRange !== "all_time"
+    ) {
+        const labels = {
+            today: "Today",
+            yesterday: "Yesterday",
+            this_week: "This Week",
+            this_month: "This Month",
+            this_year: "This Year"
+        };
+
+        summary =
+            labels[nexusAdminState.dateRange] ||
+            "All Time";
     }
 
-    adminText("adminDateFilterSummary", summary);
+    adminText(
+        "adminDateFilterSummary",
+        summary
+    );
 }
 
 function adminRenderAllFilteredSections() {
@@ -911,25 +1092,33 @@ function adminRenderAllFilteredSections() {
     adminRenderTransactions();
     adminRenderSavings();
 
-    if (nexusAdminState.currentPage === "reports") {
+    if (
+        nexusAdminState.currentPage === "reports"
+    ) {
         adminRenderReports();
     }
 }
 
 
 /* =========================================================
-   10. OVERVIEW
+   11. OVERVIEW
 ========================================================= */
 
 function adminRenderOverview() {
     const profiles =
-        adminFilterByDate(nexusAdminState.profiles);
+        adminFilterByDate(
+            nexusAdminState.profiles
+        );
 
     const deposits =
-        adminFilterByDate(nexusAdminState.deposits);
+        adminFilterByDate(
+            nexusAdminState.deposits
+        );
 
     const withdrawals =
-        adminFilterByDate(nexusAdminState.withdrawals);
+        adminFilterByDate(
+            nexusAdminState.withdrawals
+        );
 
     const pending = withdrawals.filter(
         item => item.status === "pending"
@@ -943,12 +1132,18 @@ function adminRenderOverview() {
         item => item.status === "completed"
     );
 
-    adminText("totalMembers", profiles.length);
+    adminText(
+        "totalMembers",
+        profiles.length
+    );
 
     adminText(
         "totalWalletBalances",
         formatNexusAdminMoney(
-            adminSum(nexusAdminState.wallets, "balance")
+            adminSum(
+                nexusAdminState.wallets,
+                "balance"
+            )
         )
     );
 
@@ -976,20 +1171,48 @@ function adminRenderOverview() {
         )
     );
 
-    adminText("overviewPendingWithdrawals", pending.length);
-    adminText("overviewProcessingWithdrawals", processing.length);
-    adminText("overviewCompletedWithdrawals", completed.length);
+    adminText(
+        "overviewPendingWithdrawals",
+        pending.length
+    );
 
+    adminText(
+        "overviewProcessingWithdrawals",
+        processing.length
+    );
+
+    adminText(
+        "overviewCompletedWithdrawals",
+        completed.length
+    );
+
+    // Sidebar withdrawal badge.
+    const withdrawalBadge =
+        adminElement("pendingWithdrawalBadge");
+
+    if (withdrawalBadge) {
+        withdrawalBadge.textContent =
+            pending.length;
+
+        withdrawalBadge.hidden =
+            pending.length === 0;
+    }
+
+    // Recent withdrawals.
     const recent = withdrawals.slice(0, 8);
 
     adminRenderRows(
         "recentWithdrawalsTable",
-        6,
+        5,
         recent,
         (row, item) => {
-            const profile = adminGetProfile(item.user_id);
+            const profile =
+                adminGetProfile(item.user_id);
 
             row.append(
+                adminCreateCell(
+                    adminShortId(item.id)
+                ),
                 adminCreateCell(
                     profile?.full_name || item.user_id
                 ),
@@ -997,9 +1220,9 @@ function adminRenderOverview() {
                     formatNexusAdminMoney(item.amount)
                 ),
                 adminCreateCell(item.withdrawal_method),
-                adminCreateCell(item.payment_details),
-                adminCreateCell(adminStatusLabel(item.status)),
-                adminCreateCell(formatAdminDate(item.created_at))
+                adminCreateCell(
+                    adminStatusLabel(item.status)
+                )
             );
         }
     );
@@ -1007,17 +1230,18 @@ function adminRenderOverview() {
 
 
 /* =========================================================
-   11. MEMBERS MANAGEMENT
+   12. MEMBERS MANAGEMENT
 ========================================================= */
 
 function adminRenderMembers() {
     const search =
-        adminElement("memberSearchInput")?.value
-            .trim()
-            .toLowerCase() || "";
+        adminElement("memberSearchInput")
+            ?.value.trim().toLowerCase() || "";
 
     let members =
-        adminFilterByDate(nexusAdminState.profiles);
+        adminFilterByDate(
+            nexusAdminState.profiles
+        );
 
     if (search) {
         members = members.filter(member => {
@@ -1042,7 +1266,10 @@ function adminRenderMembers() {
     adminText(
         "memberManagementWallets",
         formatNexusAdminMoney(
-            adminSum(nexusAdminState.wallets, "balance")
+            adminSum(
+                nexusAdminState.wallets,
+                "balance"
+            )
         )
     );
 
@@ -1056,22 +1283,21 @@ function adminRenderMembers() {
         7,
         members,
         (row, member) => {
-            const wallet = adminGetWallet(member.id);
-
             row.append(
                 adminCreateCell(member.member_id),
                 adminCreateCell(member.full_name),
                 adminCreateCell(member.email),
                 adminCreateCell(member.phone),
                 adminCreateCell(
-                    formatNexusAdminMoney(wallet?.balance)
+                    formatAdminDateOnly(member.created_at)
                 ),
                 adminCreateCell(
                     adminStatusLabel(member.status)
                 )
             );
 
-            const actions = document.createElement("td");
+            const actions =
+                document.createElement("td");
 
             actions.appendChild(
                 adminCreateActionButton(
@@ -1087,26 +1313,52 @@ function adminRenderMembers() {
 }
 
 function adminOpenMemberProfile(userId) {
-    const member = adminGetProfile(userId);
+    const member =
+        adminGetProfile(userId);
 
     if (!member) {
-        alert("Member record could not be found.");
+        alert(
+            "Member record could not be found."
+        );
+
         return;
     }
 
     nexusAdminState.selectedMember = member;
 
-    const wallet = adminGetWallet(userId);
+    const wallet =
+        adminGetWallet(userId);
 
-    adminText("memberProfileTitle", member.full_name);
-    adminText("profileMemberId", member.member_id);
-    adminText("profileMemberName", member.full_name);
-    adminText("profileMemberEmail", member.email);
-    adminText("profileMemberPhone", member.phone);
+    adminText(
+        "memberProfileTitle",
+        member.full_name
+    );
+
+    adminText(
+        "profileMemberId",
+        member.member_id
+    );
+
+    adminText(
+        "profileMemberName",
+        member.full_name
+    );
+
+    adminText(
+        "profileMemberEmail",
+        member.email
+    );
+
+    adminText(
+        "profileMemberPhone",
+        member.phone
+    );
+
     adminText(
         "profileMemberJoined",
         formatAdminDate(member.created_at)
     );
+
     adminText(
         "profileMemberStatus",
         adminStatusLabel(member.status)
@@ -1127,22 +1379,25 @@ function adminOpenMemberProfile(userId) {
         formatNexusAdminMoney(wallet?.total_withdrawals)
     );
 
-    const deposits = nexusAdminState.deposits.filter(
-        item => item.user_id === userId
-    );
+    const deposits =
+        nexusAdminState.deposits
+            .filter(item => item.user_id === userId);
 
-    const withdrawals = nexusAdminState.withdrawals.filter(
-        item => item.user_id === userId
-    );
+    const withdrawals =
+        nexusAdminState.withdrawals
+            .filter(item => item.user_id === userId);
 
     const transactions = [
         ...deposits.map(item => ({
+            reference: item.reference,
             type: "Deposit",
             amount: item.amount,
             status: item.status,
             created_at: item.created_at
         })),
+
         ...withdrawals.map(item => ({
+            reference: item.id,
             type: "Withdrawal",
             amount: item.amount,
             status: item.status,
@@ -1150,26 +1405,35 @@ function adminOpenMemberProfile(userId) {
         }))
     ].sort(
         (a, b) =>
-            new Date(b.created_at) - new Date(a.created_at)
+            new Date(b.created_at) -
+            new Date(a.created_at)
     );
 
     adminRenderRows(
         "memberProfileTransactions",
-        4,
+        5,
         transactions,
         (row, item) => {
             row.append(
+                adminCreateCell(
+                    adminShortId(item.reference)
+                ),
                 adminCreateCell(item.type),
                 adminCreateCell(
                     formatNexusAdminMoney(item.amount)
                 ),
-                adminCreateCell(adminStatusLabel(item.status)),
-                adminCreateCell(formatAdminDate(item.created_at))
+                adminCreateCell(
+                    adminStatusLabel(item.status)
+                ),
+                adminCreateCell(
+                    formatAdminDate(item.created_at)
+                )
             );
         }
     );
 
-    const modal = adminElement("memberProfileModal");
+    const modal =
+        adminElement("memberProfileModal");
 
     if (modal) {
         modal.hidden = false;
@@ -1188,7 +1452,8 @@ function adminOpenMemberProfile(userId) {
 }
 
 function adminCloseMemberProfile() {
-    const modal = adminElement("memberProfileModal");
+    const modal =
+        adminElement("memberProfileModal");
 
     if (modal) {
         modal.hidden = true;
@@ -1199,7 +1464,8 @@ function adminCloseMemberProfile() {
 }
 
 async function adminUpdateMemberStatus(newStatus) {
-    const member = nexusAdminState.selectedMember;
+    const member =
+        nexusAdminState.selectedMember;
 
     if (!member) return;
 
@@ -1236,6 +1502,7 @@ async function adminUpdateMemberStatus(newStatus) {
         );
 
         await adminLoadCoreData();
+
         adminCloseMemberProfile();
 
     } catch (error) {
@@ -1245,16 +1512,17 @@ async function adminUpdateMemberStatus(newStatus) {
 
 
 /* =========================================================
-   12. TELLER MANAGEMENT
+   13. TELLER MANAGEMENT
 ========================================================= */
 
 function adminRenderTellers() {
     const search =
-        adminElement("tellerSearchInput")?.value
-            .trim()
-            .toLowerCase() || "";
+        adminElement("tellerSearchInput")
+            ?.value.trim().toLowerCase() || "";
 
-    let tellers = [...nexusAdminState.tellers];
+    let tellers = [
+        ...nexusAdminState.tellers
+    ];
 
     if (search) {
         tellers = tellers.filter(teller =>
@@ -1271,30 +1539,36 @@ function adminRenderTellers() {
         );
     }
 
-    const all = nexusAdminState.tellers;
+    const all =
+        nexusAdminState.tellers;
+
+    const activeCount = all.filter(
+        item =>
+            String(item.status).toLowerCase() === "active"
+    ).length;
+
+    const suspendedCount = all.filter(
+        item =>
+            String(item.status).toLowerCase() === "suspended"
+    ).length;
+
+    const inactiveCount = all.filter(
+        item =>
+            String(item.status).toLowerCase() === "inactive"
+    ).length;
 
     adminText("tellerTotalCount", all.length);
+    adminText("activeTellerCount", activeCount);
+    adminText("suspendedTellerCount", suspendedCount);
+    adminText("inactiveTellerCount", inactiveCount);
 
-    adminText(
-        "activeTellerCount",
-        all.filter(
-            item => item.status === "active"
-        ).length
-    );
+    const tellerBadge =
+        adminElement("tellerCountBadge");
 
-    adminText(
-        "suspendedTellerCount",
-        all.filter(
-            item => item.status === "suspended"
-        ).length
-    );
-
-    adminText(
-        "inactiveTellerCount",
-        all.filter(
-            item => item.status === "inactive"
-        ).length
-    );
+    if (tellerBadge) {
+        tellerBadge.textContent = all.length;
+        tellerBadge.hidden = all.length === 0;
+    }
 
     adminText(
         "tellerSearchResults",
@@ -1312,16 +1586,19 @@ function adminRenderTellers() {
                 adminCreateCell(teller.email),
                 adminCreateCell(teller.phone),
                 adminCreateCell(
-                    adminStatusLabel(teller.status)
+                    formatAdminDate(teller.created_at)
                 ),
                 adminCreateCell(
-                    formatAdminDate(teller.created_at)
+                    adminStatusLabel(teller.status)
                 )
             );
 
-            const actions = document.createElement("td");
+            const actions =
+                document.createElement("td");
 
-            if (teller.status === "active") {
+            if (
+                String(teller.status).toLowerCase() === "active"
+            ) {
                 actions.appendChild(
                     adminCreateActionButton(
                         "Suspend",
@@ -1365,6 +1642,7 @@ async function adminCreateTeller(event) {
             "Complete all teller information.",
             "error"
         );
+
         return;
     }
 
@@ -1417,18 +1695,23 @@ async function adminCreateTeller(event) {
             adminErrorMessage(error),
             "error"
         );
+
     } finally {
         if (button) {
             button.disabled = false;
-            button.textContent = "Create Teller";
+            button.textContent = "+ Create Teller Account";
         }
     }
 }
 
-async function adminUpdateTellerStatus(userId, status) {
-    const teller = nexusAdminState.tellers.find(
-        item => item.user_id === userId
-    );
+async function adminUpdateTellerStatus(
+    userId,
+    status
+) {
+    const teller =
+        nexusAdminState.tellers.find(
+            item => item.user_id === userId
+        );
 
     if (!teller) return;
 
@@ -1468,21 +1751,27 @@ async function adminUpdateTellerStatus(userId, status) {
 
 
 /* =========================================================
-   13. WITHDRAWAL MANAGEMENT
+   14. WITHDRAWAL MANAGEMENT
 ========================================================= */
 
 function adminRenderWithdrawals() {
     const withdrawals =
-        adminFilterByDate(nexusAdminState.withdrawals);
+        adminFilterByDate(
+            nexusAdminState.withdrawals
+        );
 
     adminRenderRows(
         "withdrawalsTable",
-        7,
+        8,
         withdrawals,
         (row, item) => {
-            const profile = adminGetProfile(item.user_id);
+            const profile =
+                adminGetProfile(item.user_id);
 
             row.append(
+                adminCreateCell(
+                    adminShortId(item.id)
+                ),
                 adminCreateCell(
                     profile?.full_name || item.user_id
                 ),
@@ -1491,11 +1780,13 @@ function adminRenderWithdrawals() {
                 ),
                 adminCreateCell(item.withdrawal_method),
                 adminCreateCell(item.payment_details),
-                adminCreateCell(adminStatusLabel(item.status)),
-                adminCreateCell(formatAdminDate(item.created_at))
+                adminCreateCell(
+                    adminStatusLabel(item.status)
+                )
             );
 
-            const actions = document.createElement("td");
+            const actions =
+                document.createElement("td");
 
             if (
                 item.status === "pending" ||
@@ -1523,14 +1814,24 @@ function adminRenderWithdrawals() {
             }
 
             row.appendChild(actions);
+
+            row.appendChild(
+                adminCreateCell(
+                    formatAdminDate(item.created_at)
+                )
+            );
         }
     );
 }
 
-async function adminReviewWithdrawal(requestId, action) {
-    const request = nexusAdminState.withdrawals.find(
-        item => item.id === requestId
-    );
+async function adminReviewWithdrawal(
+    requestId,
+    action
+) {
+    const request =
+        nexusAdminState.withdrawals.find(
+            item => item.id === requestId
+        );
 
     if (!request) return;
 
@@ -1539,7 +1840,9 @@ async function adminReviewWithdrawal(requestId, action) {
             ? "move this withdrawal to processing"
             : "reject this withdrawal";
 
-    if (!adminConfirm(`Are you sure you want to ${label}?`)) {
+    if (!adminConfirm(
+        `Are you sure you want to ${label}?`
+    )) {
         return;
     }
 
@@ -1573,12 +1876,14 @@ async function adminReviewWithdrawal(requestId, action) {
 
 
 /* =========================================================
-   14. DEPOSIT MANAGEMENT
+   15. DEPOSIT MANAGEMENT
 ========================================================= */
 
 function adminRenderDeposits() {
     const deposits =
-        adminFilterByDate(nexusAdminState.deposits);
+        adminFilterByDate(
+            nexusAdminState.deposits
+        );
 
     const pending = deposits.filter(
         item => item.status === "pending"
@@ -1589,14 +1894,29 @@ function adminRenderDeposits() {
     );
 
     const failed = deposits.filter(
-        item => ["failed", "cancelled", "rejected"].includes(
+        item => [
+            "failed",
+            "cancelled",
+            "rejected"
+        ].includes(
             String(item.status).toLowerCase()
         )
     );
 
-    adminText("adminPendingDeposits", pending.length);
-    adminText("adminSuccessfulDeposits", successful.length);
-    adminText("adminFailedDeposits", failed.length);
+    adminText(
+        "adminPendingDeposits",
+        pending.length
+    );
+
+    adminText(
+        "adminSuccessfulDeposits",
+        successful.length
+    );
+
+    adminText(
+        "adminFailedDeposits",
+        failed.length
+    );
 
     adminText(
         "adminDepositTotal",
@@ -1605,14 +1925,24 @@ function adminRenderDeposits() {
         )
     );
 
+    const depositBadge =
+        adminElement("pendingDepositBadge");
+
+    if (depositBadge) {
+        depositBadge.textContent = pending.length;
+        depositBadge.hidden = pending.length === 0;
+    }
+
     adminRenderRows(
         "depositsTable",
         8,
         deposits,
         (row, item) => {
-            const profile = adminGetProfile(item.user_id);
+            const profile =
+                adminGetProfile(item.user_id);
 
             row.append(
+                adminCreateCell(item.reference),
                 adminCreateCell(
                     profile?.full_name || item.user_id
                 ),
@@ -1621,12 +1951,16 @@ function adminRenderDeposits() {
                 ),
                 adminCreateCell(item.payment_method),
                 adminCreateCell(item.payment_phone),
-                adminCreateCell(item.reference),
-                adminCreateCell(adminStatusLabel(item.status)),
-                adminCreateCell(formatAdminDate(item.created_at))
+                adminCreateCell(
+                    adminStatusLabel(item.status)
+                ),
+                adminCreateCell(
+                    formatAdminDate(item.created_at)
+                )
             );
 
-            const actions = document.createElement("td");
+            const actions =
+                document.createElement("td");
 
             if (item.status === "successful") {
                 actions.appendChild(
@@ -1652,9 +1986,10 @@ function adminRenderDeposits() {
 }
 
 async function adminTrashDeposit(depositId) {
-    const deposit = nexusAdminState.deposits.find(
-        item => item.id === depositId
-    );
+    const deposit =
+        nexusAdminState.deposits.find(
+            item => item.id === depositId
+        );
 
     if (!deposit) return;
 
@@ -1691,7 +2026,10 @@ async function adminTrashDeposit(depositId) {
     }
 }
 
-async function adminReverseTransaction(type, transactionId) {
+async function adminReverseTransaction(
+    type,
+    transactionId
+) {
     const reason = window.prompt(
         "Enter the reason for reversing this transaction. At least 5 characters are required:"
     );
@@ -1699,7 +2037,10 @@ async function adminReverseTransaction(type, transactionId) {
     if (reason === null) return;
 
     if (reason.trim().length < 5) {
-        alert("The reversal reason must contain at least 5 characters.");
+        alert(
+            "The reversal reason must contain at least 5 characters."
+        );
+
         return;
     }
 
@@ -1740,27 +2081,29 @@ async function adminReverseTransaction(type, transactionId) {
 
 
 /* =========================================================
-   15. TRANSACTION HISTORY
+   16. TRANSACTION HISTORY
 ========================================================= */
 
 function adminRenderTransactions() {
     const deposits =
-        adminFilterByDate(nexusAdminState.deposits)
-            .map(item => ({
-                ...item,
-                transaction_type: "Deposit",
-                transaction_date: item.created_at,
-                transaction_method: item.payment_method
-            }));
+        adminFilterByDate(
+            nexusAdminState.deposits
+        ).map(item => ({
+            ...item,
+            transaction_id: item.reference || item.id,
+            transaction_type: "Deposit",
+            transaction_date: item.created_at
+        }));
 
     const withdrawals =
-        adminFilterByDate(nexusAdminState.withdrawals)
-            .map(item => ({
-                ...item,
-                transaction_type: "Withdrawal",
-                transaction_date: item.created_at,
-                transaction_method: item.withdrawal_method
-            }));
+        adminFilterByDate(
+            nexusAdminState.withdrawals
+        ).map(item => ({
+            ...item,
+            transaction_id: item.id,
+            transaction_type: "Withdrawal",
+            transaction_date: item.created_at
+        }));
 
     const transactions = [
         ...deposits,
@@ -1773,31 +2116,30 @@ function adminRenderTransactions() {
 
     adminRenderRows(
         "transactionsTable",
-        7,
+        6,
         transactions,
         (row, item) => {
-            const profile = adminGetProfile(item.user_id);
+            const profile =
+                adminGetProfile(item.user_id);
 
             row.append(
                 adminCreateCell(
-                    item.transaction_type
+                    adminShortId(item.transaction_id)
                 ),
                 adminCreateCell(
                     profile?.full_name || item.user_id
                 ),
                 adminCreateCell(
+                    item.transaction_type
+                ),
+                adminCreateCell(
                     formatNexusAdminMoney(item.amount)
-                ),
-                adminCreateCell(item.transaction_method),
-                adminCreateCell(
-                    item.reference ||
-                    item.payment_details
-                ),
-                adminCreateCell(
-                    adminStatusLabel(item.status)
                 ),
                 adminCreateCell(
                     formatAdminDate(item.transaction_date)
+                ),
+                adminCreateCell(
+                    adminStatusLabel(item.status)
                 )
             );
         }
@@ -1806,7 +2148,7 @@ function adminRenderTransactions() {
 
 
 /* =========================================================
-   16. TRANSACTION TRASH
+   17. TRANSACTION TRASH
 ========================================================= */
 
 async function adminLoadTrash() {
@@ -1829,7 +2171,10 @@ async function adminLoadTrash() {
         adminRenderTrash();
 
     } catch (error) {
-        console.error("Trash loading error:", error);
+        console.error(
+            "Trash loading error:",
+            error
+        );
 
         adminSetTableMessage(
             "trashTransactionsTable",
@@ -1840,14 +2185,26 @@ async function adminLoadTrash() {
 }
 
 function adminRenderTrash() {
+    const trash = nexusAdminState.trash;
+
+    const trashBadge =
+        adminElement("trashCountBadge");
+
+    if (trashBadge) {
+        trashBadge.textContent = trash.length;
+        trashBadge.hidden = trash.length === 0;
+    }
+
     adminRenderRows(
         "trashTransactionsTable",
         7,
-        nexusAdminState.trash,
+        trash,
         (row, item) => {
-            const profile = adminGetProfile(item.user_id);
+            const profile =
+                adminGetProfile(item.user_id);
 
             row.append(
+                adminCreateCell(item.reference),
                 adminCreateCell(
                     profile?.full_name || item.user_id
                 ),
@@ -1855,12 +2212,16 @@ function adminRenderTrash() {
                     formatNexusAdminMoney(item.amount)
                 ),
                 adminCreateCell(item.payment_method),
-                adminCreateCell(item.reference),
-                adminCreateCell(adminStatusLabel(item.status)),
-                adminCreateCell(formatAdminDate(item.deleted_at))
+                adminCreateCell(
+                    adminStatusLabel(item.status)
+                ),
+                adminCreateCell(
+                    formatAdminDate(item.deleted_at)
+                )
             );
 
-            const actions = document.createElement("td");
+            const actions =
+                document.createElement("td");
 
             actions.appendChild(
                 adminCreateActionButton(
@@ -1870,13 +2231,23 @@ function adminRenderTrash() {
                 )
             );
 
-            actions.appendChild(
-                adminCreateActionButton(
-                    "Permanently Delete",
-                    "delete-deposit",
-                    item.id
-                )
+            const eligibleForPermanentDeletion = [
+                "failed",
+                "cancelled",
+                "rejected"
+            ].includes(
+                String(item.status).toLowerCase()
             );
+
+            if (eligibleForPermanentDeletion) {
+                actions.appendChild(
+                    adminCreateActionButton(
+                        "Permanently Delete",
+                        "delete-deposit",
+                        item.id
+                    )
+                );
+            }
 
             row.appendChild(actions);
         }
@@ -1918,7 +2289,9 @@ async function adminRestoreDeposit(depositId) {
     }
 }
 
-async function adminPermanentlyDeleteDeposit(depositId) {
+async function adminPermanentlyDeleteDeposit(
+    depositId
+) {
     if (!adminConfirm(
         "Permanently delete this trashed deposit? This action cannot be undone."
     )) {
@@ -1954,29 +2327,29 @@ async function adminPermanentlyDeleteDeposit(depositId) {
 
 
 /* =========================================================
-   17. SAVINGS MANAGEMENT
+   18. SAVINGS MANAGEMENT
 ========================================================= */
 
 function adminRenderSavings() {
-    const wallets = [...nexusAdminState.wallets];
+    const wallets = [
+        ...nexusAdminState.wallets
+    ];
 
     adminRenderRows(
         "savingsTable",
-        7,
+        5,
         wallets,
         (row, wallet) => {
-            const profile = adminGetProfile(wallet.user_id);
+            const profile =
+                adminGetProfile(wallet.user_id);
 
             row.append(
                 adminCreateCell(
-                    profile?.member_id ||
-                    wallet.user_id
+                    profile?.member_id || wallet.user_id
                 ),
                 adminCreateCell(
-                    profile?.full_name ||
-                    wallet.user_id
+                    profile?.full_name || wallet.user_id
                 ),
-                adminCreateCell(profile?.email),
                 adminCreateCell(
                     formatNexusAdminMoney(wallet.balance)
                 ),
@@ -1985,9 +2358,6 @@ function adminRenderSavings() {
                 ),
                 adminCreateCell(
                     formatNexusAdminMoney(wallet.total_withdrawals)
-                ),
-                adminCreateCell(
-                    formatAdminDate(wallet.updated_at)
                 )
             );
         }
@@ -1996,12 +2366,19 @@ function adminRenderSavings() {
 
 
 /* =========================================================
-   18. PROFIT AND INTEREST
+   19. PROFIT AND INTEREST
 ========================================================= */
 
 function adminLoadProfitInterest() {
-    adminText("adminTotalProfit", "Not configured");
-    adminText("adminTotalInterest", "Not configured");
+    adminText(
+        "adminTotalProfit",
+        "Not configured"
+    );
+
+    adminText(
+        "adminTotalInterest",
+        "Not configured"
+    );
 
     adminSetTableMessage(
         "profitInterestTable",
@@ -2012,42 +2389,59 @@ function adminLoadProfitInterest() {
 
 
 /* =========================================================
-   19. REPORTS
+   20. REPORTS
 ========================================================= */
 
 function adminRenderReports() {
     const deposits =
-        adminFilterByDate(nexusAdminState.deposits);
+        adminFilterByDate(
+            nexusAdminState.deposits
+        );
 
     const withdrawals =
-        adminFilterByDate(nexusAdminState.withdrawals);
+        adminFilterByDate(
+            nexusAdminState.withdrawals
+        );
 
     const members =
-        adminFilterByDate(nexusAdminState.profiles);
+        adminFilterByDate(
+            nexusAdminState.profiles
+        );
 
-    const successfulDeposits = deposits.filter(
-        item => item.status === "successful"
-    );
+    const successfulDeposits =
+        deposits.filter(
+            item => item.status === "successful"
+        );
 
-    const completedWithdrawals = withdrawals.filter(
-        item => item.status === "completed"
-    );
+    const completedWithdrawals =
+        withdrawals.filter(
+            item => item.status === "completed"
+        );
 
     adminText(
         "reportDepositTotal",
         formatNexusAdminMoney(
-            adminSum(successfulDeposits, "amount")
+            adminSum(
+                successfulDeposits,
+                "amount"
+            )
         )
     );
 
     adminText(
         "reportWithdrawalTotal",
         formatNexusAdminMoney(
-            adminSum(completedWithdrawals, "amount")
+            adminSum(
+                completedWithdrawals,
+                "amount"
+            )
         )
     );
 
-    adminText("reportNewMembers", members.length);
+    adminText(
+        "reportNewMembers",
+        members.length
+    );
 
     adminText(
         "reportTransactionCount",
@@ -2070,10 +2464,14 @@ function adminRenderReports() {
 
 function adminExportReport() {
     const deposits =
-        adminFilterByDate(nexusAdminState.deposits);
+        adminFilterByDate(
+            nexusAdminState.deposits
+        );
 
     const withdrawals =
-        adminFilterByDate(nexusAdminState.withdrawals);
+        adminFilterByDate(
+            nexusAdminState.withdrawals
+        );
 
     const rows = [
         [
@@ -2089,7 +2487,8 @@ function adminExportReport() {
     ];
 
     deposits.forEach(item => {
-        const profile = adminGetProfile(item.user_id);
+        const profile =
+            adminGetProfile(item.user_id);
 
         rows.push([
             "Deposit",
@@ -2104,7 +2503,8 @@ function adminExportReport() {
     });
 
     withdrawals.forEach(item => {
-        const profile = adminGetProfile(item.user_id);
+        const profile =
+            adminGetProfile(item.user_id);
 
         rows.push([
             "Withdrawal",
@@ -2129,21 +2529,26 @@ function adminExportReport() {
 
     const blob = new Blob(
         ["\uFEFF" + csv],
-        { type: "text/csv;charset=utf-8;" }
+        {
+            type: "text/csv;charset=utf-8;"
+        }
     );
 
-    const url = URL.createObjectURL(blob);
+    const url =
+        URL.createObjectURL(blob);
 
-    const link = document.createElement("a");
+    const link =
+        document.createElement("a");
 
     link.href = url;
+
     link.download =
-        `nexus-admin-report-${new Date()
-            .toISOString()
-            .slice(0, 10)}.csv`;
+        `nexus-admin-report-${adminLocalDateString(new Date())}.csv`;
 
     document.body.appendChild(link);
+
     link.click();
+
     link.remove();
 
     URL.revokeObjectURL(url);
@@ -2157,7 +2562,7 @@ function adminExportReport() {
 
 
 /* =========================================================
-   20. ADMINISTRATOR NOTIFICATIONS
+   21. ADMINISTRATOR NOTIFICATIONS
 ========================================================= */
 
 async function adminLoadNotifications() {
@@ -2165,7 +2570,8 @@ async function adminLoadNotifications() {
         adminElement("adminNotificationsList");
 
     if (list) {
-        list.textContent = "Loading notifications...";
+        list.textContent =
+            "Loading notifications...";
     }
 
     try {
@@ -2200,29 +2606,44 @@ function adminRenderNotifications(notifications) {
     list.replaceChildren();
 
     if (!notifications.length) {
-        list.textContent = "No notifications found.";
+        list.textContent =
+            "No notifications found.";
+
         return;
     }
 
     notifications.forEach(notification => {
-        const item = document.createElement("div");
+        const item =
+            document.createElement("div");
 
-        item.className = "admin-notification-item";
+        item.className =
+            "admin-notification-item";
 
-        const title = document.createElement("h4");
-        title.textContent = notification.title;
+        const title =
+            document.createElement("h4");
 
-        const message = document.createElement("p");
-        message.textContent = notification.message;
+        title.textContent =
+            notification.title || "Notification";
 
-        const details = document.createElement("small");
+        const message =
+            document.createElement("p");
+
+        message.textContent =
+            notification.message || "";
+
+        const details =
+            document.createElement("small");
 
         details.textContent =
-            `${notification.type} · ` +
+            `${notification.type || "General"} · ` +
             `${notification.is_read ? "Read" : "Unread"} · ` +
             `${formatAdminDate(notification.created_at)}`;
 
-        item.append(title, message, details);
+        item.append(
+            title,
+            message,
+            details
+        );
 
         list.appendChild(item);
     });
@@ -2230,7 +2651,7 @@ function adminRenderNotifications(notifications) {
 
 
 /* =========================================================
-   21. SETTINGS
+   22. SETTINGS
 ========================================================= */
 
 function adminRenderSettings() {
@@ -2243,7 +2664,7 @@ function adminRenderSettings() {
 
 
 /* =========================================================
-   22. REFRESH BUTTONS
+   23. REFRESH FUNCTIONS
 ========================================================= */
 
 async function adminRefreshDashboard(button) {
@@ -2252,7 +2673,8 @@ async function adminRefreshDashboard(button) {
         return;
     }
 
-    const originalText = button.textContent;
+    const originalText =
+        button.textContent;
 
     button.disabled = true;
     button.textContent = "Refreshing...";
@@ -2260,11 +2682,15 @@ async function adminRefreshDashboard(button) {
     try {
         await adminLoadCoreData();
 
-        if (nexusAdminState.currentPage === "trash") {
+        if (
+            nexusAdminState.currentPage === "trash"
+        ) {
             await adminLoadTrash();
         }
 
-        if (nexusAdminState.currentPage === "notifications") {
+        if (
+            nexusAdminState.currentPage === "notifications"
+        ) {
             await adminLoadNotifications();
         }
 
@@ -2276,16 +2702,20 @@ async function adminRefreshDashboard(button) {
 
 
 /* =========================================================
-   23. EVENT DELEGATION
+   24. EVENT DELEGATION
 ========================================================= */
 
 function adminHandleActionClick(event) {
-    const button = event.target.closest("[data-action]");
+    const button =
+        event.target.closest("[data-action]");
 
     if (!button) return;
 
-    const action = button.dataset.action;
-    const id = button.dataset.id;
+    const action =
+        button.dataset.action;
+
+    const id =
+        button.dataset.id;
 
     if (!id) return;
 
@@ -2294,19 +2724,31 @@ function adminHandleActionClick(event) {
     }
 
     if (action === "suspend-teller") {
-        adminUpdateTellerStatus(id, "suspended");
+        adminUpdateTellerStatus(
+            id,
+            "suspended"
+        );
     }
 
     if (action === "activate-teller") {
-        adminUpdateTellerStatus(id, "active");
+        adminUpdateTellerStatus(
+            id,
+            "active"
+        );
     }
 
     if (action === "process-withdrawal") {
-        adminReviewWithdrawal(id, "processing");
+        adminReviewWithdrawal(
+            id,
+            "processing"
+        );
     }
 
     if (action === "reject-withdrawal") {
-        adminReviewWithdrawal(id, "rejected");
+        adminReviewWithdrawal(
+            id,
+            "rejected"
+        );
     }
 
     if (action === "trash-deposit") {
@@ -2314,7 +2756,10 @@ function adminHandleActionClick(event) {
     }
 
     if (action === "reverse-deposit") {
-        adminReverseTransaction("deposit", id);
+        adminReverseTransaction(
+            "deposit",
+            id
+        );
     }
 
     if (action === "restore-deposit") {
@@ -2328,170 +2773,220 @@ function adminHandleActionClick(event) {
 
 
 /* =========================================================
-   24. EVENT LISTENERS
+   25. EVENT LISTENERS
 ========================================================= */
 
 function adminInitializeEvents() {
 
-    // Login
+    // Login.
     adminElement("adminLoginForm")
-        ?.addEventListener("submit", adminLogin);
+        ?.addEventListener(
+            "submit",
+            adminLogin
+        );
 
-    // Logout
+    // Logout.
     adminElement("adminLogoutButton")
-        ?.addEventListener("click", adminLogout);
+        ?.addEventListener(
+            "click",
+            adminLogout
+        );
 
-    // Sidebar
+    // Sidebar.
     adminElement("sidebarToggle")
-        ?.addEventListener("click", adminToggleSidebar);
+        ?.addEventListener(
+            "click",
+            adminToggleSidebar
+        );
 
-    // Navigation
+    // Sidebar and in-page navigation.
     adminElements("[data-page]").forEach(button => {
         button.addEventListener("click", () => {
             adminNavigate(button.dataset.page);
         });
     });
 
-    // Date filter
+    // Date filter.
     adminElement("applyAdminDateFilter")
-        ?.addEventListener("click", adminApplyDateFilter);
+        ?.addEventListener(
+            "click",
+            adminApplyDateFilter
+        );
 
     adminElement("resetAdminDateFilter")
-        ?.addEventListener("click", adminResetDateFilter);
+        ?.addEventListener(
+            "click",
+            adminResetDateFilter
+        );
 
     adminElement("adminDateRange")
         ?.addEventListener("change", event => {
             const range = event.target.value;
 
-            const custom =
-                range === "custom";
-
             adminShow(
                 adminElement("adminDateFrom"),
-                custom
+                range === "custom"
             );
 
             adminShow(
                 adminElement("adminDateTo"),
-                custom
+                range === "custom"
             );
 
-            if (range === "all") {
-                adminResetDateFilter();
-            } else if (range !== "custom") {
+            if (range !== "custom") {
                 adminSetDateRange(range);
             }
         });
 
-    // Member search
+    // Member search.
     adminElement("memberSearchInput")
-        ?.addEventListener("input", adminRenderMembers);
+        ?.addEventListener(
+            "input",
+            adminRenderMembers
+        );
 
     adminElement("clearMemberSearch")
         ?.addEventListener("click", () => {
-            if (adminElement("memberSearchInput")) {
-                adminElement("memberSearchInput").value = "";
+            const search =
+                adminElement("memberSearchInput");
+
+            if (search) {
+                search.value = "";
             }
 
             adminRenderMembers();
         });
 
-    // Member profile modal
+    // Member profile modal.
     adminElement("closeMemberProfile")
-        ?.addEventListener("click", adminCloseMemberProfile);
+        ?.addEventListener(
+            "click",
+            adminCloseMemberProfile
+        );
 
     adminElement("closeMemberProfileFooter")
-        ?.addEventListener("click", adminCloseMemberProfile);
+        ?.addEventListener(
+            "click",
+            adminCloseMemberProfile
+        );
 
     adminElement("suspendMemberButton")
-        ?.addEventListener("click", () =>
-            adminUpdateMemberStatus("Suspended")
-        );
+        ?.addEventListener("click", () => {
+            adminUpdateMemberStatus("Suspended");
+        });
 
     adminElement("activateMemberButton")
-        ?.addEventListener("click", () =>
-            adminUpdateMemberStatus("Active")
-        );
+        ?.addEventListener("click", () => {
+            adminUpdateMemberStatus("Active");
+        });
 
-    // Teller creation and search
+    // Teller creation and search.
     adminElement("createTellerForm")
-        ?.addEventListener("submit", adminCreateTeller);
+        ?.addEventListener(
+            "submit",
+            adminCreateTeller
+        );
 
     adminElement("tellerSearchInput")
-        ?.addEventListener("input", adminRenderTellers);
+        ?.addEventListener(
+            "input",
+            adminRenderTellers
+        );
 
     adminElement("refreshTellersButton")
-        ?.addEventListener("click", event =>
-            adminRefreshDashboard(event.currentTarget)
-        );
+        ?.addEventListener("click", event => {
+            adminRefreshDashboard(
+                event.currentTarget
+            );
+        });
 
-    // Refresh deposits
+    // Refresh deposits.
     adminElement("refreshDepositsButton")
-        ?.addEventListener("click", event =>
-            adminRefreshDashboard(event.currentTarget)
-        );
+        ?.addEventListener("click", event => {
+            adminRefreshDashboard(
+                event.currentTarget
+            );
+        });
 
-    // Refresh trash
+    // Refresh trash.
     adminElement("refreshTrashButton")
         ?.addEventListener("click", async event => {
-            const button = event.currentTarget;
-            const originalText = button.textContent;
+            const button =
+                event.currentTarget;
+
+            const originalText =
+                button.textContent;
 
             button.disabled = true;
             button.textContent = "Refreshing...";
 
             try {
                 await adminLoadTrash();
+
             } finally {
                 button.disabled = false;
                 button.textContent = originalText;
             }
         });
 
-    // Refresh notifications
+    // Refresh notifications.
     adminElement("refreshAdminNotifications")
         ?.addEventListener("click", async event => {
-            const button = event.currentTarget;
-            const originalText = button.textContent;
+            const button =
+                event.currentTarget;
+
+            const originalText =
+                button.textContent;
 
             button.disabled = true;
             button.textContent = "Refreshing...";
 
             try {
                 await adminLoadNotifications();
+
             } finally {
                 button.disabled = false;
                 button.textContent = originalText;
             }
         });
 
-    // Export report
+    // Export report.
     adminElement("exportAdminReport")
-        ?.addEventListener("click", adminExportReport);
+        ?.addEventListener(
+            "click",
+            adminExportReport
+        );
 
-    // Table action buttons
+    // Table action buttons.
     document.addEventListener(
         "click",
         adminHandleActionClick
     );
 
-    // Escape closes member profile
-    document.addEventListener("keydown", event => {
-        if (event.key === "Escape") {
-            adminCloseMemberProfile();
+    // Escape closes member profile.
+    document.addEventListener(
+        "keydown",
+        event => {
+            if (event.key === "Escape") {
+                adminCloseMemberProfile();
+            }
         }
-    });
+    );
 }
 
 
 /* =========================================================
-   25. AUTH STATE CHANGES
+   26. AUTHENTICATION STATE CHANGES
 ========================================================= */
 
 nexusAdminSupabase.auth.onAuthStateChange(
     (event, session) => {
-        if (event === "SIGNED_OUT" || !session) {
+        if (
+            event === "SIGNED_OUT" ||
+            !session
+        ) {
             nexusAdminState.user = null;
+
             adminShowLogin();
         }
     }
@@ -2499,11 +2994,20 @@ nexusAdminSupabase.auth.onAuthStateChange(
 
 
 /* =========================================================
-   26. START APPLICATION
+   27. START APPLICATION
 ========================================================= */
 
-document.addEventListener("DOMContentLoaded", async () => {
+async function adminStart() {
     adminInitializeEvents();
 
     await adminVerifySession();
-});
+}
+
+if (document.readyState === "loading") {
+    document.addEventListener(
+        "DOMContentLoaded",
+        adminStart
+    );
+} else {
+    adminStart();
+}
