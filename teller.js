@@ -27,7 +27,9 @@ const tellerSupabase = window.supabase.createClient(
 
 /* =========================================================
    2. ELEMENT REFERENCES
-   ========================================================= */
+========================================================= */
+
+// LOGIN AND DASHBOARD
 
 const loginSection = document.getElementById("loginSection");
 const dashboardSection = document.getElementById("dashboardSection");
@@ -45,6 +47,9 @@ const tellerName = document.getElementById("tellerName");
 const tellerCode = document.getElementById("tellerCode");
 const tellerStatus = document.getElementById("tellerStatus");
 
+
+// LIVE DEPOSIT MEMBER SEARCH
+
 const memberSearchForm = document.getElementById("memberSearchForm");
 const memberSearchInput = document.getElementById("memberSearchInput");
 const searchMemberButton = document.getElementById("searchMemberButton");
@@ -58,6 +63,9 @@ const selectedMemberPhone = document.getElementById("selectedMemberPhone");
 const selectedMemberStatus = document.getElementById("selectedMemberStatus");
 
 const changeMemberButton = document.getElementById("changeMemberButton");
+
+
+// LIVE DEPOSIT FORM
 
 const depositForm = document.getElementById("depositForm");
 const depositAmount = document.getElementById("depositAmount");
@@ -73,9 +81,15 @@ const receiptReference = document.getElementById("receiptReference");
 const receiptAmount = document.getElementById("receiptAmount");
 const newDepositButton = document.getElementById("newDepositButton");
 
+
+// LIVE DEPOSIT HISTORY
+
 const historyTableBody = document.getElementById("historyTableBody");
 const historyMessage = document.getElementById("historyMessage");
 const refreshHistoryButton = document.getElementById("refreshHistoryButton");
+
+
+// TELLER PROFILE
 
 const profileName = document.getElementById("profileName");
 const profileEmail = document.getElementById("profileEmail");
@@ -84,23 +98,124 @@ const profileCode = document.getElementById("profileCode");
 const profileStatus = document.getElementById("profileStatus");
 
 
+// TEST WITHDRAWAL MEMBER SEARCH
+
+const testMemberSearchForm =
+    document.getElementById("testMemberSearchForm");
+
+const testMemberSearchInput =
+    document.getElementById("testMemberSearchInput");
+
+const testSearchMemberButton =
+    document.getElementById("testSearchMemberButton");
+
+const testMemberSearchMessage =
+    document.getElementById("testMemberSearchMessage");
+
+const testMemberResults =
+    document.getElementById("testMemberResults");
+
+
+// SELECTED TEST WITHDRAWAL MEMBER
+
+const selectedTestMemberCard =
+    document.getElementById("selectedTestMemberCard");
+
+const testMemberName =
+    document.getElementById("testMemberName");
+
+const testMemberId =
+    document.getElementById("testMemberId");
+
+const testMemberPhone =
+    document.getElementById("testMemberPhone");
+
+const testMemberStatus =
+    document.getElementById("testMemberStatus");
+
+const changeTestMemberButton =
+    document.getElementById("changeTestMemberButton");
+
+
+// TEST WITHDRAWAL FORM
+
+const testWithdrawalForm =
+    document.getElementById("testWithdrawalForm");
+
+const testWithdrawalAmount =
+    document.getElementById("testWithdrawalAmount");
+
+const testWithdrawalMethod =
+    document.getElementById("testWithdrawalMethod");
+
+const testPaymentDetails =
+    document.getElementById("testPaymentDetails");
+
+const recordTestWithdrawalButton =
+    document.getElementById("recordTestWithdrawalButton");
+
+const testWithdrawalMessage =
+    document.getElementById("testWithdrawalMessage");
+
+
+// TEST WITHDRAWAL RECEIPT
+
+const testWithdrawalReceipt =
+    document.getElementById("testWithdrawalReceipt");
+
+const testReceiptMessage =
+    document.getElementById("testReceiptMessage");
+
+const testReceiptReference =
+    document.getElementById("testReceiptReference");
+
+const testReceiptAmount =
+    document.getElementById("testReceiptAmount");
+
+const newTestWithdrawalButton =
+    document.getElementById("newTestWithdrawalButton");
+
+
+// TEST WITHDRAWAL HISTORY
+
+const refreshTestWithdrawalHistoryButton =
+    document.getElementById("refreshTestWithdrawalHistoryButton");
+
+const testWithdrawalHistoryMessage =
+    document.getElementById("testWithdrawalHistoryMessage");
+
+const testWithdrawalHistoryBody =
+    document.getElementById("testWithdrawalHistoryBody");
+
+
 /* =========================================================
    3. APPLICATION STATE
-   ========================================================= */
+========================================================= */
 
 let currentTeller = null;
 let currentUser = null;
+
+// Existing live deposit state
+
 let searchedMembers = [];
 let selectedMember = null;
 let depositInProgress = false;
 
+// Separate test withdrawal state
+
+let testSearchedMembers = [];
+let selectedTestMember = null;
+let testWithdrawalInProgress = false;
+
 
 /* =========================================================
    4. GENERAL HELPERS
-   ========================================================= */
+========================================================= */
 
 function escapeHTML(value) {
+
     return String(value ?? "").replace(/[&<>"']/g, character => {
+
         const entities = {
             "&": "&amp;",
             "<": "&lt;",
@@ -111,31 +226,43 @@ function escapeHTML(value) {
 
         return entities[character];
     });
+
 }
 
 
 function showMessage(element, message, type = "info") {
+
+    if (!element) return;
+
     element.textContent = message;
     element.className = `message ${type}`;
+
 }
 
 
 function hideMessage(element) {
+
+    if (!element) return;
+
     element.textContent = "";
     element.className = "message hidden";
+
 }
 
 
 function formatMoney(amount) {
+
     return new Intl.NumberFormat("en-GH", {
         style: "currency",
         currency: "GHS",
         minimumFractionDigits: 2
     }).format(Number(amount || 0));
+
 }
 
 
 function formatDate(dateValue) {
+
     if (!dateValue) return "—";
 
     const date = new Date(dateValue);
@@ -148,50 +275,95 @@ function formatDate(dateValue) {
         dateStyle: "medium",
         timeStyle: "short"
     });
+
 }
 
 
 function setConnectionStatus(message, state = "") {
+
     connectionStatus.textContent = message;
     connectionStatus.className = `connection-status ${state}`;
+
 }
 
 
 function showLogin() {
+
     loginSection.classList.remove("hidden");
     dashboardSection.classList.add("hidden");
     logoutButton.classList.add("hidden");
 
     currentTeller = null;
     currentUser = null;
+
+    // Clear live deposit selection
+
     selectedMember = null;
     searchedMembers = [];
+
+    if (selectedMemberCard) {
+        selectedMemberCard.classList.add("hidden");
+    }
+
+    if (memberResults) {
+        memberResults.classList.add("hidden");
+    }
+
+    if (recordDepositButton) {
+        recordDepositButton.disabled = true;
+    }
+
+    // Clear test withdrawal selection
+
+    selectedTestMember = null;
+    testSearchedMembers = [];
+
+    if (selectedTestMemberCard) {
+        selectedTestMemberCard.classList.add("hidden");
+    }
+
+    if (testMemberResults) {
+        testMemberResults.classList.add("hidden");
+    }
+
+    if (recordTestWithdrawalButton) {
+        recordTestWithdrawalButton.disabled = true;
+    }
+
 }
 
 
 function showDashboard() {
+
     loginSection.classList.add("hidden");
     dashboardSection.classList.remove("hidden");
     logoutButton.classList.remove("hidden");
+
 }
 
 
 function setButtonLoading(button, loading, normalText) {
+
+    if (!button) return;
+
     button.disabled = loading;
     button.textContent = loading ? "Please wait..." : normalText;
+
 }
 
 
 /* =========================================================
    5. TELLER AUTHENTICATION AND VERIFICATION
-   ========================================================= */
+========================================================= */
 
 async function initializeTeller(user) {
 
     try {
 
         if (!user || !user.id) {
+
             showLogin();
+
             return;
         }
 
@@ -279,12 +451,13 @@ async function initializeTeller(user) {
 
         setConnectionStatus("Connection error", "offline");
     }
+
 }
 
 
 /* =========================================================
    6. LOGIN
-   ========================================================= */
+========================================================= */
 
 loginForm.addEventListener("submit", async function (event) {
 
@@ -346,7 +519,7 @@ loginForm.addEventListener("submit", async function (event) {
 
 /* =========================================================
    7. LOGOUT
-   ========================================================= */
+========================================================= */
 
 logoutButton.addEventListener("click", async function () {
 
@@ -384,7 +557,7 @@ logoutButton.addEventListener("click", async function () {
 
 /* =========================================================
    8. TELLER PROFILE
-   ========================================================= */
+========================================================= */
 
 function renderTellerProfile() {
 
@@ -412,12 +585,13 @@ function renderTellerProfile() {
     profilePhone.textContent = phone;
     profileCode.textContent = currentTeller.teller_code;
     profileStatus.textContent = currentTeller.status;
+
 }
 
 
 /* =========================================================
    9. DASHBOARD NAVIGATION
-   ========================================================= */
+========================================================= */
 
 document.querySelectorAll(".nav-button").forEach(button => {
 
@@ -435,10 +609,21 @@ document.querySelectorAll(".nav-button").forEach(button => {
 
         this.classList.add("active");
 
-        document.getElementById(targetPanel).classList.remove("hidden");
+        const targetElement = document.getElementById(targetPanel);
+
+        if (!targetElement) {
+            console.error("Dashboard panel not found:", targetPanel);
+            return;
+        }
+
+        targetElement.classList.remove("hidden");
 
         if (targetPanel === "historyPanel") {
             await loadTellerHistory();
+        }
+
+        if (targetPanel === "testWithdrawalPanel") {
+            await loadTestWithdrawalHistory();
         }
 
     });
@@ -447,8 +632,8 @@ document.querySelectorAll(".nav-button").forEach(button => {
 
 
 /* =========================================================
-   10. MEMBER SEARCH
-   ========================================================= */
+   10. LIVE DEPOSIT MEMBER SEARCH
+========================================================= */
 
 memberSearchForm.addEventListener("submit", async function (event) {
 
@@ -595,6 +780,7 @@ function selectMember(member) {
     hideMessage(depositMessage);
 
     depositReceipt.classList.add("hidden");
+
 }
 
 
@@ -612,8 +798,8 @@ changeMemberButton.addEventListener("click", function () {
 
 
 /* =========================================================
-   11. PAYMENT METHOD FIELD
-   ========================================================= */
+   11. DEPOSIT PAYMENT METHOD FIELD
+========================================================= */
 
 depositMethod.addEventListener("change", function () {
 
@@ -636,8 +822,8 @@ depositMethod.addEventListener("change", function () {
 
 
 /* =========================================================
-   12. RECORD TELLER DEPOSIT
-   ========================================================= */
+   12. RECORD LIVE TELLER DEPOSIT
+========================================================= */
 
 depositForm.addEventListener("submit", async function (event) {
 
@@ -794,8 +980,8 @@ depositForm.addEventListener("submit", async function (event) {
 
 
 /* =========================================================
-   13. START ANOTHER DEPOSIT
-   ========================================================= */
+   13. START ANOTHER LIVE DEPOSIT
+========================================================= */
 
 newDepositButton.addEventListener("click", function () {
 
@@ -827,8 +1013,8 @@ newDepositButton.addEventListener("click", function () {
 
 
 /* =========================================================
-   14. LOAD TELLER TRANSACTION HISTORY
-   ========================================================= */
+   14. LOAD LIVE TELLER DEPOSIT HISTORY
+========================================================= */
 
 async function loadTellerHistory() {
 
@@ -920,8 +1106,646 @@ refreshHistoryButton.addEventListener("click", loadTellerHistory);
 
 
 /* =========================================================
-   15. AUTH SESSION MONITORING
-   ========================================================= */
+   15. TEST WITHDRAWAL MEMBER SEARCH
+========================================================= */
+
+testMemberSearchForm.addEventListener("submit", async function (event) {
+
+    event.preventDefault();
+
+    hideMessage(testMemberSearchMessage);
+
+    testMemberResults.classList.add("hidden");
+    selectedTestMemberCard.classList.add("hidden");
+
+    selectedTestMember = null;
+    testSearchedMembers = [];
+
+    recordTestWithdrawalButton.disabled = true;
+
+    testWithdrawalReceipt.classList.add("hidden");
+
+    const searchValue = testMemberSearchInput.value.trim();
+
+    if (!searchValue) {
+
+        showMessage(
+            testMemberSearchMessage,
+            "Enter a member ID or phone number.",
+            "error"
+        );
+
+        return;
+    }
+
+    if (!currentTeller || !currentUser) {
+
+        showMessage(
+            testMemberSearchMessage,
+            "Your teller session is unavailable. Please sign in again.",
+            "error"
+        );
+
+        return;
+    }
+
+    setButtonLoading(
+        testSearchMemberButton,
+        true,
+        "Search"
+    );
+
+    try {
+
+        /*
+           This uses the same secure member lookup RPC
+           as the live deposit workflow.
+
+           It does not expose member wallet balances.
+        */
+
+        const { data, error } = await tellerSupabase.rpc(
+            "lookup_teller_member",
+            {
+                p_search: searchValue
+            }
+        );
+
+        if (error) {
+            throw error;
+        }
+
+        testSearchedMembers = Array.isArray(data) ? data : [];
+
+        if (testSearchedMembers.length === 0) {
+
+            showMessage(
+                testMemberSearchMessage,
+                "No matching member was found. Check the member ID or phone number.",
+                "error"
+            );
+
+            return;
+        }
+
+        renderTestMemberResults();
+
+    } catch (error) {
+
+        console.error("Test member search error:", error);
+
+        showMessage(
+            testMemberSearchMessage,
+            error.message || "Member search failed.",
+            "error"
+        );
+
+    } finally {
+
+        setButtonLoading(
+            testSearchMemberButton,
+            false,
+            "Search"
+        );
+    }
+
+});
+
+
+/* =========================================================
+   16. DISPLAY TEST WITHDRAWAL MEMBER RESULTS
+========================================================= */
+
+function renderTestMemberResults() {
+
+    testMemberResults.innerHTML = "";
+
+    testSearchedMembers.forEach((member, index) => {
+
+        const item = document.createElement("div");
+
+        item.className = "member-result";
+
+        item.innerHTML = `
+            <div>
+                <strong>${escapeHTML(member.full_name)}</strong>
+
+                <span>
+                    ID: ${escapeHTML(member.member_id)}
+                    · Phone: ${escapeHTML(member.phone || "Not provided")}
+                    · Status: ${escapeHTML(member.status || "Unknown")}
+                </span>
+            </div>
+
+            <button
+                type="button"
+                class="primary-button select-test-member-button"
+                data-index="${index}"
+            >
+                Select Member
+            </button>
+        `;
+
+        testMemberResults.appendChild(item);
+
+    });
+
+    testMemberResults.classList.remove("hidden");
+
+    testMemberResults
+        .querySelectorAll(".select-test-member-button")
+        .forEach(button => {
+
+            button.addEventListener("click", function () {
+
+                const index = Number(this.dataset.index);
+
+                const member = testSearchedMembers[index];
+
+                if (member) {
+                    selectTestMember(member);
+                }
+
+            });
+
+        });
+
+}
+
+
+/* =========================================================
+   17. SELECT TEST WITHDRAWAL MEMBER
+========================================================= */
+
+function selectTestMember(member) {
+
+    selectedTestMember = member;
+
+    testMemberName.textContent = member.full_name;
+    testMemberId.textContent = member.member_id;
+    testMemberPhone.textContent = member.phone || "Not provided";
+    testMemberStatus.textContent = member.status || "Not specified";
+
+    selectedTestMemberCard.classList.remove("hidden");
+
+    testMemberResults.classList.add("hidden");
+
+    recordTestWithdrawalButton.disabled = false;
+
+    testWithdrawalReceipt.classList.add("hidden");
+
+    hideMessage(testWithdrawalMessage);
+    hideMessage(testMemberSearchMessage);
+
+}
+
+
+changeTestMemberButton.addEventListener("click", function () {
+
+    selectedTestMember = null;
+
+    selectedTestMemberCard.classList.add("hidden");
+
+    recordTestWithdrawalButton.disabled = true;
+
+    testMemberSearchInput.focus();
+
+});
+
+
+/* =========================================================
+   18. RECORD TEST WITHDRAWAL SIMULATION
+========================================================= */
+
+testWithdrawalForm.addEventListener("submit", async function (event) {
+
+    event.preventDefault();
+
+    hideMessage(testWithdrawalMessage);
+
+    testWithdrawalReceipt.classList.add("hidden");
+
+    if (!currentTeller || !currentUser) {
+
+        showMessage(
+            testWithdrawalMessage,
+            "Your teller session is unavailable. Please sign in again.",
+            "error"
+        );
+
+        return;
+    }
+
+    if (!selectedTestMember) {
+
+        showMessage(
+            testWithdrawalMessage,
+            "Search for and select a member first.",
+            "error"
+        );
+
+        return;
+    }
+
+    if (testWithdrawalInProgress) return;
+
+    const amountText = testWithdrawalAmount.value.trim();
+
+    const amount = Number(amountText);
+
+    const method = testWithdrawalMethod.value;
+
+    const details = testPaymentDetails.value.trim();
+
+
+    // Validate the amount
+
+    if (
+        !amountText ||
+        !Number.isFinite(amount) ||
+        amount <= 0 ||
+        !/^\d+(\.\d{1,2})?$/.test(amountText)
+    ) {
+
+        showMessage(
+            testWithdrawalMessage,
+            "Enter a valid amount greater than zero, using no more than two decimal places.",
+            "error"
+        );
+
+        return;
+    }
+
+
+    // Validate the payment method
+
+    const allowedMethods = [
+        "mtn_momo",
+        "telecel_cash",
+        "at_money",
+        "bank"
+    ];
+
+    if (!allowedMethods.includes(method)) {
+
+        showMessage(
+            testWithdrawalMessage,
+            "Select a valid test withdrawal method.",
+            "error"
+        );
+
+        return;
+    }
+
+
+    // Validate the test payment details
+
+    if (details.length < 5) {
+
+        showMessage(
+            testWithdrawalMessage,
+            "Enter at least five characters of dummy test payment details.",
+            "error"
+        );
+
+        return;
+    }
+
+
+    /*
+       IMPORTANT:
+
+       Use fictional payment details only.
+
+       Do not enter real bank account numbers,
+       real mobile money numbers or private
+       financial information into this simulation.
+    */
+
+
+    const methodLabel = {
+        mtn_momo: "MTN MoMo",
+        telecel_cash: "Telecel Cash",
+        at_money: "AT Money",
+        bank: "Bank"
+    }[method];
+
+
+    const confirmed = window.confirm(
+
+        "TEST WITHDRAWAL SIMULATION ONLY\n\n" +
+
+        `Member: ${selectedTestMember.full_name}\n` +
+        `Member ID: ${selectedTestMember.member_id}\n` +
+        `Amount: ${formatMoney(amount)}\n` +
+        `Method: ${methodLabel}\n\n` +
+
+        "IMPORTANT:\n" +
+        "NO MONEY WILL BE TRANSFERRED.\n" +
+        "NO WALLET BALANCE WILL BE DEDUCTED.\n" +
+        "NO PHYSICAL CASH WILL BE PAID.\n\n" +
+
+        "Do you want to record this test simulation?"
+    );
+
+
+    if (!confirmed) return;
+
+
+    testWithdrawalInProgress = true;
+
+    setButtonLoading(
+        recordTestWithdrawalButton,
+        true,
+        "Record Test Withdrawal"
+    );
+
+
+    try {
+
+        /*
+           This RPC inserts a record only into:
+
+           nexus_teller_test_withdrawals
+
+           It does not call:
+           - record_teller_deposit
+           - submit_withdrawal_request
+           - complete_withdrawal
+           - Paystack
+
+           It does not modify a member's wallet.
+        */
+
+        const { data, error } = await tellerSupabase.rpc(
+            "record_teller_test_withdrawal",
+            {
+                p_member_id: selectedTestMember.member_id,
+                p_amount: amount,
+                p_withdrawal_method: method,
+                p_payment_details: details
+            }
+        );
+
+
+        if (error) {
+            throw error;
+        }
+
+
+        if (!data || data.success !== true) {
+
+            throw new Error(
+                data?.message ||
+                "The test withdrawal could not be recorded."
+            );
+        }
+
+
+        // Display the simulation receipt
+
+        testWithdrawalReceipt.classList.remove("hidden");
+
+        testReceiptMessage.textContent =
+            "TEST SIMULATION RECORDED — NO MONEY WAS TRANSFERRED.";
+
+        testReceiptReference.textContent =
+            data.test_reference || "—";
+
+        testReceiptAmount.textContent =
+            formatMoney(data.amount);
+
+
+        showMessage(
+            testWithdrawalMessage,
+            "Test withdrawal simulation recorded successfully. No real money was moved.",
+            "success"
+        );
+
+
+        // Clear the form but retain the selected member
+
+        testWithdrawalForm.reset();
+
+
+        // Refresh the separate test withdrawal history
+
+        await loadTestWithdrawalHistory();
+
+
+    } catch (error) {
+
+        console.error(
+            "Test withdrawal recording error:",
+            error
+        );
+
+        showMessage(
+            testWithdrawalMessage,
+            error.message ||
+            "Test withdrawal simulation failed.",
+            "error"
+        );
+
+    } finally {
+
+        testWithdrawalInProgress = false;
+
+        recordTestWithdrawalButton.disabled =
+            !selectedTestMember;
+
+        recordTestWithdrawalButton.textContent =
+            "Record Test Withdrawal";
+    }
+
+});
+
+
+/* =========================================================
+   19. START ANOTHER TEST WITHDRAWAL
+========================================================= */
+
+newTestWithdrawalButton.addEventListener("click", function () {
+
+    selectedTestMember = null;
+
+    testSearchedMembers = [];
+
+    testMemberSearchInput.value = "";
+
+    testWithdrawalForm.reset();
+
+    selectedTestMemberCard.classList.add("hidden");
+
+    testMemberResults.classList.add("hidden");
+
+    testWithdrawalReceipt.classList.add("hidden");
+
+    recordTestWithdrawalButton.disabled = true;
+
+    hideMessage(testWithdrawalMessage);
+
+    hideMessage(testMemberSearchMessage);
+
+    testMemberSearchInput.focus();
+
+});
+
+
+/* =========================================================
+   20. LOAD TEST WITHDRAWAL HISTORY
+========================================================= */
+
+async function loadTestWithdrawalHistory() {
+
+    if (!currentTeller || !currentUser) return;
+
+    testWithdrawalHistoryBody.innerHTML = `
+        <tr>
+            <td colspan="6" class="empty-state">
+                Loading test withdrawal records...
+            </td>
+        </tr>
+    `;
+
+    hideMessage(testWithdrawalHistoryMessage);
+
+
+    try {
+
+        /*
+           This RPC returns only records belonging
+           to the currently authenticated teller.
+
+           Payment details are not returned.
+        */
+
+        const { data, error } = await tellerSupabase.rpc(
+            "list_my_teller_test_withdrawals",
+            {
+                p_limit: 50
+            }
+        );
+
+
+        if (error) {
+            throw error;
+        }
+
+
+        const withdrawals = Array.isArray(data) ? data : [];
+
+
+        if (withdrawals.length === 0) {
+
+            testWithdrawalHistoryBody.innerHTML = `
+                <tr>
+                    <td colspan="6" class="empty-state">
+                        You have not recorded any test withdrawals yet.
+                    </td>
+                </tr>
+            `;
+
+            return;
+        }
+
+
+        const methodLabels = {
+            mtn_momo: "MTN MoMo",
+            telecel_cash: "Telecel Cash",
+            at_money: "AT Money",
+            bank: "Bank"
+        };
+
+
+        testWithdrawalHistoryBody.innerHTML =
+            withdrawals.map(withdrawal => {
+
+                const method =
+                    methodLabels[withdrawal.withdrawal_method] ||
+                    withdrawal.withdrawal_method ||
+                    "—";
+
+                const status =
+                    String(withdrawal.status || "simulated")
+                        .toUpperCase();
+
+
+                return `
+                    <tr>
+                        <td>
+                            ${escapeHTML(formatDate(withdrawal.created_at))}
+                        </td>
+
+                        <td>
+                            <strong>
+                                ${escapeHTML(withdrawal.full_name)}
+                            </strong>
+                            <br>
+                            <small>
+                                ${escapeHTML(withdrawal.member_id)}
+                            </small>
+                        </td>
+
+                        <td>
+                            ${escapeHTML(withdrawal.test_reference)}
+                        </td>
+
+                        <td>
+                            ${escapeHTML(method)}
+                        </td>
+
+                        <td>
+                            <strong>
+                                ${escapeHTML(formatMoney(withdrawal.amount))}
+                            </strong>
+                        </td>
+
+                        <td>
+                            ${escapeHTML(status)}
+                        </td>
+                    </tr>
+                `;
+
+            }).join("");
+
+
+    } catch (error) {
+
+        console.error(
+            "Test withdrawal history error:",
+            error
+        );
+
+        testWithdrawalHistoryBody.innerHTML = `
+            <tr>
+                <td colspan="6" class="empty-state">
+                    Could not load test withdrawal history.
+                </td>
+            </tr>
+        `;
+
+        showMessage(
+            testWithdrawalHistoryMessage,
+            error.message ||
+            "Unable to load test withdrawal history.",
+            "error"
+        );
+
+    }
+
+}
+
+
+refreshTestWithdrawalHistoryButton.addEventListener(
+    "click",
+    loadTestWithdrawalHistory
+);
+
+
+/* =========================================================
+   21. AUTH SESSION MONITORING
+========================================================= */
 
 tellerSupabase.auth.onAuthStateChange((event) => {
 
@@ -936,8 +1760,8 @@ tellerSupabase.auth.onAuthStateChange((event) => {
 
 
 /* =========================================================
-   16. INITIAL PAGE LOAD
-   ========================================================= */
+   22. INITIAL PAGE LOAD
+========================================================= */
 
 async function startTellerPortal() {
 
