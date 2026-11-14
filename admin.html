@@ -1528,48 +1528,124 @@
             </section>
 
 
-            <!-- =====================================
-                 PLATFORM SETTINGS
-            ====================================== -->
+            
+<!-- =====================================
+     PLATFORM SETTINGS
+====================================== -->
 
-            <section
-                id="page-settings"
-                class="admin-page"
-                aria-labelledby="settingsHeading"
+<section
+    id="page-settings"
+    class="admin-page"
+    aria-labelledby="settingsHeading"
+>
+
+    <div class="page-intro">
+        <div>
+            <h2 id="settingsHeading">Platform Settings</h2>
+            <p>
+                Manage Nexus Wealth Partners platform configuration.
+            </p>
+        </div>
+    </div>
+
+    <!-- SETTINGS STATUS -->
+    <div
+        id="adminSettingsMessage"
+        class="settings-message"
+        role="status"
+        aria-live="polite"
+    >
+        Loading platform settings...
+    </div>
+
+    <!-- GENERAL SETTINGS -->
+    <div class="admin-panel">
+
+        <div class="panel-heading">
+            <div>
+                <h3>General Platform Information</h3>
+                <p>
+                    Configure the basic information displayed by the platform.
+                </p>
+            </div>
+        </div>
+
+        <form id="nexusGeneralSettingsForm">
+
+            <div class="form-group">
+                <label for="nexusPlatformName">
+                    Platform Name
+                </label>
+
+                <input
+                    type="text"
+                    id="nexusPlatformName"
+                    maxlength="100"
+                    required
+                    placeholder="NEXUS WEALTH PARTNERS"
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="nexusSupportEmail">
+                    Support Email
+                </label>
+
+                <input
+                    type="email"
+                    id="nexusSupportEmail"
+                    maxlength="254"
+                    placeholder="support@example.com"
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="nexusSupportPhone">
+                    Support Phone
+                </label>
+
+                <input
+                    type="tel"
+                    id="nexusSupportPhone"
+                    maxlength="30"
+                    placeholder="Enter support phone number"
+                >
+            </div>
+
+            <button
+                type="submit"
+                id="saveNexusGeneralSettings"
+                class="primary-button"
             >
+                Save General Settings
+            </button>
 
-                <div class="page-intro">
-                    <div>
-                        <h2 id="settingsHeading">Platform Settings</h2>
-                        <p>
-                            Manage approved Nexus Wealth Partners platform settings.
-                        </p>
-                    </div>
-                </div>
+        </form>
 
-                <div class="admin-panel">
+    </div>
 
-                    <div class="panel-heading">
-                        <div>
-                            <h3>General Settings</h3>
-                            <p>
-                                Platform settings will be connected to secure
-                                database storage.
-                            </p>
-                        </div>
-                    </div>
+    <!-- OPERATIONAL SETTINGS -->
+    <div class="admin-panel">
 
-                    <div
-                        id="adminSettingsMessage"
-                        role="status"
-                        aria-live="polite"
-                    >
-                        Settings are awaiting database integration.
-                    </div>
+        <div class="panel-heading">
+            <div>
+                <h3>Operational Settings</h3>
+                <p>
+                    Review the platform's operational configuration.
+                </p>
+            </div>
+        </div>
 
-                </div>
+        <div id="nexusOperationalSettings">
+            <p class="empty-table">
+                Operational settings will appear here.
+            </p>
+        </div>
 
-            </section>
+    </div>
+
+</section>
+
 
 
             <!-- =====================================
