@@ -433,6 +433,16 @@ function showAdminPage(pageName) {
     }
 }
 
+if (pageName === "notifications") {
+    loadAdminNotifications().catch(error => {
+        console.error(error);
+    });
+}
+
+if (pageName === "reports") {
+    renderNexusAdminReports();
+}
+
 
 document.querySelectorAll("[data-page]")
     .forEach(button => {
@@ -713,6 +723,7 @@ function setAdminQuickDateRange(preset) {
     }
 
     renderAdminDateFilteredDashboard();
+   renderNexusAdminReports();
 }
 
 
@@ -4120,6 +4131,514 @@ if (refreshTellersButton) {
     );
 }
 
+
+/* =========================================================
+   40. ADMIN NOTIFICATION DATABASE INTEGRATION
+========================================================= */
+
+const adminNotificationsList =
+    document.getElementById("adminNotificationsList");
+
+const refreshAdminNotificationsButton =
+    document.getElementById("refreshAdminNotifications");
+
+let adminNotificationsCache = [];
+let adminNotificationsLoadPromise = null;
+
+
+function updateAdminNotificationBadge() {
+    const unreadCount =
+        adminNotificationsCache.filter(
+            notification => !notification.is_read
+        ).length;
+
+    const badge =
+        document.getElementById("adminNotificationBadge");
+
+    if (badge) {
+        badge.textContent = unreadCount;
+        badge.hidden = unreadCount === 0;
+    }
+}
+
+
+function displayAdminNotifications(notifications = []) {
+    if (!adminNotificationsList) return;
+
+    adminNotificationsList.replaceChildren();
+
+    if (!notifications.length) {
+        const empty = document.createElement("p");
+
+        empty.className = "empty-table";
+        empty.textContent = "No notifications found.";
+
+        adminNotificationsList.appendChild(empty);
+
+        updateAdminNotificationBadge();
+        return;
+    }
+
+    notifications.forEach(notification => {
+        const card = document.createElement("div");
+
+        card.className =
+            "admin-notification-item" +
+            (notification.is_read ? " read" : " unread");
+
+        const heading = document.createElement("h4");
+        heading.textContent =
+            notification.title || "Notification";
+
+        const message = document.createElement("p");
+        message.textContent =
+            notification.message || "";
+
+        const details = document.createElement("small");
+
+        const profile = adminProfilesCache.find(
+            item => item.id === notification.user_id
+        );
+
+        details.textContent =
+            (profile?.full_name ||
+                profile?.member_id ||
+                "Member") +
+            " · " +
+            (notification.type || "account") +
+            " · " +
+            formatAdminDateTime(notification.created_at);
+
+        card.appendChild(heading);
+        card.appendChild(message);
+        card.appendChild(details);
+
+        if (!notification.is_read) {
+            const markReadButton =
+                document.createElement("button");
+
+            markReadButton.type = "button";
+            markReadButton.textContent = "Mark as read";
+            markReadButton.className =
+                "admin-action-button";
+
+            markReadButton.addEventListener("click", () => {
+                markAdminNotificationRead(
+                    notification.id,
+                    markReadButton
+                );
+            });
+
+            card.appendChild(markReadButton);
+        } else {
+            const readLabel =
+                document.createElement("small");
+
+            readLabel.textContent = "Read";
+            card.appendChild(readLabel);
+        }
+
+        adminNotificationsList.appendChild(card);
+    });
+
+    updateAdminNotificationBadge();
+}
+
+
+async function loadAdminNotifications() {
+    if (!adminNotificationsList) return;
+
+    if (adminNotificationsLoadPromise) {
+        return adminNotificationsLoadPromise;
+    }
+
+    adminNotificationsLoadPromise = (async () => {
+        adminNotificationsList.textContent =
+            "Loading notifications...";
+
+        try {
+            const { data, error } =
+                await nexusAdminSupabase.rpc(
+                    "admin_list_nexus_notifications"
+                );
+
+            if (error) throw error;
+
+            adminNotificationsCache =
+                Array.isArray(data) ? data : [];
+
+            displayAdminNotifications(
+                adminNotificationsCache
+            );
+
+            console.log(
+                "Administrator notifications loaded:",
+                adminNotificationsCache.length
+            );
+
+        } catch (error) {
+            console.error(
+                "Administrator notification loading error:",
+                error
+            );
+
+            adminNotificationsList.textContent =
+                "Unable to load notifications: " +
+                error.message;
+
+            throw error;
+
+        } finally {
+            adminNotificationsLoadPromise = null;
+        }
+    })();
+
+    return adminNotificationsLoadPromise;
+}
+
+
+async function markAdminNotificationRead(
+    notificationId,
+    button
+) {
+    if (!notificationId) return;
+
+    const originalText =
+        button?.textContent || "Mark as read";
+
+    if (button) {
+        button.disabled = true;
+        button.textContent = "Updating...";
+    }
+
+    try {
+        const { data, error } =
+            await nexusAdminSupabase.rpc(
+                "admin_mark_nexus_notification_read",
+                {
+                    p_notification_id: notificationId
+                }
+            );
+
+        if (error) throw error;
+
+        if (data !== true) {
+            throw new Error(
+                "Notification could not be marked as read."
+            );
+        }
+
+        const notification =
+            adminNotificationsCache.find(
+                item => item.id === notificationId
+            );
+
+        if (notification) {
+            notification.is_read = true;
+        }
+
+        displayAdminNotifications(
+            adminNotificationsCache
+        );
+
+    } catch (error) {
+        console.error(
+            "Mark notification as read error:",
+            error
+        );
+
+        alert(
+            error.message ||
+            "Unable to update notification."
+        );
+
+        if (button) {
+            button.disabled = false;
+            button.textContent = originalText;
+        }
+    }
+}
+
+
+async function markAllAdminNotificationsRead() {
+    const unreadCount =
+        adminNotificationsCache.filter(
+            item => !item.is_read
+        ).length;
+
+    if (!unreadCount) {
+        alert("There are no unread notifications.");
+        return;
+    }
+
+    if (!window.confirm(
+        "Mark all administrator notifications as read?"
+    )) {
+        return;
+    }
+
+    try {
+        const { data, error } =
+            await nexusAdminSupabase.rpc(
+                "admin_mark_all_nexus_notifications_read"
+            );
+
+        if (error) throw error;
+
+        adminNotificationsCache.forEach(item => {
+            item.is_read = true;
+        });
+
+        displayAdminNotifications(
+            adminNotificationsCache
+        );
+
+        alert(
+            `${Number(data) || 0} notification(s) marked as read.`
+        );
+
+    } catch (error) {
+        console.error(
+            "Mark all notifications as read error:",
+            error
+        );
+
+        alert(
+            error.message ||
+            "Unable to mark notifications as read."
+        );
+    }
+}
+
+
+if (refreshAdminNotificationsButton) {
+    refreshAdminNotificationsButton.addEventListener(
+        "click",
+        async function() {
+            const originalText =
+                this.textContent;
+
+            this.disabled = true;
+            this.textContent = "Refreshing...";
+
+            try {
+                await loadAdminNotifications();
+
+            } catch (_) {
+                // Error is already displayed in the notifications area.
+            } finally {
+                this.disabled = false;
+                this.textContent = originalText;
+            }
+        }
+    );
+}
+
+
+const markAllAdminNotificationsButton =
+    document.getElementById(
+        "markAllAdminNotificationsRead"
+    );
+
+if (markAllAdminNotificationsButton) {
+    markAllAdminNotificationsButton.addEventListener(
+        "click",
+        markAllAdminNotificationsRead
+    );
+}
+
+/* =========================================================
+   41. NEXUS ADMIN REPORTS
+========================================================= */
+
+function renderNexusAdminReports() {
+    const deposits = getAdminFilteredDeposits();
+    const withdrawals = getAdminFilteredWithdrawals();
+
+    const successfulDeposits = deposits.filter(item =>
+        normalizeAdminStatus(item.status) === "successful"
+    );
+
+    const completedWithdrawals = withdrawals.filter(item =>
+        normalizeAdminStatus(item.status) === "completed"
+    );
+
+    const totalDepositAmount =
+        successfulDeposits.reduce(
+            (sum, item) => sum + getAdminNumber(item.amount),
+            0
+        );
+
+    const totalWithdrawalAmount =
+        completedWithdrawals.reduce(
+            (sum, item) => sum + getAdminNumber(item.amount),
+            0
+        );
+
+    const newMembers = adminProfilesCache.filter(profile => {
+        if (!profile.created_at) return false;
+
+        const date = getAdminGhanaDateKey(profile.created_at);
+
+        return (
+            (!adminDateFilterState.from ||
+                date >= adminDateFilterState.from) &&
+            (!adminDateFilterState.to ||
+                date <= adminDateFilterState.to)
+        );
+    });
+
+    const transactionCount =
+        deposits.length + withdrawals.length;
+
+    const reportValues = {
+        reportDepositTotal:
+            adminDepositsAvailable
+                ? formatNexusAdminMoney(totalDepositAmount)
+                : "Unavailable",
+
+        reportWithdrawalTotal:
+            formatNexusAdminMoney(totalWithdrawalAmount),
+
+        reportNewMembers:
+            newMembers.length.toLocaleString("en-GH"),
+
+        reportTransactionCount:
+            transactionCount.toLocaleString("en-GH")
+    };
+
+    Object.entries(reportValues).forEach(
+        ([elementId, value]) => {
+            const element =
+                document.getElementById(elementId);
+
+            if (element) {
+                element.textContent = value;
+            }
+        }
+    );
+
+    const message =
+        document.getElementById("adminReportMessage");
+
+    if (message) {
+        message.textContent =
+            `Report period: ${adminDateFilterState.from || "Beginning"} to ${adminDateFilterState.to || "Today"}.`;
+    }
+}
+
+
+/* CSV export */
+
+function exportNexusAdminReport() {
+    if (!adminDepositsAvailable) {
+        alert(
+            "Deposit records are unavailable. The report cannot be exported as a complete financial report."
+        );
+        return;
+    }
+
+    const deposits = getAdminFilteredDeposits();
+    const withdrawals = getAdminFilteredWithdrawals();
+
+    const rows = [
+        [
+            "Reference",
+            "Member",
+            "Type",
+            "Amount (GHS)",
+            "Payment Method",
+            "Status",
+            "Date"
+        ]
+    ];
+
+    deposits.forEach(deposit => {
+        rows.push([
+            deposit.reference || deposit.id,
+            getAdminMemberName(
+                deposit.user_id,
+                adminProfilesCache
+            ),
+            "Deposit",
+            getAdminNumber(deposit.amount).toFixed(2),
+            getAdminPaymentMethodLabel(
+                deposit.payment_method
+            ),
+            deposit.status,
+            formatAdminDateTime(
+                getAdminFinancialDate(deposit, "deposit")
+            )
+        ]);
+    });
+
+    withdrawals.forEach(withdrawal => {
+        rows.push([
+            "WDR-" + String(withdrawal.id).slice(0, 8),
+            getAdminMemberName(
+                withdrawal.user_id,
+                adminProfilesCache
+            ),
+            "Withdrawal",
+            getAdminNumber(withdrawal.amount).toFixed(2),
+            getAdminPaymentMethodLabel(
+                withdrawal.withdrawal_method
+            ),
+            withdrawal.status,
+            formatAdminDateTime(
+                getAdminFinancialDate(withdrawal, "withdrawal")
+            )
+        ]);
+    });
+
+    const escapeCSV = value => {
+        let text = String(value ?? "");
+
+        // Prevent spreadsheet formula injection.
+        if (/^[=+\-@\t\r]/.test(text)) {
+            text = "'" + text;
+        }
+
+        return '"' + text.replace(/"/g, '""') + '"';
+    };
+
+    const csv = rows
+        .map(row => row.map(escapeCSV).join(","))
+        .join("\r\n");
+
+    const blob = new Blob(
+        ["\uFEFF" + csv],
+        {
+            type: "text/csv;charset=utf-8;"
+        }
+    );
+
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+
+    link.href = url;
+    link.download =
+        "Nexus_Wealth_Report_" +
+        getAdminGhanaToday() +
+        ".csv";
+
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+
+    URL.revokeObjectURL(url);
+}
+
+
+const exportAdminReportButton =
+    document.getElementById("exportAdminReport");
+
+if (exportAdminReportButton) {
+    exportAdminReportButton.addEventListener(
+        "click",
+        exportNexusAdminReport
+    );
+}
 
 /* =========================================================
    40. START ADMIN DASHBOARD
