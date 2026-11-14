@@ -2299,3 +2299,223 @@ tbody tr:hover {
         transition-duration: 0.01ms !important;
     }
 }
+
+
+/* =====================================================
+   NEXUS WEALTH PARTNERS
+   PROFESSIONAL ADMIN NOTIFICATION DESIGN
+===================================================== */
+
+/* Notification list */
+
+#adminNotificationsList {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-top: 22px;
+    width: 100%;
+}
+
+/* Individual notification card */
+
+#adminNotificationsList .notification-item {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    padding: 20px;
+    background: #ffffff;
+    border: 1px solid #e5eaf0;
+    border-left: 4px solid #94a3b8;
+    border-radius: 12px;
+    box-shadow: 0 3px 12px rgba(16, 43, 70, 0.04);
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        border-color 0.2s ease;
+}
+
+#adminNotificationsList .notification-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 7px 20px rgba(16, 43, 70, 0.09);
+}
+
+/* Unread notification */
+
+#adminNotificationsList .notification-item.unread {
+    background: #f4f8fc;
+    border-color: #d6e5f5;
+    border-left-color: #1674c8;
+}
+
+/* Notification icon */
+
+#adminNotificationsList .notification-icon {
+    flex: 0 0 42px;
+    width: 42px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    background: #edf2f7;
+    color: #334155;
+    font-size: 19px;
+    font-weight: 700;
+}
+
+/* Notification content */
+
+#adminNotificationsList .notification-content {
+    flex: 1;
+    min-width: 0;
+}
+
+#adminNotificationsList .notification-content h4,
+#adminNotificationsList .notification-title {
+    margin: 0 0 7px;
+    color: #102b46;
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 1.5;
+}
+
+#adminNotificationsList .notification-content p,
+#adminNotificationsList .notification-message {
+    margin: 0;
+    color: #536477;
+    font-size: 14px;
+    line-height: 1.7;
+    overflow-wrap: anywhere;
+}
+
+/* Notification date */
+
+#adminNotificationsList .notification-time {
+    display: block;
+    margin-top: 10px;
+    color: #8996a5;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+/* Unread indicator */
+
+#adminNotificationsList .unread-indicator {
+    flex: 0 0 9px;
+    width: 9px;
+    height: 9px;
+    margin-top: 6px;
+    border-radius: 50%;
+    background: #1674c8;
+}
+
+/* SUCCESS */
+
+#adminNotificationsList .notification-item.success {
+    border-left-color: #16a36a;
+}
+
+#adminNotificationsList .notification-item.success .notification-icon {
+    background: #e5f7ee;
+    color: #138653;
+}
+
+/* WARNING */
+
+#adminNotificationsList .notification-item.warning {
+    border-left-color: #e5a000;
+}
+
+#adminNotificationsList .notification-item.warning .notification-icon {
+    background: #fff5d9;
+    color: #a96d00;
+}
+
+/* ERROR */
+
+#adminNotificationsList .notification-item.error {
+    border-left-color: #dc4545;
+}
+
+#adminNotificationsList .notification-item.error .notification-icon {
+    background: #ffebeb;
+    color: #c53030;
+}
+
+/* INFORMATION */
+
+#adminNotificationsList .notification-item.info {
+    border-left-color: #2478c5;
+}
+
+#adminNotificationsList .notification-item.info .notification-icon {
+    background: #e8f2ff;
+    color: #1768ad;
+}
+
+/* Notification action buttons */
+
+#adminNotificationsList button {
+    cursor: pointer;
+    border: none;
+    border-radius: 7px;
+    padding: 8px 12px;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 600;
+    transition: background 0.2s ease;
+}
+
+#adminNotificationsList .notification-action {
+    margin-top: 12px;
+    background: #edf3f9;
+    color: #16466e;
+}
+
+#adminNotificationsList .notification-action:hover {
+    background: #dceaf7;
+}
+
+/* Empty notification message */
+
+#adminNotificationsList .empty-table {
+    display: block;
+    padding: 35px 20px;
+    border: 1px dashed #d5dee8;
+    border-radius: 12px;
+    background: #f8fafc;
+    color: #718096;
+    text-align: center;
+    font-size: 14px;
+}
+
+/* Mobile notification layout */
+
+@media (max-width: 600px) {
+    #adminNotificationsList {
+        gap: 11px;
+    }
+
+    #adminNotificationsList .notification-item {
+        gap: 11px;
+        padding: 15px;
+    }
+
+    #adminNotificationsList .notification-icon {
+        flex-basis: 36px;
+        width: 36px;
+        height: 36px;
+        font-size: 16px;
+    }
+
+    #adminNotificationsList .notification-content h4,
+    #adminNotificationsList .notification-title {
+        font-size: 14px;
+    }
+
+    #adminNotificationsList .notification-content p,
+    #adminNotificationsList .notification-message {
+        font-size: 13px;
+    }
+}
