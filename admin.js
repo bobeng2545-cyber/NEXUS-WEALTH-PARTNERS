@@ -1785,6 +1785,88 @@ function displayAdminWithdrawals(
 
 
 /* =========================================================
+   18.1 REVIEW NEXUS WITHDRAWAL
+========================================================= */
+
+async function reviewNexusWithdrawal(
+    requestId,
+    action,
+    button
+) {
+    if (!requestId) {
+        alert("Withdrawal request ID is missing.");
+        return;
+    }
+
+    if (!["processing", "rejected"].includes(action)) {
+        alert("Invalid withdrawal action.");
+        return;
+    }
+
+    if (action === "rejected") {
+        const confirmed = window.confirm(
+            "Are you sure you want to reject this withdrawal request?"
+        );
+
+        if (!confirmed) return;
+    }
+
+    if (!nexusAdminSupabase) {
+        alert("Admin database connection is unavailable.");
+        return;
+    }
+
+    const originalText = button
+        ? button.textContent
+        : "";
+
+    try {
+        if (button) {
+            button.disabled = true;
+            button.textContent = "Please wait...";
+        }
+
+        const { data, error } =
+            await nexusAdminSupabase.rpc(
+                "admin_review_withdrawal",
+                {
+                    p_request_id: requestId,
+                    p_action: action
+                }
+            );
+
+        if (error) {
+            throw error;
+        }
+
+        alert(
+            action === "processing"
+                ? "Withdrawal request moved to processing."
+                : "Withdrawal request rejected successfully."
+        );
+
+        window.location.reload();
+
+    } catch (error) {
+        console.error(
+            "Withdrawal review error:",
+            error
+        );
+
+        alert(
+            error.message ||
+            "Unable to update the withdrawal request."
+        );
+
+        if (button) {
+            button.disabled = false;
+            button.textContent = originalText;
+        }
+    }
+}
+
+
+/* =========================================================
    19. DISPLAY SAVINGS DATA
 ========================================================= */
 
