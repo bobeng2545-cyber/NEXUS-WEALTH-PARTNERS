@@ -4572,13 +4572,131 @@ if (markAllAdminNotificationsButton) {
     );
 }
 
+
 /* =========================================================
    41. NEXUS ADMIN REPORTS
+   Uses the global admin date filter
 ========================================================= */
 
+
+/* ---------------------------------------------------------
+   1. GET THE DATE RANGE
+--------------------------------------------------------- */
+
+function getNexusReportDateRange() {
+    const state = adminDateFilterState || {};
+
+    return {
+        from: state.from || "",
+        to: state.to || ""
+    };
+}
+
+
+/* ---------------------------------------------------------
+   2. GET THE CORRECT FINANCIAL DATE FOR EACH RECORD
+
+   Deposits:
+   - Successful: paid_at, otherwise created_at
+   - Other statuses: created_at
+
+   Withdrawals:
+   - Completed: completed_at, otherwise created_at
+   - Other statuses: created_at
+--------------------------------------------------------- */
+
+function getNexusReportDateKey(item, type) {
+    if (!item) return "";
+
+    let dateValue = item.created_at || null;
+
+    const status = normalizeAdminStatus(item.status);
+
+    if (type === "deposit" && status === "successful") {
+        dateValue = item.paid_at || item.created_at || null;
+    }
+
+    if (type === "withdrawal" && status === "completed") {
+        dateValue = item.completed_at || item.created_at || null;
+    }
+
+    if (!dateValue) return "";
+
+    return getAdminGhanaDateKey(dateValue);
+}
+
+
+/* ---------------------------------------------------------
+   3. CHECK WHETHER A RECORD IS INSIDE THE DATE RANGE
+--------------------------------------------------------- */
+
+function isNexusReportDateIncluded(item, type) {
+    const range = getNexusReportDateRange();
+
+    const dateKey = getNexusReportDateKey(item, type);
+
+    if (!dateKey) return false;
+
+    if (range.from && dateKey < range.from) {
+        return false;
+    }
+
+    if (range.to && dateKey > range.to) {
+        return false;
+    }
+
+    return true;
+}
+
+
+/* ---------------------------------------------------------
+   4. GET FILTERED REPORT RECORDS
+
+   These functions use the loaded admin caches and apply
+   the selected date range directly.
+--------------------------------------------------------- */
+
+function getNexusReportDeposits() {
+    const records = Array.isArray(adminDepositsCache)
+        ? adminDepositsCache
+        : [];
+
+    return records.filter(item =>
+        isNexusReportDateIncluded(item, "deposit")
+    );
+}
+
+
+function getNexusReportWithdrawals() {
+    const records = Array.isArray(adminWithdrawalsCache)
+        ? adminWithdrawalsCache
+        : [];
+
+    return records.filter(item =>
+        isNexusReportDateIncluded(item, "withdrawal")
+    );
+}
+
+
+function getNexusReportNewMembers() {
+    const records = Array.isArray(adminProfilesCache)
+        ? adminProfilesCache
+        : [];
+
+    return records.filter(profile =>
+        isNexusReportDateIncluded(profile, "member")
+    );
+}
+
+
+/* ---------------------------------------------------------
+   5. RENDER REPORTS
+--------------------------------------------------------- */
+
 function renderNexusAdminReports() {
-    const deposits = getAdminFilteredDeposits();
-    const withdrawals = getAdminFilteredWithdrawals();
+    const deposits = getNexusReportDeposits();
+    const withdrawals = getNexusReportWithdrawals();
+    const newMembers = getNexusReportNewMembers();
 
     const successfulDeposits = deposits.filter(item =>
         normalizeAdminStatus(item.status) === "successful"
@@ -4588,39 +4706,25 @@ function renderNexusAdminReports() {
         normalizeAdminStatus(item.status) === "completed"
     );
 
-    const totalDepositAmount =
-        successfulDeposits.reduce(
-            (sum, item) => sum + getAdminNumber(item.amount),
-            0
-        );
+    const totalDepositAmount = successfulDeposits.reduce(
+        (sum, item) =>
+            sum + getAdminNumber(item.amount),
+        0
+    );
 
-    const totalWithdrawalAmount =
-        completedWithdrawals.reduce(
-            (sum, item) => sum + getAdminNumber(item.amount),
-            0
-        );
-
-    const newMembers = adminProfilesCache.filter(profile => {
-        if (!profile.created_at) return false;
-
-        const date = getAdminGhanaDateKey(profile.created_at);
-
-        return (
-            (!adminDateFilterState.from ||
-                date >= adminDateFilterState.from) &&
-            (!adminDateFilterState.to ||
-                date <= adminDateFilterState.to)
-        );
-    });
+    const totalWithdrawalAmount = completedWithdrawals.reduce(
+        (sum, item) =>
+            sum + getAdminNumber(item.amount),
+        0
+    );
 
     const transactionCount =
         deposits.length + withdrawals.length;
 
     const reportValues = {
-        reportDepositTotal:
-            adminDepositsAvailable
-                ? formatNexusAdminMoney(totalDepositAmount)
-                : "Unavailable",
+        reportDepositTotal: adminDepositsAvailable
+            ? formatNexusAdminMoney(totalDepositAmount)
+            : "Unavailable",
 
         reportWithdrawalTotal:
             formatNexusAdminMoney(totalWithdrawalAmount),
@@ -4643,17 +4747,24 @@ function renderNexusAdminReports() {
         }
     );
 
+    const range = getNexusReportDateRange();
+
     const message =
         document.getElementById("adminReportMessage");
 
     if (message) {
         message.textContent =
-            `Report period: ${adminDateFilterState.from || "Beginning"} to ${adminDateFilterState.to || "Today"}.`;
+            `Report period: ${range.from || "Beginning"} to ${range.to || "Today"}. ` +
+            `${deposits.length} deposits, ` +
+            `${withdrawals.length} withdrawals and ` +
+            `${newMembers.length} new members found.`;
     }
 }
 
 
-/* CSV export */
+/* ---------------------------------------------------------
+   6. CSV EXPORT
+--------------------------------------------------------- */
 
 function exportNexusAdminReport() {
     if (!adminDepositsAvailable) {
@@ -4663,8 +4774,8 @@ function exportNexusAdminReport() {
         return;
     }
 
-    const deposits = getAdminFilteredDeposits();
-    const withdrawals = getAdminFilteredWithdrawals();
+    const deposits = getNexusReportDeposits();
+    const withdrawals = getNexusReportWithdrawals();
 
     const rows = [
         [
@@ -4681,18 +4792,24 @@ function exportNexusAdminReport() {
     deposits.forEach(deposit => {
         rows.push([
             deposit.reference || deposit.id,
+
             getAdminMemberName(
                 deposit.user_id,
                 adminProfilesCache
             ),
+
             "Deposit",
+
             getAdminNumber(deposit.amount).toFixed(2),
+
             getAdminPaymentMethodLabel(
                 deposit.payment_method
             ),
+
             deposit.status,
+
             formatAdminDateTime(
-                getAdminFinancialDate(deposit, "deposit")
+                deposit.paid_at || deposit.created_at
             )
         ]);
     });
@@ -4700,18 +4817,25 @@ function exportNexusAdminReport() {
     withdrawals.forEach(withdrawal => {
         rows.push([
             "WDR-" + String(withdrawal.id).slice(0, 8),
+
             getAdminMemberName(
                 withdrawal.user_id,
                 adminProfilesCache
             ),
+
             "Withdrawal",
+
             getAdminNumber(withdrawal.amount).toFixed(2),
+
             getAdminPaymentMethodLabel(
                 withdrawal.withdrawal_method
             ),
+
             withdrawal.status,
+
             formatAdminDateTime(
-                getAdminFinancialDate(withdrawal, "withdrawal")
+                withdrawal.completed_at ||
+                withdrawal.created_at
             )
         ]);
     });
@@ -4739,31 +4863,83 @@ function exportNexusAdminReport() {
     );
 
     const url = URL.createObjectURL(blob);
+
     const link = document.createElement("a");
 
     link.href = url;
+
+    const range = getNexusReportDateRange();
+
     link.download =
         "Nexus_Wealth_Report_" +
-        getAdminGhanaToday() +
+        (range.from || "Beginning") +
+        "_to_" +
+        (range.to || "Today") +
         ".csv";
 
     document.body.appendChild(link);
+
     link.click();
+
     link.remove();
 
     URL.revokeObjectURL(url);
 }
 
 
+/* ---------------------------------------------------------
+   7. CONNECT THE EXPORT BUTTON
+--------------------------------------------------------- */
+
 const exportAdminReportButton =
     document.getElementById("exportAdminReport");
 
 if (exportAdminReportButton) {
-    exportAdminReportButton.addEventListener(
-        "click",
-        exportNexusAdminReport
-    );
+    // Prevent duplicate click handlers.
+    exportAdminReportButton.onclick =
+        exportNexusAdminReport;
 }
+
+
+/* ---------------------------------------------------------
+   8. REFRESH REPORTS WHEN THE DATE FILTER IS APPLIED
+      OR RESET
+--------------------------------------------------------- */
+
+const applyReportDateFilterButton =
+    document.getElementById("applyAdminDateFilter");
+
+const resetReportDateFilterButton =
+    document.getElementById("resetAdminDateFilter");
+
+if (
+    applyReportDateFilterButton &&
+    !applyReportDateFilterButton.dataset.reportRefreshBound
+) {
+    applyReportDateFilterButton.dataset.reportRefreshBound = "true";
+
+    applyReportDateFilterButton.addEventListener("click", () => {
+        // Allow the existing date-filter handler to update
+        // adminDateFilterState before rendering.
+        setTimeout(() => {
+            renderNexusAdminReports();
+        }, 0);
+    });
+}
+
+if (
+    resetReportDateFilterButton &&
+    !resetReportDateFilterButton.dataset.reportRefreshBound
+) {
+    resetReportDateFilterButton.dataset.reportRefreshBound = "true";
+
+    resetReportDateFilterButton.addEventListener("click", () => {
+        setTimeout(() => {
+            renderNexusAdminReports();
+        }, 0);
+    });
+}
+
 
 /* =========================================================
    40. START ADMIN DASHBOARD
