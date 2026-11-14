@@ -222,6 +222,46 @@
                     <span>Savings Management</span>
                 </button>
 
+                <!-- PROFIT & INTEREST -->
+<button
+    type="button"
+    class="admin-nav-link"
+    data-page="profit-interest"
+>
+    <span>₵</span>
+    <span>Profit & Interest</span>
+</button>
+
+<!-- REPORTS -->
+<button
+    type="button"
+    class="admin-nav-link"
+    data-page="reports"
+>
+    <span>▤</span>
+    <span>Reports</span>
+</button>
+
+<!-- NOTIFICATIONS -->
+<button
+    type="button"
+    class="admin-nav-link"
+    data-page="notifications"
+>
+    <span>♧</span>
+    <span>Notifications</span>
+</button>
+
+<!-- SETTINGS -->
+<button
+    type="button"
+    class="admin-nav-link"
+    data-page="settings"
+>
+    <span>⚙</span>
+    <span>Settings</span>
+</button>
+
             </nav>
 
             <div class="sidebar-bottom">
@@ -1326,6 +1366,204 @@
                 </div>
 
             </section>
+
+            <!-- =================================
+     PROFIT & INTEREST PAGE
+================================= -->
+
+<section id="page-profit-interest" class="admin-page">
+
+    <div class="page-intro">
+        <div>
+            <h2>Profit & Interest</h2>
+            <p>Monitor recorded platform profit and member interest.</p>
+        </div>
+    </div>
+
+    <div class="statistics-grid">
+
+        <article class="stat-card">
+            <div class="stat-icon deposits-icon">₵</div>
+            <p>Total Recorded Profit</p>
+            <h3 id="adminTotalProfit">GH₵0.00</h3>
+            <span>From verified financial records</span>
+        </article>
+
+        <article class="stat-card">
+            <div class="stat-icon wallet-icon">%</div>
+            <p>Total Interest Recorded</p>
+            <h3 id="adminTotalInterest">GH₵0.00</h3>
+            <span>From recorded interest entries</span>
+        </article>
+
+    </div>
+
+    <div class="admin-panel">
+        <div class="panel-heading">
+            <div>
+                <h3>Profit & Interest Records</h3>
+                <p>Financial entries will appear here once connected to the database.</p>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Reference</th>
+                        <th>Record Type</th>
+                        <th>Member</th>
+                        <th>Amount</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+
+                <tbody id="profitInterestTable">
+                    <tr>
+                        <td colspan="6" class="empty-table">
+                            No profit or interest records loaded.
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</section>
+
+
+<!-- =================================
+     REPORTS PAGE
+================================= -->
+
+<section id="page-reports" class="admin-page">
+
+    <div class="page-intro">
+        <div>
+            <h2>Reports</h2>
+            <p>Review financial and operational performance for your selected date range.</p>
+        </div>
+    </div>
+
+    <div class="statistics-grid">
+
+        <article class="stat-card">
+            <p>Deposit Report</p>
+            <h3 id="reportDepositTotal">GH₵0.00</h3>
+            <span>Successful deposits</span>
+        </article>
+
+        <article class="stat-card">
+            <p>Withdrawal Report</p>
+            <h3 id="reportWithdrawalTotal">GH₵0.00</h3>
+            <span>Completed withdrawals</span>
+        </article>
+
+        <article class="stat-card">
+            <p>New Members</p>
+            <h3 id="reportNewMembers">0</h3>
+            <span>Registrations in selected period</span>
+        </article>
+
+        <article class="stat-card">
+            <p>Transactions</p>
+            <h3 id="reportTransactionCount">0</h3>
+            <span>Recorded transactions</span>
+        </article>
+
+    </div>
+
+    <div class="admin-panel">
+        <div class="panel-heading">
+            <div>
+                <h3>Report Summary</h3>
+                <p>Report figures will use the global financial date filter.</p>
+            </div>
+        </div>
+
+        <div id="adminReportMessage" role="status">
+            Reports are awaiting database integration.
+        </div>
+
+        <button type="button" id="exportAdminReport" class="panel-action" disabled>
+            Export Report
+        </button>
+    </div>
+
+</section>
+
+
+<!-- =================================
+     NOTIFICATIONS PAGE
+================================= -->
+
+<section id="page-notifications" class="admin-page">
+
+    <div class="page-intro">
+        <div>
+            <h2>Notifications</h2>
+            <p>Review important administrator alerts and platform events.</p>
+        </div>
+    </div>
+
+    <div class="admin-panel">
+
+        <div class="panel-heading">
+            <div>
+                <h3>Administrator Notifications</h3>
+                <p>Notifications will be loaded from verified platform events.</p>
+            </div>
+
+            <button
+                type="button"
+                id="refreshAdminNotifications"
+                class="panel-action"
+            >
+                ↻ Refresh
+            </button>
+        </div>
+
+        <div id="adminNotificationsList">
+            <p class="empty-table">
+                No notifications loaded.
+            </p>
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =================================
+     SETTINGS PAGE
+================================= -->
+
+<section id="page-settings" class="admin-page">
+
+    <div class="page-intro">
+        <div>
+            <h2>Platform Settings</h2>
+            <p>Manage approved Nexus Wealth Partners platform settings.</p>
+        </div>
+    </div>
+
+    <div class="admin-panel">
+
+        <div class="panel-heading">
+            <div>
+                <h3>General Settings</h3>
+                <p>Platform settings will be connected to secure database storage.</p>
+            </div>
+        </div>
+
+        <div id="adminSettingsMessage" role="status">
+            Settings are awaiting database integration.
+        </div>
+
+    </div>
+
+</section>
 
 
             <!-- =================================
