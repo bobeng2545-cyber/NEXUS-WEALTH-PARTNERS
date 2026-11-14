@@ -1389,85 +1389,94 @@
             </section>
 
 
-            <!-- =====================================
-                 REPORTS
-            ====================================== -->
+            
+<!-- =====================================
+     REPORTS
+====================================== -->
 
-            <section
-                id="page-reports"
-                class="admin-page"
-                aria-labelledby="reportsHeading"
-            >
+<section
+    id="page-reports"
+    class="admin-page"
+    aria-labelledby="reportsHeading"
+>
 
-                <div class="page-intro">
-                    <div>
-                        <h2 id="reportsHeading">Reports</h2>
-                        <p>
-                            Review financial and operational performance for
-                            your selected date range.
-                        </p>
-                    </div>
-                </div>
+    <div class="page-intro">
+        <div>
+            <h2 id="reportsHeading">Reports</h2>
+            <p>
+                Review financial and operational performance
+                for your selected date range.
+            </p>
+        </div>
+    </div>
 
-                <div class="statistics-grid">
+    <!-- REPORT STATISTICS -->
 
-                    <article class="stat-card">
-                        <p>Deposit Report</p>
-                        <h3 id="reportDepositTotal">GH₵0.00</h3>
-                        <span>Successful deposits</span>
-                    </article>
+    <div class="statistics-grid">
 
-                    <article class="stat-card">
-                        <p>Withdrawal Report</p>
-                        <h3 id="reportWithdrawalTotal">GH₵0.00</h3>
-                        <span>Completed withdrawals</span>
-                    </article>
+        <article class="stat-card">
+            <p>Deposit Report</p>
+            <h3 id="reportDepositTotal">GH₵0.00</h3>
+            <span>Successful deposits</span>
+        </article>
 
-                    <article class="stat-card">
-                        <p>New Members</p>
-                        <h3 id="reportNewMembers">0</h3>
-                        <span>Registrations in selected period</span>
-                    </article>
+        <article class="stat-card">
+            <p>Withdrawal Report</p>
+            <h3 id="reportWithdrawalTotal">GH₵0.00</h3>
+            <span>Completed withdrawals</span>
+        </article>
 
-                    <article class="stat-card">
-                        <p>Transactions</p>
-                        <h3 id="reportTransactionCount">0</h3>
-                        <span>Recorded transactions</span>
-                    </article>
+        <article class="stat-card">
+            <p>New Members</p>
+            <h3 id="reportNewMembers">0</h3>
+            <span>Registrations in selected period</span>
+        </article>
 
-                </div>
+        <article class="stat-card">
+            <p>Transactions</p>
+            <h3 id="reportTransactionCount">0</h3>
+            <span>Recorded transactions</span>
+        </article>
 
-                <div class="admin-panel">
+    </div>
 
-                    <div class="panel-heading">
-                        <div>
-                            <h3>Report Summary</h3>
-                            <p>
-                                Report figures will use the global financial date filter.
-                            </p>
-                        </div>
-                    </div>
+    <!-- REPORT SUMMARY -->
 
-                    <div
-                        id="adminReportMessage"
-                        role="status"
-                        aria-live="polite"
-                    >
-                        Reports are awaiting database integration.
-                    </div>
+    <div class="admin-panel">
 
-                    <button
-                        type="button"
-                        id="exportAdminReport"
-                        class="panel-action"
-                        disabled
-                    >
-                        Export Report
-                    </button>
+        <div class="panel-heading">
+            <div>
+                <h3>Report Summary</h3>
+                <p>
+                    Report figures use the global financial date filter.
+                </p>
+            </div>
+        </div>
 
-                </div>
+        <div
+            id="adminReportMessage"
+            role="status"
+            aria-live="polite"
+        >
+            Select a date range to view your report.
+        </div>
 
-            </section>
+        <!-- EXPORT BUTTON -->
+
+        <button
+            type="button"
+            id="exportAdminReport"
+            class="panel-action"
+        >
+            Export Report
+        </button>
+
+    </div>
+
+</section>
+
+<!-- END REPORTS -->
+
 
 
             <!-- =====================================
