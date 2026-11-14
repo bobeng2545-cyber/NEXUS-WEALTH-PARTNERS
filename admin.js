@@ -4942,6 +4942,300 @@ if (
 
 
 /* =========================================================
+   NEXUS WEALTH PARTNERS
+   42. PLATFORM SETTINGS
+========================================================= */
+
+const NEXUS_SETTINGS_DEFAULTS = {
+    platform_name: "NEXUS WEALTH PARTNERS",
+    support_email: "",
+    support_phone: ""
+};
+
+let nexusSettingsLoaded = false;
+
+
+/* =========================================================
+   42.1 SETTINGS MESSAGE
+========================================================= */
+
+function showNexusSettingsMessage(message, type = "info") {
+
+    const element = document.getElementById(
+        "adminSettingsMessage"
+    );
+
+    if (!element) return;
+
+    element.textContent = message;
+
+    element.dataset.type = type;
+}
+
+
+/* =========================================================
+   42.2 LOAD SETTINGS
+========================================================= */
+
+async function loadNexusPlatformSettings() {
+
+    const form = document.getElementById(
+        "nexusGeneralSettingsForm"
+    );
+
+    if (!form) return;
+
+    showNexusSettingsMessage(
+        "Loading platform settings..."
+    );
+
+    try {
+
+        const { data, error } =
+            await nexusAdminSupabase
+                .from("nexus_platform_settings")
+                .select("setting_key, setting_value");
+
+        if (error) throw error;
+
+        const settings = {
+            ...NEXUS_SETTINGS_DEFAULTS
+        };
+
+        (data || []).forEach(row => {
+
+            if (
+                Object.prototype.hasOwnProperty.call(
+                    settings,
+                    row.setting_key
+                )
+            ) {
+
+                settings[row.setting_key] =
+                    row.setting_value;
+            }
+        });
+
+        document.getElementById(
+            "nexusPlatformName"
+        ).value = settings.platform_name || "";
+
+        document.getElementById(
+            "nexusSupportEmail"
+        ).value = settings.support_email || "";
+
+        document.getElementById(
+            "nexusSupportPhone"
+        ).value = settings.support_phone || "";
+
+        nexusSettingsLoaded = true;
+
+        showNexusSettingsMessage(
+            "Platform settings loaded successfully.",
+            "success"
+        );
+
+    } catch (error) {
+
+        console.error(
+            "Nexus settings loading error:",
+            error
+        );
+
+        showNexusSettingsMessage(
+            "Could not load platform settings: " +
+            error.message,
+            "error"
+        );
+    }
+}
+
+
+/* =========================================================
+   42.3 SAVE ONE SETTING
+========================================================= */
+
+async function saveNexusPlatformSetting(
+    settingKey,
+    settingValue,
+    description
+) {
+
+    const { data: authData, error: authError } =
+        await nexusAdminSupabase.auth.getUser();
+
+    if (authError) throw authError;
+
+    const user = authData?.user;
+
+    if (!user) {
+        throw new Error(
+            "Administrator session has expired. Please log in again."
+        );
+    }
+
+    const { data: isAdmin, error: adminError } =
+        await nexusAdminSupabase.rpc(
+            "is_nexus_admin"
+        );
+
+    if (adminError) throw adminError;
+
+    if (isAdmin !== true) {
+        throw new Error(
+            "Administrator permission could not be verified."
+        );
+    }
+
+    const { error } = await nexusAdminSupabase
+        .from("nexus_platform_settings")
+        .upsert(
+            {
+                setting_key: settingKey,
+                setting_value: settingValue,
+                description: description,
+                updated_by: user.id,
+                updated_at: new Date().toISOString()
+            },
+            {
+                onConflict: "setting_key"
+            }
+        );
+
+    if (error) throw error;
+}
+
+
+/* =========================================================
+   42.4 SAVE GENERAL SETTINGS
+========================================================= */
+
+async function saveNexusGeneralSettings(event) {
+
+    event.preventDefault();
+
+    const button = document.getElementById(
+        "saveNexusGeneralSettings"
+    );
+
+    const platformName = document.getElementById(
+        "nexusPlatformName"
+    ).value.trim();
+
+    const supportEmail = document.getElementById(
+        "nexusSupportEmail"
+    ).value.trim();
+
+    const supportPhone = document.getElementById(
+        "nexusSupportPhone"
+    ).value.trim();
+
+    if (!platformName) {
+
+        showNexusSettingsMessage(
+            "Platform name is required.",
+            "error"
+        );
+
+        return;
+    }
+
+    if (
+        supportEmail &&
+        !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(supportEmail)
+    ) {
+
+        showNexusSettingsMessage(
+            "Enter a valid support email address.",
+            "error"
+        );
+
+        return;
+    }
+
+    const originalText = button.textContent;
+
+    button.disabled = true;
+    button.textContent = "Saving...";
+
+    showNexusSettingsMessage(
+        "Saving platform settings..."
+    );
+
+    try {
+
+        await saveNexusPlatformSetting(
+            "platform_name",
+            platformName,
+            "Official platform name"
+        );
+
+        await saveNexusPlatformSetting(
+            "support_email",
+            supportEmail,
+            "Platform customer support email"
+        );
+
+        await saveNexusPlatformSetting(
+            "support_phone",
+            supportPhone,
+            "Platform customer support phone number"
+        );
+
+        showNexusSettingsMessage(
+            "General platform settings saved successfully.",
+            "success"
+        );
+
+    } catch (error) {
+
+        console.error(
+            "Saving Nexus settings failed:",
+            error
+        );
+
+        showNexusSettingsMessage(
+            "Settings could not be saved: " +
+            error.message,
+            "error"
+        );
+
+    } finally {
+
+        button.disabled = false;
+        button.textContent = originalText;
+    }
+}
+
+
+/* =========================================================
+   42.5 INITIALIZE SETTINGS
+========================================================= */
+
+function initializeNexusPlatformSettings() {
+
+    const form = document.getElementById(
+        "nexusGeneralSettingsForm"
+    );
+
+    if (!form) return;
+
+    if (form.dataset.initialized === "true") {
+        return;
+    }
+
+    form.dataset.initialized = "true";
+
+    form.addEventListener(
+        "submit",
+        saveNexusGeneralSettings
+    );
+}
+
+initializeNexusPlatformSettings();
+
+
+/* =========================================================
    40. START ADMIN DASHBOARD
 ========================================================= */
 
