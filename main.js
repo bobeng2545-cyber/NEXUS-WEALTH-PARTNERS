@@ -1118,12 +1118,17 @@ async function loadMemberProfile(user) {
 }
 
 
+
 /* =========================================
    15. LOAD MEMBER WALLET
-   DISPLAY BALANCE AFTER PENDING WITHDRAWALS
+   DISPLAY ACTUAL AND AVAILABLE BALANCES
 ========================================= */
 
 async function loadMemberWallet(user) {
+
+    if (!user) {
+        throw new Error("Member authentication is required.");
+    }
 
     const { data, error } = await nexusSupabase
         .from("wallets")
@@ -1140,10 +1145,19 @@ async function loadMemberWallet(user) {
         throw new Error("Your wallet record was not found.");
     }
 
+    /* ACTUAL WALLET BALANCE */
+
     const actualBalance = Number(data.balance) || 0;
 
     const deposits = Number(data.total_deposits) || 0;
     const withdrawals = Number(data.total_withdrawals) || 0;
+
+    if (
+        !Number.isFinite(actualBalance) ||
+        actualBalance < 0
+    ) {
+        throw new Error("Your wallet balance is invalid.");
+    }
 
     /* LOAD PENDING AND PROCESSING WITHDRAWALS */
 
@@ -1161,22 +1175,42 @@ async function loadMemberWallet(user) {
         throw requestError;
     }
 
-    /* CALCULATE TOTAL RESERVED WITHDRAWALS */
+    /* CALCULATE RESERVED WITHDRAWALS */
 
     const pendingWithdrawals = (requests || []).reduce(
         (total, request) => {
-            return total + (Number(request.amount) || 0);
+
+            const amount = Number(request.amount);
+
+            if (!Number.isFinite(amount) || amount < 0) {
+                return total;
+            }
+
+            return total + amount;
+
         },
         0
     );
 
-    /* WITHDRAWALS ARE ALREADY DEDUCTED BY THE DATABASE RPC */
+    /*
+       IMPORTANT:
 
-const currentBalance = actualBalance;
+       Withdrawal submission does not deduct the wallet.
 
-const availableBalance = actualBalance;
+       Pending and processing requests are logically reserved.
 
-    /* DISPLAY WALLET BALANCE */
+       The actual wallet deduction happens only when the
+       authorized backend completes the withdrawal.
+    */
+
+    const currentBalance = actualBalance;
+
+    const availableBalance = Math.max(
+        0,
+        actualBalance - pendingWithdrawals
+    );
+
+    /* DISPLAY ACTUAL WALLET BALANCE */
 
     [
         "walletBalance",
@@ -1250,6 +1284,7 @@ const availableBalance = actualBalance;
         reserved_withdrawals: pendingWithdrawals
     };
 }
+
 
 
 /* =========================================
