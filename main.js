@@ -1536,31 +1536,109 @@ window.showForgotPassword = showForgotPassword;
 window.returnToHome = returnToHome;
 
 
+
 /* =========================================
-   23. LOGOUT
+   23. MEMBER LOGOUT
+   CONNECTED TO SUPABASE AUTHENTICATION
 ========================================= */
+
+const memberLogoutButton = getElement("memberLogoutButton");
+
+let memberLogoutInProgress = false;
+
 
 async function logoutMember() {
 
-    const { error } = await nexusSupabase.auth.signOut();
+    // Prevent multiple logout requests.
+    if (memberLogoutInProgress) return;
 
-    if (error) {
+    memberLogoutInProgress = true;
 
-        console.error("Logout error:", error);
+    const button = getElement("memberLogoutButton");
 
-        showMessage(error.message);
+    const label = button
+        ? button.querySelector("span:last-child")
+        : null;
 
-        return;
+    const originalLabel = label
+        ? label.textContent
+        : "Logout";
+
+    // Update the button while logout is processing.
+    if (button) {
+
+        button.disabled = true;
+
+        button.setAttribute("aria-busy", "true");
+
+        if (label) {
+            label.textContent = "Logging out...";
+        }
     }
 
-    closeNexusNotificationMenu();
+    try {
 
-    showPublicHome();
+        // End the authenticated Supabase session.
+        const { error } = await nexusSupabase.auth.signOut();
 
-    showMessage("You have been logged out.");
+        if (error) {
+            throw error;
+        }
+
+        // Close any open notification menu.
+        closeNexusNotificationMenu();
+
+        // Return the member to the public homepage.
+        showPublicHome();
+
+        showMessage("You have been logged out successfully.");
+
+    } catch (error) {
+
+        console.error("Member logout error:", error);
+
+        showMessage(
+            error.message ||
+            "Logout failed. Please try again."
+        );
+
+    } finally {
+
+        memberLogoutInProgress = false;
+
+        if (button) {
+
+            button.disabled = false;
+
+            button.removeAttribute("aria-busy");
+
+            if (label) {
+                label.textContent = originalLabel;
+            }
+        }
+    }
 }
 
+
+// Connect the visible dashboard Logout button.
+if (memberLogoutButton) {
+
+    memberLogoutButton.addEventListener(
+        "click",
+        logoutMember
+    );
+
+} else {
+
+    console.warn(
+        "Member logout button was not found. Check the HTML ID: memberLogoutButton."
+    );
+}
+
+
+// Keep the logout function available to other scripts.
 window.logoutMember = logoutMember;
+
 
 
 /* =========================================
