@@ -1907,3 +1907,834 @@ async function startTellerPortal() {
 
 
 startTellerPortal();
+
+/* =========================================================
+   23. NEXUS CUSTOMER SUPPORT — TELLER PORTAL
+   Shared inbox for active tellers and administrators
+========================================================= */
+
+const tellerSupportMessage =
+    document.getElementById("tellerSupportMessage");
+
+const refreshSupportTicketsButton =
+    document.getElementById("refreshSupportTicketsButton");
+
+const supportTicketSearch =
+    document.getElementById("supportTicketSearch");
+
+const tellerSupportTicketList =
+    document.getElementById("tellerSupportTicketList");
+
+const tellerSupportConversation =
+    document.getElementById("tellerSupportConversation");
+
+const tellerSupportSubject =
+    document.getElementById("tellerSupportSubject");
+
+const tellerSupportCustomer =
+    document.getElementById("tellerSupportCustomer");
+
+const tellerSupportCategory =
+    document.getElementById("tellerSupportCategory");
+
+const tellerSupportMemberId =
+    document.getElementById("tellerSupportMemberId");
+
+const tellerSupportStatus =
+    document.getElementById("tellerSupportStatus");
+
+const tellerSupportDate =
+    document.getElementById("tellerSupportDate");
+
+const tellerSupportStatusSelect =
+    document.getElementById("tellerSupportStatusSelect");
+
+const updateTellerSupportStatusButton =
+    document.getElementById("updateTellerSupportStatusButton");
+
+const tellerSupportMessageList =
+    document.getElementById("tellerSupportMessageList");
+
+const tellerSupportReplyForm =
+    document.getElementById("tellerSupportReplyForm");
+
+const tellerSupportReply =
+    document.getElementById("tellerSupportReply");
+
+const tellerSupportReplyButton =
+    document.getElementById("tellerSupportReplyButton");
+
+const closeTellerSupportConversation =
+    document.getElementById("closeTellerSupportConversation");
+
+const tellerSupportClosedNotice =
+    document.getElementById("tellerSupportClosedNotice");
+
+
+/* =========================================================
+   SUPPORT STATE
+========================================================= */
+
+let tellerSupportTickets = [];
+
+let currentSupportTicket = null;
+
+let supportReplyInProgress = false;
+let supportStatusInProgress = false;
+
+
+/* =========================================================
+   SUPPORT HELPERS
+========================================================= */
+
+function formatSupportStatus(status) {
+
+    const labels = {
+        open: "Open",
+        in_progress: "In Progress",
+        resolved: "Resolved",
+        closed: "Closed"
+    };
+
+    return labels[String(status || "").toLowerCase()] || status;
+
+}
+
+
+function showTellerSupportMessage(message, type = "info") {
+
+    showMessage(
+        tellerSupportMessage,
+        message,
+        type
+    );
+
+}
+
+
+function updateSupportReplyAvailability() {
+
+    const isClosed =
+        currentSupportTicket?.status === "closed";
+
+    tellerSupportReplyForm.classList.toggle(
+        "hidden",
+        isClosed
+    );
+
+    tellerSupportClosedNotice.classList.toggle(
+        "hidden",
+        !isClosed
+    );
+
+    tellerSupportReplyButton.disabled =
+        isClosed || supportReplyInProgress;
+
+}
+
+
+/* =========================================================
+   LOAD ALL CUSTOMER REPORTS
+========================================================= */
+
+async function loadTellerSupportTickets() {
+
+    if (!currentTeller || !currentUser) return;
+
+    tellerSupportTicketList.innerHTML = `
+        <p class="empty-state">
+            Loading customer reports...
+        </p>
+    `;
+
+    hideMessage(tellerSupportMessage);
+
+    try {
+
+        const { data, error } = await tellerSupabase.rpc(
+            "nexus_list_support_tickets",
+            {
+                p_limit: 100
+            }
+        );
+
+        if (error) {
+            throw error;
+        }
+
+        tellerSupportTickets = Array.isArray(data) ? data : [];
+
+        renderTellerSupportTickets();
+
+    } catch (error) {
+
+        console.error(
+            "Customer support ticket loading error:",
+            error
+        );
+
+        tellerSupportTicketList.innerHTML = `
+            <p class="empty-state">
+                Could not load customer reports.
+            </p>
+        `;
+
+        showTellerSupportMessage(
+            error.message || "Unable to load customer reports.",
+            "error"
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   DISPLAY CUSTOMER REPORTS
+========================================================= */
+
+function renderTellerSupportTickets() {
+
+    const searchTerm =
+        (supportTicketSearch.value || "").trim().toLowerCase();
+
+    const filteredTickets = tellerSupportTickets.filter(ticket => {
+
+        const searchableText = [
+            ticket.customer_name,
+            ticket.member_id,
+            ticket.subject,
+            ticket.category,
+            ticket.status
+        ].join(" ").toLowerCase();
+
+        return searchableText.includes(searchTerm);
+
+    });
+
+    if (filteredTickets.length === 0) {
+
+        tellerSupportTicketList.innerHTML = `
+            <p class="empty-state">
+                ${
+                    searchTerm
+                        ? "No reports match your search."
+                        : "There are currently no customer reports."
+                }
+            </p>
+        `;
+
+        return;
+    }
+
+    tellerSupportTicketList.innerHTML =
+        filteredTickets.map(ticket => {
+
+            const status = String(ticket.status || "open")
+                .toLowerCase();
+
+            const isSelected =
+                currentSupportTicket &&
+                currentSupportTicket.ticket_id === ticket.ticket_id;
+
+            return `
+                <div
+                    class="support-ticket-item ${isSelected ? "active" : ""}"
+                    data-ticket-id="${escapeHTML(ticket.ticket_id)}"
+                    role="button"
+                    tabindex="0"
+                >
+
+                    <div class="support-ticket-heading">
+
+                        <strong>
+                            ${escapeHTML(ticket.subject)}
+                        </strong>
+
+                        <span class="support-status-badge status-${escapeHTML(status)}">
+                            ${escapeHTML(formatSupportStatus(status))}
+                        </span>
+
+                    </div>
+
+                    <p>
+                        ${escapeHTML(ticket.customer_name || "Customer")}
+                        · ${escapeHTML(ticket.member_id || "No Member ID")}
+                    </p>
+
+                    <p>
+                        ${escapeHTML(ticket.category)}
+                    </p>
+
+                    <small>
+                        Last activity:
+                        ${escapeHTML(formatDate(ticket.last_message_at))}
+                    </small>
+
+                </div>
+            `;
+
+        }).join("");
+
+}
+
+
+/* =========================================================
+   OPEN A CUSTOMER REPORT
+========================================================= */
+
+async function openTellerSupportTicket(ticketId) {
+
+    if (!currentTeller || !currentUser) return;
+
+    const ticket = tellerSupportTickets.find(
+        item => String(item.ticket_id) === String(ticketId)
+    );
+
+    if (!ticket) {
+
+        showTellerSupportMessage(
+            "The selected customer report could not be found.",
+            "error"
+        );
+
+        return;
+    }
+
+    currentSupportTicket = ticket;
+
+    tellerSupportSubject.textContent =
+        ticket.subject || "Customer Report";
+
+    tellerSupportCustomer.textContent =
+        ticket.customer_name || "Customer";
+
+    tellerSupportCategory.textContent =
+        ticket.category || "—";
+
+    tellerSupportMemberId.textContent =
+        ticket.member_id || "—";
+
+    tellerSupportStatus.textContent =
+        formatSupportStatus(ticket.status);
+
+    tellerSupportDate.textContent =
+        formatDate(ticket.created_at);
+
+    tellerSupportStatusSelect.value =
+        ticket.status || "open";
+
+    tellerSupportConversation.classList.remove("hidden");
+
+    updateSupportReplyAvailability();
+
+    renderTellerSupportTickets();
+
+    await loadTellerSupportMessages(ticket.ticket_id);
+
+    tellerSupportConversation.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+    });
+
+}
+
+
+/* =========================================================
+   LOAD CONVERSATION MESSAGES
+========================================================= */
+
+async function loadTellerSupportMessages(ticketId) {
+
+    if (!ticketId || !currentTeller) return;
+
+    tellerSupportMessageList.innerHTML = `
+        <p class="empty-state">
+            Loading conversation...
+        </p>
+    `;
+
+    try {
+
+        const { data, error } = await tellerSupabase.rpc(
+            "nexus_list_support_messages",
+            {
+                p_ticket_id: ticketId
+            }
+        );
+
+        if (error) {
+            throw error;
+        }
+
+        const messages = Array.isArray(data) ? data : [];
+
+        if (messages.length === 0) {
+
+            tellerSupportMessageList.innerHTML = `
+                <p class="empty-state">
+                    No messages found for this report.
+                </p>
+            `;
+
+            return;
+        }
+
+        tellerSupportMessageList.innerHTML =
+            messages.map(message => {
+
+                const role = String(message.sender_role || "customer")
+                    .toLowerCase();
+
+                const senderLabel = {
+                    customer: "Customer",
+                    teller: "Teller",
+                    admin: "Administrator"
+                }[role] || "User";
+
+                const isStaff =
+                    role === "teller" || role === "admin";
+
+                return `
+                    <div class="support-message ${isStaff ? "staff-message" : "customer-message"}">
+
+                        <div class="support-message-header">
+
+                            <strong>
+                                ${escapeHTML(message.sender_name || senderLabel)}
+                            </strong>
+
+                            <span>
+                                ${escapeHTML(senderLabel)}
+                            </span>
+
+                        </div>
+
+                        <p>
+                            ${escapeHTML(message.message)}
+                        </p>
+
+                        <small>
+                            ${escapeHTML(formatDate(message.created_at))}
+                        </small>
+
+                    </div>
+                `;
+
+            }).join("");
+
+        tellerSupportMessageList.scrollTop =
+            tellerSupportMessageList.scrollHeight;
+
+    } catch (error) {
+
+        console.error(
+            "Customer support messages error:",
+            error
+        );
+
+        tellerSupportMessageList.innerHTML = `
+            <p class="empty-state">
+                Could not load this conversation.
+            </p>
+        `;
+
+        showTellerSupportMessage(
+            error.message || "Unable to load conversation messages.",
+            "error"
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   CLICK A REPORT TO OPEN IT
+========================================================= */
+
+tellerSupportTicketList.addEventListener(
+    "click",
+    async function (event) {
+
+        const ticketElement = event.target.closest(
+            "[data-ticket-id]"
+        );
+
+        if (!ticketElement) return;
+
+        await openTellerSupportTicket(
+            ticketElement.dataset.ticketId
+        );
+
+    }
+);
+
+
+tellerSupportTicketList.addEventListener(
+    "keydown",
+    async function (event) {
+
+        if (event.key !== "Enter" && event.key !== " ") {
+            return;
+        }
+
+        const ticketElement = event.target.closest(
+            "[data-ticket-id]"
+        );
+
+        if (!ticketElement) return;
+
+        event.preventDefault();
+
+        await openTellerSupportTicket(
+            ticketElement.dataset.ticketId
+        );
+
+    }
+);
+
+
+/* =========================================================
+   SEARCH CUSTOMER REPORTS
+========================================================= */
+
+supportTicketSearch.addEventListener(
+    "input",
+    renderTellerSupportTickets
+);
+
+
+/* =========================================================
+   REFRESH CUSTOMER REPORTS
+========================================================= */
+
+refreshSupportTicketsButton.addEventListener(
+    "click",
+    loadTellerSupportTickets
+);
+
+
+/* =========================================================
+   RETURN TO REPORT INBOX
+========================================================= */
+
+closeTellerSupportConversation.addEventListener(
+    "click",
+    function () {
+
+        tellerSupportConversation.classList.add("hidden");
+
+        currentSupportTicket = null;
+
+        renderTellerSupportTickets();
+
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
+
+    }
+);
+
+
+/* =========================================================
+   REPLY TO CUSTOMER REPORT
+========================================================= */
+
+tellerSupportReplyForm.addEventListener(
+    "submit",
+    async function (event) {
+
+        event.preventDefault();
+
+        hideMessage(tellerSupportMessage);
+
+        if (!currentTeller || !currentUser) {
+
+            showTellerSupportMessage(
+                "Your teller session is unavailable. Please sign in again.",
+                "error"
+            );
+
+            return;
+        }
+
+        if (!currentSupportTicket) {
+
+            showTellerSupportMessage(
+                "Open a customer report before replying.",
+                "error"
+            );
+
+            return;
+        }
+
+        if (currentSupportTicket.status === "closed") {
+
+            showTellerSupportMessage(
+                "This report is closed. Reopen it before sending a reply.",
+                "error"
+            );
+
+            return;
+        }
+
+        if (supportReplyInProgress) return;
+
+        const message = tellerSupportReply.value.trim();
+
+        if (!message) {
+
+            showTellerSupportMessage(
+                "Enter a reply before submitting.",
+                "error"
+            );
+
+            return;
+        }
+
+        if (message.length > 5000) {
+
+            showTellerSupportMessage(
+                "Your reply cannot exceed 5,000 characters.",
+                "error"
+            );
+
+            return;
+        }
+
+        supportReplyInProgress = true;
+
+        tellerSupportReplyButton.disabled = true;
+
+        tellerSupportReplyButton.textContent = "Sending...";
+
+        try {
+
+            const { data, error } = await tellerSupabase.rpc(
+                "nexus_reply_support_ticket",
+                {
+                    p_ticket_id: currentSupportTicket.ticket_id,
+                    p_message: message
+                }
+            );
+
+            if (error) {
+                throw error;
+            }
+
+            if (data && data.success === false) {
+
+                throw new Error(
+                    data.message || "Your reply could not be sent."
+                );
+            }
+
+            tellerSupportReply.value = "";
+
+            showTellerSupportMessage(
+                "Your reply has been sent successfully.",
+                "success"
+            );
+
+            await loadTellerSupportMessages(
+                currentSupportTicket.ticket_id
+            );
+
+            await loadTellerSupportTickets();
+
+        } catch (error) {
+
+            console.error(
+                "Customer support reply error:",
+                error
+            );
+
+            showTellerSupportMessage(
+                error.message || "Could not send your reply.",
+                "error"
+            );
+
+        } finally {
+
+            supportReplyInProgress = false;
+
+            tellerSupportReplyButton.textContent = "Send Reply";
+
+            updateSupportReplyAvailability();
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   UPDATE CUSTOMER REPORT STATUS
+========================================================= */
+
+updateTellerSupportStatusButton.addEventListener(
+    "click",
+    async function () {
+
+        hideMessage(tellerSupportMessage);
+
+        if (!currentTeller || !currentUser) {
+
+            showTellerSupportMessage(
+                "Your teller session is unavailable. Please sign in again.",
+                "error"
+            );
+
+            return;
+        }
+
+        if (!currentSupportTicket) {
+
+            showTellerSupportMessage(
+                "Select a customer report first.",
+                "error"
+            );
+
+            return;
+        }
+
+        if (supportStatusInProgress) return;
+
+        const newStatus = tellerSupportStatusSelect.value;
+
+        const allowedStatuses = [
+            "open",
+            "in_progress",
+            "resolved",
+            "closed"
+        ];
+
+        if (!allowedStatuses.includes(newStatus)) {
+
+            showTellerSupportMessage(
+                "Select a valid report status.",
+                "error"
+            );
+
+            return;
+        }
+
+        if (newStatus === currentSupportTicket.status) {
+
+            showTellerSupportMessage(
+                "The report already has this status.",
+                "info"
+            );
+
+            return;
+        }
+
+        supportStatusInProgress = true;
+
+        updateTellerSupportStatusButton.disabled = true;
+
+        updateTellerSupportStatusButton.textContent = "Updating...";
+
+        try {
+
+            const { data, error } = await tellerSupabase.rpc(
+                "nexus_update_support_status",
+                {
+                    p_ticket_id: currentSupportTicket.ticket_id,
+                    p_status: newStatus
+                }
+            );
+
+            if (error) {
+                throw error;
+            }
+
+            if (data && data.success === false) {
+
+                throw new Error(
+                    data.message || "The report status could not be updated."
+                );
+            }
+
+            currentSupportTicket.status = newStatus;
+
+            tellerSupportStatus.textContent =
+                formatSupportStatus(newStatus);
+
+            tellerSupportStatusSelect.value = newStatus;
+
+            updateSupportReplyAvailability();
+
+            showTellerSupportMessage(
+                `Report status updated to ${formatSupportStatus(newStatus)}.`,
+                "success"
+            );
+
+            await loadTellerSupportTickets();
+
+        } catch (error) {
+
+            console.error(
+                "Customer support status update error:",
+                error
+            );
+
+            showTellerSupportMessage(
+                error.message || "Could not update report status.",
+                "error"
+            );
+
+        } finally {
+
+            supportStatusInProgress = false;
+
+            updateTellerSupportStatusButton.disabled = false;
+
+            updateTellerSupportStatusButton.textContent = "Update Status";
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   LOAD REPORTS WHEN SUPPORT TAB OPENS
+========================================================= */
+
+document.querySelectorAll(
+    '.nav-button[data-panel="supportPanel"]'
+).forEach(button => {
+
+    button.addEventListener("click", async function () {
+
+        if (!currentTeller || !currentUser) return;
+
+        currentSupportTicket = null;
+
+        tellerSupportConversation.classList.add("hidden");
+
+        await loadTellerSupportTickets();
+
+    });
+
+});
+
+
+/* =========================================================
+   SUPPORT INITIALIZATION
+========================================================= */
+
+async function initializeTellerSupport() {
+
+    if (!currentTeller || !currentUser) return;
+
+    currentSupportTicket = null;
+
+    tellerSupportConversation.classList.add("hidden");
+
+    await loadTellerSupportTickets();
+
+}
