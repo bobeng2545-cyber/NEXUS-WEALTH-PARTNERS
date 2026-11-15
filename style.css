@@ -3924,18 +3924,19 @@ body > #notificationMenu.notification-open {
 
 
 
+
 /* =========================================
    NEXUS FLOATING CUSTOMER SUPPORT BUTTON
 ========================================= */
 
 .floating-support-button {
     position: fixed;
-    right: 20px;
-    bottom: 25px;
-    z-index: 9999;
+    top: 105px;
+    right: 18px;
+    z-index: 100000;
 
-    width: 62px;
-    height: 62px;
+    width: 46px;
+    height: 46px;
 
     border: none;
     border-radius: 50%;
@@ -3947,22 +3948,20 @@ body > #notificationMenu.notification-open {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 2px;
+    gap: 1px;
 
     cursor: pointer;
-
-    box-shadow: 0 5px 18px rgba(0, 0, 0, 0.25);
-
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.22);
     transition: 0.3s ease;
 }
 
 .floating-support-button span {
-    font-size: 25px;
+    font-size: 19px;
     line-height: 1;
 }
 
 .floating-support-button small {
-    font-size: 9px;
+    font-size: 7px;
     font-weight: 700;
 }
 
@@ -3973,10 +3972,15 @@ body > #notificationMenu.notification-open {
 
 @media (max-width: 600px) {
     .floating-support-button {
-        width: 56px;
-        height: 56px;
-        right: 14px;
-        bottom: 18px;
+        top: 85px;
+        right: 12px;
+        width: 42px;
+        height: 42px;
+    }
+
+    .floating-support-button span {
+        font-size: 17px;
     }
 }
+
 
