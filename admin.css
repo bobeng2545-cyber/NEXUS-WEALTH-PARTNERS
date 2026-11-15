@@ -2,7 +2,7 @@
 /* =========================================================
    NEXUS WEALTH PARTNERS
    COMPLETE PROFESSIONAL ADMIN DASHBOARD CSS
-   Corrected Sidebar | Desktop | Tablet | Mobile
+   Professional Notifications | Responsive Dashboard
 ========================================================= */
 
 
@@ -351,9 +351,6 @@ textarea {
 
 /* =========================================================
    5. SIDEBAR
-   FIXED TOP LOGO
-   SCROLLABLE MIDDLE NAVIGATION
-   FIXED BOTTOM SIGN OUT
 ========================================================= */
 
 .admin-sidebar {
@@ -379,16 +376,12 @@ textarea {
 
     z-index: 1000;
 
-    /* Important: the sidebar itself must not scroll */
     overflow: hidden !important;
 
     overscroll-behavior: contain;
 
     transition: transform 0.3s ease;
 }
-
-
-/* SIDEBAR BRAND */
 
 .sidebar-brand {
     flex: 0 0 auto;
@@ -409,9 +402,6 @@ textarea {
     color: #9eb2c5;
 }
 
-
-/* NAVIGATION LABEL */
-
 .sidebar-label {
     flex: 0 0 auto;
 
@@ -424,9 +414,6 @@ textarea {
     letter-spacing: 1.5px;
 }
 
-
-/* NAVIGATION AREA */
-
 .admin-navigation,
 .admin-sidebar nav {
     display: flex;
@@ -436,10 +423,8 @@ textarea {
 
     min-height: 0;
 
-    /* Navigation takes available middle space */
     flex: 1 1 auto;
 
-    /* Navigation scrolls independently */
     overflow-y: auto;
     overflow-x: hidden;
 
@@ -448,9 +433,6 @@ textarea {
     scrollbar-width: thin;
     scrollbar-color: #52677d transparent;
 }
-
-
-/* NAVIGATION SCROLLBAR */
 
 .admin-navigation::-webkit-scrollbar,
 .admin-sidebar nav::-webkit-scrollbar {
@@ -467,9 +449,6 @@ textarea {
 .admin-sidebar nav::-webkit-scrollbar-track {
     background: transparent;
 }
-
-
-/* NAVIGATION BUTTONS */
 
 .admin-nav-link {
     width: 100%;
@@ -516,9 +495,6 @@ textarea {
     font-weight: 700;
 }
 
-
-/* NAVIGATION BADGES */
-
 .nav-badge {
     margin-left: auto;
 
@@ -540,14 +516,9 @@ textarea {
     font-weight: 800;
 }
 
-
-/* BOTTOM SIDEBAR AREA */
-
 .sidebar-bottom {
-    /* Pushes this section to the bottom */
     margin-top: auto;
 
-    /* Never allow this section to shrink */
     flex: 0 0 auto;
 
     width: 100%;
@@ -564,9 +535,6 @@ textarea {
 
     background: var(--primary-dark);
 }
-
-
-/* WEBSITE AND LOGOUT LINKS */
 
 .sidebar-website-link,
 .logout-button {
@@ -611,9 +579,6 @@ textarea {
     background: rgba(220, 69, 69, 0.15);
     color: #ffcccc;
 }
-
-
-/* SIDEBAR BUTTON INTERACTIONS */
 
 .admin-nav-link,
 .logout-button,
@@ -1899,16 +1864,6 @@ tbody tr:hover {
     width: 100%;
 }
 
-#adminNotificationsList {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-#adminNotificationsList > * {
-    max-width: 100%;
-}
-
 #page-reports input,
 #page-reports select,
 #page-settings input,
@@ -1934,9 +1889,218 @@ tbody tr:hover {
 
 
 /* =========================================================
-   24. RESPONSIVE DESIGN
+   24. PROFESSIONAL NOTIFICATION CENTRE
 ========================================================= */
 
+/* Notification page */
+
+#page-notifications {
+    min-width: 0;
+}
+
+#page-notifications .page-intro {
+    margin-bottom: 25px;
+}
+
+#page-notifications .page-intro h2 {
+    font-size: 24px;
+}
+
+#page-notifications .admin-panel {
+    padding: 25px;
+    border-radius: 14px;
+}
+
+/* Notification list */
+
+#adminNotificationsList {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    width: 100%;
+    min-width: 0;
+}
+
+/* Notification card */
+
+#adminNotificationsList > * {
+    position: relative;
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+
+    padding: 20px 22px;
+
+    background: #ffffff;
+
+    border: 1px solid #e4eaf0;
+    border-left: 4px solid #dce4ec;
+
+    border-radius: 12px;
+
+    box-shadow: 0 3px 12px rgba(16, 43, 70, 0.035);
+
+    overflow-wrap: anywhere;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        transform 0.2s ease;
+}
+
+/* Hover */
+
+#adminNotificationsList > *:hover {
+    border-color: #cbd8e4;
+
+    box-shadow: 0 8px 22px rgba(16, 43, 70, 0.075);
+
+    transform: translateY(-2px);
+}
+
+/* Unread notification */
+
+#adminNotificationsList > *.unread,
+#adminNotificationsList > *[data-read="false"],
+#adminNotificationsList > *:has(.unread) {
+    background: #f3f8ff;
+    border-left-color: #3879ca;
+}
+
+/* Read notification */
+
+#adminNotificationsList > *.read,
+#adminNotificationsList > *[data-read="true"] {
+    background: #ffffff;
+    border-left-color: #dce4ec;
+}
+
+/* Notification headings */
+
+#adminNotificationsList h1,
+#adminNotificationsList h2,
+#adminNotificationsList h3,
+#adminNotificationsList h4 {
+    color: #102b46;
+    font-size: 14px;
+    font-weight: 800;
+    line-height: 1.5;
+    margin-bottom: 7px;
+}
+
+/* Strong text */
+
+#adminNotificationsList strong {
+    color: #102b46;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+/* Message content */
+
+#adminNotificationsList p {
+    color: #586b7e;
+    font-size: 12px;
+    line-height: 1.8;
+    margin-top: 7px;
+    overflow-wrap: anywhere;
+    white-space: normal;
+}
+
+/* Notification timestamps */
+
+#adminNotificationsList small,
+#adminNotificationsList time {
+    display: inline-block;
+    color: #8997a6;
+    font-size: 10px;
+    font-weight: 600;
+    line-height: 1.6;
+    margin-top: 10px;
+}
+
+/* Notification action buttons */
+
+#adminNotificationsList button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 36px;
+
+    padding: 8px 13px;
+    margin-top: 13px;
+
+    border: 1px solid #ccebdd;
+    border-radius: 8px;
+
+    background: #e9f8f2;
+    color: #07865e;
+
+    font-size: 10px;
+    font-weight: 800;
+
+    transition: var(--transition);
+}
+
+#adminNotificationsList button:hover:not(:disabled) {
+    background: #12a879;
+    border-color: #12a879;
+    color: #ffffff;
+}
+
+/* Notification empty state */
+
+#adminNotificationsList:empty::before {
+    content: "No notifications available.";
+
+    display: block;
+
+    width: 100%;
+
+    padding: 50px 20px;
+
+    border: 1px dashed #d8e1e9;
+    border-radius: 12px;
+
+    background: #fbfcfe;
+
+    color: #8997a6;
+
+    text-align: center;
+    font-size: 12px;
+}
+
+/* Notification panel heading */
+
+#page-notifications .panel-heading {
+    padding-bottom: 17px;
+    border-bottom: 1px solid #edf0f4;
+}
+
+#page-notifications .panel-heading h3 {
+    color: var(--primary);
+    font-size: 15px;
+}
+
+/* Notification list links */
+
+#adminNotificationsList a {
+    color: var(--accent-dark);
+    font-weight: 700;
+    text-decoration: none;
+}
+
+#adminNotificationsList a:hover {
+    text-decoration: underline;
+}
+
+
+/* =========================================================
+   25. RESPONSIVE DESIGN
+========================================================= */
 
 /* LARGE TABLETS AND SMALL LAPTOPS */
 
@@ -2190,6 +2354,38 @@ tbody tr:hover {
     .date-filter-actions button {
         flex: 1;
     }
+
+    /* MOBILE NOTIFICATIONS */
+
+    #page-notifications .admin-panel {
+        padding: 14px;
+    }
+
+    #adminNotificationsList {
+        gap: 10px;
+    }
+
+    #adminNotificationsList > * {
+        padding: 15px;
+        border-radius: 10px;
+    }
+
+    #adminNotificationsList h1,
+    #adminNotificationsList h2,
+    #adminNotificationsList h3,
+    #adminNotificationsList h4 {
+        font-size: 13px;
+    }
+
+    #adminNotificationsList p {
+        font-size: 11px;
+        line-height: 1.7;
+    }
+
+    #adminNotificationsList button {
+        width: 100%;
+        min-height: 40px;
+    }
 }
 
 
@@ -2285,7 +2481,7 @@ tbody tr:hover {
 
 
 /* =========================================================
-   25. REDUCED MOTION ACCESSIBILITY
+   26. REDUCED MOTION ACCESSIBILITY
 ========================================================= */
 
 @media (prefers-reduced-motion: reduce) {
@@ -2299,4 +2495,3 @@ tbody tr:hover {
         transition-duration: 0.01ms !important;
     }
 }
-
