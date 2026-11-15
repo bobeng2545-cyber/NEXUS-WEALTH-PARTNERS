@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -25,9 +24,7 @@
 
 <body>
 
-    <!-- =========================================
-         ADMINISTRATOR LOGIN
-    ========================================== -->
+    <!-- ADMINISTRATOR LOGIN -->
 
     <section
         id="adminLoginScreen"
@@ -38,7 +35,6 @@
 
             <div class="brand-logo">
                 <div class="brand-icon" aria-hidden="true">N</div>
-
                 <div>
                     <h1>NEXUS</h1>
                     <p>WEALTH PARTNERS</p>
@@ -105,15 +101,11 @@
     </section>
 
 
-    <!-- =========================================
-         ADMIN DASHBOARD
-    ========================================== -->
+    <!-- ADMIN DASHBOARD -->
 
     <div id="adminDashboard" class="admin-dashboard" hidden>
 
-        <!-- =====================================
-             SIDEBAR
-        ====================================== -->
+        <!-- SIDEBAR -->
 
         <aside
             class="admin-sidebar"
@@ -123,7 +115,6 @@
 
             <div class="sidebar-brand">
                 <div class="brand-icon" aria-hidden="true">N</div>
-
                 <div>
                     <h2>NEXUS</h2>
                     <p>ADMINISTRATION</p>
@@ -134,115 +125,74 @@
 
             <nav class="admin-navigation" aria-label="Dashboard pages">
 
-                <button
-                    type="button"
-                    class="admin-nav-link active"
-                    data-page="overview"
-                    aria-current="page"
-                >
+                <button type="button" class="admin-nav-link active"
+                    data-page="overview" aria-current="page">
                     <span aria-hidden="true">▦</span>
                     <span>Overview</span>
                 </button>
 
-                <button
-                    type="button"
-                    class="admin-nav-link"
-                    data-page="members"
-                >
+                <button type="button" class="admin-nav-link" data-page="members">
                     <span aria-hidden="true">♙</span>
                     <span>Members</span>
                 </button>
 
-                <button
-                    type="button"
-                    class="admin-nav-link"
-                    data-page="tellers"
-                >
+                <button type="button" class="admin-nav-link" data-page="tellers">
                     <span aria-hidden="true">♧</span>
                     <span>Tellers Management</span>
                     <span id="tellerCountBadge" class="nav-badge" hidden>0</span>
                 </button>
 
-                <button
-                    type="button"
-                    class="admin-nav-link"
-                    data-page="withdrawals"
-                >
+                <button type="button" class="admin-nav-link" data-page="withdrawals">
                     <span aria-hidden="true">⇧</span>
                     <span>Withdrawal Requests</span>
                     <span id="pendingWithdrawalBadge" class="nav-badge" hidden>0</span>
                 </button>
 
-                <button
-                    type="button"
-                    class="admin-nav-link"
-                    data-page="deposits"
-                >
+                <button type="button" class="admin-nav-link" data-page="deposits">
                     <span aria-hidden="true">↙</span>
                     <span>Deposits</span>
                     <span id="pendingDepositBadge" class="nav-badge" hidden>0</span>
                 </button>
 
-                <button
-                    type="button"
-                    class="admin-nav-link"
-                    data-page="transactions"
-                >
+                <button type="button" class="admin-nav-link" data-page="transactions">
                     <span aria-hidden="true">⇄</span>
                     <span>Transactions</span>
                 </button>
 
-                <button
-                    type="button"
-                    class="admin-nav-link"
-                    data-page="trash"
-                >
+                <button type="button" class="admin-nav-link" data-page="trash">
                     <span aria-hidden="true">🗑</span>
                     <span>Trash</span>
                     <span id="trashCountBadge" class="nav-badge" hidden>0</span>
                 </button>
 
-                <button
-                    type="button"
-                    class="admin-nav-link"
-                    data-page="savings"
-                >
+                <button type="button" class="admin-nav-link" data-page="savings">
                     <span aria-hidden="true">◈</span>
                     <span>Savings Management</span>
                 </button>
 
-                <button
-                    type="button"
-                    class="admin-nav-link"
-                    data-page="profit-interest"
-                >
+                <button type="button" class="admin-nav-link" data-page="profit-interest">
                     <span aria-hidden="true">₵</span>
                     <span>Profit &amp; Interest</span>
                 </button>
 
-                <button
-                    type="button"
-                    class="admin-nav-link"
-                    data-page="reports"
-                >
+                <button type="button" class="admin-nav-link" data-page="reports">
                     <span aria-hidden="true">▤</span>
                     <span>Reports</span>
                 </button>
 
-                <button
-                    type="button"
-                    class="admin-nav-link"
-                    data-page="notifications"
-                >
+                <!-- CUSTOMER SUPPORT NAVIGATION -->
+
+                <button type="button" class="admin-nav-link" data-page="support">
+                    <span aria-hidden="true">💬</span>
+                    <span>Customer Support</span>
+                </button>
+
+                <button type="button" class="admin-nav-link" data-page="notifications">
                     <span aria-hidden="true">♧</span>
                     <span>Notifications</span>
                 </button>
 
-                <button
-                    type="button"
-                    class="admin-nav-link"
-                    data-page="settings"
-                >
+                <button type="button" class="admin-nav-link" data-page="settings">
                     <span aria-hidden="true">⚙</span>
                     <span>Settings</span>
                 </button>
@@ -256,11 +206,7 @@
                     View Main Website
                 </a>
 
-                <button
-                    type="button"
-                    id="adminLogoutButton"
-                    class="logout-button"
-                >
+                <button type="button" id="adminLogoutButton" class="logout-button">
                     <span aria-hidden="true">⇥</span>
                     Sign Out
                 </button>
@@ -270,9 +216,7 @@
         </aside>
 
 
-        <!-- =====================================
-             MAIN CONTENT
-        ====================================== -->
+        <!-- MAIN CONTENT -->
 
         <main class="admin-main">
 
@@ -289,9 +233,7 @@
                         aria-label="Toggle navigation menu"
                         aria-controls="adminSidebar"
                         aria-expanded="false"
-                    >
-                        ☰
-                    </button>
+                    >☰</button>
 
                     <div>
                         <p class="topbar-label">NEXUS WEALTH PARTNERS</p>
@@ -302,7 +244,6 @@
 
                 <div class="admin-profile">
                     <div class="admin-avatar" aria-hidden="true">A</div>
-
                     <div class="admin-profile-details">
                         <strong>Administrator</strong>
                         <span id="adminProfileEmail">Admin Account</span>
@@ -312,18 +253,12 @@
             </header>
 
 
-            <!-- =====================================
-                 GLOBAL FINANCIAL DATE FILTER
-            ====================================== -->
+            <!-- GLOBAL FINANCIAL DATE FILTER -->
 
-            <section
-                class="admin-date-filter"
-                id="adminDateFilter"
-                aria-labelledby="dateFilterTitle"
-            >
+            <section class="admin-date-filter" id="adminDateFilter"
+                aria-labelledby="dateFilterTitle">
 
                 <div class="date-filter-heading">
-
                     <div>
                         <h3 id="dateFilterTitle">Financial Date Filter</h3>
                         <p>
@@ -331,16 +266,13 @@
                             across your dashboard.
                         </p>
                     </div>
-
                     <span id="adminDateFilterSummary">This Month</span>
-
                 </div>
 
                 <div class="date-filter-controls">
 
                     <div class="date-filter-field">
                         <label for="adminDateRange">Quick Date Range</label>
-
                         <select id="adminDateRange" name="dateRange">
                             <option value="today">Today</option>
                             <option value="yesterday">Yesterday</option>
@@ -363,47 +295,28 @@
                     </div>
 
                     <div class="date-filter-actions">
-                        <button type="button" id="applyAdminDateFilter">
-                            Apply Filter
-                        </button>
-
-                        <button type="button" id="resetAdminDateFilter">
-                            Reset
-                        </button>
+                        <button type="button" id="applyAdminDateFilter">Apply Filter</button>
+                        <button type="button" id="resetAdminDateFilter">Reset</button>
                     </div>
 
                 </div>
 
-                <p
-                    id="adminDateFilterMessage"
-                    role="status"
-                    aria-live="polite"
-                ></p>
+                <p id="adminDateFilterMessage" role="status" aria-live="polite"></p>
 
             </section>
 
 
-            <!-- =====================================
-                 OVERVIEW PAGE
-            ====================================== -->
+            <!-- OVERVIEW PAGE -->
 
-            <section
-                id="page-overview"
-                class="admin-page active"
-                aria-labelledby="overviewHeading"
-            >
+            <section id="page-overview" class="admin-page active"
+                aria-labelledby="overviewHeading">
 
                 <div class="page-intro">
                     <div>
                         <h2 id="overviewHeading">Dashboard Overview</h2>
-                        <p>
-                            Monitor your platform's financial and membership activities.
-                        </p>
+                        <p>Monitor your platform's financial and membership activities.</p>
                     </div>
-
-                    <div class="overview-date" id="dashboardDate">
-                        Dashboard
-                    </div>
+                    <div class="overview-date" id="dashboardDate">Dashboard</div>
                 </div>
 
                 <div class="statistics-grid">
@@ -441,7 +354,6 @@
                 <div class="overview-grid">
 
                     <div class="admin-panel">
-
                         <div class="panel-heading">
                             <div>
                                 <h3>Withdrawal Overview</h3>
@@ -450,36 +362,26 @@
                         </div>
 
                         <div class="withdrawal-summary">
-
                             <div class="summary-item">
                                 <span>Pending Requests</span>
                                 <strong id="overviewPendingWithdrawals">0</strong>
                             </div>
-
                             <div class="summary-item">
                                 <span>Processing Requests</span>
                                 <strong id="overviewProcessingWithdrawals">0</strong>
                             </div>
-
                             <div class="summary-item">
                                 <span>Completed Requests</span>
                                 <strong id="overviewCompletedWithdrawals">0</strong>
                             </div>
-
                         </div>
 
-                        <button
-                            type="button"
-                            class="panel-action"
-                            data-page="withdrawals"
-                        >
+                        <button type="button" class="panel-action" data-page="withdrawals">
                             Manage Withdrawals →
                         </button>
-
                     </div>
 
                     <div class="admin-panel">
-
                         <div class="panel-heading">
                             <div>
                                 <h3>Platform Information</h3>
@@ -488,41 +390,30 @@
                         </div>
 
                         <div class="platform-information">
-
                             <div>
                                 <span>Platform</span>
                                 <strong>Nexus Wealth Partners</strong>
                             </div>
-
                             <div>
                                 <span>Currency</span>
                                 <strong>Ghana Cedi (GHS)</strong>
                             </div>
-
                             <div>
                                 <span>Administrator</span>
                                 <strong>Authorized Admin</strong>
                             </div>
-
                         </div>
-
                     </div>
 
                 </div>
 
                 <div class="admin-panel recent-panel">
-
                     <div class="panel-heading">
                         <div>
                             <h3>Recent Withdrawal Requests</h3>
                             <p>The latest member withdrawal requests.</p>
                         </div>
-
-                        <button
-                            type="button"
-                            class="text-action"
-                            data-page="withdrawals"
-                        >
+                        <button type="button" class="text-action" data-page="withdrawals">
                             View All
                         </button>
                     </div>
@@ -538,7 +429,6 @@
                                     <th scope="col">Status</th>
                                 </tr>
                             </thead>
-
                             <tbody id="recentWithdrawalsTable">
                                 <tr>
                                     <td colspan="5" class="empty-table">
@@ -548,21 +438,15 @@
                             </tbody>
                         </table>
                     </div>
-
                 </div>
 
             </section>
 
 
-            <!-- =====================================
-                 MEMBERS MANAGEMENT
-            ====================================== -->
+            <!-- MEMBERS MANAGEMENT -->
 
-            <section
-                id="page-members"
-                class="admin-page"
-                aria-labelledby="membersHeading"
-            >
+            <section id="page-members" class="admin-page"
+                aria-labelledby="membersHeading">
 
                 <div class="page-intro">
                     <div>
@@ -575,7 +459,6 @@
                 </div>
 
                 <div class="statistics-grid">
-
                     <article class="stat-card">
                         <div class="stat-icon members-icon" aria-hidden="true">♙</div>
                         <p>Total Members</p>
@@ -589,11 +472,9 @@
                         <h3 id="memberManagementWallets">GH₵0.00</h3>
                         <span>Combined wallet balances</span>
                     </article>
-
                 </div>
 
                 <div class="admin-panel">
-
                     <div class="panel-heading">
                         <div>
                             <h3>Registered Members</h3>
@@ -602,7 +483,6 @@
                     </div>
 
                     <div class="member-search-area">
-
                         <input
                             type="search"
                             id="memberSearchInput"
@@ -610,23 +490,13 @@
                             autocomplete="off"
                             aria-label="Search members"
                         >
-
-                        <button
-                            type="button"
-                            id="clearMemberSearch"
-                            class="panel-action"
-                        >
+                        <button type="button" id="clearMemberSearch" class="panel-action">
                             Clear Search
                         </button>
-
                     </div>
 
-                    <p
-                        id="memberSearchResults"
-                        class="member-search-results"
-                        role="status"
-                        aria-live="polite"
-                    >
+                    <p id="memberSearchResults" class="member-search-results"
+                        role="status" aria-live="polite">
                         Loading members...
                     </p>
 
@@ -643,7 +513,6 @@
                                     <th scope="col">Action</th>
                                 </tr>
                             </thead>
-
                             <tbody id="membersTable">
                                 <tr>
                                     <td colspan="7" class="empty-table">
@@ -653,21 +522,15 @@
                             </tbody>
                         </table>
                     </div>
-
                 </div>
 
             </section>
 
 
-            <!-- =====================================
-                 TELLERS MANAGEMENT
-            ====================================== -->
+            <!-- TELLERS MANAGEMENT -->
 
-            <section
-                id="page-tellers"
-                class="admin-page"
-                aria-labelledby="tellersHeading"
-            >
+            <section id="page-tellers" class="admin-page"
+                aria-labelledby="tellersHeading">
 
                 <div class="page-intro">
                     <div>
@@ -677,18 +540,12 @@
                             monitor teller records.
                         </p>
                     </div>
-
-                    <button
-                        type="button"
-                        class="panel-action"
-                        id="refreshTellersButton"
-                    >
+                    <button type="button" class="panel-action" id="refreshTellersButton">
                         ↻ Refresh Tellers
                     </button>
                 </div>
 
                 <div class="statistics-grid">
-
                     <article class="stat-card">
                         <div class="stat-icon members-icon" aria-hidden="true">♧</div>
                         <p>Total Tellers</p>
@@ -716,13 +573,11 @@
                         <h3 id="inactiveTellerCount">0</h3>
                         <span>Deactivated accounts</span>
                     </article>
-
                 </div>
 
                 <!-- CREATE TELLER -->
 
                 <div class="admin-panel">
-
                     <div class="panel-heading">
                         <div>
                             <h3>Create New Teller Account</h3>
@@ -734,48 +589,27 @@
                     </div>
 
                     <form id="createTellerForm">
-
                         <div class="date-filter-controls">
 
                             <div class="date-filter-field">
                                 <label for="tellerFullName">Teller Full Name</label>
-                                <input
-                                    type="text"
-                                    id="tellerFullName"
-                                    name="fullName"
-                                    placeholder="Enter staff full name"
-                                    minlength="2"
-                                    maxlength="120"
-                                    autocomplete="name"
-                                    required
-                                >
+                                <input type="text" id="tellerFullName" name="fullName"
+                                    placeholder="Enter staff full name" minlength="2"
+                                    maxlength="120" autocomplete="name" required>
                             </div>
 
                             <div class="date-filter-field">
                                 <label for="tellerEmail">Teller Email Address</label>
-                                <input
-                                    type="email"
-                                    id="tellerEmail"
-                                    name="email"
-                                    placeholder="Enter staff email"
-                                    autocomplete="email"
-                                    autocapitalize="none"
-                                    required
-                                >
+                                <input type="email" id="tellerEmail" name="email"
+                                    placeholder="Enter staff email" autocomplete="email"
+                                    autocapitalize="none" required>
                             </div>
 
                             <div class="date-filter-field">
                                 <label for="tellerPhone">Teller Phone Number</label>
-                                <input
-                                    type="tel"
-                                    id="tellerPhone"
-                                    name="phone"
-                                    placeholder="Enter phone number"
-                                    minlength="7"
-                                    maxlength="25"
-                                    autocomplete="tel"
-                                    required
-                                >
+                                <input type="tel" id="tellerPhone" name="phone"
+                                    placeholder="Enter phone number" minlength="7"
+                                    maxlength="25" autocomplete="tel" required>
                             </div>
 
                         </div>
@@ -786,65 +620,44 @@
                             </button>
                         </div>
 
-                        <p
-                            id="createTellerMessage"
-                            class="admin-message"
-                            role="status"
-                            aria-live="polite"
-                        ></p>
-
+                        <p id="createTellerMessage" class="admin-message"
+                            role="status" aria-live="polite"></p>
                     </form>
 
                     <div class="platform-information">
-
                         <div>
                             <span>Account creation</span>
                             <strong>Administrator controlled</strong>
                         </div>
-
                         <div>
                             <span>Password setup</span>
                             <strong>Email invitation</strong>
                         </div>
-
                         <div>
                             <span>Member passwords</span>
                             <strong>Never visible to tellers</strong>
                         </div>
-
                     </div>
-
                 </div>
 
                 <!-- TELLER DIRECTORY -->
 
                 <div class="admin-panel">
-
                     <div class="panel-heading">
                         <div>
                             <h3>Registered Teller Accounts</h3>
-                            <p>
-                                View teller details, account codes and access status.
-                            </p>
+                            <p>View teller details, account codes and access status.</p>
                         </div>
                     </div>
 
                     <div class="member-search-area">
-                        <input
-                            type="search"
-                            id="tellerSearchInput"
+                        <input type="search" id="tellerSearchInput"
                             placeholder="Search by teller name, email, phone or teller code..."
-                            autocomplete="off"
-                            aria-label="Search tellers"
-                        >
+                            autocomplete="off" aria-label="Search tellers">
                     </div>
 
-                    <p
-                        id="tellerSearchResults"
-                        class="member-search-results"
-                        role="status"
-                        aria-live="polite"
-                    >
+                    <p id="tellerSearchResults" class="member-search-results"
+                        role="status" aria-live="polite">
                         Teller records will appear here.
                     </p>
 
@@ -861,7 +674,6 @@
                                     <th scope="col">Action</th>
                                 </tr>
                             </thead>
-
                             <tbody id="tellersTable">
                                 <tr>
                                     <td colspan="7" class="empty-table">
@@ -871,13 +683,11 @@
                             </tbody>
                         </table>
                     </div>
-
                 </div>
 
                 <!-- TELLER SECURITY -->
 
                 <div class="admin-panel">
-
                     <div class="panel-heading">
                         <div>
                             <h3>Teller Access &amp; Security</h3>
@@ -886,53 +696,40 @@
                     </div>
 
                     <div class="platform-information">
-
                         <div>
                             <span>Deposits</span>
                             <strong>Subject to administrator approval</strong>
                         </div>
-
                         <div>
                             <span>Withdrawals</span>
                             <strong>Subject to administrator approval</strong>
                         </div>
-
                         <div>
                             <span>Member registration</span>
                             <strong>Permitted through teller dashboard</strong>
                         </div>
-
                         <div>
                             <span>Wallet balance editing</span>
                             <strong>Not permitted</strong>
                         </div>
-
                         <div>
                             <span>Transaction approval</span>
                             <strong>Administrator only</strong>
                         </div>
-
                         <div>
                             <span>Teller transaction attribution</span>
                             <strong>Pending secure database integration</strong>
                         </div>
-
                     </div>
-
                 </div>
 
             </section>
 
 
-            <!-- =====================================
-                 WITHDRAWAL REQUESTS
-            ====================================== -->
+            <!-- WITHDRAWAL REQUESTS -->
 
-            <section
-                id="page-withdrawals"
-                class="admin-page"
-                aria-labelledby="withdrawalsHeading"
-            >
+            <section id="page-withdrawals" class="admin-page"
+                aria-labelledby="withdrawalsHeading">
 
                 <div class="page-intro">
                     <div>
@@ -942,21 +739,17 @@
                 </div>
 
                 <div class="withdrawal-rules">
-
                     <div>
                         <strong>2</strong>
                         <span>Maximum successful withdrawals per week</span>
                     </div>
-
                     <div>
                         <strong>4</strong>
                         <span>Maximum successful withdrawals per year</span>
                     </div>
-
                 </div>
 
                 <div class="admin-panel">
-
                     <div class="panel-heading">
                         <div>
                             <h3>All Withdrawal Requests</h3>
@@ -978,7 +771,6 @@
                                     <th scope="col">Date &amp; Time Requested</th>
                                 </tr>
                             </thead>
-
                             <tbody id="withdrawalsTable">
                                 <tr>
                                     <td colspan="8" class="empty-table">
@@ -988,39 +780,27 @@
                             </tbody>
                         </table>
                     </div>
-
                 </div>
 
             </section>
 
 
-            <!-- =====================================
-                 DEPOSITS MANAGEMENT
-            ====================================== -->
+            <!-- DEPOSITS MANAGEMENT -->
 
-            <section
-                id="page-deposits"
-                class="admin-page"
-                aria-labelledby="depositsHeading"
-            >
+            <section id="page-deposits" class="admin-page"
+                aria-labelledby="depositsHeading">
 
                 <div class="page-intro">
                     <div>
                         <h2 id="depositsHeading">Deposits Management</h2>
                         <p>Monitor and review all member deposit transactions.</p>
                     </div>
-
-                    <button
-                        type="button"
-                        class="panel-action"
-                        id="refreshDepositsButton"
-                    >
+                    <button type="button" class="panel-action" id="refreshDepositsButton">
                         ↻ Refresh Deposits
                     </button>
                 </div>
 
                 <div class="statistics-grid">
-
                     <article class="stat-card">
                         <div class="stat-icon deposits-icon" aria-hidden="true">◷</div>
                         <p>Pending Deposits</p>
@@ -1048,17 +828,13 @@
                         <h3 id="adminDepositTotal">GH₵0.00</h3>
                         <span>Confirmed deposit value</span>
                     </article>
-
                 </div>
 
                 <div class="admin-panel">
-
                     <div class="panel-heading">
                         <div>
                             <h3>All Deposit Transactions</h3>
-                            <p>
-                                View deposit references, member details and payment status.
-                            </p>
+                            <p>View deposit references, member details and payment status.</p>
                         </div>
                     </div>
 
@@ -1076,7 +852,6 @@
                                     <th scope="col">Action</th>
                                 </tr>
                             </thead>
-
                             <tbody id="depositsTable">
                                 <tr>
                                     <td colspan="8" class="empty-table">
@@ -1086,11 +861,9 @@
                             </tbody>
                         </table>
                     </div>
-
                 </div>
 
                 <div class="admin-panel">
-
                     <div class="panel-heading">
                         <div>
                             <h3>Deposit Verification Security</h3>
@@ -1099,38 +872,28 @@
                     </div>
 
                     <div class="platform-information">
-
                         <div>
                             <span>Payment provider</span>
                             <strong>Paystack</strong>
                         </div>
-
                         <div>
                             <span>Verification method</span>
                             <strong>Server-side Paystack verification</strong>
                         </div>
-
                         <div>
                             <span>Wallet crediting</span>
                             <strong>Only after successful verification</strong>
                         </div>
-
                     </div>
-
                 </div>
 
             </section>
 
 
-            <!-- =====================================
-                 TRANSACTIONS
-            ====================================== -->
+            <!-- TRANSACTIONS -->
 
-            <section
-                id="page-transactions"
-                class="admin-page"
-                aria-labelledby="transactionsHeading"
-            >
+            <section id="page-transactions" class="admin-page"
+                aria-labelledby="transactionsHeading">
 
                 <div class="page-intro">
                     <div>
@@ -1140,7 +903,6 @@
                 </div>
 
                 <div class="admin-panel">
-
                     <div class="panel-heading">
                         <div>
                             <h3>Transaction Records</h3>
@@ -1148,65 +910,50 @@
                         </div>
                     </div>
 
-                   
-<div class="table-container">
-    <table>
-        <thead>
-            <tr>
-                <th scope="col">Transaction Reference</th>
-                <th scope="col">Member</th>
-                <th scope="col">Transaction Type</th>
-                <th scope="col">Amount</th>
-                <th scope="col">Payment Method</th>
-                <th scope="col">Status</th>
-                <th scope="col">Date &amp; Time</th>
-                <th scope="col">Actions</th>
-            </tr>
-        </thead>
-
-        <tbody id="transactionsTable">
-            <tr>
-                <td colspan="8" class="empty-table">
-                    Transaction records will appear here.
-                </td>
-            </tr>
-        </tbody>
-    </table>
-</div>
-
-
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th scope="col">Transaction Reference</th>
+                                    <th scope="col">Member</th>
+                                    <th scope="col">Transaction Type</th>
+                                    <th scope="col">Amount</th>
+                                    <th scope="col">Payment Method</th>
+                                    <th scope="col">Status</th>
+                                    <th scope="col">Date &amp; Time</th>
+                                    <th scope="col">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="transactionsTable">
+                                <tr>
+                                    <td colspan="8" class="empty-table">
+                                        Transaction records will appear here.
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
 
             </section>
 
 
-            <!-- =====================================
-                 TRASH
-            ====================================== -->
+            <!-- TRASH -->
 
-            <section
-                id="page-trash"
-                class="admin-page"
-                aria-labelledby="trashHeading"
-            >
+            <section id="page-trash" class="admin-page"
+                aria-labelledby="trashHeading">
 
                 <div class="page-intro">
                     <div>
                         <h2 id="trashHeading">Transaction Trash</h2>
                         <p>Manage deposit transactions you have moved to Trash.</p>
                     </div>
-
-                    <button
-                        type="button"
-                        class="panel-action"
-                        id="refreshTrashButton"
-                    >
+                    <button type="button" class="panel-action" id="refreshTrashButton">
                         ↻ Refresh Trash
                     </button>
                 </div>
 
                 <div class="admin-panel">
-
                     <div class="panel-heading">
                         <div>
                             <h3>Deleted Deposit Transactions</h3>
@@ -1230,7 +977,6 @@
                                     <th scope="col">Action</th>
                                 </tr>
                             </thead>
-
                             <tbody id="trashTransactionsTable">
                                 <tr>
                                     <td colspan="7" class="empty-table">
@@ -1240,7 +986,6 @@
                             </tbody>
                         </table>
                     </div>
-
                 </div>
 
                 <div class="admin-panel">
@@ -1259,15 +1004,10 @@
             </section>
 
 
-            <!-- =====================================
-                 SAVINGS MANAGEMENT
-            ====================================== -->
+            <!-- SAVINGS MANAGEMENT -->
 
-            <section
-                id="page-savings"
-                class="admin-page"
-                aria-labelledby="savingsHeading"
-            >
+            <section id="page-savings" class="admin-page"
+                aria-labelledby="savingsHeading">
 
                 <div class="page-intro">
                     <div>
@@ -1277,7 +1017,6 @@
                 </div>
 
                 <div class="admin-panel">
-
                     <div class="panel-heading">
                         <div>
                             <h3>Members' Savings</h3>
@@ -1296,7 +1035,6 @@
                                     <th scope="col">Total Withdrawals</th>
                                 </tr>
                             </thead>
-
                             <tbody id="savingsTable">
                                 <tr>
                                     <td colspan="5" class="empty-table">
@@ -1306,33 +1044,24 @@
                             </tbody>
                         </table>
                     </div>
-
                 </div>
 
             </section>
 
 
-            <!-- =====================================
-                 PROFIT & INTEREST
-            ====================================== -->
+            <!-- PROFIT & INTEREST -->
 
-            <section
-                id="page-profit-interest"
-                class="admin-page"
-                aria-labelledby="profitInterestHeading"
-            >
+            <section id="page-profit-interest" class="admin-page"
+                aria-labelledby="profitInterestHeading">
 
                 <div class="page-intro">
                     <div>
                         <h2 id="profitInterestHeading">Profit &amp; Interest</h2>
-                        <p>
-                            Monitor recorded platform profit and member interest.
-                        </p>
+                        <p>Monitor recorded platform profit and member interest.</p>
                     </div>
                 </div>
 
                 <div class="statistics-grid">
-
                     <article class="stat-card">
                         <div class="stat-icon deposits-icon" aria-hidden="true">₵</div>
                         <p>Total Recorded Profit</p>
@@ -1346,11 +1075,9 @@
                         <h3 id="adminTotalInterest">GH₵0.00</h3>
                         <span>From recorded interest entries</span>
                     </article>
-
                 </div>
 
                 <div class="admin-panel">
-
                     <div class="panel-heading">
                         <div>
                             <h3>Profit &amp; Interest Records</h3>
@@ -1373,7 +1100,6 @@
                                     <th scope="col">Status</th>
                                 </tr>
                             </thead>
-
                             <tbody id="profitInterestTable">
                                 <tr>
                                     <td colspan="6" class="empty-table">
@@ -1383,111 +1109,242 @@
                             </tbody>
                         </table>
                     </div>
+                </div>
+
+            </section>
+
+
+            <!-- REPORTS -->
+
+            <section id="page-reports" class="admin-page"
+                aria-labelledby="reportsHeading">
+
+                <div class="page-intro">
+                    <div>
+                        <h2 id="reportsHeading">Reports</h2>
+                        <p>
+                            Review financial and operational performance
+                            for your selected date range.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="statistics-grid">
+                    <article class="stat-card">
+                        <p>Deposit Report</p>
+                        <h3 id="reportDepositTotal">GH₵0.00</h3>
+                        <span>Successful deposits</span>
+                    </article>
+
+                    <article class="stat-card">
+                        <p>Withdrawal Report</p>
+                        <h3 id="reportWithdrawalTotal">GH₵0.00</h3>
+                        <span>Completed withdrawals</span>
+                    </article>
+
+                    <article class="stat-card">
+                        <p>New Members</p>
+                        <h3 id="reportNewMembers">0</h3>
+                        <span>Registrations in selected period</span>
+                    </article>
+
+                    <article class="stat-card">
+                        <p>Transactions</p>
+                        <h3 id="reportTransactionCount">0</h3>
+                        <span>Recorded transactions</span>
+                    </article>
+                </div>
+
+                <div class="admin-panel">
+                    <div class="panel-heading">
+                        <div>
+                            <h3>Report Summary</h3>
+                            <p>Report figures use the global financial date filter.</p>
+                        </div>
+                    </div>
+
+                    <div id="adminReportMessage" role="status" aria-live="polite">
+                        Select a date range to view your report.
+                    </div>
+
+                    <button type="button" id="exportAdminReport" class="panel-action">
+                        Export Report
+                    </button>
+                </div>
+
+            </section>
+
+
+            <!-- CUSTOMER SUPPORT -->
+
+            <section id="page-support" class="admin-page"
+                aria-labelledby="adminSupportHeading">
+
+                <div class="page-intro">
+                    <div>
+                        <h2 id="adminSupportHeading">Customer Support</h2>
+                        <p>
+                            View customer reports, respond to members and tellers,
+                            and manage support requests.
+                        </p>
+                    </div>
+
+                    <button type="button" id="refreshAdminSupportButton"
+                        class="panel-action">
+                        ↻ Refresh Reports
+                    </button>
+                </div>
+
+                <div class="admin-panel">
+
+                    <div class="panel-heading">
+                        <div>
+                            <h3>Customer Reports Inbox</h3>
+                            <p>
+                                All customer reports are shared with active tellers
+                                and administrators.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div id="adminSupportMessage" role="status" aria-live="polite"></div>
+
+                    <div class="member-search-area">
+                        <input
+                            type="search"
+                            id="adminSupportTicketSearch"
+                            placeholder="Search by customer name, Member ID or subject..."
+                            autocomplete="off"
+                            aria-label="Search customer support reports"
+                        >
+                    </div>
+
+                    <div id="adminSupportTicketList" aria-live="polite">
+                        <p class="empty-table">
+                            Customer reports will appear here.
+                        </p>
+                    </div>
+
+                </div>
+
+                <!-- SUPPORT CONVERSATION -->
+
+                <div class="admin-panel" id="adminSupportConversation" hidden>
+
+                    <div class="panel-heading">
+                        <div>
+                            <h3 id="adminSupportSubject">Support Conversation</h3>
+                            <p id="adminSupportCustomer">Customer information</p>
+                        </div>
+
+                        <button type="button" id="closeAdminSupportConversation"
+                            class="panel-action">
+                            Close Conversation
+                        </button>
+                    </div>
+
+                    <div class="platform-information">
+
+                        <div>
+                            <span>Member ID</span>
+                            <strong id="adminSupportMemberId">—</strong>
+                        </div>
+
+                        <div>
+                            <span>Category</span>
+                            <strong id="adminSupportCategory">—</strong>
+                        </div>
+
+                        <div>
+                            <span>Current Status</span>
+                            <strong id="adminSupportStatus">—</strong>
+                        </div>
+
+                        <div>
+                            <span>Date Submitted</span>
+                            <strong id="adminSupportDate">—</strong>
+                        </div>
+
+                    </div>
+
+                    <!-- STATUS MANAGEMENT -->
+
+                    <div class="admin-support-status-controls">
+
+                        <div class="date-filter-field">
+                            <label for="adminSupportStatusSelect">
+                                Update Report Status
+                            </label>
+
+                            <select id="adminSupportStatusSelect">
+                                <option value="open">Open</option>
+                                <option value="in_progress">In Progress</option>
+                                <option value="resolved">Resolved</option>
+                                <option value="closed">Closed</option>
+                            </select>
+                        </div>
+
+                        <div class="date-filter-actions">
+                            <button type="button"
+                                id="updateAdminSupportStatusButton">
+                                Update Status
+                            </button>
+                        </div>
+
+                    </div>
+
+                    <p id="adminSupportStatusMessage"
+                        role="status" aria-live="polite"></p>
+
+                    <!-- CONVERSATION HISTORY -->
+
+                    <div class="admin-support-conversation">
+                        <h3>Conversation History</h3>
+
+                        <div id="adminSupportMessageList" aria-live="polite">
+                            <p class="empty-table">
+                                Select a report to view its messages.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- CLOSED REPORT NOTICE -->
+
+                    <div id="adminSupportClosedNotice" hidden>
+                        This report is closed. Reopen it before sending another reply.
+                    </div>
+
+                    <!-- REPLY FORM -->
+
+                    <form id="adminSupportReplyForm">
+
+                        <div class="form-group">
+                            <label for="adminSupportReply">Reply to Customer</label>
+
+                            <textarea
+                                id="adminSupportReply"
+                                rows="4"
+                                maxlength="5000"
+                                placeholder="Type your response here..."
+                                required
+                            ></textarea>
+                        </div>
+
+                        <button type="submit" id="adminSupportReplyButton">
+                            Send Reply
+                        </button>
+
+                    </form>
 
                 </div>
 
             </section>
 
 
-            
-<!-- =====================================
-     REPORTS
-====================================== -->
+            <!-- ADMINISTRATOR NOTIFICATIONS -->
 
-<section
-    id="page-reports"
-    class="admin-page"
-    aria-labelledby="reportsHeading"
->
-
-    <div class="page-intro">
-        <div>
-            <h2 id="reportsHeading">Reports</h2>
-            <p>
-                Review financial and operational performance
-                for your selected date range.
-            </p>
-        </div>
-    </div>
-
-    <!-- REPORT STATISTICS -->
-
-    <div class="statistics-grid">
-
-        <article class="stat-card">
-            <p>Deposit Report</p>
-            <h3 id="reportDepositTotal">GH₵0.00</h3>
-            <span>Successful deposits</span>
-        </article>
-
-        <article class="stat-card">
-            <p>Withdrawal Report</p>
-            <h3 id="reportWithdrawalTotal">GH₵0.00</h3>
-            <span>Completed withdrawals</span>
-        </article>
-
-        <article class="stat-card">
-            <p>New Members</p>
-            <h3 id="reportNewMembers">0</h3>
-            <span>Registrations in selected period</span>
-        </article>
-
-        <article class="stat-card">
-            <p>Transactions</p>
-            <h3 id="reportTransactionCount">0</h3>
-            <span>Recorded transactions</span>
-        </article>
-
-    </div>
-
-    <!-- REPORT SUMMARY -->
-
-    <div class="admin-panel">
-
-        <div class="panel-heading">
-            <div>
-                <h3>Report Summary</h3>
-                <p>
-                    Report figures use the global financial date filter.
-                </p>
-            </div>
-        </div>
-
-        <div
-            id="adminReportMessage"
-            role="status"
-            aria-live="polite"
-        >
-            Select a date range to view your report.
-        </div>
-
-        <!-- EXPORT BUTTON -->
-
-        <button
-            type="button"
-            id="exportAdminReport"
-            class="panel-action"
-        >
-            Export Report
-        </button>
-
-    </div>
-
-</section>
-
-<!-- END REPORTS -->
-
-
-
-            <!-- =====================================
-                 ADMINISTRATOR NOTIFICATIONS
-            ====================================== -->
-
-            <section
-                id="page-notifications"
-                class="admin-page"
-                aria-labelledby="notificationsHeading"
-            >
+            <section id="page-notifications" class="admin-page"
+                aria-labelledby="notificationsHeading">
 
                 <div class="page-intro">
                     <div>
@@ -1499,7 +1356,6 @@
                 </div>
 
                 <div class="admin-panel">
-
                     <div class="panel-heading">
                         <div>
                             <h3>Administrator Notifications</h3>
@@ -1508,324 +1364,199 @@
                             </p>
                         </div>
 
-                        <button
-                            type="button"
-                            id="refreshAdminNotifications"
-                            class="panel-action"
-                        >
+                        <button type="button" id="refreshAdminNotifications"
+                            class="panel-action">
                             ↻ Refresh
                         </button>
                     </div>
 
                     <div id="adminNotificationsList" aria-live="polite">
-                        <p class="empty-table">
-                            No notifications loaded.
-                        </p>
+                        <p class="empty-table">No notifications loaded.</p>
                     </div>
-
                 </div>
 
             </section>
 
 
-            
+            <!-- PLATFORM SETTINGS -->
 
-<!-- =====================================
-     PLATFORM SETTINGS
-====================================== -->
+            <section id="page-settings" class="admin-page"
+                aria-labelledby="settingsHeading">
 
-<section
-    id="page-settings"
-    class="admin-page"
-    aria-labelledby="settingsHeading"
->
-
-    <div class="page-intro">
-        <div>
-            <h2 id="settingsHeading">Platform Settings</h2>
-            <p>
-                Manage Nexus Wealth Partners platform configuration.
-            </p>
-        </div>
-    </div>
-
-    <!-- SETTINGS STATUS -->
-
-    <div
-        id="adminSettingsMessage"
-        class="settings-message"
-        role="status"
-        aria-live="polite"
-    >
-        Loading platform settings...
-    </div>
-
-
-    <!-- =====================================
-         GENERAL PLATFORM SETTINGS
-    ====================================== -->
-
-    <div class="admin-panel">
-
-        <div class="panel-heading">
-            <div>
-                <h3>General Platform Information</h3>
-                <p>
-                    Configure the basic information displayed by the platform.
-                </p>
-            </div>
-        </div>
-
-        <form id="nexusGeneralSettingsForm">
-
-            <div class="form-group">
-                <label for="nexusPlatformName">
-                    Platform Name
-                </label>
-
-                <input
-                    type="text"
-                    id="nexusPlatformName"
-                    maxlength="100"
-                    required
-                    placeholder="NEXUS WEALTH PARTNERS"
-                >
-            </div>
-
-            <div class="form-group">
-                <label for="nexusSupportEmail">
-                    Support Email
-                </label>
-
-                <input
-                    type="email"
-                    id="nexusSupportEmail"
-                    maxlength="254"
-                    placeholder="support@example.com"
-                >
-            </div>
-
-            <div class="form-group">
-                <label for="nexusSupportPhone">
-                    Support Phone
-                </label>
-
-                <input
-                    type="tel"
-                    id="nexusSupportPhone"
-                    maxlength="30"
-                    placeholder="Enter support phone number"
-                >
-            </div>
-
-            <button
-                type="submit"
-                id="saveNexusGeneralSettings"
-                class="primary-button"
-            >
-                Save General Settings
-            </button>
-
-        </form>
-
-    </div>
-
-
-    <!-- =====================================
-         DEPOSIT CONTROLS
-    ====================================== -->
-
-    <div class="admin-panel">
-
-        <div class="panel-heading">
-            <div>
-                <h3>Deposit Controls</h3>
-                <p>
-                    Control deposit availability and permitted deposit amounts
-                    across Paystack and teller transactions.
-                </p>
-            </div>
-        </div>
-
-        <form id="nexusDepositSettingsForm">
-
-            <!-- CURRENT DEPOSIT STATUS -->
-
-            <div class="platform-information">
-
-                <div>
-                    <span>Deposit Availability</span>
-                    <strong id="nexusDepositStatus">
-                        Loading...
-                    </strong>
+                <div class="page-intro">
+                    <div>
+                        <h2 id="settingsHeading">Platform Settings</h2>
+                        <p>Manage Nexus Wealth Partners platform configuration.</p>
+                    </div>
                 </div>
 
-                <div>
-                    <span>Minimum Deposit</span>
-                    <strong id="nexusCurrentMinimumDeposit">
-                        GH₵10.00
-                    </strong>
+                <div id="adminSettingsMessage" class="settings-message"
+                    role="status" aria-live="polite">
+                    Loading platform settings...
                 </div>
 
-                <div>
-                    <span>Maximum Deposit</span>
-                    <strong id="nexusCurrentMaximumDeposit">
-                        GH₵10,000.00
-                    </strong>
+                <!-- GENERAL PLATFORM SETTINGS -->
+
+                <div class="admin-panel">
+                    <div class="panel-heading">
+                        <div>
+                            <h3>General Platform Information</h3>
+                            <p>
+                                Configure the basic information displayed by the platform.
+                            </p>
+                        </div>
+                    </div>
+
+                    <form id="nexusGeneralSettingsForm">
+
+                        <div class="form-group">
+                            <label for="nexusPlatformName">Platform Name</label>
+                            <input type="text" id="nexusPlatformName"
+                                maxlength="100" required
+                                placeholder="NEXUS WEALTH PARTNERS">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="nexusSupportEmail">Support Email</label>
+                            <input type="email" id="nexusSupportEmail"
+                                maxlength="254" placeholder="support@example.com">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="nexusSupportPhone">Support Phone</label>
+                            <input type="tel" id="nexusSupportPhone"
+                                maxlength="30" placeholder="Enter support phone number">
+                        </div>
+
+                        <button type="submit" id="saveNexusGeneralSettings"
+                            class="primary-button">
+                            Save General Settings
+                        </button>
+
+                    </form>
                 </div>
 
-            </div>
+                <!-- DEPOSIT CONTROLS -->
 
-            <div class="form-group">
+                <div class="admin-panel">
+                    <div class="panel-heading">
+                        <div>
+                            <h3>Deposit Controls</h3>
+                            <p>
+                                Control deposit availability and permitted deposit amounts
+                                across Paystack and teller transactions.
+                            </p>
+                        </div>
+                    </div>
 
-                <label for="nexusDepositsEnabled">
-                    New Deposits
-                </label>
+                    <form id="nexusDepositSettingsForm">
 
-                <div class="deposit-toggle-row">
+                        <div class="platform-information">
+                            <div>
+                                <span>Deposit Availability</span>
+                                <strong id="nexusDepositStatus">Loading...</strong>
+                            </div>
+                            <div>
+                                <span>Minimum Deposit</span>
+                                <strong id="nexusCurrentMinimumDeposit">GH₵10.00</strong>
+                            </div>
+                            <div>
+                                <span>Maximum Deposit</span>
+                                <strong id="nexusCurrentMaximumDeposit">GH₵10,000.00</strong>
+                            </div>
+                        </div>
 
-                    <label class="deposit-toggle-label">
-                        <input
-                            type="checkbox"
-                            id="nexusDepositsEnabled"
-                            checked
-                        >
+                        <div class="form-group">
+                            <label for="nexusDepositsEnabled">New Deposits</label>
 
-                        <span>
-                            Allow members to initiate new deposits
-                        </span>
-                    </label>
+                            <div class="deposit-toggle-row">
+                                <label class="deposit-toggle-label">
+                                    <input type="checkbox" id="nexusDepositsEnabled" checked>
+                                    <span>Allow members to initiate new deposits</span>
+                                </label>
+                            </div>
 
+                            <small>
+                                Turning this off blocks new Paystack and teller deposits.
+                                Valid payments already initiated can still be completed.
+                            </small>
+                        </div>
+
+                        <div class="date-filter-controls">
+
+                            <div class="date-filter-field">
+                                <label for="nexusMinimumDeposit">
+                                    Minimum Deposit (GH₵)
+                                </label>
+                                <input type="number" id="nexusMinimumDeposit"
+                                    min="0.01" max="100000000" step="0.01"
+                                    value="10" required>
+                            </div>
+
+                            <div class="date-filter-field">
+                                <label for="nexusMaximumDeposit">
+                                    Maximum Deposit (GH₵)
+                                </label>
+                                <input type="number" id="nexusMaximumDeposit"
+                                    min="0.01" max="100000000" step="0.01"
+                                    value="10000" required>
+                            </div>
+
+                        </div>
+
+                        <p id="nexusDepositSettingsMessage" class="admin-message"
+                            role="status" aria-live="polite"></p>
+
+                        <div class="date-filter-actions">
+                            <button type="submit" id="saveNexusDepositSettings">
+                                Save Deposit Controls
+                            </button>
+
+                            <button type="button" id="reloadNexusDepositSettings"
+                                class="panel-action">
+                                Reload Saved Settings
+                            </button>
+                        </div>
+
+                    </form>
+
+                    <div class="platform-information">
+                        <div>
+                            <span>Payment channels controlled</span>
+                            <strong>Paystack and Teller</strong>
+                        </div>
+                        <div>
+                            <span>Amount validation</span>
+                            <strong>Server-side enforcement</strong>
+                        </div>
+                        <div>
+                            <span>Wallet crediting</span>
+                            <strong>Verified transactions only</strong>
+                        </div>
+                    </div>
                 </div>
 
-                <small>
-                    Turning this off blocks new Paystack and teller deposits.
-                    Valid payments already initiated can still be completed.
-                </small>
+                <!-- OPERATIONAL SETTINGS -->
 
-            </div>
+                <div class="admin-panel">
+                    <div class="panel-heading">
+                        <div>
+                            <h3>Operational Settings</h3>
+                            <p>Review the platform's operational configuration.</p>
+                        </div>
+                    </div>
 
-            <div class="date-filter-controls">
-
-                <div class="date-filter-field">
-
-                    <label for="nexusMinimumDeposit">
-                        Minimum Deposit (GH₵)
-                    </label>
-
-                    <input
-                        type="number"
-                        id="nexusMinimumDeposit"
-                        min="0.01"
-                        max="100000000"
-                        step="0.01"
-                        value="10"
-                        required
-                    >
-
+                    <div id="nexusOperationalSettings">
+                        <p class="empty-table">
+                            Operational settings will appear here.
+                        </p>
+                    </div>
                 </div>
 
-                <div class="date-filter-field">
-
-                    <label for="nexusMaximumDeposit">
-                        Maximum Deposit (GH₵)
-                    </label>
-
-                    <input
-                        type="number"
-                        id="nexusMaximumDeposit"
-                        min="0.01"
-                        max="100000000"
-                        step="0.01"
-                        value="10000"
-                        required
-                    >
-
-                </div>
-
-            </div>
-
-            <p
-                id="nexusDepositSettingsMessage"
-                class="admin-message"
-                role="status"
-                aria-live="polite"
-            ></p>
-
-            <div class="date-filter-actions">
-
-                <button
-                    type="submit"
-                    id="saveNexusDepositSettings"
-                >
-                    Save Deposit Controls
-                </button>
-
-                <button
-                    type="button"
-                    id="reloadNexusDepositSettings"
-                    class="panel-action"
-                >
-                    Reload Saved Settings
-                </button>
-
-            </div>
-
-        </form>
-
-        <div class="platform-information">
-
-            <div>
-                <span>Payment channels controlled</span>
-                <strong>Paystack and Teller</strong>
-            </div>
-
-            <div>
-                <span>Amount validation</span>
-                <strong>Server-side enforcement</strong>
-            </div>
-
-            <div>
-                <span>Wallet crediting</span>
-                <strong>Verified transactions only</strong>
-            </div>
-
-        </div>
-
-    </div>
+            </section>
 
 
-    <!-- =====================================
-         OPERATIONAL SETTINGS
-    ====================================== -->
-
-    <div class="admin-panel">
-
-        <div class="panel-heading">
-            <div>
-                <h3>Operational Settings</h3>
-                <p>
-                    Review the platform's operational configuration.
-                </p>
-            </div>
-        </div>
-
-        <div id="nexusOperationalSettings">
-            <p class="empty-table">
-                Operational settings will appear here.
-            </p>
-        </div>
-
-    </div>
-
-</section>
-
-
-
-
-            <!-- =====================================
-                 MEMBER PROFILE MODAL
-            ====================================== -->
+            <!-- MEMBER PROFILE MODAL -->
 
             <div
                 id="memberProfileModal"
@@ -1844,83 +1575,64 @@
                             <h2 id="memberProfileTitle">Member Profile</h2>
                         </div>
 
-                        <button
-                            type="button"
-                            id="closeMemberProfile"
+                        <button type="button" id="closeMemberProfile"
                             class="member-profile-close"
-                            aria-label="Close member profile"
-                        >
+                            aria-label="Close member profile">
                             ×
                         </button>
                     </div>
 
                     <div class="member-profile-section">
-
                         <h3>Personal Information</h3>
 
                         <div class="member-profile-grid">
-
                             <div>
                                 <span>Member ID</span>
                                 <strong id="profileMemberId">—</strong>
                             </div>
-
                             <div>
                                 <span>Full Name</span>
                                 <strong id="profileMemberName">—</strong>
                             </div>
-
                             <div>
                                 <span>Email Address</span>
                                 <strong id="profileMemberEmail">—</strong>
                             </div>
-
                             <div>
                                 <span>Phone Number</span>
                                 <strong id="profileMemberPhone">—</strong>
                             </div>
-
                             <div>
                                 <span>Registration Date</span>
                                 <strong id="profileMemberJoined">—</strong>
                             </div>
-
                             <div>
                                 <span>Account Status</span>
                                 <strong id="profileMemberStatus">—</strong>
                             </div>
-
                         </div>
-
                     </div>
 
                     <div class="member-profile-section">
-
                         <h3>Wallet Information</h3>
 
                         <div class="member-wallet-grid">
-
                             <div>
                                 <span>Current Balance</span>
                                 <strong id="profileWalletBalance">GH₵0.00</strong>
                             </div>
-
                             <div>
                                 <span>Total Deposits</span>
                                 <strong id="profileWalletDeposits">GH₵0.00</strong>
                             </div>
-
                             <div>
                                 <span>Total Withdrawals</span>
                                 <strong id="profileWalletWithdrawals">GH₵0.00</strong>
                             </div>
-
                         </div>
-
                     </div>
 
                     <div class="member-profile-section">
-
                         <h3>Transaction History</h3>
 
                         <div class="table-container">
@@ -1934,7 +1646,6 @@
                                         <th scope="col">Date</th>
                                     </tr>
                                 </thead>
-
                                 <tbody id="memberProfileTransactions">
                                     <tr>
                                         <td colspan="5" class="empty-table">
@@ -1944,38 +1655,24 @@
                                 </tbody>
                             </table>
                         </div>
-
                     </div>
 
                     <div class="member-profile-footer">
 
                         <div class="member-account-actions">
-
-                            <button
-                                type="button"
-                                id="suspendMemberButton"
-                                class="member-suspend-button"
-                                hidden
-                            >
+                            <button type="button" id="suspendMemberButton"
+                                class="member-suspend-button" hidden>
                                 Suspend Account
                             </button>
 
-                            <button
-                                type="button"
-                                id="activateMemberButton"
-                                class="member-activate-button"
-                                hidden
-                            >
+                            <button type="button" id="activateMemberButton"
+                                class="member-activate-button" hidden>
                                 Activate Account
                             </button>
-
                         </div>
 
-                        <button
-                            type="button"
-                            id="closeMemberProfileFooter"
-                            class="panel-action"
-                        >
+                        <button type="button" id="closeMemberProfileFooter"
+                            class="panel-action">
                             Close Profile
                         </button>
 
@@ -1986,9 +1683,7 @@
             </div>
 
 
-            <!-- =====================================
-                 ADMIN FOOTER
-            ====================================== -->
+            <!-- ADMIN FOOTER -->
 
             <footer class="admin-footer">
                 <p>© 2026 Nexus Wealth Partners. All rights reserved.</p>
@@ -2000,15 +1695,11 @@
     </div>
 
 
-    <!-- =========================================
-         SUPABASE JAVASCRIPT LIBRARY
-    ========================================== -->
+    <!-- SUPABASE JAVASCRIPT LIBRARY -->
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-    <!-- =========================================
-         ADMINISTRATOR JAVASCRIPT
-    ========================================== -->
+    <!-- ADMINISTRATOR JAVASCRIPT -->
 
     <script src="admin.js"></script>
 
