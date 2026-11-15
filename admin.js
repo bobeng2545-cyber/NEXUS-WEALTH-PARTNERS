@@ -322,6 +322,7 @@ let adminWalletsCache = [];
 let adminDepositsCache = [];
 let adminWithdrawalsCache = [];
 let adminTellersCache = [];
+let adminRefundsCache = [];
 
 let adminDepositsAvailable = true;
 let currentAdminUserId = null;
@@ -3781,49 +3782,46 @@ async function loadAdminDashboardData() {
                     "Loading Nexus admin dashboard data..."
                 );
 
-                const [
-                    profilesResult,
-                    walletsResult,
-                    withdrawalsResult,
-                    depositsResult
-                ] = await Promise.all([
-                    nexusAdminSupabase
-                        .from("profiles")
-                        .select(
-                            "id, full_name, phone, member_id, email, status, created_at"
-                        )
-                        .order(
-                            "created_at",
-                            { ascending: false }
-                        ),
+                
+const [
+    profilesResult,
+    walletsResult,
+    withdrawalsResult,
+    depositsResult,
+    refundsResult
+] = await Promise.all([
+    nexusAdminSupabase
+        .from("profiles")
+        .select(
+            "id, full_name, phone, member_id, email, status, created_at"
+        )
+        .order("created_at", { ascending: false }),
 
-                    nexusAdminSupabase
-                        .from("wallets")
-                        .select(
-                            "id, user_id, balance, total_deposits, total_withdrawals"
-                        ),
+    nexusAdminSupabase
+        .from("wallets")
+        .select(
+            "id, user_id, balance, total_deposits, total_withdrawals"
+        ),
 
-                    nexusAdminSupabase
-                        .from("withdrawal_requests")
-                        .select(
-                            "id, user_id, amount, withdrawal_method, payment_details, status, created_at, completed_at"
-                        )
-                        .order(
-                            "created_at",
-                            { ascending: false }
-                        ),
+    nexusAdminSupabase
+        .from("withdrawal_requests")
+        .select(
+            "id, user_id, amount, withdrawal_method, payment_details, status, created_at, completed_at"
+        )
+        .order("created_at", { ascending: false }),
 
-                    nexusAdminSupabase
-                        .from("deposit_transactions")
-                        .select(
-                            "id, user_id, amount, payment_method, payment_phone, reference, status, created_at, paid_at, deleted_at"
-                        )
-                        .is("deleted_at", null)
-                        .order(
-                            "created_at",
-                            { ascending: false }
-                        )
-                ]);
+    nexusAdminSupabase
+        .from("deposit_transactions")
+        .select(
+            "id, user_id, amount, payment_method, payment_phone, reference, status, created_at, paid_at, deleted_at"
+        )
+        .is("deleted_at", null)
+        .order("created_at", { ascending: false }),
+
+    nexusAdminSupabase
+        .rpc("admin_list_nexus_refund_requests")
+]);
+
 
                 if (profilesResult.error) {
                     throw profilesResult.error;
@@ -3854,10 +3852,21 @@ async function loadAdminDashboardData() {
                         ? (depositsResult.data || [])
                         : [];
 
-                adminProfilesCache = profiles;
-                adminWalletsCache = wallets;
-                adminDepositsCache = deposits;
-                adminWithdrawalsCache = withdrawals;
+               adminProfilesCache = profiles;
+               adminWalletsCache = wallets;
+               adminDepositsCache = deposits;
+               adminWithdrawalsCache = withdrawals;
+               
+               adminRefundsCache = refundsResult.error
+                  ? []
+                  : (refundsResult.data || []);
+               
+               if (refundsResult.error) {
+                  console.error(
+                     "Refund requests loading error:",
+                     refundsResult.error
+                  );
+               }
                 adminDepositsAvailable = depositsAvailable;
 
                 if (depositsResult.error) {
