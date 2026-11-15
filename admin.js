@@ -2278,8 +2278,10 @@ function updateAdminDepositStatistics(
 }
 
 
+
 /* =========================================================
    23. REVERSE FINANCIAL TRANSACTION
+   PAYSTACK REFUNDS + WITHDRAWAL CANCELLATION
 ========================================================= */
 
 async function reverseNexusTransaction(
@@ -2296,6 +2298,8 @@ async function reverseNexusTransaction(
         transactionId || ""
     ).trim();
 
+    // 1. VALIDATE TRANSACTION
+
     if (
         !["deposit", "withdrawal"].includes(cleanType) ||
         !cleanId
@@ -2303,6 +2307,12 @@ async function reverseNexusTransaction(
         alert("The transaction details are invalid.");
         return;
     }
+
+    // Prevent repeated clicks on the same button.
+
+    if (button?.disabled) return;
+
+    // 2. COLLECT REVERSAL REASON
 
     const reasonInput = prompt(
         "Enter the reason for this transaction reversal.\n\n" +
@@ -2314,64 +2324,208 @@ async function reverseNexusTransaction(
     const cleanReason = reasonInput.trim();
 
     if (cleanReason.length < 5) {
-        alert("Please enter a reason with at least 5 characters.");
+        alert(
+            "Please enter a reason with at least 5 characters."
+        );
         return;
     }
 
     const amountText =
         formatNexusAdminMoney(amount);
 
+    // 3. CONFIRM THE CORRECT ACTION
+
     const confirmationMessage =
         cleanType === "deposit"
-            ? "You are about to REVERSE this successful deposit.\n\n" +
+
+            ? "PAYSTACK DEPOSIT REFUND\n\n" +
               "Amount: " + amountText + "\n\n" +
-              "The database function will deduct the previously credited amount only if the wallet has sufficient funds.\n\n" +
-              "Continue only if you have verified the transaction."
-            : "You are about to CANCEL this pending withdrawal.\n\n" +
+              "IMPORTANT:\n" +
+              "• The member's wallet will be debited.\n" +
+              "• A refund request will be submitted to Paystack.\n" +
+              "• The deposit will only be marked REVERSED after Paystack confirms that the refund has been processed.\n" +
+              "• If Paystack confirms failure, the wallet restoration process will be handled by the server.\n\n" +
+              "A refund request does not mean the money has already reached the member.\n\n" +
+              "Do you want to continue?"
+
+            : "CANCEL PENDING WITHDRAWAL\n\n" +
               "Amount: " + amountText + "\n\n" +
-              "Pending withdrawal cancellation does not deduct or refund wallet funds.\n\n" +
-              "Continue?";
+              "Only pending withdrawals can be cancelled using this action.\n\n" +
+              "No wallet deduction or refund will be made.\n\n" +
+              "Do you want to continue?";
 
     if (!window.confirm(confirmationMessage)) {
         return;
     }
+
+    // 4. DISABLE BUTTON WHILE PROCESSING
 
     const originalButtonText =
         button?.textContent || "";
 
     if (button) {
         button.disabled = true;
-        button.textContent = "Processing...";
+        button.textContent =
+            cleanType === "deposit"
+                ? "Requesting Refund..."
+                : "Cancelling...";
     }
 
     try {
-        const { data, error } =
-            await nexusAdminSupabase.rpc(
-                "admin_reverse_nexus_transaction",
-                {
-                    p_transaction_type: cleanType,
-                    p_transaction_id: cleanId,
-                    p_reason: cleanReason
-                }
-            );
 
-        if (error) throw error;
+        /* =========================================
+           5. DEPOSIT REFUND THROUGH PAYSTACK
+        ========================================= */
 
-        if (!data || data.success !== true) {
-            throw new Error(
-                data?.message ||
-                "The transaction reversal was not completed."
+        if (cleanType === "deposit") {
+
+            const { data, error } =
+                await nexusAdminSupabase.functions.invoke(
+                    "nexus-initiate-refund",
+                    {
+                        body: {
+                            deposit_id: cleanId,
+                            reason: cleanReason
+                        }
+                    }
+                );
+
+            if (error) {
+                console.error(
+                    "Paystack refund invocation error:",
+                    error
+                );
+
+                throw new Error(
+                    "The refund response could not be confirmed. " +
+                    "Check the refund request in Supabase before attempting another action. " +
+                    "Do not submit another refund blindly."
+                );
+            }
+
+            if (!data) {
+                throw new Error(
+                    "No refund response was received. " +
+                    "Check the refund request before trying again."
+                );
+            }
+
+            if (data.success === false) {
+                throw new Error(
+                    data.message ||
+                    "The refund request was not accepted."
+                );
+            }
+
+            const refundStatus = String(
+                data.status ||
+                data.refund?.status ||
+                ""
+            ).trim().toLowerCase();
+
+            const refundReference =
+                data.refund_reference ||
+                data.reference ||
+                data.refund?.paystack_refund_reference ||
+                "";
+
+            // 6. HANDLE CONFIRMED REFUND STATUS
+
+            if (refundStatus === "processed") {
+
+                alert(
+                    "PAYSTACK REFUND PROCESSED\n\n" +
+                    "Paystack reports that the refund has been processed.\n\n" +
+                    "Amount: " + amountText +
+                    (refundReference
+                        ? "\nRefund Reference: " + refundReference
+                        : "")
+                );
+
+            } else if (refundStatus === "failed") {
+
+                alert(
+                    "PAYSTACK REFUND FAILED\n\n" +
+                    (data.message ||
+                    "Paystack reports that the refund failed.") +
+                    "\n\nCheck the refund record and confirm the wallet restoration status before taking further action."
+                );
+
+            } else if (
+                refundStatus === "pending" ||
+                refundStatus === "processing" ||
+                refundStatus === "initiating"
+            ) {
+
+                alert(
+                    "REFUND REQUEST SUBMITTED\n\n" +
+                    "Amount: " + amountText +
+                    "\nStatus: " + refundStatus.toUpperCase() +
+                    "\n\nThe refund is not yet confirmed as processed. " +
+                    "Do not submit another refund request." +
+                    (refundReference
+                        ? "\n\nRefund Reference: " + refundReference
+                        : "")
+                );
+
+            } else if (
+                refundStatus === "needs_attention"
+            ) {
+
+                alert(
+                    "REFUND NEEDS ATTENTION\n\n" +
+                    (data.message ||
+                    "Paystack requires additional attention before the refund can be completed.") +
+                    "\n\nCheck the refund record and Paystack Dashboard."
+                );
+
+            } else {
+
+                alert(
+                    "REFUND REQUEST RESPONSE RECEIVED\n\n" +
+                    (data.message ||
+                    "The refund request has been received, but its final status could not be determined.") +
+                    "\n\nCheck the refund record in Supabase before taking further action."
+                );
+            }
+
+        } else {
+
+            /* =========================================
+               7. PENDING WITHDRAWAL CANCELLATION
+            ========================================= */
+
+            const { data, error } =
+                await nexusAdminSupabase.rpc(
+                    "admin_reverse_nexus_transaction",
+                    {
+                        p_transaction_type: "withdrawal",
+                        p_transaction_id: cleanId,
+                        p_reason: cleanReason
+                    }
+                );
+
+            if (error) throw error;
+
+            if (!data || data.success !== true) {
+                throw new Error(
+                    data?.message ||
+                    "The withdrawal cancellation was not completed."
+                );
+            }
+
+            alert(
+                data.message ||
+                "Pending withdrawal cancelled successfully."
             );
         }
 
-        alert(
-            data.message ||
-            "The transaction was processed successfully."
-        );
+        // 8. REFRESH ADMIN DASHBOARD
 
         await loadAdminDashboardData();
 
     } catch (error) {
+
         console.error(
             "Nexus transaction reversal error:",
             error
@@ -2379,16 +2533,20 @@ async function reverseNexusTransaction(
 
         alert(
             error.message ||
-            "Unable to process this transaction. Please try again."
+            "Unable to process this transaction. Please check its status before trying again."
         );
 
     } finally {
+
+        // 9. RESTORE BUTTON
+
         if (button) {
             button.disabled = false;
             button.textContent = originalButtonText;
         }
     }
 }
+
 
 
 /* =========================================================
