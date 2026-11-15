@@ -162,7 +162,8 @@ label {
 }
 
 input,
-select {
+select,
+textarea {
     display: block;
     width: 100%;
     min-height: 47px;
@@ -175,8 +176,15 @@ select {
     font: inherit;
 }
 
+textarea {
+    min-height: 110px;
+    resize: vertical;
+    line-height: 1.6;
+}
+
 input:focus,
-select:focus {
+select:focus,
+textarea:focus {
     border-color: var(--green);
     box-shadow: 0 0 0 3px rgba(8, 116, 67, 0.09);
 }
@@ -617,6 +625,405 @@ tbody tr:last-child td {
     line-height: 1.8;
 }
 
+
+/* =========================================================
+   22. PROFESSIONAL CUSTOMER SUPPORT DESIGN
+========================================================= */
+
+#supportPanel {
+    animation: supportFadeIn 0.25s ease;
+}
+
+@keyframes supportFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(7px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+#supportPanel .section-heading {
+    margin-bottom: 22px;
+}
+
+#supportPanel .section-heading h3 {
+    font-size: 23px;
+    color: #183327;
+}
+
+#supportPanel .section-heading p {
+    line-height: 1.6;
+}
+
+#supportPanel .content-card {
+    border-radius: 15px;
+    padding: 24px;
+}
+
+/* Inbox search */
+
+#supportTicketSearch {
+    background: #f9fbfa;
+    border-radius: 10px;
+    margin-bottom: 17px;
+}
+
+#supportTicketSearch::placeholder {
+    color: #99a59e;
+}
+
+/* Ticket list */
+
+#tellerSupportTicketList {
+    display: grid;
+    gap: 12px;
+    margin-top: 15px;
+}
+
+.support-ticket-item {
+    background: #ffffff;
+    border: 1px solid #e4ebe6;
+    border-left: 4px solid #b8c9be;
+    border-radius: 11px;
+    padding: 17px;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.support-ticket-item:hover {
+    border-color: #a9d4ba;
+    border-left-color: var(--green);
+    background: #fbfefc;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 16px rgba(0, 0, 0, 0.045);
+}
+
+.support-ticket-item.active {
+    border-color: #9acbad;
+    border-left-color: var(--green);
+    background: #f2faf5;
+    box-shadow: 0 3px 12px rgba(8, 116, 67, 0.07);
+}
+
+.support-ticket-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 10px;
+}
+
+.support-ticket-heading strong {
+    font-size: 14px;
+    line-height: 1.5;
+    color: #20382b;
+    overflow-wrap: anywhere;
+}
+
+.support-ticket-item p {
+    font-size: 12px;
+    color: #68786e;
+    line-height: 1.6;
+    margin-top: 5px;
+}
+
+.support-ticket-item small {
+    display: block;
+    color: #87948c;
+    font-size: 11px;
+    margin-top: 12px;
+}
+
+/* Status badges */
+
+.support-status-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px 10px;
+    border-radius: 30px;
+    font-size: 10px;
+    font-weight: 800;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.status-open {
+    background: #e8f2ff;
+    color: #245b9b;
+}
+
+.status-in_progress {
+    background: #fff3dc;
+    color: #93600b;
+}
+
+.status-resolved {
+    background: #e5f6eb;
+    color: #16713e;
+}
+
+.status-closed {
+    background: #edf0ee;
+    color: #647168;
+}
+
+/* Conversation container */
+
+#tellerSupportConversation {
+    background: #ffffff;
+    border: 1px solid #e0e9e3;
+    border-radius: 16px;
+    padding: 25px;
+    margin-top: 22px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.045);
+    scroll-margin-top: 20px;
+}
+
+#tellerSupportConversation > h4 {
+    font-size: 17px;
+    color: #1b3527;
+    margin-bottom: 20px;
+}
+
+#tellerSupportSubject {
+    font-size: 20px;
+    line-height: 1.4;
+    color: #173a28;
+    overflow-wrap: anywhere;
+}
+
+/* Conversation details */
+
+#tellerSupportConversation .support-ticket-details {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+    background: #f7faf8;
+    border: 1px solid #e9efeb;
+    border-radius: 12px;
+    padding: 18px;
+    margin: 18px 0;
+}
+
+#tellerSupportConversation .support-ticket-details > div {
+    min-width: 0;
+}
+
+#tellerSupportConversation .support-ticket-details span {
+    display: block;
+    color: #829087;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+}
+
+#tellerSupportConversation .support-ticket-details strong {
+    display: block;
+    color: #344a3b;
+    font-size: 13px;
+    overflow-wrap: anywhere;
+}
+
+/* Status controls */
+
+#tellerSupportStatusSelect {
+    background: #f9fbfa;
+}
+
+#updateTellerSupportStatusButton {
+    margin-top: 12px;
+}
+
+/* Message conversation area */
+
+#tellerSupportMessageList {
+    background: #f5f8f6;
+    border: 1px solid #e7eee9;
+    border-radius: 14px;
+    padding: 22px;
+    margin: 22px 0;
+    max-height: 520px;
+    min-height: 180px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 17px;
+    scroll-behavior: smooth;
+}
+
+/* Individual messages */
+
+.support-message {
+    max-width: 82%;
+    padding: 14px 16px;
+    border-radius: 13px;
+    position: relative;
+    overflow-wrap: anywhere;
+    box-shadow: 0 2px 7px rgba(0, 0, 0, 0.035);
+}
+
+.customer-message {
+    align-self: flex-start;
+    background: #ffffff;
+    border: 1px solid #e3eae5;
+    border-bottom-left-radius: 4px;
+}
+
+.staff-message {
+    align-self: flex-end;
+    background: #e8f5ed;
+    border: 1px solid #cce5d5;
+    border-bottom-right-radius: 4px;
+}
+
+.support-message-header {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 9px;
+    margin-bottom: 9px;
+}
+
+.support-message-header strong {
+    color: #203c2d;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.support-message-header span {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 20px;
+    background: #edf2ee;
+    color: #617167;
+    font-size: 9px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+}
+
+.staff-message .support-message-header span {
+    background: #d3ebdc;
+    color: #086337;
+}
+
+.support-message p {
+    color: #35473b;
+    font-size: 13px;
+    line-height: 1.7;
+    overflow-wrap: anywhere;
+    margin: 0 0 10px;
+}
+
+.support-message small {
+    display: block;
+    color: #89958d;
+    font-size: 10px;
+    text-align: right;
+}
+
+/* Reply section */
+
+#tellerSupportReplyForm {
+    background: #f8fbf9;
+    border: 1px solid #e5ede8;
+    border-radius: 13px;
+    padding: 18px;
+    margin-top: 20px;
+}
+
+#tellerSupportReplyForm label {
+    color: #284334;
+    font-size: 13px;
+    margin: 0 0 10px;
+}
+
+#tellerSupportReply {
+    min-height: 115px;
+    background: #ffffff;
+    border-radius: 10px;
+    border: 1px solid #dfe8e2;
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+#tellerSupportReply::placeholder {
+    color: #a0aaa4;
+}
+
+#tellerSupportReplyButton {
+    min-width: 140px;
+    margin-top: 13px;
+}
+
+#tellerSupportReplyButton:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+/* Closed report notice */
+
+#tellerSupportClosedNotice {
+    padding: 16px;
+    margin-top: 18px;
+    border: 1px solid #e4d9b9;
+    border-radius: 10px;
+    background: #fff9e9;
+    color: #795b19;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+/* Back button */
+
+#closeTellerSupportConversation {
+    margin-top: 20px;
+    padding: 11px 16px;
+}
+
+/* Refresh button */
+
+#refreshSupportTicketsButton {
+    min-height: 42px;
+}
+
+/* Support feedback */
+
+#tellerSupportMessage {
+    margin-bottom: 16px;
+}
+
+/* Scrollbar styling */
+
+#tellerSupportMessageList::-webkit-scrollbar {
+    width: 7px;
+}
+
+#tellerSupportMessageList::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+#tellerSupportMessageList::-webkit-scrollbar-thumb {
+    background: #cbd8cf;
+    border-radius: 20px;
+}
+
+#tellerSupportMessageList::-webkit-scrollbar-thumb:hover {
+    background: #9caf9f;
+}
+
+
+/* =========================================================
+   23. RESPONSIVE DESIGN
+========================================================= */
+
 @media (max-width: 650px) {
 
     .topbar {
@@ -704,4 +1111,62 @@ tbody tr:last-child td {
     .section-heading h3 {
         font-size: 18px;
     }
+
+    /* Mobile support */
+
+    #supportPanel .section-heading {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    #refreshSupportTicketsButton {
+        width: 100%;
+    }
+
+    #tellerSupportConversation {
+        padding: 16px;
+    }
+
+    #tellerSupportConversation #tellerSupportSubject {
+        font-size: 17px;
+    }
+
+    #tellerSupportConversation .support-ticket-details {
+        grid-template-columns: 1fr;
+        gap: 13px;
+        padding: 14px;
+    }
+
+    #tellerSupportMessageList {
+        padding: 13px;
+        max-height: 450px;
+        gap: 14px;
+    }
+
+    .support-message {
+        max-width: 94%;
+        padding: 12px;
+    }
+
+    .support-message p {
+        font-size: 12px;
+    }
+
+    .support-ticket-item {
+        padding: 14px;
+    }
+
+    .support-ticket-heading {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    #tellerSupportReplyForm {
+        padding: 14px;
+    }
+
+    #tellerSupportReplyButton {
+        width: 100%;
+    }
+
 }
