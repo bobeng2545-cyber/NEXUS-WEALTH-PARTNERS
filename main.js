@@ -2994,21 +2994,15 @@ async function openSupportConversation(ticket) {
 }
 
 
+
 /* LOAD SUPPORT MESSAGES */
 
 async function loadSupportMessages(ticketId, ticketStatus) {
 
-    const messageList =
-        getElement("supportMessageList");
-
-    const replyForm =
-        getElement("supportReplyForm");
-
-    const closedNotice =
-        getElement("supportReplyClosedNotice");
-
-    const replyButton =
-        getElement("supportReplyButton");
+    const messageList = getElement("supportMessageList");
+    const replyForm = getElement("supportReplyForm");
+    const closedNotice = getElement("supportReplyClosedNotice");
+    const replyButton = getElement("supportReplyButton");
 
     if (!messageList || !ticketId) return;
 
@@ -3032,24 +3026,58 @@ async function loadSupportMessages(ticketId, ticketStatus) {
             messageList.appendChild(
                 createSupportElement(
                     "p",
-                    "",
-                    "No messages are available in this conversation."
+                    "support-empty",
+                    "No messages yet. Send a reply to continue this conversation."
                 )
             );
         }
 
         messages.forEach(message => {
 
+            const role = String(
+                message.sender_role || "customer"
+            ).toLowerCase();
+
+            const isCustomer = role === "customer";
+
             const item = createSupportElement(
+                "article",
+                "support-message " +
+                (isCustomer
+                    ? "support-message-customer"
+                    : "support-message-staff")
+            );
+
+            const header = createSupportElement(
                 "div",
-                "support-message"
+                "support-message-header"
+            );
+
+            const senderInfo = createSupportElement(
+                "div",
+                "support-message-sender-info"
             );
 
             const sender = createSupportElement(
                 "strong",
                 "support-message-sender",
-                (message.sender_name || "Support") +
-                " (" + message.sender_role + ")"
+                message.sender_name || "Support Team"
+            );
+
+            const roleLabel = createSupportElement(
+                "span",
+                "support-message-role",
+                role === "admin"
+                    ? "Administrator"
+                    : role === "teller"
+                        ? "Support Staff"
+                        : "You"
+            );
+
+            const date = createSupportElement(
+                "time",
+                "support-message-date",
+                formatSupportDate(message.created_at)
             );
 
             const body = createSupportElement(
@@ -3058,13 +3086,9 @@ async function loadSupportMessages(ticketId, ticketStatus) {
                 message.message
             );
 
-            const date = createSupportElement(
-                "small",
-                "support-message-date",
-                formatSupportDate(message.created_at)
-            );
-
-            item.append(sender, body, date);
+            senderInfo.append(sender, roleLabel);
+            header.append(senderInfo, date);
+            item.append(header, body);
 
             messageList.appendChild(item);
 
@@ -3111,6 +3135,7 @@ async function loadSupportMessages(ticketId, ticketStatus) {
         );
     }
 }
+
 
 
 /* SEND SUPPORT REPLY */
