@@ -7,7 +7,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <meta name="description" content="Nexus Wealth Partners - Register, manage your savings and monitor your financial progress.">
-
     <meta name="theme-color" content="#087443">
 
     <title>Member Account | Nexus Wealth Partners</title>
@@ -17,66 +16,43 @@
 
 <body class="account-page">
 
-    <!-- =====================================
-         ACCOUNT HEADER
-    ====================================== -->
-
+    <!-- ACCOUNT HEADER -->
     <header id="websiteHeader" class="public-header">
 
         <div class="brand-area">
-
             <a href="index.html" class="brand-logo">
-
                 <span class="brand-symbol">N</span>
 
                 <span class="brand-text">
                     <strong>NEXUS</strong>
                     <small>WEALTH PARTNERS</small>
                 </span>
-
             </a>
-
         </div>
 
         <nav class="public-navigation" aria-label="Account Navigation">
-
             <ul>
                 <li><a href="index.html">Home</a></li>
                 <li><a href="index.html#about">About Us</a></li>
                 <li><a href="index.html#savings">Savings Plans</a></li>
             </ul>
-
         </nav>
 
         <div class="header-actions">
-
-            <a href="#login" class="header-login">
-                Login
-            </a>
-
+            <a href="#login" class="header-login">Login</a>
         </div>
 
     </header>
 
 
-    <!-- =====================================
-         ACCOUNT CONTENT
-    ====================================== -->
-
+    <!-- ACCOUNT CONTENT -->
     <main id="accountMain">
 
-
-        <!-- =====================================
-             REGISTRATION
-        ====================================== -->
-
+        <!-- REGISTRATION -->
         <section id="register" class="auth-screen">
 
             <div class="auth-card-header">
-
-                <div class="auth-brand-icon">
-                    N
-                </div>
+                <div class="auth-brand-icon">N</div>
 
                 <span class="auth-welcome-label">
                     JOIN NEXUS WEALTH PARTNERS
@@ -84,129 +60,57 @@
 
                 <h2>Create Your Account</h2>
 
-                <p>
-                    Start building better financial habits today.
-                </p>
-
+                <p>Start building better financial habits today.</p>
             </div>
-
 
             <form id="registrationForm">
 
-                <label for="registerName">
-                    Full Name
-                </label>
-
-                <input
-                    type="text"
-                    id="registerName"
-                    name="fullName"
+                <label for="registerName">Full Name</label>
+                <input type="text" id="registerName" name="fullName"
                     placeholder="Enter your full name"
-                    autocomplete="name"
-                    required
-                >
+                    autocomplete="name" required>
 
-
-                <label for="registerEmail">
-                    Email Address
-                </label>
-
-                <input
-                    type="email"
-                    id="registerEmail"
-                    name="email"
+                <label for="registerEmail">Email Address</label>
+                <input type="email" id="registerEmail" name="email"
                     placeholder="Enter your email address"
-                    autocomplete="email"
-                    required
-                >
+                    autocomplete="email" required>
 
-
-                <label for="registerPhone">
-                    Phone Number
-                </label>
-
-                <input
-                    type="tel"
-                    id="registerPhone"
-                    name="phone"
+                <label for="registerPhone">Phone Number</label>
+                <input type="tel" id="registerPhone" name="phone"
                     placeholder="Enter your phone number"
-                    autocomplete="tel"
-                    required
-                >
+                    autocomplete="tel" required>
 
-
-                <label for="registerPassword">
-                    Password
-                </label>
-
-                <input
-                    type="password"
-                    id="registerPassword"
-                    name="password"
+                <label for="registerPassword">Password</label>
+                <input type="password" id="registerPassword" name="password"
                     placeholder="Create a password"
-                    autocomplete="new-password"
-                    required
-                >
+                    autocomplete="new-password" required>
 
-
-                <label for="confirmPassword">
-                    Confirm Password
-                </label>
-
-                <input
-                    type="password"
-                    id="confirmPassword"
-                    name="confirmPassword"
+                <label for="confirmPassword">Confirm Password</label>
+                <input type="password" id="confirmPassword" name="confirmPassword"
                     placeholder="Confirm your password"
-                    autocomplete="new-password"
-                    required
-                >
+                    autocomplete="new-password" required>
 
-
-                <button type="submit">
-                    Create Account
-                </button>
-
+                <button type="submit">Create Account</button>
 
                 <p class="auth-switch-text">
-
                     Already have an account?
-
-                    <a
-                        href="#login"
-                        class="auth-switch-link"
-                    >
-                        Login
-                    </a>
-
+                    <a href="#login" class="auth-switch-link">Login</a>
                 </p>
 
-
-                <button
-                    type="button"
-                    class="back-home-btn"
-                    onclick="window.location.href='index.html'"
-                >
+                <button type="button" class="back-home-btn"
+                    onclick="window.location.href='index.html'">
                     Back to Home
                 </button>
 
             </form>
-
         </section>
 
 
-
-        <!-- =====================================
-             LOGIN
-        ====================================== -->
-
+        <!-- LOGIN -->
         <section id="login" class="auth-screen">
 
             <div class="auth-card-header">
-
-                <div class="auth-brand-icon">
-                    N
-                </div>
+                <div class="auth-brand-icon">N</div>
 
                 <span class="auth-welcome-label">
                     WELCOME TO NEXUS
@@ -214,96 +118,46 @@
 
                 <h2>Welcome Back</h2>
 
-                <p>
-                    Sign in to access your savings dashboard.
-                </p>
-
+                <p>Sign in to access your savings dashboard.</p>
             </div>
-
 
             <form id="loginForm">
 
-                <label for="loginEmail">
-                    Email Address
-                </label>
-
-                <input
-                    type="email"
-                    id="loginEmail"
-                    name="email"
+                <label for="loginEmail">Email Address</label>
+                <input type="email" id="loginEmail" name="email"
                     placeholder="Enter your email address"
-                    autocomplete="email"
-                    required
-                >
+                    autocomplete="email" required>
 
-
-                <label for="loginPassword">
-                    Password
-                </label>
-
-                <input
-                    type="password"
-                    id="loginPassword"
-                    name="password"
+                <label for="loginPassword">Password</label>
+                <input type="password" id="loginPassword" name="password"
                     placeholder="Enter your password"
-                    autocomplete="current-password"
-                    required
-                >
-
+                    autocomplete="current-password" required>
 
                 <p class="forgot-password-link">
-
-                    <a href="#forgotPassword">
-                        Forgot Password?
-                    </a>
-
+                    <a href="#forgotPassword">Forgot Password?</a>
                 </p>
 
-
-                <button type="submit">
-                    Login to Your Account
-                </button>
-
+                <button type="submit">Login to Your Account</button>
 
                 <p class="auth-switch-text">
-
                     Don't have an account?
-
-                    <a
-                        href="#register"
-                        class="auth-switch-link"
-                    >
-                        Sign Up
-                    </a>
-
+                    <a href="#register" class="auth-switch-link">Sign Up</a>
                 </p>
 
-
-                <button
-                    type="button"
-                    class="back-home-btn"
-                    onclick="window.location.href='index.html'"
-                >
+                <button type="button" class="back-home-btn"
+                    onclick="window.location.href='index.html'">
                     Back to Home
                 </button>
 
             </form>
-
         </section>
 
 
-
-        <!-- =====================================
-             FORGOT PASSWORD
-        ====================================== -->
-
+        <!-- FORGOT PASSWORD -->
         <section id="forgotPassword" class="auth-screen">
 
             <div class="auth-card-header">
-
-                <div class="auth-brand-icon">
-                    N
-                </div>
+                <div class="auth-brand-icon">N</div>
 
                 <span class="auth-welcome-label">
                     ACCOUNT RECOVERY
@@ -315,461 +169,238 @@
                     Enter the email address associated with your account
                     to request a password reset.
                 </p>
-
             </div>
-
 
             <form id="forgotPasswordForm">
 
-                <label for="resetEmail">
-                    Registered Email Address
-                </label>
-
-                <input
-                    type="email"
-                    id="resetEmail"
-                    name="email"
+                <label for="resetEmail">Registered Email Address</label>
+                <input type="email" id="resetEmail" name="email"
                     placeholder="Enter your registered email"
-                    autocomplete="email"
-                    required
-                >
+                    autocomplete="email" required>
 
-
-                <button type="submit">
-                    Request Password Reset
-                </button>
-
+                <button type="submit">Request Password Reset</button>
 
                 <p class="auth-switch-text">
-
                     Remembered your password?
-
-                    <a
-                        href="#login"
-                        class="auth-switch-link"
-                    >
-                        Login
-                    </a>
-
+                    <a href="#login" class="auth-switch-link">Login</a>
                 </p>
 
-
-                <button
-                    type="button"
-                    class="back-home-btn"
-                    onclick="window.location.href='index.html'"
-                >
+                <button type="button" class="back-home-btn"
+                    onclick="window.location.href='index.html'">
                     Back to Home
                 </button>
 
             </form>
-
         </section>
 
 
-
-        <!-- =====================================
-             MEMBER DASHBOARD
-        ====================================== -->
-
+        <!-- MEMBER DASHBOARD -->
         <section id="memberDashboard" class="member-dashboard">
 
-
-            <!-- MOBILE DASHBOARD HOME HEADER -->
-
-            <div
-                id="mobileHomeHeader"
+            <!-- MOBILE HOME HEADER -->
+            <div id="mobileHomeHeader"
                 class="mobile-screen-header home-mobile-header">
             </div>
 
-
             <!-- MOBILE INNER PAGE HEADER -->
+            <div class="mobile-screen-header mobile-inner-header"
+                id="mobileScreenHeader">
 
-            <div
-                class="mobile-screen-header mobile-inner-header"
-                id="mobileScreenHeader"
-            >
-
-                <button
-                    type="button"
-                    id="mobileBackButton"
-                    aria-label="Back to dashboard home"
-                >
+                <button type="button" id="mobileBackButton"
+                    aria-label="Back to dashboard home">
                     &#8592;
                 </button>
 
-                <h2 id="mobileScreenTitle">
-                    Transactions
-                </h2>
-
+                <h2 id="mobileScreenTitle">Transactions</h2>
             </div>
 
 
             <!-- DASHBOARD HEADING -->
-
             <div class="dashboard-heading home-dashboard-content">
 
                 <div class="dashboard-welcome">
-
                     <h2>
                         Welcome back,
                         <span id="memberFirstName">Member</span> 👋
                     </h2>
 
-                    <p>
-                        Here is an overview of your account.
-                    </p>
+                    <p>Here is an overview of your account.</p>
 
                     <p>
                         Member ID:
                         <span id="memberId">NWP001</span>
                     </p>
-
                 </div>
 
-
                 <!-- NOTIFICATIONS -->
-
                 <div class="notification-area">
 
-                    <button
-                        type="button"
-                        id="notificationButton"
+                    <button type="button" id="notificationButton"
                         class="notification-button"
                         aria-label="Open notifications"
                         aria-expanded="false"
-                        aria-controls="notificationMenu"
-                    >
+                        aria-controls="notificationMenu">
 
-                        <span class="notification-bell-icon">
-                            🔔
-                        </span>
+                        <span class="notification-bell-icon">🔔</span>
 
-                        <span
-                            id="notificationCount"
-                            class="notification-count"
-                            hidden
-                        >0</span>
-
+                        <span id="notificationCount"
+                            class="notification-count" hidden>0</span>
                     </button>
 
-
-                    <div
-                        id="notificationMenu"
-                        class="notification-menu"
-                        hidden
-                    >
+                    <div id="notificationMenu"
+                        class="notification-menu" hidden>
 
                         <div class="notification-menu-header">
-
                             <h3>Notifications</h3>
 
-                            <button
-                                type="button"
-                                id="markAllNotifications"
-                            >
+                            <button type="button" id="markAllNotifications">
                                 Mark all as read
                             </button>
-
                         </div>
 
-                        <div
-                            id="notificationList"
-                            class="notification-list"
-                        >
-
+                        <div id="notificationList" class="notification-list">
                             <div class="empty-notifications">
-
                                 <span>🔔</span>
-
                                 <p>No notifications yet.</p>
-
                             </div>
-
                         </div>
 
                     </div>
-
                 </div>
 
             </div>
 
 
-
             <!-- DASHBOARD SUMMARY -->
-
             <div class="dashboard-cards home-dashboard-content">
 
                 <article class="dashboard-card balance-card">
-
                     <span class="card-icon">👛</span>
-
                     <p>My Wallet Balance</p>
-
-                    <h3 id="walletBalance">
-                        GHS 0.00
-                    </h3>
-
+                    <h3 id="walletBalance">GHS 0.00</h3>
                     <small>Your current wallet balance</small>
-
                 </article>
 
-
                 <article class="dashboard-card">
-
                     <span class="card-icon">📥</span>
-
                     <p>Total Deposits</p>
-
-                    <h3 id="walletTotalDeposits">
-                        GHS 0.00
-                    </h3>
-
+                    <h3 id="walletTotalDeposits">GHS 0.00</h3>
                     <small>Your confirmed deposits</small>
-
                 </article>
 
-
                 <article class="dashboard-card">
-
                     <span class="card-icon">📤</span>
-
                     <p>Total Withdrawals</p>
-
-                    <h3 id="walletTotalWithdrawals">
-                        GHS 0.00
-                    </h3>
-
+                    <h3 id="walletTotalWithdrawals">GHS 0.00</h3>
                     <small>Your completed withdrawals</small>
-
                 </article>
 
             </div>
 
 
-
             <!-- MEMBER NAVIGATION -->
+            <!-- SUPPORT HAS BEEN REMOVED FROM THIS NAVIGATION -->
+            <nav class="member-navigation"
+                aria-label="Member Dashboard Navigation">
 
-            <nav
-                class="member-navigation"
-                aria-label="Member Dashboard Navigation"
-            >
-
-                <a
-                    href="#memberDashboard"
-                    data-screen="home"
-                    class="active"
-                >
+                <a href="#memberDashboard" data-screen="home" class="active">
                     <span>🏠</span>
                     <small>Home</small>
                 </a>
 
-                <a
-                    href="#memberTransactions"
-                    data-screen="transactions"
-                >
+                <a href="#memberTransactions" data-screen="transactions">
                     <span>📄</span>
                     <small>Transactions</small>
                 </a>
 
-                <a
-                    href="#memberSavings"
-                    data-screen="savings"
-                >
+                <a href="#memberSavings" data-screen="savings">
                     <span>💰</span>
                     <small>Savings</small>
                 </a>
 
-                <a
-                    href="#memberProfile"
-                    data-screen="profile"
-                >
+                <a href="#memberProfile" data-screen="profile">
                     <span>👤</span>
                     <small>Profile</small>
-                </a>
-
-                <!-- CUSTOMER SUPPORT NAVIGATION -->
-
-                <a
-                    href="#memberSupport"
-                    data-screen="support"
-                >
-                    <span>💬</span>
-                    <small>Support</small>
                 </a>
 
             </nav>
 
 
-
             <!-- MY WALLET -->
-
-            <section
-                id="myWallet"
-                class="dashboard-panel home-dashboard-content"
-            >
+            <section id="myWallet"
+                class="dashboard-panel home-dashboard-content">
 
                 <h3>My Wallet</h3>
-
-                <p>
-                    Manage and monitor your wallet.
-                </p>
-
+                <p>Manage and monitor your wallet.</p>
 
                 <div class="dashboard-cards">
 
                     <article class="dashboard-card balance-card">
-
                         <span class="card-icon">💰</span>
-
                         <p>Total Wallet Balance</p>
-
-                        <h3 id="walletBalanceDisplay">
-                            GHS 0.00
-                        </h3>
-
+                        <h3 id="walletBalanceDisplay">GHS 0.00</h3>
                     </article>
-
 
                     <article class="dashboard-card">
-
                         <span class="card-icon">💵</span>
-
                         <p>Available Balance</p>
-
-                        <h3 id="walletAvailableBalance">
-                            GHS 0.00
-                        </h3>
-
+                        <h3 id="walletAvailableBalance">GHS 0.00</h3>
                     </article>
 
-
                     <article class="dashboard-card pending-wallet-card">
-
                         <span class="card-icon">⏳</span>
-
                         <p>Pending Withdrawals</p>
-
-                        <h3 id="walletPendingWithdrawals">
-                            GHS 0.00
-                        </h3>
-
+                        <h3 id="walletPendingWithdrawals">GHS 0.00</h3>
                         <small>
                             Money reserved for pending and processing requests
                         </small>
-
                     </article>
 
                 </div>
 
-
                 <div class="wallet-actions">
-
-                    <a href="#depositFunds">
-                        ➕ Deposit Money
-                    </a>
-
-                    <a href="#withdrawFunds">
-                        📤 Withdraw Money
-                    </a>
-
+                    <a href="#depositFunds">➕ Deposit Money</a>
+                    <a href="#withdrawFunds">📤 Withdraw Money</a>
                 </div>
 
             </section>
 
 
-
             <!-- DEPOSIT MONEY -->
-
-            <section
-                id="depositFunds"
-                class="dashboard-panel home-dashboard-content"
-            >
+            <section id="depositFunds"
+                class="dashboard-panel home-dashboard-content">
 
                 <h3>Deposit Money</h3>
-
-                <p>
-                    Add money to your Nexus wallet.
-                </p>
-
+                <p>Add money to your Nexus wallet.</p>
 
                 <div class="available-balance-card">
-
                     <span>Current Wallet Balance</span>
-
-                    <h2 id="depositCurrentBalance">
-                        GHS 0.00
-                    </h2>
-
+                    <h2 id="depositCurrentBalance">GHS 0.00</h2>
                 </div>
-
 
                 <form id="depositForm">
 
-                    <label for="depositAmount">
-                        Amount to Deposit (GHS)
-                    </label>
+                    <label for="depositAmount">Amount to Deposit (GHS)</label>
+                    <input type="number" id="depositAmount" name="amount"
+                        min="1" step="0.01"
+                        placeholder="Enter deposit amount" required>
 
-                    <input
-                        type="number"
-                        id="depositAmount"
-                        name="amount"
-                        min="1"
-                        step="0.01"
-                        placeholder="Enter deposit amount"
-                        required
-                    >
-
-
-                    <label for="depositMethod">
-                        Deposit Method
-                    </label>
-
-                    <select
-                        id="depositMethod"
-                        name="method"
-                        required
-                    >
-
-                        <option value="">
-                            Select Deposit Method
-                        </option>
-
-                        <option value="mtn_momo">
-                            MTN Mobile Money
-                        </option>
-
-                        <option value="telecel_cash">
-                            Telecel Cash
-                        </option>
-
-                        <option value="at_money">
-                            AT Money
-                        </option>
-
+                    <label for="depositMethod">Deposit Method</label>
+                    <select id="depositMethod" name="method" required>
+                        <option value="">Select Deposit Method</option>
+                        <option value="mtn_momo">MTN Mobile Money</option>
+                        <option value="telecel_cash">Telecel Cash</option>
+                        <option value="at_money">AT Money</option>
                     </select>
 
-
-                    <label for="depositPhone">
-                        Mobile Money Number
-                    </label>
-
-                    <input
-                        type="tel"
-                        id="depositPhone"
-                        name="phone"
+                    <label for="depositPhone">Mobile Money Number</label>
+                    <input type="tel" id="depositPhone" name="phone"
                         placeholder="Enter mobile money number"
-                        autocomplete="tel"
-                        required
-                    >
+                        autocomplete="tel" required>
 
-
-                    <button type="submit">
-                        Continue to Deposit
-                    </button>
+                    <button type="submit">Continue to Deposit</button>
 
                 </form>
-
 
                 <p>
                     Your wallet will only be credited after the payment
@@ -779,125 +410,76 @@
             </section>
 
 
-
             <!-- SAVINGS OVERVIEW -->
-
             <div class="dashboard-content-grid home-dashboard-content">
 
                 <section class="dashboard-panel savings-overview-panel">
 
                     <div class="panel-heading">
-
                         <div>
-
                             <h3>Savings Overview</h3>
-
-                            <p>
-                                Monitor your savings progress.
-                            </p>
-
+                            <p>Monitor your savings progress.</p>
                         </div>
-
                     </div>
-
 
                     <div class="savings-overview-content">
 
                         <div class="savings-progress-circle">
-
                             <div class="progress-inner">
-
-                                <strong id="savingsProgress">
-                                    0%
-                                </strong>
-
+                                <strong id="savingsProgress">0%</strong>
                                 <small>Target achieved</small>
-
                             </div>
-
                         </div>
-
 
                         <div class="savings-target-details">
 
                             <div>
                                 <span>Target</span>
-                                <strong id="savingsTarget">
-                                    GHS 0.00
-                                </strong>
+                                <strong id="savingsTarget">GHS 0.00</strong>
                             </div>
 
                             <div>
                                 <span>Saved</span>
-                                <strong id="savingsTotal">
-                                    GHS 0.00
-                                </strong>
+                                <strong id="savingsTotal">GHS 0.00</strong>
                             </div>
 
                             <div>
                                 <span>Total Deposits</span>
-                                <strong id="totalDeposits">
-                                    GHS 0.00
-                                </strong>
+                                <strong id="totalDeposits">GHS 0.00</strong>
                             </div>
 
                             <div>
                                 <span>Total Profits</span>
-                                <strong id="totalProfits">
-                                    GHS 0.00
-                                </strong>
+                                <strong id="totalProfits">GHS 0.00</strong>
                             </div>
 
                         </div>
-
                     </div>
 
                 </section>
 
 
-
                 <!-- ACCOUNT INFORMATION -->
-
                 <section class="dashboard-panel account-information">
 
                     <h3>Account Information</h3>
-
-                    <p>
-                        Keep track of your savings account.
-                    </p>
-
+                    <p>Keep track of your savings account.</p>
 
                     <div class="information-item">
-
                         <span>Account Type</span>
-
                         <strong>Member Savings</strong>
-
                     </div>
 
-
                     <div class="information-item">
-
                         <span>Account Status</span>
-
-                        <strong
-                            id="accountStatus"
-                            class="account-status"
-                        >
+                        <strong id="accountStatus" class="account-status">
                             Active
                         </strong>
-
                     </div>
 
-
                     <div class="information-item">
-
                         <span>Member ID</span>
-
-                        <strong id="accountMemberId">
-                            NWP001
-                        </strong>
-
+                        <strong id="accountMemberId">NWP001</strong>
                     </div>
 
                 </section>
@@ -905,30 +487,16 @@
             </div>
 
 
-
-            <!-- =====================================
-                 WITHDRAWAL
-            ====================================== -->
-
-            <section
-                id="withdrawFunds"
-                class="dashboard-panel home-dashboard-content"
-            >
+            <!-- WITHDRAWAL -->
+            <section id="withdrawFunds"
+                class="dashboard-panel home-dashboard-content">
 
                 <h3>Withdraw from My Wallet</h3>
-
-                <p>
-                    Submit a request to withdraw money from your wallet.
-                </p>
+                <p>Submit a request to withdraw money from your wallet.</p>
 
                 <div class="available-balance-card">
-
                     <span>Available Wallet Balance</span>
-
-                    <h2 id="availableBalance">
-                        GHS 0.00
-                    </h2>
-
+                    <h2 id="availableBalance">GHS 0.00</h2>
                 </div>
 
                 <form id="withdrawalForm">
@@ -936,235 +504,120 @@
                     <label for="withdrawAmount">
                         Amount to Withdraw (GHS)
                     </label>
+                    <input type="number" id="withdrawAmount" name="amount"
+                        min="1" step="0.01" placeholder="Enter amount" required>
 
-                    <input
-                        type="number"
-                        id="withdrawAmount"
-                        name="amount"
-                        min="1"
-                        step="0.01"
-                        placeholder="Enter amount"
-                        required
-                    >
-
-                    <label for="withdrawMethod">
-                        Withdrawal Method
-                    </label>
-
-                    <select
-                        id="withdrawMethod"
-                        name="method"
-                        required
-                    >
-
-                        <option value="">
-                            Select Withdrawal Method
-                        </option>
-
-                        <option value="mtn_momo">
-                            MTN Mobile Money
-                        </option>
-
-                        <option value="telecel_cash">
-                            Telecel Cash
-                        </option>
-
-                        <option value="at_money">
-                            AT Money
-                        </option>
-
-                        <option value="bank">
-                            Bank Account
-                        </option>
-
+                    <label for="withdrawMethod">Withdrawal Method</label>
+                    <select id="withdrawMethod" name="method" required>
+                        <option value="">Select Withdrawal Method</option>
+                        <option value="mtn_momo">MTN Mobile Money</option>
+                        <option value="telecel_cash">Telecel Cash</option>
+                        <option value="at_money">AT Money</option>
+                        <option value="bank">Bank Account</option>
                     </select>
 
                     <label for="withdrawAccountName">
                         Recipient / Account Holder Name
                     </label>
-
-                    <input
-                        type="text"
-                        id="withdrawAccountName"
+                    <input type="text" id="withdrawAccountName"
                         name="accountName"
                         placeholder="Enter the registered account name"
-                        autocomplete="name"
-                        required
-                    >
+                        autocomplete="name" required>
 
                     <label for="withdrawPhone">
                         Mobile Money Number / Bank Account Number
                     </label>
-
-                    <input
-                        type="text"
-                        id="withdrawPhone"
-                        name="phone"
+                    <input type="text" id="withdrawPhone" name="phone"
                         placeholder="Enter mobile money or bank account number"
-                        required
-                    >
+                        required>
 
-                    <label for="withdrawNote">
-                        Note (Optional)
-                    </label>
+                    <label for="withdrawNote">Note (Optional)</label>
+                    <textarea id="withdrawNote" name="note"
+                        placeholder="Enter additional information"></textarea>
 
-                    <textarea
-                        id="withdrawNote"
-                        name="note"
-                        placeholder="Enter additional information"
-                    ></textarea>
-
-                    <button type="submit">
-                        Submit Withdrawal Request
-                    </button>
+                    <button type="submit">Submit Withdrawal Request</button>
 
                 </form>
 
                 <div class="withdrawal-rules">
-
                     <h3>Withdrawal Rules</h3>
-
                     <ul>
                         <li>Withdrawal requests are subject to approval.</li>
                         <li>Withdrawals must not exceed the available balance.</li>
                         <li>Ensure the recipient's name and account number are correct.</li>
                         <li>All transactions must be recorded.</li>
                     </ul>
-
                 </div>
 
             </section>
 
 
-
             <!-- PENDING WITHDRAWALS -->
-
-            <section
-                id="pendingWithdrawals"
-                class="dashboard-panel"
-            >
+            <section id="pendingWithdrawals" class="dashboard-panel">
 
                 <h3>Pending Withdrawals</h3>
-
                 <p>
                     Track withdrawal requests that have not yet
                     been completed.
                 </p>
 
-
                 <div class="pending-withdrawal-summary">
-
                     <span>Total Reserved</span>
-
-                    <strong id="pendingWithdrawalTotal">
-                        GHS 0.00
-                    </strong>
-
+                    <strong id="pendingWithdrawalTotal">GHS 0.00</strong>
                 </div>
 
-
                 <div class="table-container">
-
                     <table>
-
                         <thead>
-
                             <tr>
                                 <th>Amount</th>
                                 <th>Payment Method</th>
                                 <th>Date Requested</th>
                                 <th>Status</th>
                             </tr>
-
                         </thead>
 
-
                         <tbody id="pendingWithdrawalList">
-
                             <tr>
-                                <td colspan="4">
-                                    No pending withdrawals.
-                                </td>
+                                <td colspan="4">No pending withdrawals.</td>
                             </tr>
-
                         </tbody>
-
                     </table>
-
                 </div>
 
             </section>
 
 
-
             <!-- TRANSACTION HISTORY -->
-
-            <section
-                id="memberTransactions"
-                class="dashboard-panel"
-            >
+            <section id="memberTransactions" class="dashboard-panel">
 
                 <div class="mobile-page-heading">
-
-                    <button
-                        type="button"
-                        class="mobile-back-button"
+                    <button type="button" class="mobile-back-button"
                         onclick="showMobileDashboardScreen('home')"
-                        aria-label="Back to dashboard"
-                    >
+                        aria-label="Back to dashboard">
                         &#8592;
                     </button>
-
                     <h2>Transactions</h2>
-
                 </div>
 
+                <h3 class="desktop-page-heading">My Transactions</h3>
+                <p>View your deposits and withdrawals.</p>
 
-                <h3 class="desktop-page-heading">
-                    My Transactions
-                </h3>
-
-                <p>
-                    View your deposits and withdrawals.
-                </p>
-
-
-                <div
-                    class="transaction-filters"
-                    id="transactionFilters"
-                >
-
-                    <button
-                        type="button"
-                        class="active"
-                        data-filter="all"
-                    >
+                <div class="transaction-filters" id="transactionFilters">
+                    <button type="button" class="active" data-filter="all">
                         All
                     </button>
-
-                    <button
-                        type="button"
-                        data-filter="deposit"
-                    >
+                    <button type="button" data-filter="deposit">
                         Deposits
                     </button>
-
-                    <button
-                        type="button"
-                        data-filter="withdrawal"
-                    >
+                    <button type="button" data-filter="withdrawal">
                         Withdrawals
                     </button>
-
                 </div>
 
-
                 <div class="table-container">
-
                     <table>
-
                         <thead>
-
                             <tr>
                                 <th>Transaction</th>
                                 <th>Date</th>
@@ -1172,123 +625,71 @@
                                 <th>Status</th>
                                 <th>Receipt</th>
                             </tr>
-
                         </thead>
 
-
                         <tbody id="transactionList">
-
                             <tr>
-                                <td colspan="5">
-                                    No transactions available.
-                                </td>
+                                <td colspan="5">No transactions available.</td>
                             </tr>
-
                         </tbody>
-
                     </table>
-
                 </div>
 
             </section>
 
 
-
             <!-- MONTHLY SAVINGS -->
-
-            <section
-                id="memberSavings"
-                class="dashboard-panel"
-            >
+            <section id="memberSavings" class="dashboard-panel">
 
                 <div class="mobile-page-heading">
-
-                    <button
-                        type="button"
-                        class="mobile-back-button"
+                    <button type="button" class="mobile-back-button"
                         onclick="showMobileDashboardScreen('home')"
-                        aria-label="Back to dashboard"
-                    >
+                        aria-label="Back to dashboard">
                         &#8592;
                     </button>
-
                     <h2>My Savings</h2>
-
                 </div>
-
 
                 <h3 class="desktop-page-heading">
                     Monthly Savings Breakdown
                 </h3>
 
-                <p>
-                    Track your savings month by month.
-                </p>
-
+                <p>Track your savings month by month.</p>
 
                 <div class="table-container">
-
                     <table>
-
                         <thead>
-
                             <tr>
                                 <th>Month</th>
                                 <th>Amount Saved</th>
                             </tr>
-
                         </thead>
 
-
                         <tbody id="monthlySavingsList">
-
                             <tr>
-                                <td colspan="2">
-                                    No savings records available.
-                                </td>
+                                <td colspan="2">No savings records available.</td>
                             </tr>
-
                         </tbody>
-
                     </table>
-
                 </div>
 
             </section>
 
 
-
             <!-- MEMBER PROFILE -->
-
-            <section
-                id="memberProfile"
-                class="dashboard-panel"
-            >
+            <section id="memberProfile" class="dashboard-panel">
 
                 <div class="mobile-page-heading">
-
-                    <button
-                        type="button"
-                        class="mobile-back-button"
+                    <button type="button" class="mobile-back-button"
                         onclick="showMobileDashboardScreen('home')"
-                        aria-label="Back to dashboard"
-                    >
+                        aria-label="Back to dashboard">
                         &#8592;
                     </button>
-
                     <h2>My Profile</h2>
-
                 </div>
 
-
-                <h3 class="desktop-page-heading">
-                    My Profile
-                </h3>
-
-                <p>
-                    View your personal account information.
-                </p>
-
+                <h3 class="desktop-page-heading">My Profile</h3>
+                <p>View your personal account information.</p>
 
                 <div class="profile-information">
 
@@ -1317,240 +718,114 @@
             </section>
 
 
-
-            <!-- =====================================
-                 CUSTOMER SUPPORT
-            ====================================== -->
-
-            <section
-                id="memberSupport"
-                class="dashboard-panel"
-            >
-
-                <!-- MOBILE SUPPORT HEADER -->
+            <!-- CUSTOMER SUPPORT -->
+            <!-- This section remains available through the floating icon -->
+            <section id="memberSupport" class="dashboard-panel">
 
                 <div class="mobile-page-heading">
-
-                    <button
-                        type="button"
-                        class="mobile-back-button"
+                    <button type="button" class="mobile-back-button"
                         onclick="showMobileDashboardScreen('home')"
-                        aria-label="Back to dashboard"
-                    >
+                        aria-label="Back to dashboard">
                         &#8592;
                     </button>
-
                     <h2>Customer Support</h2>
-
                 </div>
 
-
-                <!-- SUPPORT INTRODUCTION -->
-
                 <div class="support-page-intro">
-
-                    <h3 class="desktop-page-heading">
-                        Customer Support
-                    </h3>
+                    <h3 class="desktop-page-heading">Customer Support</h3>
 
                     <p>
                         Do you have an issue or need assistance?
                         Submit a report and our active tellers
                         or administrators will review and respond.
                     </p>
-
                 </div>
 
 
-
-                <!-- CREATE NEW SUPPORT REPORT -->
-
+                <!-- CREATE SUPPORT REPORT -->
                 <div class="support-create-card">
 
                     <h3>Submit a New Report</h3>
-
-                    <p>
-                        Explain the issue you are experiencing.
-                    </p>
-
+                    <p>Explain the issue you are experiencing.</p>
 
                     <form id="supportTicketForm">
 
-                        <label for="supportSubject">
-                            Subject
-                        </label>
+                        <label for="supportSubject">Subject</label>
+                        <input type="text" id="supportSubject"
+                            name="subject" minlength="3" maxlength="150"
+                            placeholder="Briefly describe your issue" required>
 
-                        <input
-                            type="text"
-                            id="supportSubject"
-                            name="subject"
-                            minlength="3"
-                            maxlength="150"
-                            placeholder="Briefly describe your issue"
-                            required
-                        >
-
-
-                        <label for="supportCategory">
-                            Report Category
-                        </label>
-
-                        <select
-                            id="supportCategory"
-                            name="category"
-                            required
-                        >
-
-                            <option value="">
-                                Select a category
-                            </option>
-
-                            <option value="Account">
-                                Account
-                            </option>
-
-                            <option value="Deposits">
-                                Deposits
-                            </option>
-
-                            <option value="Withdrawals">
-                                Withdrawals
-                            </option>
-
-                            <option value="Wallet">
-                                Wallet
-                            </option>
-
-                            <option value="Transactions">
-                                Transactions
-                            </option>
-
-                            <option value="Technical Issue">
-                                Technical Issue
-                            </option>
-
-                            <option value="Other">
-                                Other
-                            </option>
-
+                        <label for="supportCategory">Report Category</label>
+                        <select id="supportCategory" name="category" required>
+                            <option value="">Select a category</option>
+                            <option value="Account">Account</option>
+                            <option value="Deposits">Deposits</option>
+                            <option value="Withdrawals">Withdrawals</option>
+                            <option value="Wallet">Wallet</option>
+                            <option value="Transactions">Transactions</option>
+                            <option value="Technical Issue">Technical Issue</option>
+                            <option value="Other">Other</option>
                         </select>
 
-
-                        <label for="supportMessage">
-                            Describe Your Issue
-                        </label>
-
-                        <textarea
-                            id="supportMessage"
-                            name="message"
-                            rows="5"
-                            maxlength="5000"
+                        <label for="supportMessage">Describe Your Issue</label>
+                        <textarea id="supportMessage" name="message"
+                            rows="5" maxlength="5000"
                             placeholder="Explain the issue you are experiencing..."
-                            required
-                        ></textarea>
+                            required></textarea>
 
-
-                        <button
-                            type="submit"
-                            id="supportSubmitButton"
-                        >
+                        <button type="submit" id="supportSubmitButton">
                             Submit Report
                         </button>
 
                     </form>
-
                 </div>
 
 
-
                 <!-- CUSTOMER REPORT HISTORY -->
-
                 <div class="support-ticket-area">
 
                     <div class="support-section-heading">
-
                         <div>
                             <h3>My Reports</h3>
-
                             <p>
                                 View the reports you have submitted
                                 and check their progress.
                             </p>
                         </div>
 
-                        <button
-                            type="button"
-                            id="refreshSupportTickets"
-                        >
+                        <button type="button" id="refreshSupportTickets">
                             Refresh Reports
                         </button>
-
                     </div>
 
-
-                    <div
-                        id="supportTicketList"
-                        aria-live="polite"
-                    >
-
-                        <p>
-                            Your reports will appear here.
-                        </p>
-
+                    <div id="supportTicketList" aria-live="polite">
+                        <p>Your reports will appear here.</p>
                     </div>
 
                 </div>
 
 
-
                 <!-- SUPPORT CONVERSATION -->
-
-                <div
-                    id="supportConversation"
-                    class="support-conversation"
-                    hidden
-                >
+                <div id="supportConversation"
+                    class="support-conversation" hidden>
 
                     <div class="support-conversation-heading">
-
                         <div>
-
                             <h3 id="supportConversationSubject">
                                 Report Conversation
                             </h3>
-
-                            <p id="supportConversationStatus">
-                                Status
-                            </p>
-
+                            <p id="supportConversationStatus">Status</p>
                         </div>
 
-                        <button
-                            type="button"
-                            id="closeSupportConversation"
-                        >
+                        <button type="button" id="closeSupportConversation">
                             Close Conversation
                         </button>
-
                     </div>
 
-
-                    <!-- MESSAGES -->
-
-                    <div
-                        id="supportMessageList"
-                        class="support-message-list"
-                        aria-live="polite"
-                    >
-
-                        <p>
-                            Messages will appear here.
-                        </p>
-
+                    <div id="supportMessageList"
+                        class="support-message-list" aria-live="polite">
+                        <p>Messages will appear here.</p>
                     </div>
-
-
-                    <!-- CUSTOMER REPLY -->
 
                     <form id="supportReplyForm">
 
@@ -1558,59 +833,46 @@
                             Reply to Support
                         </label>
 
-                        <textarea
-                            id="supportReplyMessage"
-                            name="reply"
-                            rows="4"
-                            maxlength="5000"
-                            placeholder="Type your reply..."
-                            required
-                        ></textarea>
+                        <textarea id="supportReplyMessage" name="reply"
+                            rows="4" maxlength="5000"
+                            placeholder="Type your reply..." required></textarea>
 
-
-                        <button
-                            type="submit"
-                            id="supportReplyButton"
-                        >
+                        <button type="submit" id="supportReplyButton">
                             Send Reply
                         </button>
 
                     </form>
 
-
-                    <!-- CLOSED REPORT NOTICE -->
-
-                    <p
-                        id="supportReplyClosedNotice"
-                        hidden
-                    >
-                        This report is closed. You cannot send
-                        another reply unless the support team
-                        reopens it.
+                    <p id="supportReplyClosedNotice" hidden>
+                        This report is closed. You cannot send another reply
+                        unless the support team reopens it.
                     </p>
 
                 </div>
 
             </section>
 
-
         </section>
 
     </main>
 
 
+    <!-- FLOATING CUSTOMER SUPPORT BUTTON -->
+    <button
+        type="button"
+        id="floatingSupportButton"
+        class="floating-support-button"
+        aria-label="Open Customer Support"
+        title="Contact Customer Support"
+    >
+        <span aria-hidden="true">💬</span>
+        <small>Support</small>
+    </button>
 
-    <!-- =====================================
-         JAVASCRIPT CONNECTIONS
-    ====================================== -->
 
-
+    <!-- LOGIN SCREEN DEFAULT -->
     <script>
-        // Set the login screen by default without removing
-        // Paystack's payment reference from the URL.
-
         if (!window.location.hash) {
-
             history.replaceState(
                 null,
                 "",
@@ -1618,21 +880,15 @@
                 window.location.search +
                 "#login"
             );
-
         }
     </script>
 
 
-
     <!-- SUPABASE LIBRARY -->
-
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-
     <!-- NEXUS MAIN JAVASCRIPT -->
-
     <script src="main.js"></script>
 
 </body>
-
 </html>
