@@ -3368,3 +3368,49 @@ async function initializeWebsite() {
 
     }
 }
+
+
+/* =========================================
+   NEXUS FLOATING CUSTOMER SUPPORT BUTTON
+========================================= */
+
+const floatingSupportButton = document.getElementById(
+    "floatingSupportButton"
+);
+
+if (floatingSupportButton) {
+
+    floatingSupportButton.addEventListener("click", function () {
+
+        const supportSection = document.getElementById("memberSupport");
+        const memberDashboard = document.getElementById("memberDashboard");
+
+        if (!supportSection || !memberDashboard) {
+            return;
+        }
+
+        // Prevent access when the member is not logged in.
+        if (
+            window.getComputedStyle(memberDashboard).display === "none"
+        ) {
+            window.location.hash = "login";
+            return;
+        }
+
+        // Open the support page on mobile.
+        if (
+            window.innerWidth <= 768 &&
+            typeof setMobileDashboardView === "function"
+        ) {
+            setMobileDashboardView("support");
+        } else {
+            // Open the support section on desktop.
+            supportSection.scrollIntoView({
+                behavior: "smooth",
+                block: "start"
+            });
+        }
+
+    });
+
+}
