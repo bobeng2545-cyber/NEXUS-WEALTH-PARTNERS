@@ -3984,3 +3984,314 @@ body > #notificationMenu.notification-open {
 }
 
 
+/* =========================================================
+   NEXUS WEALTH PARTNERS
+   MEMBER CUSTOMER SUPPORT
+   CLEAN PROFESSIONAL HELPDESK DESIGN
+========================================================= */
+
+/* Main support section */
+#memberSupport {
+    background: #f4f8f6;
+    border: 1px solid #e3ebe6;
+    border-radius: 17px;
+    padding: 24px;
+    margin-bottom: 24px;
+}
+
+#memberSupport h2,
+#memberSupport h3 {
+    color: #101b3b;
+    font-weight: 800;
+}
+
+/* Support ticket form */
+#supportTicketForm {
+    background: #ffffff;
+    padding: 22px;
+    border: 1px solid #e4eaf1;
+    border-radius: 14px;
+    margin-bottom: 22px;
+    box-shadow: 0 5px 18px rgba(16, 27, 59, .045);
+}
+
+#supportTicketForm label {
+    color: #34425b;
+    font-size: 12px;
+    font-weight: 750;
+}
+
+#supportTicketForm input,
+#supportTicketForm select,
+#supportTicketForm textarea {
+    width: 100%;
+    background: #fbfdfc;
+    border: 1px solid #dce7e1;
+    border-radius: 10px;
+    padding: 13px 14px;
+}
+
+#supportTicketForm input:focus,
+#supportTicketForm select:focus,
+#supportTicketForm textarea:focus {
+    border-color: #0b9b70;
+    box-shadow: 0 0 0 3px rgba(11, 155, 112, .09);
+}
+
+#supportSubmitButton {
+    background: #087a59;
+    color: #ffffff;
+    border-radius: 9px;
+    padding: 13px 20px;
+    font-weight: 800;
+}
+
+#supportSubmitButton:hover {
+    background: #065d43;
+}
+
+/* Inbox heading and refresh */
+#refreshSupportTickets {
+    background: #e8f7f1;
+    color: #087a59;
+    border: 1px solid #d2eee1;
+    border-radius: 9px;
+    padding: 10px 15px;
+    font-weight: 750;
+}
+
+#refreshSupportTickets:hover {
+    background: #d9f1e6;
+}
+
+/* Customer ticket inbox */
+#supportTicketList {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 15px;
+}
+
+#supportTicketList > * {
+    background: #ffffff;
+    border: 1px solid #e3ebe6;
+    border-radius: 12px;
+    padding: 16px;
+    cursor: pointer;
+    transition: .2s ease;
+}
+
+#supportTicketList > *:hover {
+    border-color: #0b9b70;
+    box-shadow: 0 5px 16px rgba(16, 27, 59, .06);
+    transform: translateY(-2px);
+}
+
+/* Selected conversation */
+#supportConversation {
+    background: #ffffff;
+    border: 1px solid #e2eae5;
+    border-radius: 16px;
+    overflow: hidden;
+    margin-top: 20px;
+    box-shadow: 0 6px 20px rgba(16, 27, 59, .045);
+}
+
+#supportConversationSubject {
+    color: #101b3b;
+    font-size: 19px;
+    font-weight: 800;
+}
+
+#supportConversationStatus {
+    display: inline-block;
+    padding: 6px 11px;
+    border-radius: 20px;
+    background: #e8f7f1;
+    color: #087a59;
+    font-size: 11px;
+    font-weight: 800;
+}
+
+/* Message conversation area */
+#supportMessageList {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+
+    min-height: 280px;
+    max-height: 480px;
+    overflow-y: auto;
+
+    padding: 22px;
+    background: #f5f8f7;
+}
+
+/* Individual messages */
+#supportMessageList > * {
+    max-width: 82%;
+    padding: 13px 16px;
+
+    color: #263b31;
+    background: #ffffff;
+
+    border: 1px solid #e4ebe7;
+    border-radius: 12px;
+
+    line-height: 1.65;
+    overflow-wrap: anywhere;
+}
+
+/* Support message role variations, when these classes exist */
+#supportMessageList .customer-message,
+#supportMessageList [data-sender-role="customer"] {
+    align-self: flex-start;
+    background: #ffffff;
+    border-radius: 4px 13px 13px 13px;
+}
+
+#supportMessageList .staff-message,
+#supportMessageList .teller-message,
+#supportMessageList .admin-message,
+#supportMessageList [data-sender-role="teller"],
+#supportMessageList [data-sender-role="admin"] {
+    align-self: flex-end;
+    background: #e5f6ed;
+    border-color: #d2ecdd;
+    border-radius: 13px 4px 13px 13px;
+}
+
+/* Message sender and timestamps */
+#supportMessageList small,
+#supportMessageList time {
+    display: block;
+    color: #718078;
+    font-size: 10px;
+    margin-top: 6px;
+}
+
+/* Reply form */
+#supportReplyForm {
+    display: flex;
+    align-items: flex-end;
+    gap: 12px;
+
+    padding: 17px;
+    background: #ffffff;
+    border-top: 1px solid #e8efeb;
+}
+
+#supportReplyMessage {
+    flex: 1;
+    min-height: 48px;
+    max-height: 130px;
+    resize: vertical;
+
+    padding: 13px 15px;
+    background: #fbfdfc;
+    border: 1px solid #dce6e1;
+    border-radius: 11px;
+}
+
+#supportReplyMessage:focus {
+    border-color: #0b9b70;
+    box-shadow: 0 0 0 3px rgba(11, 155, 112, .08);
+}
+
+#supportReplyButton {
+    background: #087a59;
+    color: #ffffff;
+    padding: 13px 20px;
+    border-radius: 9px;
+    font-weight: 800;
+    white-space: nowrap;
+}
+
+#supportReplyButton:hover {
+    background: #065d43;
+}
+
+/* Close conversation */
+#closeSupportConversation {
+    background: #edf2f7;
+    color: #34425b;
+    border: 1px solid #dfe6ef;
+    border-radius: 9px;
+    padding: 10px 15px;
+}
+
+#closeSupportConversation:hover {
+    background: #e1e8f0;
+}
+
+/* Closed conversation notice */
+#supportReplyClosedNotice {
+    background: #fff7e8;
+    color: #8a5b13;
+    border: 1px solid #f2dfb8;
+    border-radius: 9px;
+    padding: 13px;
+    margin: 12px 17px;
+}
+
+/* Floating support button */
+.floating-support-button {
+    background: #087a59;
+    box-shadow: 0 5px 16px rgba(8, 122, 89, .25);
+}
+
+.floating-support-button:hover {
+    background: #065d43;
+}
+
+/* Mobile support layout */
+@media screen and (max-width: 700px) {
+
+    #memberSupport {
+        padding: 14px;
+        border-radius: 14px;
+    }
+
+    #supportTicketForm {
+        padding: 16px;
+    }
+
+    #supportTicketList > * {
+        padding: 14px;
+    }
+
+    #supportConversation {
+        border-radius: 13px;
+    }
+
+    #supportMessageList {
+        min-height: 240px;
+        max-height: 400px;
+        padding: 13px;
+    }
+
+    #supportMessageList > * {
+        max-width: 92%;
+    }
+
+    #supportReplyForm {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 13px;
+    }
+
+    #supportReplyMessage {
+        width: 100%;
+        font-size: 16px;
+    }
+
+    #supportReplyButton {
+        width: 100%;
+        min-height: 46px;
+    }
+
+    #supportSubmitButton {
+        width: 100%;
+    }
+}
+
