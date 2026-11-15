@@ -4594,3 +4594,39 @@ body > #notificationMenu.notification-open {
     }
 
 }
+
+/* =========================================
+   FIX DASHBOARD HEADER SCROLLING
+========================================= */
+
+.dashboard-heading {
+    position: static !important;
+    top: auto !important;
+    left: auto !important;
+    right: auto !important;
+    transform: none !important;
+    z-index: auto !important;
+    float: none !important;
+    width: 100%;
+}
+
+.dashboard-account-actions {
+    position: relative !important;
+    top: auto !important;
+    transform: none !important;
+}
+
+.notification-area {
+    position: relative !important;
+}
+
+/* Keep the dashboard content in normal page flow */
+#memberDashboard {
+    position: relative;
+}
+
+.dashboard-heading,
+.dashboard-account-actions,
+.dashboard-welcome {
+    clear: both;
+}
