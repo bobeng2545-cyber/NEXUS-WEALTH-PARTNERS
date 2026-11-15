@@ -1170,3 +1170,233 @@ tbody tr:last-child td {
     }
 
 }
+
+
+/* =========================================================
+   NEXUS WEALTH PARTNERS
+   CUSTOMER SUPPORT — CLEAN HELPDESK DESIGN
+   ========================================================= */
+
+#supportPanel {
+    background: #f5f8f7;
+    border-radius: 16px;
+    padding: 24px;
+}
+
+#supportPanel h2,
+#supportPanel h3 {
+    color: #123b2b;
+    font-weight: 700;
+}
+
+#supportPanel button {
+    border-radius: 9px;
+    transition: all 0.2s ease;
+}
+
+#refreshSupportTicketsButton {
+    background: #087443;
+    color: #fff;
+    border: none;
+    padding: 11px 17px;
+    font-weight: 600;
+}
+
+#refreshSupportTicketsButton:hover {
+    background: #065c35;
+}
+
+#supportTicketSearch {
+    width: 100%;
+    padding: 13px 15px;
+    border: 1px solid #dce6e1;
+    border-radius: 10px;
+    background: #fff;
+    outline: none;
+    margin: 14px 0;
+}
+
+#supportTicketSearch:focus {
+    border-color: #087443;
+    box-shadow: 0 0 0 3px rgba(8, 116, 67, 0.09);
+}
+
+#tellerSupportTicketList {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 15px;
+}
+
+#tellerSupportTicketList > * {
+    background: #fff;
+    border: 1px solid #e5ece8;
+    border-radius: 12px;
+    padding: 16px;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+#tellerSupportTicketList > *:hover {
+    border-color: #087443;
+    box-shadow: 0 5px 16px rgba(0, 0, 0, 0.05);
+    transform: translateY(-1px);
+}
+
+#tellerSupportConversation {
+    background: #fff;
+    border: 1px solid #e2eae5;
+    border-radius: 16px;
+    overflow: hidden;
+    margin-top: 20px;
+}
+
+#tellerSupportConversation > * {
+    box-sizing: border-box;
+}
+
+#tellerSupportSubject {
+    color: #123b2b;
+    font-size: 19px;
+    font-weight: 700;
+}
+
+#tellerSupportCustomer,
+#tellerSupportCategory,
+#tellerSupportMemberId,
+#tellerSupportDate {
+    color: #64746c;
+    font-size: 13px;
+}
+
+#tellerSupportStatus {
+    display: inline-block;
+    padding: 6px 11px;
+    border-radius: 20px;
+    background: #e8f5ed;
+    color: #087443;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+#tellerSupportStatusSelect {
+    padding: 11px 13px;
+    border: 1px solid #dce6e1;
+    border-radius: 9px;
+    background: #fff;
+    min-width: 150px;
+}
+
+#updateTellerSupportStatusButton {
+    background: #087443;
+    color: #fff;
+    border: none;
+    padding: 11px 16px;
+    font-weight: 600;
+}
+
+#tellerSupportMessageList {
+    background: #f7faf8;
+    padding: 22px;
+    min-height: 280px;
+    max-height: 480px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+/* Individual conversation messages */
+#tellerSupportMessageList > * {
+    max-width: 78%;
+    padding: 13px 16px;
+    border-radius: 12px;
+    background: #fff;
+    border: 1px solid #e5ece8;
+    color: #263b31;
+    line-height: 1.6;
+    overflow-wrap: anywhere;
+}
+
+/* Message composer */
+#tellerSupportReplyForm {
+    display: flex;
+    align-items: flex-end;
+    gap: 12px;
+    padding: 17px;
+    background: #fff;
+    border-top: 1px solid #e8efeb;
+}
+
+#tellerSupportReply {
+    flex: 1;
+    min-height: 48px;
+    max-height: 130px;
+    resize: vertical;
+    padding: 13px 15px;
+    border: 1px solid #dce6e1;
+    border-radius: 11px;
+    outline: none;
+    font: inherit;
+}
+
+#tellerSupportReply:focus {
+    border-color: #087443;
+    box-shadow: 0 0 0 3px rgba(8, 116, 67, 0.08);
+}
+
+#tellerSupportReplyButton {
+    background: #087443;
+    color: #fff;
+    border: none;
+    padding: 13px 20px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+#tellerSupportReplyButton:hover,
+#updateTellerSupportStatusButton:hover {
+    background: #065c35;
+}
+
+#closeTellerSupportConversation {
+    background: #edf3ef;
+    color: #315c46;
+    border: 1px solid #dce8e0;
+    padding: 10px 15px;
+}
+
+#tellerSupportClosedNotice {
+    background: #fff7e8;
+    color: #8a5b13;
+    border: 1px solid #f2dfb8;
+    border-radius: 9px;
+    padding: 13px;
+    margin: 12px 17px;
+}
+
+/* Responsive layout */
+@media (max-width: 700px) {
+    #supportPanel {
+        padding: 13px;
+    }
+
+    #tellerSupportMessageList {
+        padding: 13px;
+        min-height: 240px;
+        max-height: 400px;
+    }
+
+    #tellerSupportMessageList > * {
+        max-width: 92%;
+    }
+
+    #tellerSupportReplyForm {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    #tellerSupportReplyButton {
+        width: 100%;
+    }
+}
