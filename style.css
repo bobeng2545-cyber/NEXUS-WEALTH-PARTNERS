@@ -3983,3 +3983,432 @@ body > #notificationMenu.notification-open {
     }
 }
 
+
+/* =====================================================
+   NEXUS WEALTH PARTNERS
+   27. PROFESSIONAL MEMBER CUSTOMER SUPPORT
+===================================================== */
+
+#memberSupport {
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 25px;
+    color: #172b40;
+}
+
+#memberSupport h2,
+#memberSupport h3 {
+    color: #102b46;
+    font-weight: 700;
+}
+
+#memberSupport h2 {
+    font-size: 25px;
+    margin-bottom: 8px;
+}
+
+#memberSupport > p {
+    color: #718096;
+    line-height: 1.7;
+    margin-bottom: 24px;
+}
+
+/* REPORT SUBMISSION FORM */
+
+#supportTicketForm,
+#supportConversation {
+    background: #ffffff;
+    border: 1px solid #e5ebf1;
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 25px;
+    box-shadow: 0 5px 20px rgba(16, 43, 70, 0.045);
+}
+
+#supportTicketForm label,
+#supportReplyForm label {
+    display: block;
+    color: #263b50;
+    font-size: 14px;
+    font-weight: 650;
+    margin-bottom: 8px;
+}
+
+#supportTicketForm input,
+#supportTicketForm select,
+#supportTicketForm textarea,
+#supportReplyMessage {
+    width: 100%;
+    padding: 13px 15px;
+    border: 1px solid #dce4ec;
+    border-radius: 10px;
+    background: #fbfcfe;
+    color: #172b40;
+    font-family: inherit;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+#supportTicketForm textarea,
+#supportReplyMessage {
+    min-height: 125px;
+    resize: vertical;
+    line-height: 1.6;
+}
+
+#supportTicketForm input:focus,
+#supportTicketForm select:focus,
+#supportTicketForm textarea:focus,
+#supportReplyMessage:focus {
+    border-color: #0a9b70;
+    box-shadow: 0 0 0 3px rgba(10, 155, 112, 0.10);
+    background: #ffffff;
+}
+
+/* BUTTONS */
+
+#supportSubmitButton,
+#refreshSupportTickets,
+#supportReplyButton,
+#closeSupportConversation,
+.support-open-button {
+    border: none;
+    border-radius: 9px;
+    padding: 12px 19px;
+    background: #079b70;
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s;
+}
+
+#supportSubmitButton:hover,
+#refreshSupportTickets:hover,
+#supportReplyButton:hover,
+.support-open-button:hover {
+    background: #067d5b;
+    transform: translateY(-1px);
+}
+
+#supportSubmitButton:disabled,
+#supportReplyButton:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* MY REPORTS */
+
+#supportTicketList {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+    margin-top: 18px;
+}
+
+.support-ticket-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 11px;
+    min-width: 0;
+    padding: 20px;
+    background: #ffffff;
+    border: 1px solid #e4ebf1;
+    border-radius: 14px;
+    box-shadow: 0 3px 12px rgba(16, 43, 70, 0.035);
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.support-ticket-card:hover {
+    border-color: #a7dccc;
+    box-shadow: 0 7px 20px rgba(16, 43, 70, 0.07);
+}
+
+.support-ticket-card h4 {
+    margin: 0;
+    color: #102b46;
+    font-size: 15px;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+}
+
+.support-ticket-category {
+    margin: 0;
+    color: #748398;
+    font-size: 13px;
+}
+
+.support-ticket-card small {
+    color: #8290a1;
+    font-size: 11px;
+    line-height: 1.5;
+}
+
+.support-status {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 11px;
+    border-radius: 30px;
+    background: #eef2f6;
+    color: #526174;
+    font-size: 11px;
+    font-weight: 750;
+    text-transform: capitalize;
+}
+
+.support-status-open {
+    background: #fff5dc;
+    color: #9a6700;
+}
+
+.support-status-in_progress {
+    background: #e8f1ff;
+    color: #245da8;
+}
+
+.support-status-resolved {
+    background: #e5f7ee;
+    color: #087443;
+}
+
+.support-status-closed {
+    background: #eef0f3;
+    color: #657184;
+}
+
+.support-open-button {
+    margin-top: 5px;
+}
+
+/* CONVERSATION PANEL */
+
+#supportConversation {
+    margin-top: 28px;
+    scroll-margin-top: 25px;
+}
+
+#supportConversation[hidden] {
+    display: none !important;
+}
+
+#supportConversationSubject {
+    margin-bottom: 8px;
+    font-size: 20px;
+    overflow-wrap: anywhere;
+}
+
+#supportConversationStatus {
+    display: inline-flex;
+    padding: 7px 12px;
+    margin: 5px 0 20px;
+    border-radius: 30px;
+    background: #e9f6f1;
+    color: #087443;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+/* CHAT HISTORY */
+
+#supportMessageList {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 22px;
+    min-height: 180px;
+    max-height: 520px;
+    overflow-y: auto;
+    background: #f4f7fa;
+    border: 1px solid #e5ebf1;
+    border-radius: 14px;
+    margin: 15px 0 22px;
+}
+
+/* INDIVIDUAL MESSAGE */
+
+.support-message {
+    display: flex;
+    flex-direction: column;
+    width: fit-content;
+    max-width: 82%;
+    min-width: 180px;
+    padding: 13px 16px;
+    border-radius: 13px;
+    box-shadow: 0 2px 7px rgba(16, 43, 70, 0.045);
+}
+
+.support-message-customer {
+    align-self: flex-end;
+    background: #087f5b;
+    color: #ffffff;
+    border-bottom-right-radius: 4px;
+}
+
+.support-message-staff {
+    align-self: flex-start;
+    background: #ffffff;
+    color: #172b40;
+    border: 1px solid #e3eaf0;
+    border-bottom-left-radius: 4px;
+}
+
+/* MESSAGE HEADER */
+
+.support-message-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px 15px;
+    margin-bottom: 9px;
+}
+
+.support-message-sender-info {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 7px;
+}
+
+.support-message-sender {
+    font-size: 12px;
+    font-weight: 750;
+}
+
+.support-message-role {
+    padding: 3px 7px;
+    border-radius: 20px;
+    background: rgba(120, 140, 160, 0.13);
+    color: inherit;
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.support-message-customer .support-message-role {
+    background: rgba(255, 255, 255, 0.18);
+    color: #ffffff;
+}
+
+.support-message-date {
+    font-size: 10px;
+    line-height: 1.5;
+    opacity: 0.72;
+}
+
+/* MESSAGE TEXT */
+
+.support-message-body {
+    margin: 0;
+    font-size: 13px;
+    line-height: 1.7;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+/* REPLY FORM */
+
+#supportReplyForm {
+    padding-top: 18px;
+    border-top: 1px solid #e7edf2;
+}
+
+#supportReplyForm[hidden] {
+    display: none !important;
+}
+
+#supportReplyButton {
+    margin-top: 12px;
+    min-width: 135px;
+}
+
+#supportReplyClosedNotice {
+    padding: 14px 16px;
+    margin-top: 15px;
+    border-radius: 10px;
+    background: #fff5dc;
+    color: #8b650b;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+/* EMPTY AND ERROR MESSAGES */
+
+.support-empty {
+    padding: 25px;
+    text-align: center;
+    color: #8290a1;
+    background: #f7f9fb;
+    border: 1px dashed #d8e1e9;
+    border-radius: 12px;
+    font-size: 13px;
+}
+
+.support-error {
+    padding: 14px;
+    color: #b42318;
+    background: #fff0ef;
+    border-radius: 9px;
+    font-size: 13px;
+}
+
+/* CLOSE CONVERSATION BUTTON */
+
+#closeSupportConversation {
+    background: #edf1f5;
+    color: #34465a;
+}
+
+#closeSupportConversation:hover {
+    background: #dfe6ed;
+}
+
+/* MOBILE RESPONSIVENESS */
+
+@media (max-width: 700px) {
+
+    #memberSupport {
+        padding: 15px;
+    }
+
+    #supportTicketForm,
+    #supportConversation {
+        padding: 17px;
+        border-radius: 13px;
+    }
+
+    #supportTicketList {
+        grid-template-columns: 1fr;
+    }
+
+    #supportMessageList {
+        padding: 13px;
+        max-height: 450px;
+        gap: 13px;
+    }
+
+    .support-message {
+        max-width: 94%;
+        min-width: 0;
+        padding: 12px;
+    }
+
+    .support-message-header {
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .support-message-date {
+        font-size: 10px;
+    }
+
+    #supportSubmitButton,
+    #supportReplyButton,
+    #refreshSupportTickets {
+        min-height: 44px;
+    }
+}
