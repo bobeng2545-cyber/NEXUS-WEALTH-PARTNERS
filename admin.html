@@ -163,6 +163,14 @@
                     <span id="pendingDepositBadge" class="nav-badge" hidden>0</span>
                 </button>
 
+                <!-- REFUND MANAGEMENT -->
+                
+                <button type="button" class="admin-nav-link" data-page="refunds">
+                    <span aria-hidden="true">↩</span>
+                    <span>Refund Management</span>
+                    <span id="pendingRefundBadge" class="nav-badge" hidden>0</span>
+                </button>
+
                 <button type="button" class="admin-nav-link" data-page="transactions">
                     <span aria-hidden="true">⇄</span>
                     <span>Transactions</span>
@@ -936,7 +944,157 @@
 
             </section>
 
+            
+<!-- =================================================
+     PAYSTACK REFUND MANAGEMENT
+================================================== -->
 
+<section
+    id="page-refunds"
+    class="admin-page"
+    aria-labelledby="refundsHeading"
+>
+
+    <div class="page-intro">
+        <div>
+            <h2 id="refundsHeading">Refund Management</h2>
+            <p>
+                Monitor Paystack deposit refunds, investigate failures
+                and manage refunds requiring additional attention.
+            </p>
+        </div>
+    </div>
+
+    <!-- REFUND STATISTICS -->
+
+    <div class="statistics-grid">
+
+        <article class="stat-card">
+            <div class="stat-icon deposits-icon" aria-hidden="true">◷</div>
+            <p>Pending Refunds</p>
+            <h3 id="adminPendingRefunds">0</h3>
+            <span>Awaiting completion</span>
+        </article>
+
+        <article class="stat-card">
+            <div class="stat-icon wallet-icon" aria-hidden="true">↻</div>
+            <p>Processing Refunds</p>
+            <h3 id="adminProcessingRefunds">0</h3>
+            <span>Being processed by Paystack</span>
+        </article>
+
+        <article class="stat-card">
+            <div class="stat-icon withdrawals-icon" aria-hidden="true">!</div>
+            <p>Needs Attention</p>
+            <h3 id="adminRefundsNeedsAttention">0</h3>
+            <span>Require administrator attention</span>
+        </article>
+
+        <article class="stat-card">
+            <div class="stat-icon members-icon" aria-hidden="true">✓</div>
+            <p>Processed Refunds</p>
+            <h3 id="adminProcessedRefunds">0</h3>
+            <span>Successfully processed</span>
+        </article>
+
+    </div>
+
+    <!-- REFUND REQUESTS TABLE -->
+
+    <div class="admin-panel">
+
+        <div class="panel-heading">
+            <div>
+                <h3>All Paystack Refund Requests</h3>
+                <p>
+                    Review refund references, amounts, statuses
+                    and wallet restoration records.
+                </p>
+            </div>
+        </div>
+
+        <div class="table-container">
+
+            <table>
+                <thead>
+                    <tr>
+                        <th scope="col">Refund Reference</th>
+                        <th scope="col">Deposit Reference</th>
+                        <th scope="col">Member</th>
+                        <th scope="col">Amount</th>
+                        <th scope="col">Refund Status</th>
+                        <th scope="col">Wallet Debited</th>
+                        <th scope="col">Wallet Restored</th>
+                        <th scope="col">Date Created</th>
+                    </tr>
+                </thead>
+
+                <tbody id="refundRequestsTable">
+                    <tr>
+                        <td colspan="8" class="empty-table">
+                            Refund requests will appear here.
+                        </td>
+                    </tr>
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+    <!-- REFUND SECURITY INFORMATION -->
+
+    <div class="admin-panel">
+
+        <div class="panel-heading">
+            <div>
+                <h3>Refund Security &amp; Processing</h3>
+                <p>
+                    Important information about refund operations.
+                </p>
+            </div>
+        </div>
+
+        <div class="platform-information">
+
+            <div>
+                <span>Refund provider</span>
+                <strong>Paystack</strong>
+            </div>
+
+            <div>
+                <span>Refund confirmation</span>
+                <strong>Verified server-side</strong>
+            </div>
+
+            <div>
+                <span>Wallet restoration</span>
+                <strong>Only after confirmed refund failure</strong>
+            </div>
+
+            <div>
+                <span>Duplicate protection</span>
+                <strong>Database-enforced</strong>
+            </div>
+
+            <div>
+                <span>Retry authorization</span>
+                <strong>Administrator-controlled</strong>
+            </div>
+
+            <div>
+                <span>Financial records</span>
+                <strong>Protected from direct browser modification</strong>
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+            
             <!-- =================================================
                  TRANSACTIONS
             ================================================== -->
