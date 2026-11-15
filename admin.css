@@ -2495,3 +2495,265 @@ tbody tr:hover {
         transition-duration: 0.01ms !important;
     }
 }
+
+
+/* =========================================================
+   27. NEXUS CUSTOMER SUPPORT CENTRE
+   Professional Administrator Support Interface
+========================================================= */
+
+/* Main support page */
+
+#page-support {
+    min-width: 0;
+    width: 100%;
+}
+
+#page-support .page-intro {
+    margin-bottom: 24px;
+}
+
+#page-support .page-intro h2 {
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+}
+
+#page-support .page-intro p {
+    max-width: 650px;
+    line-height: 1.8;
+}
+
+/* Support panels */
+
+#page-support .admin-panel {
+    background: #ffffff;
+    border: 1px solid #e5ebf1;
+    border-radius: 14px;
+    box-shadow: 0 5px 22px rgba(16, 43, 70, 0.045);
+    padding: 22px;
+    min-width: 0;
+}
+
+/* Support toolbar */
+
+#page-support .panel-heading {
+    padding-bottom: 16px;
+    border-bottom: 1px solid #edf1f5;
+}
+
+#page-support .panel-heading h3 {
+    font-size: 15px;
+    font-weight: 800;
+    color: var(--primary);
+}
+
+#page-support .panel-heading p {
+    font-size: 11px;
+    line-height: 1.6;
+}
+
+/* Search field */
+
+#adminSupportTicketSearch {
+    width: 100%;
+    min-height: 45px;
+    padding: 0 14px;
+    margin-bottom: 16px;
+
+    border: 1px solid #dfe6ed;
+    border-radius: 9px;
+
+    background: #f9fbfd;
+    color: var(--text);
+
+    font-size: 12px;
+    outline: none;
+
+    transition: var(--transition);
+}
+
+#adminSupportTicketSearch:focus {
+    background: #ffffff;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(18, 168, 121, 0.10);
+}
+
+#adminSupportTicketSearch::placeholder {
+    color: #9aa7b4;
+}
+
+/* Support refresh button */
+
+#refreshAdminSupportButton {
+    min-height: 40px;
+    padding: 9px 15px;
+
+    border: 1px solid #ccebdd;
+    border-radius: 8px;
+
+    background: #e9f8f2;
+    color: #07865e;
+
+    font-size: 11px;
+    font-weight: 800;
+
+    transition: var(--transition);
+}
+
+#refreshAdminSupportButton:hover:not(:disabled) {
+    background: var(--accent);
+    color: #ffffff;
+    border-color: var(--accent);
+}
+
+/* Support messages */
+
+#adminSupportMessage,
+#adminSupportStatusMessage {
+    min-height: 18px;
+    margin: 10px 0;
+
+    font-size: 11px;
+    line-height: 1.6;
+}
+
+#adminSupportMessage.success,
+#adminSupportStatusMessage.success {
+    color: #07865e;
+}
+
+#adminSupportMessage.error,
+#adminSupportStatusMessage.error {
+    color: #dc4545;
+}
+
+/* Ticket list */
+
+#adminSupportTicketList {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    max-height: 650px;
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    padding-right: 4px;
+}
+
+#adminSupportTicketList::-webkit-scrollbar {
+    width: 5px;
+}
+
+#adminSupportTicketList::-webkit-scrollbar-thumb {
+    background: #d5e0e9;
+    border-radius: 10px;
+}
+
+/* Ticket card styling */
+
+#adminSupportTicketList > * {
+    width: 100%;
+    min-width: 0;
+
+    padding: 15px;
+
+    border: 1px solid #e8edf2;
+    border-radius: 10px;
+
+    background: #ffffff;
+
+    text-align: left;
+
+    overflow-wrap: anywhere;
+
+    transition: var(--transition);
+}
+
+#adminSupportTicketList > *:hover {
+    background: #f6fbf9;
+    border-color: #bce6d4;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 13px rgba(16, 43, 70, 0.05);
+}
+
+/* Selected ticket */
+
+#adminSupportTicketList > *.active,
+#adminSupportTicketList > *[aria-current="true"] {
+    background: #edfaf4;
+    border-color: #12a879;
+    box-shadow: inset 3px 0 0 #12a879;
+}
+
+/* Ticket text */
+
+#adminSupportTicketList strong {
+    color: var(--primary);
+    font-size: 12px;
+    font-weight: 800;
+}
+
+#adminSupportTicketList p {
+    color: #637487;
+    font-size: 11px;
+    line-height: 1.6;
+    margin-top: 6px;
+}
+
+#adminSupportTicketList small,
+#adminSupportTicketList time,
+#adminSupportTicketList span {
+    font-size: 10px;
+    color: #8997a6;
+}
+
+/* Empty ticket list */
+
+#adminSupportTicketList:empty::before {
+    content: "No customer support reports available.";
+
+    display: block;
+    padding: 35px 15px;
+
+    background: #f9fbfd;
+    border: 1px dashed #d8e1e9;
+    border-radius: 10px;
+
+    color: #8997a6;
+    font-size: 12px;
+    text-align: center;
+}
+
+/* Conversation panel */
+
+#adminSupportConversation {
+    margin-top: 20px;
+    min-width: 0;
+}
+
+#adminSupportConversation .panel-heading {
+    align-items: flex-start;
+}
+
+/* Conversation title */
+
+#adminSupportSubject {
+    color: var(--primary);
+    font-size: 17px;
+    font-weight: 800;
+    overflow-wrap: anywhere;
+}
+
+/* Conversation details */
+
+#adminSupportCustomer,
+#adminSupportMemberId,
+#adminSupportCategory,
+#adminSupportStatus,
+#adminSupportDate {
+    color: var(--text);
+    font-size: 11px;
+    overflow-wrap: anywhere;
+}
