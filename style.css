@@ -3923,9 +3923,7 @@ body > #notificationMenu.notification-open {
 }
 
 
-/* =========================================
-   NEXUS FLOATING CUSTOMER SUPPORT BUTTON
-========================================= */
+/* FLOATING CUSTOMER SUPPORT BUTTON */
 
 .floating-support-button {
     position: fixed;
@@ -3935,11 +3933,10 @@ body > #notificationMenu.notification-open {
 
     width: 62px;
     height: 62px;
-
     border: none;
     border-radius: 50%;
 
-    background: #087443;
+    background: #16a34a;
     color: #ffffff;
 
     display: flex;
@@ -3949,10 +3946,7 @@ body > #notificationMenu.notification-open {
     gap: 2px;
 
     cursor: pointer;
-
     box-shadow: 0 5px 18px rgba(0, 0, 0, 0.25);
-
-    transition: 0.3s ease;
 }
 
 .floating-support-button span {
@@ -3966,7 +3960,7 @@ body > #notificationMenu.notification-open {
 }
 
 .floating-support-button:hover {
-    background: #065c35;
+    background: #15803d;
     transform: scale(1.06);
 }
 
