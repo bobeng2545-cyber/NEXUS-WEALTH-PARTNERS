@@ -4519,3 +4519,79 @@ body > #notificationMenu.notification-open {
     }
 
 }
+
+
+/* =========================================
+   STICKY MEMBER DASHBOARD HEADER
+========================================= */
+
+#memberDashboard .dashboard-heading {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+
+    background: #ffffff;
+    padding: 16px 20px;
+    margin-bottom: 20px;
+
+    border-bottom: 1px solid #e5ece7;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.05);
+}
+
+/* Welcome section */
+
+#memberDashboard .dashboard-welcome {
+    flex: 1;
+    min-width: 0;
+}
+
+/* Notification and logout actions */
+
+#memberDashboard .dashboard-account-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 12px;
+    flex-shrink: 0;
+}
+
+/* Keep notification dropdown above page content */
+
+#memberDashboard .notification-area {
+    position: relative;
+    z-index: 1001;
+}
+
+/* Mobile arrangement */
+
+@media (max-width: 600px) {
+
+    #memberDashboard .dashboard-heading {
+        padding: 12px 10px;
+        gap: 8px;
+    }
+
+    #memberDashboard .dashboard-welcome h2 {
+        font-size: 16px;
+    }
+
+    #memberDashboard .dashboard-welcome p {
+        font-size: 11px;
+    }
+
+    #memberDashboard .dashboard-account-actions {
+        gap: 7px;
+    }
+
+    #memberDashboard .member-logout-button {
+        min-height: 36px;
+        padding: 0 9px;
+        font-size: 11px;
+    }
+
+}
