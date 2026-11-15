@@ -7,7 +7,7 @@
 
 /* =========================================================
    1. SUPABASE CONNECTION
-   ========================================================= */
+========================================================= */
 
 const SUPABASE_URL =
     "https://lzvtgxittsdhgjnfzdpk.supabase.co";
@@ -188,6 +188,66 @@ const testWithdrawalHistoryBody =
     document.getElementById("testWithdrawalHistoryBody");
 
 
+// CUSTOMER SUPPORT
+
+const tellerSupportMessage =
+    document.getElementById("tellerSupportMessage");
+
+const refreshSupportTicketsButton =
+    document.getElementById("refreshSupportTicketsButton");
+
+const supportTicketSearch =
+    document.getElementById("supportTicketSearch");
+
+const tellerSupportTicketList =
+    document.getElementById("tellerSupportTicketList");
+
+const tellerSupportConversation =
+    document.getElementById("tellerSupportConversation");
+
+const tellerSupportSubject =
+    document.getElementById("tellerSupportSubject");
+
+const tellerSupportCustomer =
+    document.getElementById("tellerSupportCustomer");
+
+const tellerSupportCategory =
+    document.getElementById("tellerSupportCategory");
+
+const tellerSupportMemberId =
+    document.getElementById("tellerSupportMemberId");
+
+const tellerSupportStatus =
+    document.getElementById("tellerSupportStatus");
+
+const tellerSupportDate =
+    document.getElementById("tellerSupportDate");
+
+const tellerSupportStatusSelect =
+    document.getElementById("tellerSupportStatusSelect");
+
+const updateTellerSupportStatusButton =
+    document.getElementById("updateTellerSupportStatusButton");
+
+const tellerSupportMessageList =
+    document.getElementById("tellerSupportMessageList");
+
+const tellerSupportReplyForm =
+    document.getElementById("tellerSupportReplyForm");
+
+const tellerSupportReply =
+    document.getElementById("tellerSupportReply");
+
+const tellerSupportReplyButton =
+    document.getElementById("tellerSupportReplyButton");
+
+const closeTellerSupportConversation =
+    document.getElementById("closeTellerSupportConversation");
+
+const tellerSupportClosedNotice =
+    document.getElementById("tellerSupportClosedNotice");
+
+
 /* =========================================================
    3. APPLICATION STATE
 ========================================================= */
@@ -195,17 +255,22 @@ const testWithdrawalHistoryBody =
 let currentTeller = null;
 let currentUser = null;
 
-// Existing live deposit state
-
 let searchedMembers = [];
 let selectedMember = null;
 let depositInProgress = false;
 
-// Separate test withdrawal state
-
 let testSearchedMembers = [];
 let selectedTestMember = null;
 let testWithdrawalInProgress = false;
+
+
+// CUSTOMER SUPPORT STATE
+
+let tellerSupportTickets = [];
+let currentSupportTicket = null;
+
+let supportReplyInProgress = false;
+let supportStatusInProgress = false;
 
 
 /* =========================================================
@@ -281,63 +346,10 @@ function formatDate(dateValue) {
 
 function setConnectionStatus(message, state = "") {
 
+    if (!connectionStatus) return;
+
     connectionStatus.textContent = message;
     connectionStatus.className = `connection-status ${state}`;
-
-}
-
-
-function showLogin() {
-
-    loginSection.classList.remove("hidden");
-    dashboardSection.classList.add("hidden");
-    logoutButton.classList.add("hidden");
-
-    currentTeller = null;
-    currentUser = null;
-
-    // Clear live deposit selection
-
-    selectedMember = null;
-    searchedMembers = [];
-
-    if (selectedMemberCard) {
-        selectedMemberCard.classList.add("hidden");
-    }
-
-    if (memberResults) {
-        memberResults.classList.add("hidden");
-    }
-
-    if (recordDepositButton) {
-        recordDepositButton.disabled = true;
-    }
-
-    // Clear test withdrawal selection
-
-    selectedTestMember = null;
-    testSearchedMembers = [];
-
-    if (selectedTestMemberCard) {
-        selectedTestMemberCard.classList.add("hidden");
-    }
-
-    if (testMemberResults) {
-        testMemberResults.classList.add("hidden");
-    }
-
-    if (recordTestWithdrawalButton) {
-        recordTestWithdrawalButton.disabled = true;
-    }
-
-}
-
-
-function showDashboard() {
-
-    loginSection.classList.add("hidden");
-    dashboardSection.classList.remove("hidden");
-    logoutButton.classList.remove("hidden");
 
 }
 
@@ -352,6 +364,55 @@ function setButtonLoading(button, loading, normalText) {
 }
 
 
+function showLogin() {
+
+    loginSection.classList.remove("hidden");
+    dashboardSection.classList.add("hidden");
+    logoutButton.classList.add("hidden");
+
+    currentTeller = null;
+    currentUser = null;
+
+    // Clear live deposit selection.
+
+    selectedMember = null;
+    searchedMembers = [];
+
+    selectedMemberCard.classList.add("hidden");
+    memberResults.classList.add("hidden");
+    recordDepositButton.disabled = true;
+
+    // Clear test withdrawal selection.
+
+    selectedTestMember = null;
+    testSearchedMembers = [];
+
+    selectedTestMemberCard.classList.add("hidden");
+    testMemberResults.classList.add("hidden");
+    recordTestWithdrawalButton.disabled = true;
+
+    // Clear support state.
+
+    currentSupportTicket = null;
+    tellerSupportTickets = [];
+
+    tellerSupportConversation.classList.add("hidden");
+    tellerSupportTicketList.innerHTML = `
+        <p class="empty-state">Sign in to view customer reports.</p>
+    `;
+
+}
+
+
+function showDashboard() {
+
+    loginSection.classList.add("hidden");
+    dashboardSection.classList.remove("hidden");
+    logoutButton.classList.remove("hidden");
+
+}
+
+
 /* =========================================================
    5. TELLER AUTHENTICATION AND VERIFICATION
 ========================================================= */
@@ -361,18 +422,11 @@ async function initializeTeller(user) {
     try {
 
         if (!user || !user.id) {
-
             showLogin();
-
             return;
         }
 
         setConnectionStatus("Verifying teller account...");
-
-        /*
-           Read only the authenticated user's teller record.
-           Your existing RLS policy allows this.
-        */
 
         const { data, error } = await tellerSupabase
             .from("nexus_tellers")
@@ -436,6 +490,10 @@ async function initializeTeller(user) {
         setConnectionStatus("Secure connection active", "online");
 
         await loadTellerHistory();
+
+        // Initialize the shared customer support inbox.
+
+        await initializeTellerSupport();
 
     } catch (error) {
 
@@ -624,6 +682,15 @@ document.querySelectorAll(".nav-button").forEach(button => {
 
         if (targetPanel === "testWithdrawalPanel") {
             await loadTestWithdrawalHistory();
+        }
+
+        if (targetPanel === "supportPanel") {
+
+            currentSupportTicket = null;
+
+            tellerSupportConversation.classList.add("hidden");
+
+            await loadTellerSupportTickets();
         }
 
     });
@@ -1157,13 +1224,6 @@ testMemberSearchForm.addEventListener("submit", async function (event) {
 
     try {
 
-        /*
-           This uses the same secure member lookup RPC
-           as the live deposit workflow.
-
-           It does not expose member wallet balances.
-        */
-
         const { data, error } = await tellerSupabase.rpc(
             "lookup_teller_member",
             {
@@ -1357,9 +1417,6 @@ testWithdrawalForm.addEventListener("submit", async function (event) {
 
     const details = testPaymentDetails.value.trim();
 
-
-    // Validate the amount
-
     if (
         !amountText ||
         !Number.isFinite(amount) ||
@@ -1375,9 +1432,6 @@ testWithdrawalForm.addEventListener("submit", async function (event) {
 
         return;
     }
-
-
-    // Validate the payment method
 
     const allowedMethods = [
         "mtn_momo",
@@ -1397,9 +1451,6 @@ testWithdrawalForm.addEventListener("submit", async function (event) {
         return;
     }
 
-
-    // Validate the test payment details
-
     if (details.length < 5) {
 
         showMessage(
@@ -1411,25 +1462,12 @@ testWithdrawalForm.addEventListener("submit", async function (event) {
         return;
     }
 
-
-    /*
-       IMPORTANT:
-
-       Use fictional payment details only.
-
-       Do not enter real bank account numbers,
-       real mobile money numbers or private
-       financial information into this simulation.
-    */
-
-
     const methodLabel = {
         mtn_momo: "MTN MoMo",
         telecel_cash: "Telecel Cash",
         at_money: "AT Money",
         bank: "Bank"
     }[method];
-
 
     const confirmed = window.confirm(
 
@@ -1448,9 +1486,7 @@ testWithdrawalForm.addEventListener("submit", async function (event) {
         "Do you want to record this test simulation?"
     );
 
-
     if (!confirmed) return;
-
 
     testWithdrawalInProgress = true;
 
@@ -1460,22 +1496,7 @@ testWithdrawalForm.addEventListener("submit", async function (event) {
         "Record Test Withdrawal"
     );
 
-
     try {
-
-        /*
-           This RPC inserts a record only into:
-
-           nexus_teller_test_withdrawals
-
-           It does not call:
-           - record_teller_deposit
-           - submit_withdrawal_request
-           - complete_withdrawal
-           - Paystack
-
-           It does not modify a member's wallet.
-        */
 
         const { data, error } = await tellerSupabase.rpc(
             "record_teller_test_withdrawal",
@@ -1487,11 +1508,9 @@ testWithdrawalForm.addEventListener("submit", async function (event) {
             }
         );
 
-
         if (error) {
             throw error;
         }
-
 
         if (!data || data.success !== true) {
 
@@ -1500,9 +1519,6 @@ testWithdrawalForm.addEventListener("submit", async function (event) {
                 "The test withdrawal could not be recorded."
             );
         }
-
-
-        // Display the simulation receipt
 
         testWithdrawalReceipt.classList.remove("hidden");
 
@@ -1515,23 +1531,15 @@ testWithdrawalForm.addEventListener("submit", async function (event) {
         testReceiptAmount.textContent =
             formatMoney(data.amount);
 
-
         showMessage(
             testWithdrawalMessage,
             "Test withdrawal simulation recorded successfully. No real money was moved.",
             "success"
         );
 
-
-        // Clear the form but retain the selected member
-
         testWithdrawalForm.reset();
 
-
-        // Refresh the separate test withdrawal history
-
         await loadTestWithdrawalHistory();
-
 
     } catch (error) {
 
@@ -1592,7 +1600,6 @@ newTestWithdrawalButton.addEventListener("click", function () {
 });
 
 
-
 /* =========================================================
    20. LOAD TEST WITHDRAWAL HISTORY
 ========================================================= */
@@ -1603,7 +1610,7 @@ async function loadTestWithdrawalHistory() {
 
     testWithdrawalHistoryBody.innerHTML = `
         <tr>
-            <td colspan="6" class="empty-state">
+            <td colspan="7" class="empty-state">
                 Loading test withdrawal records...
             </td>
         </tr>
@@ -1840,151 +1847,8 @@ refreshTestWithdrawalHistoryButton.addEventListener(
 );
 
 
-
 /* =========================================================
-   21. AUTH SESSION MONITORING
-========================================================= */
-
-tellerSupabase.auth.onAuthStateChange((event) => {
-
-    if (event === "SIGNED_OUT") {
-
-        showLogin();
-
-        setConnectionStatus("Signed out");
-    }
-
-});
-
-
-/* =========================================================
-   22. INITIAL PAGE LOAD
-========================================================= */
-
-async function startTellerPortal() {
-
-    document.getElementById("currentYear").textContent =
-        new Date().getFullYear();
-
-    try {
-
-        setConnectionStatus("Connecting...");
-
-        const { data, error } =
-            await tellerSupabase.auth.getSession();
-
-        if (error) {
-            throw error;
-        }
-
-        if (data.session?.user) {
-
-            await initializeTeller(data.session.user);
-
-        } else {
-
-            showLogin();
-
-            setConnectionStatus("Ready to sign in", "online");
-        }
-
-    } catch (error) {
-
-        console.error("Portal startup error:", error);
-
-        showLogin();
-
-        setConnectionStatus("Connection failed", "offline");
-
-        showMessage(
-            loginMessage,
-            error.message || "Could not connect to the secure service.",
-            "error"
-        );
-    }
-
-}
-
-
-startTellerPortal();
-
-/* =========================================================
-   23. NEXUS CUSTOMER SUPPORT — TELLER PORTAL
-   Shared inbox for active tellers and administrators
-========================================================= */
-
-const tellerSupportMessage =
-    document.getElementById("tellerSupportMessage");
-
-const refreshSupportTicketsButton =
-    document.getElementById("refreshSupportTicketsButton");
-
-const supportTicketSearch =
-    document.getElementById("supportTicketSearch");
-
-const tellerSupportTicketList =
-    document.getElementById("tellerSupportTicketList");
-
-const tellerSupportConversation =
-    document.getElementById("tellerSupportConversation");
-
-const tellerSupportSubject =
-    document.getElementById("tellerSupportSubject");
-
-const tellerSupportCustomer =
-    document.getElementById("tellerSupportCustomer");
-
-const tellerSupportCategory =
-    document.getElementById("tellerSupportCategory");
-
-const tellerSupportMemberId =
-    document.getElementById("tellerSupportMemberId");
-
-const tellerSupportStatus =
-    document.getElementById("tellerSupportStatus");
-
-const tellerSupportDate =
-    document.getElementById("tellerSupportDate");
-
-const tellerSupportStatusSelect =
-    document.getElementById("tellerSupportStatusSelect");
-
-const updateTellerSupportStatusButton =
-    document.getElementById("updateTellerSupportStatusButton");
-
-const tellerSupportMessageList =
-    document.getElementById("tellerSupportMessageList");
-
-const tellerSupportReplyForm =
-    document.getElementById("tellerSupportReplyForm");
-
-const tellerSupportReply =
-    document.getElementById("tellerSupportReply");
-
-const tellerSupportReplyButton =
-    document.getElementById("tellerSupportReplyButton");
-
-const closeTellerSupportConversation =
-    document.getElementById("closeTellerSupportConversation");
-
-const tellerSupportClosedNotice =
-    document.getElementById("tellerSupportClosedNotice");
-
-
-/* =========================================================
-   SUPPORT STATE
-========================================================= */
-
-let tellerSupportTickets = [];
-
-let currentSupportTicket = null;
-
-let supportReplyInProgress = false;
-let supportStatusInProgress = false;
-
-
-/* =========================================================
-   SUPPORT HELPERS
+   21. CUSTOMER SUPPORT HELPERS
 ========================================================= */
 
 function formatSupportStatus(status) {
@@ -2015,7 +1879,7 @@ function showTellerSupportMessage(message, type = "info") {
 function updateSupportReplyAvailability() {
 
     const isClosed =
-        currentSupportTicket?.status === "closed";
+        String(currentSupportTicket?.status || "").toLowerCase() === "closed";
 
     tellerSupportReplyForm.classList.toggle(
         "hidden",
@@ -2034,7 +1898,7 @@ function updateSupportReplyAvailability() {
 
 
 /* =========================================================
-   LOAD ALL CUSTOMER REPORTS
+   22. LOAD ALL CUSTOMER REPORTS
 ========================================================= */
 
 async function loadTellerSupportTickets() {
@@ -2090,7 +1954,7 @@ async function loadTellerSupportTickets() {
 
 
 /* =========================================================
-   DISPLAY CUSTOMER REPORTS
+   23. DISPLAY CUSTOMER REPORTS
 ========================================================= */
 
 function renderTellerSupportTickets() {
@@ -2180,7 +2044,7 @@ function renderTellerSupportTickets() {
 
 
 /* =========================================================
-   OPEN A CUSTOMER REPORT
+   24. OPEN A CUSTOMER REPORT
 ========================================================= */
 
 async function openTellerSupportTicket(ticketId) {
@@ -2241,7 +2105,7 @@ async function openTellerSupportTicket(ticketId) {
 
 
 /* =========================================================
-   LOAD CONVERSATION MESSAGES
+   25. LOAD CONVERSATION MESSAGES
 ========================================================= */
 
 async function loadTellerSupportMessages(ticketId) {
@@ -2310,9 +2174,7 @@ async function loadTellerSupportMessages(ticketId) {
 
                         </div>
 
-                        <p>
-                            ${escapeHTML(message.message)}
-                        </p>
+                        <p style="white-space: pre-wrap;">${escapeHTML(message.message)}</p>
 
                         <small>
                             ${escapeHTML(formatDate(message.created_at))}
@@ -2350,7 +2212,7 @@ async function loadTellerSupportMessages(ticketId) {
 
 
 /* =========================================================
-   CLICK A REPORT TO OPEN IT
+   26. CLICK A REPORT TO OPEN IT
 ========================================================= */
 
 tellerSupportTicketList.addEventListener(
@@ -2396,7 +2258,7 @@ tellerSupportTicketList.addEventListener(
 
 
 /* =========================================================
-   SEARCH CUSTOMER REPORTS
+   27. SEARCH CUSTOMER REPORTS
 ========================================================= */
 
 supportTicketSearch.addEventListener(
@@ -2406,7 +2268,7 @@ supportTicketSearch.addEventListener(
 
 
 /* =========================================================
-   REFRESH CUSTOMER REPORTS
+   28. REFRESH CUSTOMER REPORTS
 ========================================================= */
 
 refreshSupportTicketsButton.addEventListener(
@@ -2416,7 +2278,7 @@ refreshSupportTicketsButton.addEventListener(
 
 
 /* =========================================================
-   RETURN TO REPORT INBOX
+   29. RETURN TO REPORT INBOX
 ========================================================= */
 
 closeTellerSupportConversation.addEventListener(
@@ -2439,7 +2301,7 @@ closeTellerSupportConversation.addEventListener(
 
 
 /* =========================================================
-   REPLY TO CUSTOMER REPORT
+   30. REPLY TO CUSTOMER REPORT
 ========================================================= */
 
 tellerSupportReplyForm.addEventListener(
@@ -2507,7 +2369,6 @@ tellerSupportReplyForm.addEventListener(
         supportReplyInProgress = true;
 
         tellerSupportReplyButton.disabled = true;
-
         tellerSupportReplyButton.textContent = "Sending...";
 
         try {
@@ -2571,7 +2432,7 @@ tellerSupportReplyForm.addEventListener(
 
 
 /* =========================================================
-   UPDATE CUSTOMER REPORT STATUS
+   31. UPDATE CUSTOMER REPORT STATUS
 ========================================================= */
 
 updateTellerSupportStatusButton.addEventListener(
@@ -2634,7 +2495,6 @@ updateTellerSupportStatusButton.addEventListener(
         supportStatusInProgress = true;
 
         updateTellerSupportStatusButton.disabled = true;
-
         updateTellerSupportStatusButton.textContent = "Updating...";
 
         try {
@@ -2691,7 +2551,6 @@ updateTellerSupportStatusButton.addEventListener(
             supportStatusInProgress = false;
 
             updateTellerSupportStatusButton.disabled = false;
-
             updateTellerSupportStatusButton.textContent = "Update Status";
 
         }
@@ -2701,30 +2560,7 @@ updateTellerSupportStatusButton.addEventListener(
 
 
 /* =========================================================
-   LOAD REPORTS WHEN SUPPORT TAB OPENS
-========================================================= */
-
-document.querySelectorAll(
-    '.nav-button[data-panel="supportPanel"]'
-).forEach(button => {
-
-    button.addEventListener("click", async function () {
-
-        if (!currentTeller || !currentUser) return;
-
-        currentSupportTicket = null;
-
-        tellerSupportConversation.classList.add("hidden");
-
-        await loadTellerSupportTickets();
-
-    });
-
-});
-
-
-/* =========================================================
-   SUPPORT INITIALIZATION
+   32. INITIALIZE CUSTOMER SUPPORT
 ========================================================= */
 
 async function initializeTellerSupport() {
@@ -2738,3 +2574,71 @@ async function initializeTellerSupport() {
     await loadTellerSupportTickets();
 
 }
+
+
+/* =========================================================
+   33. AUTH SESSION MONITORING
+========================================================= */
+
+tellerSupabase.auth.onAuthStateChange((event) => {
+
+    if (event === "SIGNED_OUT") {
+
+        showLogin();
+
+        setConnectionStatus("Signed out");
+    }
+
+});
+
+
+/* =========================================================
+   34. INITIAL PAGE LOAD
+========================================================= */
+
+async function startTellerPortal() {
+
+    document.getElementById("currentYear").textContent =
+        new Date().getFullYear();
+
+    try {
+
+        setConnectionStatus("Connecting...");
+
+        const { data, error } =
+            await tellerSupabase.auth.getSession();
+
+        if (error) {
+            throw error;
+        }
+
+        if (data.session?.user) {
+
+            await initializeTeller(data.session.user);
+
+        } else {
+
+            showLogin();
+
+            setConnectionStatus("Ready to sign in", "online");
+        }
+
+    } catch (error) {
+
+        console.error("Portal startup error:", error);
+
+        showLogin();
+
+        setConnectionStatus("Connection failed", "offline");
+
+        showMessage(
+            loginMessage,
+            error.message || "Could not connect to the secure service.",
+            "error"
+        );
+    }
+
+}
+
+
+startTellerPortal();
