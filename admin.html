@@ -1,10 +1,11 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <meta name="description" content="Nexus Wealth Partners secure administration dashboard for managing members, tellers, deposits, withdrawals and financial records.">
+    <meta name="description" content="Nexus Wealth Partners secure administration dashboard for managing members, tellers, deposits, withdrawals, customer support and financial records.">
     <meta name="theme-color" content="#102b46">
 
     <title>Nexus Wealth Partners | Admin Dashboard</title>
@@ -24,7 +25,9 @@
 
 <body>
 
-    <!-- ADMINISTRATOR LOGIN -->
+    <!-- =====================================================
+         ADMINISTRATOR LOGIN
+    ====================================================== -->
 
     <section
         id="adminLoginScreen"
@@ -101,7 +104,9 @@
     </section>
 
 
-    <!-- ADMIN DASHBOARD -->
+    <!-- =====================================================
+         ADMIN DASHBOARD
+    ====================================================== -->
 
     <div id="adminDashboard" class="admin-dashboard" hidden>
 
@@ -125,8 +130,12 @@
 
             <nav class="admin-navigation" aria-label="Dashboard pages">
 
-                <button type="button" class="admin-nav-link active"
-                    data-page="overview" aria-current="page">
+                <button
+                    type="button"
+                    class="admin-nav-link active"
+                    data-page="overview"
+                    aria-current="page"
+                >
                     <span aria-hidden="true">▦</span>
                     <span>Overview</span>
                 </button>
@@ -179,8 +188,6 @@
                     <span aria-hidden="true">▤</span>
                     <span>Reports</span>
                 </button>
-
-                <!-- CUSTOMER SUPPORT NAVIGATION -->
 
                 <button type="button" class="admin-nav-link" data-page="support">
                     <span aria-hidden="true">💬</span>
@@ -255,8 +262,11 @@
 
             <!-- GLOBAL FINANCIAL DATE FILTER -->
 
-            <section class="admin-date-filter" id="adminDateFilter"
-                aria-labelledby="dateFilterTitle">
+            <section
+                class="admin-date-filter"
+                id="adminDateFilter"
+                aria-labelledby="dateFilterTitle"
+            >
 
                 <div class="date-filter-heading">
                     <div>
@@ -306,10 +316,15 @@
             </section>
 
 
-            <!-- OVERVIEW PAGE -->
+            <!-- =================================================
+                 OVERVIEW PAGE
+            ================================================== -->
 
-            <section id="page-overview" class="admin-page active"
-                aria-labelledby="overviewHeading">
+            <section
+                id="page-overview"
+                class="admin-page active"
+                aria-labelledby="overviewHeading"
+            >
 
                 <div class="page-intro">
                     <div>
@@ -443,10 +458,11 @@
             </section>
 
 
-            <!-- MEMBERS MANAGEMENT -->
+            <!-- =================================================
+                 MEMBERS MANAGEMENT
+            ================================================== -->
 
-            <section id="page-members" class="admin-page"
-                aria-labelledby="membersHeading">
+            <section id="page-members" class="admin-page" aria-labelledby="membersHeading">
 
                 <div class="page-intro">
                     <div>
@@ -495,10 +511,12 @@
                         </button>
                     </div>
 
-                    <p id="memberSearchResults" class="member-search-results"
-                        role="status" aria-live="polite">
-                        Loading members...
-                    </p>
+                    <p
+                        id="memberSearchResults"
+                        class="member-search-results"
+                        role="status"
+                        aria-live="polite"
+                    >Loading members...</p>
 
                     <div class="table-container">
                         <table>
@@ -527,10 +545,11 @@
             </section>
 
 
-            <!-- TELLERS MANAGEMENT -->
+            <!-- =================================================
+                 TELLERS MANAGEMENT
+            ================================================== -->
 
-            <section id="page-tellers" class="admin-page"
-                aria-labelledby="tellersHeading">
+            <section id="page-tellers" class="admin-page" aria-labelledby="tellersHeading">
 
                 <div class="page-intro">
                     <div>
@@ -575,8 +594,6 @@
                     </article>
                 </div>
 
-                <!-- CREATE TELLER -->
-
                 <div class="admin-panel">
                     <div class="panel-heading">
                         <div>
@@ -589,27 +606,48 @@
                     </div>
 
                     <form id="createTellerForm">
+
                         <div class="date-filter-controls">
 
                             <div class="date-filter-field">
                                 <label for="tellerFullName">Teller Full Name</label>
-                                <input type="text" id="tellerFullName" name="fullName"
-                                    placeholder="Enter staff full name" minlength="2"
-                                    maxlength="120" autocomplete="name" required>
+                                <input
+                                    type="text"
+                                    id="tellerFullName"
+                                    name="fullName"
+                                    placeholder="Enter staff full name"
+                                    minlength="2"
+                                    maxlength="120"
+                                    autocomplete="name"
+                                    required
+                                >
                             </div>
 
                             <div class="date-filter-field">
                                 <label for="tellerEmail">Teller Email Address</label>
-                                <input type="email" id="tellerEmail" name="email"
-                                    placeholder="Enter staff email" autocomplete="email"
-                                    autocapitalize="none" required>
+                                <input
+                                    type="email"
+                                    id="tellerEmail"
+                                    name="email"
+                                    placeholder="Enter staff email"
+                                    autocomplete="email"
+                                    autocapitalize="none"
+                                    required
+                                >
                             </div>
 
                             <div class="date-filter-field">
                                 <label for="tellerPhone">Teller Phone Number</label>
-                                <input type="tel" id="tellerPhone" name="phone"
-                                    placeholder="Enter phone number" minlength="7"
-                                    maxlength="25" autocomplete="tel" required>
+                                <input
+                                    type="tel"
+                                    id="tellerPhone"
+                                    name="phone"
+                                    placeholder="Enter phone number"
+                                    minlength="7"
+                                    maxlength="25"
+                                    autocomplete="tel"
+                                    required
+                                >
                             </div>
 
                         </div>
@@ -620,8 +658,13 @@
                             </button>
                         </div>
 
-                        <p id="createTellerMessage" class="admin-message"
-                            role="status" aria-live="polite"></p>
+                        <p
+                            id="createTellerMessage"
+                            class="admin-message"
+                            role="status"
+                            aria-live="polite"
+                        ></p>
+
                     </form>
 
                     <div class="platform-information">
@@ -640,8 +683,6 @@
                     </div>
                 </div>
 
-                <!-- TELLER DIRECTORY -->
-
                 <div class="admin-panel">
                     <div class="panel-heading">
                         <div>
@@ -651,15 +692,21 @@
                     </div>
 
                     <div class="member-search-area">
-                        <input type="search" id="tellerSearchInput"
+                        <input
+                            type="search"
+                            id="tellerSearchInput"
                             placeholder="Search by teller name, email, phone or teller code..."
-                            autocomplete="off" aria-label="Search tellers">
+                            autocomplete="off"
+                            aria-label="Search tellers"
+                        >
                     </div>
 
-                    <p id="tellerSearchResults" class="member-search-results"
-                        role="status" aria-live="polite">
-                        Teller records will appear here.
-                    </p>
+                    <p
+                        id="tellerSearchResults"
+                        class="member-search-results"
+                        role="status"
+                        aria-live="polite"
+                    >Teller records will appear here.</p>
 
                     <div class="table-container">
                         <table>
@@ -684,8 +731,6 @@
                         </table>
                     </div>
                 </div>
-
-                <!-- TELLER SECURITY -->
 
                 <div class="admin-panel">
                     <div class="panel-heading">
@@ -726,10 +771,11 @@
             </section>
 
 
-            <!-- WITHDRAWAL REQUESTS -->
+            <!-- =================================================
+                 WITHDRAWAL REQUESTS
+            ================================================== -->
 
-            <section id="page-withdrawals" class="admin-page"
-                aria-labelledby="withdrawalsHeading">
+            <section id="page-withdrawals" class="admin-page" aria-labelledby="withdrawalsHeading">
 
                 <div class="page-intro">
                     <div>
@@ -785,10 +831,11 @@
             </section>
 
 
-            <!-- DEPOSITS MANAGEMENT -->
+            <!-- =================================================
+                 DEPOSITS MANAGEMENT
+            ================================================== -->
 
-            <section id="page-deposits" class="admin-page"
-                aria-labelledby="depositsHeading">
+            <section id="page-deposits" class="admin-page" aria-labelledby="depositsHeading">
 
                 <div class="page-intro">
                     <div>
@@ -890,10 +937,11 @@
             </section>
 
 
-            <!-- TRANSACTIONS -->
+            <!-- =================================================
+                 TRANSACTIONS
+            ================================================== -->
 
-            <section id="page-transactions" class="admin-page"
-                aria-labelledby="transactionsHeading">
+            <section id="page-transactions" class="admin-page" aria-labelledby="transactionsHeading">
 
                 <div class="page-intro">
                     <div>
@@ -938,10 +986,11 @@
             </section>
 
 
-            <!-- TRASH -->
+            <!-- =================================================
+                 TRASH
+            ================================================== -->
 
-            <section id="page-trash" class="admin-page"
-                aria-labelledby="trashHeading">
+            <section id="page-trash" class="admin-page" aria-labelledby="trashHeading">
 
                 <div class="page-intro">
                     <div>
@@ -1004,10 +1053,11 @@
             </section>
 
 
-            <!-- SAVINGS MANAGEMENT -->
+            <!-- =================================================
+                 SAVINGS MANAGEMENT
+            ================================================== -->
 
-            <section id="page-savings" class="admin-page"
-                aria-labelledby="savingsHeading">
+            <section id="page-savings" class="admin-page" aria-labelledby="savingsHeading">
 
                 <div class="page-intro">
                     <div>
@@ -1049,10 +1099,11 @@
             </section>
 
 
-            <!-- PROFIT & INTEREST -->
+            <!-- =================================================
+                 PROFIT & INTEREST
+            ================================================== -->
 
-            <section id="page-profit-interest" class="admin-page"
-                aria-labelledby="profitInterestHeading">
+            <section id="page-profit-interest" class="admin-page" aria-labelledby="profitInterestHeading">
 
                 <div class="page-intro">
                     <div>
@@ -1114,10 +1165,11 @@
             </section>
 
 
-            <!-- REPORTS -->
+            <!-- =================================================
+                 REPORTS
+            ================================================== -->
 
-            <section id="page-reports" class="admin-page"
-                aria-labelledby="reportsHeading">
+            <section id="page-reports" class="admin-page" aria-labelledby="reportsHeading">
 
                 <div class="page-intro">
                     <div>
@@ -1175,10 +1227,11 @@
             </section>
 
 
-            <!-- CUSTOMER SUPPORT -->
+            <!-- =================================================
+                 CUSTOMER SUPPORT
+            ================================================== -->
 
-            <section id="page-support" class="admin-page"
-                aria-labelledby="adminSupportHeading">
+            <section id="page-support" class="admin-page" aria-labelledby="adminSupportHeading">
 
                 <div class="page-intro">
                     <div>
@@ -1189,11 +1242,16 @@
                         </p>
                     </div>
 
-                    <button type="button" id="refreshAdminSupportButton"
-                        class="panel-action">
+                    <button
+                        type="button"
+                        id="refreshAdminSupportButton"
+                        class="panel-action"
+                    >
                         ↻ Refresh Reports
                     </button>
                 </div>
+
+                <!-- SUPPORT INBOX -->
 
                 <div class="admin-panel">
 
@@ -1207,7 +1265,11 @@
                         </div>
                     </div>
 
-                    <div id="adminSupportMessage" role="status" aria-live="polite"></div>
+                    <div
+                        id="adminSupportMessage"
+                        role="status"
+                        aria-live="polite"
+                    ></div>
 
                     <div class="member-search-area">
                         <input
@@ -1237,11 +1299,16 @@
                             <p id="adminSupportCustomer">Customer information</p>
                         </div>
 
-                        <button type="button" id="closeAdminSupportConversation"
-                            class="panel-action">
+                        <button
+                            type="button"
+                            id="closeAdminSupportConversation"
+                            class="panel-action"
+                        >
                             Close Conversation
                         </button>
                     </div>
+
+                    <!-- REPORT DETAILS -->
 
                     <div class="platform-information">
 
@@ -1285,16 +1352,21 @@
                         </div>
 
                         <div class="date-filter-actions">
-                            <button type="button"
-                                id="updateAdminSupportStatusButton">
+                            <button
+                                type="button"
+                                id="updateAdminSupportStatusButton"
+                            >
                                 Update Status
                             </button>
                         </div>
 
                     </div>
 
-                    <p id="adminSupportStatusMessage"
-                        role="status" aria-live="polite"></p>
+                    <p
+                        id="adminSupportStatusMessage"
+                        role="status"
+                        aria-live="polite"
+                    ></p>
 
                     <!-- CONVERSATION HISTORY -->
 
@@ -1310,7 +1382,7 @@
 
                     <!-- CLOSED REPORT NOTICE -->
 
-                    <div id="adminSupportClosedNotice" hidden>
+                    <div id="adminSupportClosedNotice" hidden role="status">
                         This report is closed. Reopen it before sending another reply.
                     </div>
 
@@ -1323,7 +1395,9 @@
 
                             <textarea
                                 id="adminSupportReply"
+                                name="message"
                                 rows="4"
+                                minlength="1"
                                 maxlength="5000"
                                 placeholder="Type your response here..."
                                 required
@@ -1341,10 +1415,11 @@
             </section>
 
 
-            <!-- ADMINISTRATOR NOTIFICATIONS -->
+            <!-- =================================================
+                 ADMINISTRATOR NOTIFICATIONS
+            ================================================== -->
 
-            <section id="page-notifications" class="admin-page"
-                aria-labelledby="notificationsHeading">
+            <section id="page-notifications" class="admin-page" aria-labelledby="notificationsHeading">
 
                 <div class="page-intro">
                     <div>
@@ -1364,8 +1439,11 @@
                             </p>
                         </div>
 
-                        <button type="button" id="refreshAdminNotifications"
-                            class="panel-action">
+                        <button
+                            type="button"
+                            id="refreshAdminNotifications"
+                            class="panel-action"
+                        >
                             ↻ Refresh
                         </button>
                     </div>
@@ -1378,10 +1456,11 @@
             </section>
 
 
-            <!-- PLATFORM SETTINGS -->
+            <!-- =================================================
+                 PLATFORM SETTINGS
+            ================================================== -->
 
-            <section id="page-settings" class="admin-page"
-                aria-labelledby="settingsHeading">
+            <section id="page-settings" class="admin-page" aria-labelledby="settingsHeading">
 
                 <div class="page-intro">
                     <div>
@@ -1390,8 +1469,12 @@
                     </div>
                 </div>
 
-                <div id="adminSettingsMessage" class="settings-message"
-                    role="status" aria-live="polite">
+                <div
+                    id="adminSettingsMessage"
+                    class="settings-message"
+                    role="status"
+                    aria-live="polite"
+                >
                     Loading platform settings...
                 </div>
 
@@ -1411,25 +1494,40 @@
 
                         <div class="form-group">
                             <label for="nexusPlatformName">Platform Name</label>
-                            <input type="text" id="nexusPlatformName"
-                                maxlength="100" required
-                                placeholder="NEXUS WEALTH PARTNERS">
+                            <input
+                                type="text"
+                                id="nexusPlatformName"
+                                maxlength="100"
+                                required
+                                placeholder="NEXUS WEALTH PARTNERS"
+                            >
                         </div>
 
                         <div class="form-group">
                             <label for="nexusSupportEmail">Support Email</label>
-                            <input type="email" id="nexusSupportEmail"
-                                maxlength="254" placeholder="support@example.com">
+                            <input
+                                type="email"
+                                id="nexusSupportEmail"
+                                maxlength="254"
+                                placeholder="support@example.com"
+                            >
                         </div>
 
                         <div class="form-group">
                             <label for="nexusSupportPhone">Support Phone</label>
-                            <input type="tel" id="nexusSupportPhone"
-                                maxlength="30" placeholder="Enter support phone number">
+                            <input
+                                type="tel"
+                                id="nexusSupportPhone"
+                                maxlength="30"
+                                placeholder="Enter support phone number"
+                            >
                         </div>
 
-                        <button type="submit" id="saveNexusGeneralSettings"
-                            class="primary-button">
+                        <button
+                            type="submit"
+                            id="saveNexusGeneralSettings"
+                            class="primary-button"
+                        >
                             Save General Settings
                         </button>
 
@@ -1488,32 +1586,51 @@
                                 <label for="nexusMinimumDeposit">
                                     Minimum Deposit (GH₵)
                                 </label>
-                                <input type="number" id="nexusMinimumDeposit"
-                                    min="0.01" max="100000000" step="0.01"
-                                    value="10" required>
+                                <input
+                                    type="number"
+                                    id="nexusMinimumDeposit"
+                                    min="0.01"
+                                    max="100000000"
+                                    step="0.01"
+                                    value="10"
+                                    required
+                                >
                             </div>
 
                             <div class="date-filter-field">
                                 <label for="nexusMaximumDeposit">
                                     Maximum Deposit (GH₵)
                                 </label>
-                                <input type="number" id="nexusMaximumDeposit"
-                                    min="0.01" max="100000000" step="0.01"
-                                    value="10000" required>
+                                <input
+                                    type="number"
+                                    id="nexusMaximumDeposit"
+                                    min="0.01"
+                                    max="100000000"
+                                    step="0.01"
+                                    value="10000"
+                                    required
+                                >
                             </div>
 
                         </div>
 
-                        <p id="nexusDepositSettingsMessage" class="admin-message"
-                            role="status" aria-live="polite"></p>
+                        <p
+                            id="nexusDepositSettingsMessage"
+                            class="admin-message"
+                            role="status"
+                            aria-live="polite"
+                        ></p>
 
                         <div class="date-filter-actions">
                             <button type="submit" id="saveNexusDepositSettings">
                                 Save Deposit Controls
                             </button>
 
-                            <button type="button" id="reloadNexusDepositSettings"
-                                class="panel-action">
+                            <button
+                                type="button"
+                                id="reloadNexusDepositSettings"
+                                class="panel-action"
+                            >
                                 Reload Saved Settings
                             </button>
                         </div>
@@ -1556,7 +1673,9 @@
             </section>
 
 
-            <!-- MEMBER PROFILE MODAL -->
+            <!-- =================================================
+                 MEMBER PROFILE MODAL
+            ================================================== -->
 
             <div
                 id="memberProfileModal"
@@ -1575,9 +1694,12 @@
                             <h2 id="memberProfileTitle">Member Profile</h2>
                         </div>
 
-                        <button type="button" id="closeMemberProfile"
+                        <button
+                            type="button"
+                            id="closeMemberProfile"
                             class="member-profile-close"
-                            aria-label="Close member profile">
+                            aria-label="Close member profile"
+                        >
                             ×
                         </button>
                     </div>
@@ -1660,19 +1782,30 @@
                     <div class="member-profile-footer">
 
                         <div class="member-account-actions">
-                            <button type="button" id="suspendMemberButton"
-                                class="member-suspend-button" hidden>
+                            <button
+                                type="button"
+                                id="suspendMemberButton"
+                                class="member-suspend-button"
+                                hidden
+                            >
                                 Suspend Account
                             </button>
 
-                            <button type="button" id="activateMemberButton"
-                                class="member-activate-button" hidden>
+                            <button
+                                type="button"
+                                id="activateMemberButton"
+                                class="member-activate-button"
+                                hidden
+                            >
                                 Activate Account
                             </button>
                         </div>
 
-                        <button type="button" id="closeMemberProfileFooter"
-                            class="panel-action">
+                        <button
+                            type="button"
+                            id="closeMemberProfileFooter"
+                            class="panel-action"
+                        >
                             Close Profile
                         </button>
 
@@ -1683,7 +1816,9 @@
             </div>
 
 
-            <!-- ADMIN FOOTER -->
+            <!-- =================================================
+                 ADMIN FOOTER
+            ================================================== -->
 
             <footer class="admin-footer">
                 <p>© 2026 Nexus Wealth Partners. All rights reserved.</p>
@@ -1695,7 +1830,9 @@
     </div>
 
 
-    <!-- SUPABASE JAVASCRIPT LIBRARY -->
+    <!-- =====================================================
+         SUPABASE JAVASCRIPT LIBRARY
+    ====================================================== -->
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
