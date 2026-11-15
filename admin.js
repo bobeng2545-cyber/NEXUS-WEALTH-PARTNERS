@@ -88,10 +88,9 @@ const adminPageTitles = {
     "profit-interest": "Profit & Interest",
     reports: "Reports",
     notifications: "Notifications",
-    settings: "Platform Settings"
-    support: "Customer Support",
+    settings: "Platform Settings",
+    support: "Customer Support"
 };
-
 
 /* =========================================================
    5. GENERAL HELPER FUNCTIONS
