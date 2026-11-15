@@ -89,6 +89,7 @@ const adminPageTitles = {
     reports: "Reports",
     notifications: "Notifications",
     settings: "Platform Settings"
+    support: "Customer Support",
 };
 
 
@@ -471,6 +472,18 @@ function showAdminPage(pageName) {
 
             break;
 
+          case "support":
+
+    if (typeof loadAdminSupportTickets === "function") {
+        loadAdminSupportTickets().catch(error => {
+            console.error(
+                "Failed to load customer support tickets:",
+                error
+            );
+        });
+    }
+
+    break;
 
         case "tellers":
 
@@ -5023,17 +5036,6 @@ if (
 }
 
 
-/* =========================================================
-   40. START ADMIN DASHBOARD
-========================================================= */
-
-checkAdminSession();
-
-console.log(
-    "Nexus Wealth Partners Admin Dashboard initialized."
-);
-
-
 
 /* =========================================================
    NEXUS WEALTH PARTNERS
@@ -5852,4 +5854,835 @@ document.querySelectorAll(
 
 });
 
+/* =========================================================
+   41. ADMIN CUSTOMER SUPPORT
+   Shared customer/teller/administrator support inbox
+========================================================= */
 
+const adminSupportTicketList =
+    document.getElementById("adminSupportTicketList");
+
+const adminSupportTicketSearch =
+    document.getElementById("adminSupportTicketSearch");
+
+const refreshAdminSupportButton =
+    document.getElementById("refreshAdminSupportButton");
+
+const adminSupportMessage =
+    document.getElementById("adminSupportMessage");
+
+const adminSupportConversation =
+    document.getElementById("adminSupportConversation");
+
+const adminSupportSubject =
+    document.getElementById("adminSupportSubject");
+
+const adminSupportCustomer =
+    document.getElementById("adminSupportCustomer");
+
+const adminSupportMemberId =
+    document.getElementById("adminSupportMemberId");
+
+const adminSupportCategory =
+    document.getElementById("adminSupportCategory");
+
+const adminSupportStatus =
+    document.getElementById("adminSupportStatus");
+
+const adminSupportDate =
+    document.getElementById("adminSupportDate");
+
+const adminSupportStatusSelect =
+    document.getElementById("adminSupportStatusSelect");
+
+const updateAdminSupportStatusButton =
+    document.getElementById("updateAdminSupportStatusButton");
+
+const adminSupportStatusMessage =
+    document.getElementById("adminSupportStatusMessage");
+
+const adminSupportMessageList =
+    document.getElementById("adminSupportMessageList");
+
+const adminSupportClosedNotice =
+    document.getElementById("adminSupportClosedNotice");
+
+const adminSupportReplyForm =
+    document.getElementById("adminSupportReplyForm");
+
+const adminSupportReply =
+    document.getElementById("adminSupportReply");
+
+const adminSupportReplyButton =
+    document.getElementById("adminSupportReplyButton");
+
+const closeAdminSupportConversation =
+    document.getElementById("closeAdminSupportConversation");
+
+let adminSupportTicketsCache = [];
+let selectedAdminSupportTicketId = null;
+let adminSupportTicketsLoadPromise = null;
+
+
+function setAdminSupportMessage(message, type = "info") {
+    if (!adminSupportMessage) return;
+
+    adminSupportMessage.textContent = message || "";
+    adminSupportMessage.dataset.type = type;
+}
+
+
+function setAdminSupportStatusMessage(message, type = "info") {
+    if (!adminSupportStatusMessage) return;
+
+    adminSupportStatusMessage.textContent = message || "";
+    adminSupportStatusMessage.dataset.type = type;
+}
+
+
+function getAdminSupportStatusLabel(status) {
+    const labels = {
+        open: "Open",
+        in_progress: "In Progress",
+        resolved: "Resolved",
+        closed: "Closed"
+    };
+
+    const key = normalizeAdminStatus(status);
+    return labels[key] || key.replace(/_/g, " ");
+}
+
+
+function createAdminSupportTextElement(tagName, className, text) {
+    const element = document.createElement(tagName);
+
+    if (className) {
+        element.className = className;
+    }
+
+    element.textContent =
+        text === null || text === undefined || text === ""
+            ? "—"
+            : String(text);
+
+    return element;
+}
+
+
+function renderAdminSupportTicketList() {
+    if (!adminSupportTicketList) return;
+
+    const searchTerm = String(
+        adminSupportTicketSearch?.value || ""
+    ).trim().toLowerCase();
+
+    const filteredTickets = adminSupportTicketsCache.filter(ticket => {
+        const searchableText = [
+            ticket.customer_name,
+            ticket.member_id,
+            ticket.subject,
+            ticket.category,
+            ticket.status
+        ].join(" ").toLowerCase();
+
+        return searchableText.includes(searchTerm);
+    });
+
+    adminSupportTicketList.replaceChildren();
+
+    if (!filteredTickets.length) {
+        adminSupportTicketList.appendChild(
+            createAdminSupportTextElement(
+                "p",
+                "empty-table",
+                searchTerm
+                    ? "No customer reports match your search."
+                    : "There are no customer reports yet."
+            )
+        );
+        return;
+    }
+
+    filteredTickets.forEach(ticket => {
+        const card = document.createElement("button");
+        card.type = "button";
+        card.className = "admin-support-ticket-card";
+        card.dataset.ticketId = ticket.ticket_id;
+        card.setAttribute(
+            "aria-pressed",
+            String(ticket.ticket_id === selectedAdminSupportTicketId)
+        );
+
+        if (ticket.ticket_id === selectedAdminSupportTicketId) {
+            card.classList.add("active");
+        }
+
+        const heading = document.createElement("div");
+        heading.className = "admin-support-ticket-heading";
+
+        heading.appendChild(
+            createAdminSupportTextElement(
+                "strong",
+                "admin-support-ticket-subject",
+                ticket.subject
+            )
+        );
+
+        heading.appendChild(
+            createAdminSupportTextElement(
+                "span",
+                "admin-support-status status-" +
+                    normalizeAdminStatus(ticket.status).replace(
+                        /[^a-z0-9_-]/g,
+                        ""
+                    ),
+                getAdminSupportStatusLabel(ticket.status)
+            )
+        );
+
+        const customerLine = createAdminSupportTextElement(
+            "span",
+            "admin-support-ticket-customer",
+            `${ticket.customer_name || "Unknown customer"}${
+                ticket.member_id ? " • " + ticket.member_id : ""
+            }`
+        );
+
+        const detailLine = createAdminSupportTextElement(
+            "span",
+            "admin-support-ticket-meta",
+            `${ticket.category || "General"} • Updated ${formatAdminDateTime(
+                ticket.last_message_at || ticket.updated_at || ticket.created_at
+            )}`
+        );
+
+        card.appendChild(heading);
+        card.appendChild(customerLine);
+        card.appendChild(detailLine);
+
+        card.addEventListener("click", () => {
+            openAdminSupportConversation(ticket.ticket_id);
+        });
+
+        adminSupportTicketList.appendChild(card);
+    });
+}
+
+/* =========================================================
+   LOAD ADMIN SUPPORT TICKETS
+========================================================= */
+
+async function loadAdminSupportTickets() {
+    if (adminSupportTicketsLoadPromise) {
+        return adminSupportTicketsLoadPromise;
+    }
+
+    adminSupportTicketsLoadPromise = (async () => {
+        setAdminSupportMessage("Loading customer reports...");
+
+        if (refreshAdminSupportButton) {
+            refreshAdminSupportButton.disabled = true;
+        }
+
+        try {
+            const { data, error } = await nexusAdminSupabase.rpc(
+                "nexus_list_support_tickets",
+                { p_limit: 100 }
+            );
+
+            if (error) throw error;
+
+            adminSupportTicketsCache = Array.isArray(data) ? data : [];
+
+            renderAdminSupportTicketList();
+
+            if (selectedAdminSupportTicketId) {
+                const stillExists = adminSupportTicketsCache.some(
+                    ticket =>
+                        ticket.ticket_id === selectedAdminSupportTicketId
+                );
+
+                if (stillExists) {
+                    const selectedTicket = adminSupportTicketsCache.find(
+                        ticket =>
+                            ticket.ticket_id === selectedAdminSupportTicketId
+                    );
+
+                    if (selectedTicket) {
+                        updateAdminSupportConversationHeader(selectedTicket);
+                    }
+
+                    await loadAdminSupportConversationMessages(
+                        selectedAdminSupportTicketId
+                    );
+                } else {
+                    resetAdminSupportConversation();
+                }
+            }
+
+            setAdminSupportMessage(
+                `${adminSupportTicketsCache.length} customer report(s) loaded.`,
+                "success"
+            );
+
+        } catch (error) {
+            console.error("Admin support ticket loading error:", error);
+
+            setAdminSupportMessage(
+                error.message ||
+                "Could not load customer reports. Please refresh and try again.",
+                "error"
+            );
+
+            throw error;
+
+        } finally {
+            if (refreshAdminSupportButton) {
+                refreshAdminSupportButton.disabled = false;
+            }
+
+            adminSupportTicketsLoadPromise = null;
+        }
+    })();
+
+    return adminSupportTicketsLoadPromise;
+}
+
+
+/* =========================================================
+   RESET SUPPORT CONVERSATION
+========================================================= */
+
+function resetAdminSupportConversation() {
+    selectedAdminSupportTicketId = null;
+
+    if (adminSupportConversation) {
+        adminSupportConversation.hidden = true;
+    }
+
+    if (adminSupportMessageList) {
+        adminSupportMessageList.replaceChildren();
+    }
+
+    if (adminSupportReplyForm) {
+        adminSupportReplyForm.reset();
+    }
+
+    setAdminSupportStatusMessage("");
+
+    renderAdminSupportTicketList();
+}
+
+
+/* =========================================================
+   UPDATE CONVERSATION HEADER
+========================================================= */
+
+function updateAdminSupportConversationHeader(ticket) {
+    if (adminSupportSubject) {
+        adminSupportSubject.textContent = ticket.subject || "Customer report";
+    }
+
+    if (adminSupportCustomer) {
+        adminSupportCustomer.textContent =
+            ticket.customer_name || "Unknown customer";
+    }
+
+    if (adminSupportMemberId) {
+        adminSupportMemberId.textContent =
+            ticket.member_id || "—";
+    }
+
+    if (adminSupportCategory) {
+        adminSupportCategory.textContent =
+            ticket.category || "General";
+    }
+
+    if (adminSupportStatus) {
+        adminSupportStatus.textContent =
+            getAdminSupportStatusLabel(ticket.status);
+    }
+
+    if (adminSupportDate) {
+        adminSupportDate.textContent =
+            formatAdminDateTime(ticket.created_at);
+    }
+
+    if (adminSupportStatusSelect) {
+        adminSupportStatusSelect.value =
+            normalizeAdminStatus(ticket.status);
+    }
+
+    const isClosed =
+        normalizeAdminStatus(ticket.status) === "closed";
+
+    if (adminSupportClosedNotice) {
+        adminSupportClosedNotice.hidden = !isClosed;
+    }
+
+    if (adminSupportReply) {
+        adminSupportReply.disabled = isClosed;
+    }
+
+    if (adminSupportReplyButton) {
+        adminSupportReplyButton.disabled = isClosed;
+    }
+
+    if (adminSupportReplyForm) {
+        adminSupportReplyForm.hidden = isClosed;
+    }
+
+    if (updateAdminSupportStatusButton) {
+        updateAdminSupportStatusButton.disabled = false;
+    }
+
+    setAdminSupportStatusMessage("");
+}
+
+/* =========================================================
+   RENDER CUSTOMER SUPPORT MESSAGES
+========================================================= */
+
+function renderAdminSupportMessages(messages = []) {
+    if (!adminSupportMessageList) return;
+
+    adminSupportMessageList.replaceChildren();
+
+    if (!messages.length) {
+        adminSupportMessageList.appendChild(
+            createAdminSupportTextElement(
+                "p",
+                "empty-table",
+                "No messages are available for this report."
+            )
+        );
+        return;
+    }
+
+    messages.forEach(message => {
+        const wrapper = document.createElement("article");
+
+        const role = String(message.sender_role || "").toLowerCase();
+
+        wrapper.className =
+            "admin-support-message support-message-" +
+            (["customer", "teller", "admin"].includes(role)
+                ? role
+                : "unknown");
+
+        const header = document.createElement("div");
+        header.className = "admin-support-message-header";
+
+        header.appendChild(
+            createAdminSupportTextElement(
+                "strong",
+                "admin-support-sender",
+                message.sender_name ||
+                    (role === "admin"
+                        ? "Administrator"
+                        : role === "teller"
+                            ? "Teller"
+                            : "Customer")
+            )
+        );
+
+        header.appendChild(
+            createAdminSupportTextElement(
+                "span",
+                "admin-support-sender-role",
+                role.toUpperCase()
+            )
+        );
+
+        header.appendChild(
+            createAdminSupportTextElement(
+                "time",
+                "admin-support-message-time",
+                formatAdminDateTime(message.created_at)
+            )
+        );
+
+        const body = createAdminSupportTextElement(
+            "p",
+            "admin-support-message-body",
+            message.message
+        );
+
+        body.style.whiteSpace = "pre-wrap";
+
+        wrapper.appendChild(header);
+        wrapper.appendChild(body);
+
+        adminSupportMessageList.appendChild(wrapper);
+    });
+
+    adminSupportMessageList.scrollTop =
+        adminSupportMessageList.scrollHeight;
+}
+
+
+/* =========================================================
+   LOAD SELECTED CONVERSATION MESSAGES
+========================================================= */
+
+async function loadAdminSupportConversationMessages(ticketId) {
+    if (!ticketId) return;
+
+    const { data, error } = await nexusAdminSupabase.rpc(
+        "nexus_list_support_messages",
+        {
+            p_ticket_id: ticketId
+        }
+    );
+
+    if (error) throw error;
+
+    renderAdminSupportMessages(
+        Array.isArray(data) ? data : []
+    );
+}
+
+
+/* =========================================================
+   OPEN CUSTOMER SUPPORT CONVERSATION
+========================================================= */
+
+async function openAdminSupportConversation(ticketId) {
+    const ticket = adminSupportTicketsCache.find(
+        item => item.ticket_id === ticketId
+    );
+
+    if (!ticket) {
+        setAdminSupportMessage(
+            "The selected customer report could not be found.",
+            "error"
+        );
+        return;
+    }
+
+    selectedAdminSupportTicketId = ticketId;
+
+    if (adminSupportConversation) {
+        adminSupportConversation.hidden = false;
+    }
+
+    updateAdminSupportConversationHeader(ticket);
+    renderAdminSupportTicketList();
+
+    if (adminSupportMessageList) {
+        adminSupportMessageList.replaceChildren(
+            createAdminSupportTextElement(
+                "p",
+                "empty-table",
+                "Loading conversation..."
+            )
+        );
+    }
+
+    try {
+        await loadAdminSupportConversationMessages(ticketId);
+
+    } catch (error) {
+        console.error(
+            "Admin support conversation loading error:",
+            error
+        );
+
+        if (adminSupportMessageList) {
+            adminSupportMessageList.replaceChildren(
+                createAdminSupportTextElement(
+                    "p",
+                    "empty-table",
+                    error.message ||
+                        "Could not load this conversation."
+                )
+            );
+        }
+    }
+}
+
+
+/* =========================================================
+   SEND ADMIN SUPPORT REPLY
+========================================================= */
+
+async function submitAdminSupportReply(event) {
+    event.preventDefault();
+
+    const ticketId = selectedAdminSupportTicketId;
+
+    const message = String(
+        adminSupportReply?.value || ""
+    ).trim();
+
+    if (!ticketId) {
+        setAdminSupportStatusMessage(
+            "Select a customer report before replying.",
+            "error"
+        );
+        return;
+    }
+
+    if (!message) {
+        setAdminSupportStatusMessage(
+            "Enter a reply before sending.",
+            "error"
+        );
+        return;
+    }
+
+    if (message.length > 5000) {
+        setAdminSupportStatusMessage(
+            "Your reply cannot exceed 5,000 characters.",
+            "error"
+        );
+        return;
+    }
+
+    const ticket = adminSupportTicketsCache.find(
+        item => item.ticket_id === ticketId
+    );
+
+    if (normalizeAdminStatus(ticket?.status) === "closed") {
+        setAdminSupportStatusMessage(
+            "This report is closed. Change its status before replying.",
+            "error"
+        );
+        return;
+    }
+
+    const originalButtonText =
+        adminSupportReplyButton?.textContent || "Send Reply";
+
+    if (adminSupportReplyButton) {
+        adminSupportReplyButton.disabled = true;
+        adminSupportReplyButton.textContent = "Sending...";
+    }
+
+    try {
+        const { error } = await nexusAdminSupabase.rpc(
+            "nexus_reply_support_ticket",
+            {
+                p_ticket_id: ticketId,
+                p_message: message
+            }
+        );
+
+        if (error) throw error;
+
+        if (adminSupportReply) {
+            adminSupportReply.value = "";
+        }
+
+        await loadAdminSupportTickets();
+
+        setAdminSupportStatusMessage(
+            "Your reply has been sent.",
+            "success"
+        );
+
+    } catch (error) {
+        console.error(
+            "Admin support reply error:",
+            error
+        );
+
+        setAdminSupportStatusMessage(
+            error.message || "Could not send your reply.",
+            "error"
+        );
+
+    } finally {
+        if (adminSupportReplyButton) {
+            adminSupportReplyButton.disabled = false;
+            adminSupportReplyButton.textContent =
+                originalButtonText;
+        }
+    }
+}
+
+/* =========================================================
+   UPDATE CUSTOMER SUPPORT TICKET STATUS
+========================================================= */
+
+async function updateAdminSupportTicketStatus() {
+    const ticketId = selectedAdminSupportTicketId;
+
+    const newStatus =
+        normalizeAdminStatus(adminSupportStatusSelect?.value);
+
+    if (!ticketId) {
+        setAdminSupportStatusMessage(
+            "Select a customer report first.",
+            "error"
+        );
+        return;
+    }
+
+    if (
+        !["open", "in_progress", "resolved", "closed"].includes(newStatus)
+    ) {
+        setAdminSupportStatusMessage(
+            "Select a valid report status.",
+            "error"
+        );
+        return;
+    }
+
+    const ticket = adminSupportTicketsCache.find(
+        item => item.ticket_id === ticketId
+    );
+
+    if (
+        ticket &&
+        normalizeAdminStatus(ticket.status) === newStatus
+    ) {
+        setAdminSupportStatusMessage(
+            "This report already has that status.",
+            "info"
+        );
+        return;
+    }
+
+    const confirmed = window.confirm(
+        `Change this customer report's status to "${getAdminSupportStatusLabel(
+            newStatus
+        )}"?`
+    );
+
+    if (!confirmed) return;
+
+    const originalButtonText =
+        updateAdminSupportStatusButton?.textContent || "Update Status";
+
+    if (updateAdminSupportStatusButton) {
+        updateAdminSupportStatusButton.disabled = true;
+        updateAdminSupportStatusButton.textContent = "Updating...";
+    }
+
+    try {
+        const { error } = await nexusAdminSupabase.rpc(
+            "nexus_update_support_status",
+            {
+                p_ticket_id: ticketId,
+                p_status: newStatus
+            }
+        );
+
+        if (error) throw error;
+
+        await loadAdminSupportTickets();
+
+        setAdminSupportStatusMessage(
+            `Report status updated to ${getAdminSupportStatusLabel(newStatus)}.`,
+            "success"
+        );
+
+    } catch (error) {
+        console.error(
+            "Admin support status update error:",
+            error
+        );
+
+        setAdminSupportStatusMessage(
+            error.message || "Could not update the report status.",
+            "error"
+        );
+
+    } finally {
+        if (updateAdminSupportStatusButton) {
+            updateAdminSupportStatusButton.disabled = false;
+            updateAdminSupportStatusButton.textContent =
+                originalButtonText;
+        }
+    }
+}
+
+
+/* =========================================================
+   CUSTOMER SUPPORT EVENT LISTENERS
+========================================================= */
+
+// Refresh support tickets
+if (
+    refreshAdminSupportButton &&
+    refreshAdminSupportButton.dataset.supportBound !== "true"
+) {
+    refreshAdminSupportButton.dataset.supportBound = "true";
+
+    refreshAdminSupportButton.addEventListener("click", () => {
+        loadAdminSupportTickets().catch(() => {});
+    });
+}
+
+
+// Search support tickets
+if (
+    adminSupportTicketSearch &&
+    adminSupportTicketSearch.dataset.supportBound !== "true"
+) {
+    adminSupportTicketSearch.dataset.supportBound = "true";
+
+    adminSupportTicketSearch.addEventListener(
+        "input",
+        renderAdminSupportTicketList
+    );
+}
+
+
+// Submit administrator reply
+if (
+    adminSupportReplyForm &&
+    adminSupportReplyForm.dataset.supportBound !== "true"
+) {
+    adminSupportReplyForm.dataset.supportBound = "true";
+
+    adminSupportReplyForm.addEventListener(
+        "submit",
+        submitAdminSupportReply
+    );
+}
+
+
+// Update ticket status
+if (
+    updateAdminSupportStatusButton &&
+    updateAdminSupportStatusButton.dataset.supportBound !== "true"
+) {
+    updateAdminSupportStatusButton.dataset.supportBound = "true";
+
+    updateAdminSupportStatusButton.addEventListener(
+        "click",
+        updateAdminSupportTicketStatus
+    );
+}
+
+
+// Close conversation view
+if (
+    closeAdminSupportConversation &&
+    closeAdminSupportConversation.dataset.supportBound !== "true"
+) {
+    closeAdminSupportConversation.dataset.supportBound = "true";
+
+    closeAdminSupportConversation.addEventListener(
+        "click",
+        resetAdminSupportConversation
+    );
+}
+
+
+/* =========================================================
+   END OF SECTION 41
+   ADMIN CUSTOMER SUPPORT
+========================================================= */
+
+/* =========================================================
+   40. START ADMIN DASHBOARD
+========================================================= */
+
+checkAdminSession();
+
+console.log(
+    "Nexus Wealth Partners Admin Dashboard initialized."
+);
