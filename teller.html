@@ -1,4 +1,4 @@
-
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -112,7 +112,8 @@
                     </h2>
 
                     <p class="muted">
-                        Manage member deposits and test withdrawal simulations.
+                        Manage member deposits, test withdrawal simulations
+                        and customer support reports.
                     </p>
                 </div>
 
@@ -158,6 +159,13 @@
                     data-panel="profilePanel"
                 >
                     My Account
+                </button>
+
+                <button
+                    class="nav-button"
+                    data-panel="supportPanel"
+                >
+                    Customer Support
                 </button>
 
             </nav>
@@ -390,8 +398,6 @@
                 </div>
 
 
-                <!-- TEST MODE WARNING -->
-
                 <div class="deposit-warning">
 
                     <strong>SIMULATION ONLY — NO REAL MONEY</strong>
@@ -404,8 +410,6 @@
 
                 </div>
 
-
-                <!-- TEST MEMBER SEARCH -->
 
                 <div class="content-card">
 
@@ -494,8 +498,6 @@
 
                 </div>
 
-
-                <!-- TEST WITHDRAWAL FORM -->
 
                 <div class="content-card">
 
@@ -595,8 +597,6 @@
                     ></div>
 
 
-                    <!-- TEST RECEIPT -->
-
                     <div
                         id="testWithdrawalReceipt"
                         class="receipt hidden"
@@ -648,8 +648,6 @@
                 </div>
 
 
-                <!-- TEST WITHDRAWAL HISTORY -->
-
                 <div class="content-card">
 
                     <div class="section-heading">
@@ -699,7 +697,7 @@
                             <tbody id="testWithdrawalHistoryBody">
 
                                 <tr>
-                                    <td colspan="6" class="empty-state">
+                                    <td colspan="7" class="empty-state">
                                         Test withdrawal history will appear here.
                                     </td>
                                 </tr>
@@ -840,6 +838,241 @@
 
             </section>
 
+
+            <!-- =================================================
+                 CUSTOMER SUPPORT PANEL
+            ================================================== -->
+
+            <section
+                id="supportPanel"
+                class="dashboard-panel hidden"
+            >
+
+                <div class="section-heading">
+
+                    <div>
+                        <h3>Customer Support</h3>
+
+                        <p>
+                            Manage customer reports and respond to member issues.
+                            All active tellers and administrators share this inbox.
+                        </p>
+                    </div>
+
+                    <button
+                        type="button"
+                        id="refreshSupportTicketsButton"
+                        class="secondary-button"
+                    >
+                        Refresh Reports
+                    </button>
+
+                </div>
+
+
+                <div
+                    id="tellerSupportMessage"
+                    class="message hidden"
+                ></div>
+
+
+                <!-- CUSTOMER REPORTS INBOX -->
+
+                <div class="content-card">
+
+                    <div class="section-heading">
+
+                        <div>
+                            <h4>Customer Reports Inbox</h4>
+
+                            <p class="muted small">
+                                View reports submitted by members.
+                            </p>
+                        </div>
+
+                    </div>
+
+
+                    <input
+                        type="search"
+                        id="supportTicketSearch"
+                        placeholder="Search customer, member ID or report subject..."
+                        autocomplete="off"
+                    >
+
+
+                    <div
+                        id="tellerSupportTicketList"
+                        class="support-ticket-list"
+                    >
+
+                        <p class="empty-state">
+                            Customer reports will appear here.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <!-- CUSTOMER CONVERSATION -->
+
+                <div
+                    id="tellerSupportConversation"
+                    class="content-card hidden"
+                >
+
+                    <div class="section-heading">
+
+                        <div>
+                            <h4 id="tellerSupportSubject">
+                                Customer Report
+                            </h4>
+
+                            <p id="tellerSupportCustomer">
+                                Customer information
+                            </p>
+                        </div>
+
+                        <button
+                            type="button"
+                            id="closeTellerSupportConversation"
+                            class="secondary-button"
+                        >
+                            Back to Reports
+                        </button>
+
+                    </div>
+
+
+                    <!-- REPORT DETAILS -->
+
+                    <div class="member-details">
+
+                        <div>
+                            <span>Category</span>
+                            <strong id="tellerSupportCategory">---</strong>
+                        </div>
+
+                        <div>
+                            <span>Member ID</span>
+                            <strong id="tellerSupportMemberId">---</strong>
+                        </div>
+
+                        <div>
+                            <span>Status</span>
+                            <strong id="tellerSupportStatus">---</strong>
+                        </div>
+
+                        <div>
+                            <span>Submitted</span>
+                            <strong id="tellerSupportDate">---</strong>
+                        </div>
+
+                    </div>
+
+
+                    <!-- STATUS MANAGEMENT -->
+
+                    <div class="support-status-controls">
+
+                        <h4>Report Status</h4>
+
+                        <label for="tellerSupportStatusSelect">
+                            Update report status
+                        </label>
+
+                        <select id="tellerSupportStatusSelect">
+
+                            <option value="open">Open</option>
+
+                            <option value="in_progress">
+                                In Progress
+                            </option>
+
+                            <option value="resolved">
+                                Resolved
+                            </option>
+
+                            <option value="closed">
+                                Closed
+                            </option>
+
+                        </select>
+
+                        <button
+                            type="button"
+                            id="updateTellerSupportStatusButton"
+                            class="primary-button"
+                        >
+                            Update Status
+                        </button>
+
+                    </div>
+
+
+                    <!-- CONVERSATION MESSAGES -->
+
+                    <div class="support-conversation-area">
+
+                        <h4>Conversation</h4>
+
+                        <div
+                            id="tellerSupportMessageList"
+                            class="support-message-list"
+                        >
+
+                            <p class="empty-state">
+                                Conversation messages will appear here.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- REPLY FORM -->
+
+                    <div class="support-reply-area">
+
+                        <form id="tellerSupportReplyForm">
+
+                            <label for="tellerSupportReply">
+                                Reply to Customer
+                            </label>
+
+                            <textarea
+                                id="tellerSupportReply"
+                                rows="4"
+                                maxlength="5000"
+                                placeholder="Type your response to the customer..."
+                                required
+                            ></textarea>
+
+                            <button
+                                type="submit"
+                                id="tellerSupportReplyButton"
+                                class="primary-button full-width"
+                            >
+                                Send Reply
+                            </button>
+
+                        </form>
+
+
+                        <p
+                            id="tellerSupportClosedNotice"
+                            class="muted hidden"
+                        >
+                            This report is closed and cannot receive replies.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </section>
+
         </section>
 
     </main>
@@ -857,3 +1090,4 @@
 
 </body>
 </html>
+```
