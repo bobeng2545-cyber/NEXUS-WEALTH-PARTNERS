@@ -4414,36 +4414,71 @@ body > #notificationMenu.notification-open {
 }
 
 
+
 /* =========================================
-   MEMBER DASHBOARD ACCOUNT ACTIONS
+   NEXUS MEMBER DASHBOARD
+   NOTIFICATION AND LOGOUT POSITIONING
 ========================================= */
+
+.dashboard-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.dashboard-welcome {
+    flex: 1;
+    min-width: 0;
+}
 
 .dashboard-account-actions {
     display: flex;
     align-items: center;
     justify-content: flex-end;
+    flex-direction: row;
     gap: 12px;
-    position: relative;
+    flex-shrink: 0;
 }
+
+.notification-area {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+/* LOGOUT BUTTON */
 
 .member-logout-button {
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    flex-direction: row;
     gap: 8px;
+
     min-height: 42px;
-    padding: 0 16px;
-    border: 1px solid #f0d5d5;
-    border-radius: 9px;
+    padding: 0 15px;
+
     background: #fff5f5;
     color: #c03939;
+
+    border: 1px solid #f0d5d5;
+    border-radius: 9px;
+
+    font-family: inherit;
     font-size: 13px;
     font-weight: 700;
+
+    white-space: nowrap;
     cursor: pointer;
-    transition: all 0.2s ease;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease;
 }
 
-.member-logout-button span:first-child {
+.member-logout-button .logout-icon {
     font-size: 19px;
     line-height: 1;
 }
@@ -4459,14 +4494,28 @@ body > #notificationMenu.notification-open {
     outline-offset: 3px;
 }
 
+/* TABLET AND MOBILE */
+
 @media (max-width: 600px) {
+
+    .dashboard-heading {
+        align-items: center;
+        gap: 10px;
+    }
+
     .dashboard-account-actions {
         gap: 8px;
     }
 
     .member-logout-button {
         min-height: 38px;
-        padding: 0 11px;
+        padding: 0 10px;
+        gap: 5px;
         font-size: 12px;
     }
+
+    .member-logout-button .logout-icon {
+        font-size: 17px;
+    }
+
 }
