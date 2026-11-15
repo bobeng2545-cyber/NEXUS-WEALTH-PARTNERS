@@ -4521,67 +4521,64 @@ body > #notificationMenu.notification-open {
 }
 
 
+
 /* =========================================
-   STICKY MEMBER DASHBOARD HEADER
+   FIXED MEMBER DASHBOARD HEADER
 ========================================= */
 
 #memberDashboard .dashboard-heading {
-    position: sticky;
-    top: 0;
-    z-index: 1000;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box;
+
+    z-index: 9999;
 
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 20px;
 
-    background: #ffffff;
-    padding: 16px 20px;
-    margin-bottom: 20px;
+    padding: 15px 25px;
+    margin: 0 !important;
 
-    border-bottom: 1px solid #e5ece7;
-    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.05);
+    background: #ffffff;
+    border-bottom: 1px solid #e1e9e4;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
 }
 
-/* Welcome section */
+/* Keep welcome details and buttons aligned */
 
 #memberDashboard .dashboard-welcome {
     flex: 1;
     min-width: 0;
 }
 
-/* Notification and logout actions */
-
 #memberDashboard .dashboard-account-actions {
     display: flex;
     align-items: center;
-    justify-content: flex-end;
     gap: 12px;
     flex-shrink: 0;
 }
 
-/* Keep notification dropdown above page content */
-
-#memberDashboard .notification-area {
-    position: relative;
-    z-index: 1001;
-}
-
-/* Mobile arrangement */
+/* Mobile */
 
 @media (max-width: 600px) {
-
     #memberDashboard .dashboard-heading {
         padding: 12px 10px;
         gap: 8px;
     }
 
     #memberDashboard .dashboard-welcome h2 {
-        font-size: 16px;
+        font-size: 15px;
     }
 
     #memberDashboard .dashboard-welcome p {
-        font-size: 11px;
+        font-size: 10px;
     }
 
     #memberDashboard .dashboard-account-actions {
@@ -4590,8 +4587,7 @@ body > #notificationMenu.notification-open {
 
     #memberDashboard .member-logout-button {
         min-height: 36px;
-        padding: 0 9px;
+        padding: 0 8px;
         font-size: 11px;
     }
-
 }
