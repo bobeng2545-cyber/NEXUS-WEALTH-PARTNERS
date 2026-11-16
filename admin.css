@@ -3003,3 +3003,127 @@ tbody tr:hover {
         width: 100%;
     }
 }
+
+
+/* =========================================================
+   REFUND MANAGEMENT - REFRESH BUTTON
+========================================================= */
+
+#refreshAdminRefunds {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    padding: 10px 17px;
+
+    background: #155eef;
+    color: #ffffff;
+
+    border: none;
+    border-radius: 8px;
+
+    font-size: 12px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    box-shadow: 0 3px 8px rgba(21, 94, 239, 0.16);
+
+    transition:
+        background 0.2s ease,
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+#refreshAdminRefunds::before {
+    content: "↻";
+    font-size: 17px;
+    line-height: 1;
+}
+
+#refreshAdminRefunds:hover:not(:disabled) {
+    background: #0046c7;
+    transform: translateY(-1px);
+    box-shadow: 0 5px 12px rgba(21, 94, 239, 0.23);
+}
+
+#refreshAdminRefunds:active:not(:disabled) {
+    transform: scale(0.97);
+}
+
+#refreshAdminRefunds:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+/* =========================================================
+   GENERAL SETTINGS - SAVE BUTTON
+========================================================= */
+
+#nexusGeneralSettingsForm button[type="submit"] {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    min-width: 155px;
+
+    padding: 12px 20px;
+
+    background: #16834a;
+    color: #ffffff;
+
+    border: none;
+    border-radius: 8px;
+
+    font-size: 12px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    box-shadow: 0 3px 8px rgba(22, 131, 74, 0.16);
+
+    transition:
+        background 0.2s ease,
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+#nexusGeneralSettingsForm button[type="submit"]::before {
+    content: "✓";
+    font-size: 15px;
+    font-weight: 700;
+}
+
+#nexusGeneralSettingsForm button[type="submit"]:hover:not(:disabled) {
+    background: #106b3b;
+    transform: translateY(-1px);
+    box-shadow: 0 5px 12px rgba(22, 131, 74, 0.23);
+}
+
+#nexusGeneralSettingsForm button[type="submit"]:active:not(:disabled) {
+    transform: scale(0.97);
+}
+
+#nexusGeneralSettingsForm button[type="submit"]:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+/* MOBILE BUTTON LAYOUT */
+
+@media (max-width: 600px) {
+
+    .panel-heading {
+        flex-wrap: wrap;
+        align-items: flex-start;
+    }
+
+    #refreshAdminRefunds {
+        width: 100%;
+    }
+
+}
