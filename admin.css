@@ -3058,18 +3058,18 @@ tbody tr:hover {
     box-shadow: none;
 }
 
+
 /* =========================================================
    GENERAL SETTINGS - SAVE BUTTON
 ========================================================= */
 
-#nexusGeneralSettingsForm button[type="submit"] {
+#saveNexusGeneralSettings {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 8px;
 
     min-width: 155px;
-
     padding: 12px 20px;
 
     background: #16834a;
@@ -3091,29 +3091,31 @@ tbody tr:hover {
         box-shadow 0.2s ease;
 }
 
-#nexusGeneralSettingsForm button[type="submit"]::before {
+#saveNexusGeneralSettings::before {
     content: "✓";
     font-size: 15px;
     font-weight: 700;
 }
 
-#nexusGeneralSettingsForm button[type="submit"]:hover:not(:disabled) {
+#saveNexusGeneralSettings:hover:not(:disabled) {
     background: #106b3b;
     transform: translateY(-1px);
     box-shadow: 0 5px 12px rgba(22, 131, 74, 0.23);
 }
 
-#nexusGeneralSettingsForm button[type="submit"]:active:not(:disabled) {
+#saveNexusGeneralSettings:active:not(:disabled) {
     transform: scale(0.97);
 }
 
-#nexusGeneralSettingsForm button[type="submit"]:disabled {
+#saveNexusGeneralSettings:disabled {
     opacity: 0.6;
     cursor: not-allowed;
     box-shadow: none;
 }
 
-/* MOBILE BUTTON LAYOUT */
+/* =========================================================
+   MOBILE BUTTON LAYOUT
+========================================================= */
 
 @media (max-width: 600px) {
 
