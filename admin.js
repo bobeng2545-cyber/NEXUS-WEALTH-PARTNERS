@@ -531,6 +531,22 @@ function showAdminPage(pageName) {
             }
 
             break;
+       
+       
+       case "refunds":
+          
+          if (typeof loadAdminRefundRequests === "function") {
+             Promise.resolve()
+                .then(() => loadAdminRefundRequests())
+                .catch(error => {
+                   console.error(
+                      "Failed to load refund requests:",
+                      error
+                   );
+                });
+          }
+          
+          break;
     }
 }
 
@@ -4647,6 +4663,16 @@ const refreshAdminNotificationsButton =
 let adminNotificationsCache = [];
 let adminNotificationsLoadPromise = null;
 
+/* =========================================================
+   ADMIN REFUND MANAGEMENT
+========================================================= */
+
+const refundRequestsTable =
+    document.getElementById("refundRequestsTable");
+
+let adminRefundRequestsCache = [];
+let adminRefundRequestsLoadPromise = null;
+
 
 function updateAdminNotificationBadge() {
     const unreadCount =
@@ -4949,6 +4975,76 @@ if (markAllAdminNotificationsButton) {
     );
 }
 
+/* =========================================================
+   LOAD ADMIN REFUND REQUESTS
+========================================================= */
+
+async function loadAdminRefundRequests() {
+
+    if (!refundRequestsTable) return;
+
+    if (adminRefundRequestsLoadPromise) {
+        return adminRefundRequestsLoadPromise;
+    }
+
+    adminRefundRequestsLoadPromise = (async () => {
+
+        refundRequestsTable.innerHTML = `
+            <tr>
+                <td colspan="8" style="text-align:center;">
+                    Loading refund requests...
+                </td>
+            </tr>
+        `;
+
+        try {
+
+            const { data, error } =
+                await nexusAdminSupabase.rpc(
+                    "admin_list_nexus_refund_requests"
+                );
+
+            if (error) throw error;
+
+            adminRefundRequestsCache =
+                Array.isArray(data) ? data : [];
+
+            displayAdminRefundRequests(
+                adminRefundRequestsCache
+            );
+
+            console.log(
+                "Administrator refund requests loaded:",
+                adminRefundRequestsCache.length
+            );
+
+        } catch (error) {
+
+            console.error(
+                "Administrator refund loading error:",
+                error
+            );
+
+            refundRequestsTable.innerHTML = `
+                <tr>
+                    <td colspan="8" style="text-align:center;">
+                        Unable to load refund requests.
+                    </td>
+                </tr>
+            `;
+
+            throw error;
+
+        } finally {
+
+            adminRefundRequestsLoadPromise = null;
+
+        }
+
+    })();
+
+    return adminRefundRequestsLoadPromise;
+}
 
 /* =========================================================
    41. NEXUS ADMIN REPORTS
