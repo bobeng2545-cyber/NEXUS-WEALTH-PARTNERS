@@ -4670,6 +4670,9 @@ let adminNotificationsLoadPromise = null;
 const refundRequestsTable =
     document.getElementById("refundRequestsTable");
 
+const refreshAdminRefundsButton =
+    document.getElementById("refreshAdminRefunds");
+
 let adminRefundRequestsCache = [];
 let adminRefundRequestsLoadPromise = null;
 
@@ -5044,6 +5047,231 @@ async function loadAdminRefundRequests() {
     })();
 
     return adminRefundRequestsLoadPromise;
+}
+
+
+/* =========================================================
+   DISPLAY ADMIN REFUND REQUESTS
+========================================================= */
+
+function displayAdminRefundRequests(refunds) {
+
+    if (!refundRequestsTable) return;
+
+    const records = Array.isArray(refunds) ? refunds : [];
+
+    // Safely format text before inserting database values into HTML.
+    const escapeHTML = value => String(value ?? "").replace(
+        /[&<>"']/g,
+        character => ({
+            "&": "&amp;",
+            "<": "&lt;",
+            ">": "&gt;",
+            '"': "&quot;",
+            "'": "&#39;"
+        })[character]
+    );
+
+    const formatMoney = amount => {
+        const value = Number(amount);
+
+        return Number.isFinite(value)
+            ? "GH₵ " + value.toFixed(2)
+            : "GH₵ 0.00";
+    };
+
+    const formatDate = date => {
+        if (!date) return "—";
+
+        const parsedDate = new Date(date);
+
+        if (Number.isNaN(parsedDate.getTime())) {
+            return "—";
+        }
+
+        return parsedDate.toLocaleString("en-GH", {
+            day: "2-digit",
+            month: "short",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit"
+        });
+    };
+
+    const formatMember = userId => {
+        if (!userId) return "Unknown";
+
+        const id = String(userId);
+
+        return id.length > 12
+            ? id.substring(0, 8) + "..."
+            : id;
+    };
+
+    // Update refund statistics.
+    const pendingCount = records.filter(refund =>
+        ["initiating", "pending"].includes(
+            String(refund.status).toLowerCase()
+        )
+    ).length;
+
+    const processingCount = records.filter(refund =>
+        String(refund.status).toLowerCase() === "processing"
+    ).length;
+
+    const attentionCount = records.filter(refund =>
+        String(refund.status).toLowerCase() === "needs_attention"
+    ).length;
+
+    const processedCount = records.filter(refund =>
+        String(refund.status).toLowerCase() === "processed"
+    ).length;
+
+    const updateStat = (id, value) => {
+        const element = document.getElementById(id);
+
+        if (element) {
+            element.textContent = value;
+        }
+    };
+
+    updateStat("adminPendingRefunds", pendingCount);
+    updateStat("adminProcessingRefunds", processingCount);
+    updateStat("adminRefundsNeedsAttention", attentionCount);
+    updateStat("adminProcessedRefunds", processedCount);
+
+    // Display empty state.
+    if (records.length === 0) {
+
+        refundRequestsTable.innerHTML = `
+            <tr>
+                <td colspan="8" class="empty-table">
+                    No refund requests found.
+                </td>
+            </tr>
+        `;
+
+        return;
+    }
+
+    // Render refund records.
+    refundRequestsTable.innerHTML = records.map(refund => {
+
+        const status = String(
+            refund.status || "unknown"
+        ).toLowerCase();
+
+        const allowedStatuses = [
+            "initiating",
+            "pending",
+            "processing",
+            "needs_attention",
+            "processed",
+            "failed"
+        ];
+
+        const safeStatus = allowedStatuses.includes(status)
+            ? status
+            : "unknown";
+
+        const displayStatus = safeStatus
+            .replace(/_/g, " ")
+            .replace(/\b\w/g, letter => letter.toUpperCase());
+
+        const refundReference = escapeHTML(
+            refund.paystack_refund_reference || "—"
+        );
+
+        const depositReference = escapeHTML(
+            refund.paystack_transaction_reference || "—"
+        );
+
+        const member = escapeHTML(
+            formatMember(refund.user_id)
+        );
+
+        const amount = escapeHTML(
+            formatMoney(refund.amount)
+        );
+
+        const walletDebited = refund.wallet_debited === true
+            ? "Yes"
+            : "No";
+
+        const walletRestored = refund.wallet_restored === true
+            ? "Yes"
+            : "No";
+
+        const createdAt = escapeHTML(
+            formatDate(refund.created_at)
+        );
+
+        return `
+            <tr>
+                <td>
+                    <strong>${refundReference}</strong>
+                </td>
+
+                <td>
+                    ${depositReference}
+                </td>
+
+                <td title="${escapeHTML(refund.user_id || "")}">
+                    ${member}
+                </td>
+
+                <td>
+                    <strong>${amount}</strong>
+                </td>
+
+                <td>
+                    <span class="status-badge status-${safeStatus}">
+                        ${displayStatus}
+                    </span>
+                </td>
+
+                <td>${walletDebited}</td>
+
+                <td>${walletRestored}</td>
+
+                <td>${createdAt}</td>
+            </tr>
+        `;
+
+    }).join("");
+}
+
+/* =========================================================
+   REFRESH ADMIN REFUND REQUESTS
+========================================================= */
+
+if (refreshAdminRefundsButton) {
+
+    refreshAdminRefundsButton.addEventListener(
+        "click",
+        async function() {
+
+            const originalText = this.textContent;
+
+            this.disabled = true;
+            this.textContent = "Refreshing...";
+
+            try {
+
+                await loadAdminRefundRequests();
+
+            } catch (_) {
+
+                // Error is already displayed in the refund table.
+
+            } finally {
+
+                this.disabled = false;
+                this.textContent = originalText;
+
+            }
+        }
+    );
 }
 
 /* =========================================================
