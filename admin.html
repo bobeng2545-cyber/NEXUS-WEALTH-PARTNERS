@@ -999,49 +999,59 @@
 
     </div>
 
-    <!-- REFUND REQUESTS TABLE -->
+    
+<!-- REFUND REQUESTS TABLE -->
 
-    <div class="admin-panel">
+<div class="admin-panel">
 
-        <div class="panel-heading">
-            <div>
-                <h3>All Paystack Refund Requests</h3>
-                <p>
-                    Review refund references, amounts, statuses
-                    and wallet restoration records.
-                </p>
-            </div>
+    <div class="panel-heading">
+
+        <div>
+            <h3>All Paystack Refund Requests</h3>
+            <p>
+                Review refund references, amounts, statuses
+                and wallet restoration records.
+            </p>
         </div>
 
-        <div class="table-container">
-
-            <table>
-                <thead>
-                    <tr>
-                        <th scope="col">Refund Reference</th>
-                        <th scope="col">Deposit Reference</th>
-                        <th scope="col">Member</th>
-                        <th scope="col">Amount</th>
-                        <th scope="col">Refund Status</th>
-                        <th scope="col">Wallet Debited</th>
-                        <th scope="col">Wallet Restored</th>
-                        <th scope="col">Date Created</th>
-                    </tr>
-                </thead>
-
-                <tbody id="refundRequestsTable">
-                    <tr>
-                        <td colspan="8" class="empty-table">
-                            Refund requests will appear here.
-                        </td>
-                    </tr>
-                </tbody>
-
-            </table>
-
-        </div>
+        <button
+            type="button"
+            class="btn btn-secondary"
+            id="refreshAdminRefunds">
+            Refresh Refunds
+        </button>
 
     </div>
+
+    <div class="table-container">
+
+        <table>
+            <thead>
+                <tr>
+                    <th scope="col">Refund Reference</th>
+                    <th scope="col">Deposit Reference</th>
+                    <th scope="col">Member</th>
+                    <th scope="col">Amount</th>
+                    <th scope="col">Refund Status</th>
+                    <th scope="col">Wallet Debited</th>
+                    <th scope="col">Wallet Restored</th>
+                    <th scope="col">Date Created</th>
+                </tr>
+            </thead>
+
+            <tbody id="refundRequestsTable">
+                <tr>
+                    <td colspan="8" class="empty-table">
+                        Refund requests will appear here.
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+
+</div>
+
 
     <!-- REFUND SECURITY INFORMATION -->
 
