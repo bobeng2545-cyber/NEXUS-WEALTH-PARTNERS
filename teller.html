@@ -1,12 +1,18 @@
-
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#087443">
+    <meta name="theme-color" content="#102b46">
+
+    <meta name="description" content="Nexus Wealth Partners Secure Teller Portal">
 
     <title>Teller Portal | Nexus Wealth Partners</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="teller.css">
 
@@ -16,35 +22,59 @@
 
 <body>
 
+    <!-- =====================================================
+         TOP HEADER
+    ====================================================== -->
+
     <header class="topbar">
+
         <div class="brand">
+
             <div class="brand-icon">N</div>
-            <div>
+
+            <div class="brand-text">
                 <h1>Nexus Wealth Partners</h1>
                 <p>Teller Portal</p>
             </div>
+
         </div>
 
         <div class="header-actions">
-            <span id="connectionStatus" class="connection-status">
+
+            <span
+                id="connectionStatus"
+                class="connection-status"
+                aria-live="polite"
+            >
                 Checking connection...
             </span>
 
-            <button id="logoutButton" class="logout-button hidden" type="button">
-                Log out
+            <button
+                id="logoutButton"
+                class="logout-button hidden"
+                type="button"
+            >
+                Log Out
             </button>
+
         </div>
+
     </header>
 
-    <main class="main-container">
 
-        <!-- LOGIN SECTION -->
+    <!-- =====================================================
+         LOGIN SECTION
+    ====================================================== -->
+
+    <main class="main-container">
 
         <section id="loginSection" class="login-section">
 
             <div class="login-card">
 
                 <div class="login-logo">N</div>
+
+                <p class="eyebrow">NEXUS WEALTH PARTNERS</p>
 
                 <h2>Teller Sign In</h2>
 
@@ -55,7 +85,9 @@
 
                 <form id="loginForm">
 
-                    <label for="loginEmail">Email address</label>
+                    <label for="loginEmail">
+                        Email Address
+                    </label>
 
                     <input
                         type="email"
@@ -65,7 +97,9 @@
                         required
                     >
 
-                    <label for="loginPassword">Password</label>
+                    <label for="loginPassword">
+                        Password
+                    </label>
 
                     <input
                         type="password"
@@ -85,1156 +119,1564 @@
 
                 </form>
 
-                <div id="loginMessage" class="message hidden"></div>
+                <div
+                    id="loginMessage"
+                    class="message hidden"
+                    role="alert"
+                    aria-live="polite"
+                ></div>
 
-                <p class="security-note">
+                <div class="security-note">
                     <span>🔒</span>
-                    Protected teller access
-                </p>
+                    Protected Teller Access
+                </div>
 
             </div>
 
         </section>
 
 
-        <!-- TELLER DASHBOARD -->
+        <!-- =====================================================
+             TELLER DASHBOARD
+        ====================================================== -->
 
-        <section id="dashboardSection" class="hidden">
+        <section
+            id="dashboardSection"
+            class="dashboard-section hidden"
+        >
 
-            <div class="welcome-section">
+            <div class="dashboard-layout">
 
-                <div>
-                    <p class="eyebrow">TELLER WORKSPACE</p>
+                <!-- =============================================
+                     SIDEBAR
+                ============================================== -->
 
-                    <h2>
-                        Welcome, <span id="tellerName">Teller</span>
-                    </h2>
+                <aside class="sidebar">
 
-                    <p class="muted">
-                        Manage member deposits, test withdrawal simulations,
-                        member registrations and customer support reports.
-                    </p>
-                </div>
+                    <div class="sidebar-brand">
 
-                <div class="teller-code-card">
-                    <span>Teller Code</span>
-                    <strong id="tellerCode">---</strong>
+                        <div class="sidebar-brand-icon">
+                            N
+                        </div>
 
-                    <span id="tellerStatus" class="active-status">
-                        Active
-                    </span>
+                        <div>
+                            <h2>NEXUS</h2>
+                            <p>WEALTH PARTNERS</p>
+                        </div>
+
+                    </div>
+
+
+                    <div class="sidebar-profile">
+
+                        <div class="sidebar-avatar">
+                            T
+                        </div>
+
+                        <div class="sidebar-profile-info">
+
+                            <strong id="sidebarTellerName">
+                                Teller
+                            </strong>
+
+                            <span>Teller Account</span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="sidebar-label">
+                        TELLER MENU
+                    </div>
+
+
+                    <!-- Keep nav-button and data-panel
+                         because teller.js uses them. -->
+
+                    <nav class="dashboard-nav">
+
+                        <button
+                            type="button"
+                            class="nav-button active"
+                            data-panel="depositPanel"
+                        >
+                            <span class="nav-icon">▣</span>
+                            <span>Record Deposit</span>
+                        </button>
+
+
+                        <button
+                            type="button"
+                            class="nav-button"
+                            data-panel="registerMemberPanel"
+                        >
+                            <span class="nav-icon">＋</span>
+                            <span>Register New Member</span>
+                        </button>
+
+
+                        <button
+                            type="button"
+                            class="nav-button"
+                            data-panel="myRegisteredMembersPanel"
+                        >
+                            <span class="nav-icon">♙</span>
+                            <span>My Registered Members</span>
+                        </button>
+
+
+                        <button
+                            type="button"
+                            class="nav-button"
+                            data-panel="testWithdrawalPanel"
+                        >
+                            <span class="nav-icon">⇄</span>
+                            <span>Test Withdrawals</span>
+                        </button>
+
+
+                        <button
+                            type="button"
+                            class="nav-button"
+                            data-panel="historyPanel"
+                        >
+                            <span class="nav-icon">◷</span>
+                            <span>My Transactions</span>
+                        </button>
+
+
+                        <button
+                            type="button"
+                            class="nav-button"
+                            data-panel="supportPanel"
+                        >
+                            <span class="nav-icon">☏</span>
+                            <span>Customer Support</span>
+                        </button>
+
+
+                        <button
+                            type="button"
+                            class="nav-button"
+                            data-panel="profilePanel"
+                        >
+                            <span class="nav-icon">⚙</span>
+                            <span>My Account</span>
+                        </button>
+
+                    </nav>
+
+
+                    <div class="sidebar-bottom">
+
+                        <a
+                            href="https://bobeng2545-cyber.github.io/NEXUS-WEALTH-PARTNERS/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="sidebar-website-link"
+                        >
+                            <span>↗</span>
+                            Visit Website
+                        </a>
+
+                        <div class="sidebar-security">
+                            <span>🔒</span>
+                            Secure Teller Workspace
+                        </div>
+
+                    </div>
+
+                </aside>
+
+
+                <!-- =============================================
+                     MAIN DASHBOARD CONTENT
+                ============================================== -->
+
+                <div class="dashboard-main">
+
+
+                    <!-- DASHBOARD TOP BAR -->
+
+                    <div class="dashboard-topbar">
+
+                        <div class="dashboard-topbar-left">
+
+                            <div>
+                                <p class="topbar-eyebrow">
+                                    NEXUS WEALTH PARTNERS
+                                </p>
+
+                                <h2>Teller Workspace</h2>
+                            </div>
+
+                        </div>
+
+                        <div class="dashboard-topbar-right">
+
+                            <div class="topbar-account">
+
+                                <div class="topbar-account-avatar">
+                                    T
+                                </div>
+
+                                <div>
+                                    <strong id="tellerName">
+                                        Teller
+                                    </strong>
+
+                                    <span>
+                                        Teller
+                                    </span>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- =========================================
+                         WELCOME SECTION
+                    ========================================== -->
+
+                    <div class="welcome-section">
+
+                        <div>
+
+                            <p class="eyebrow">
+                                TELLER WORKSPACE
+                            </p>
+
+                            <h2>
+                                Welcome,
+                                <span id="welcomeTellerName">
+                                    Teller
+                                </span>
+                            </h2>
+
+                            <p class="muted">
+                                Manage member deposits, test withdrawal
+                                simulations, member registrations and
+                                customer support reports.
+                            </p>
+
+                        </div>
+
+
+                        <div class="teller-code-card">
+
+                            <span>Teller Code</span>
+
+                            <strong id="tellerCode">
+                                ---
+                            </strong>
+
+                            <span
+                                id="tellerStatus"
+                                class="active-status"
+                            >
+                                Active
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- =========================================
+                         REGISTER NEW MEMBER
+                    ========================================== -->
+
+                    <section
+                        id="registerMemberPanel"
+                        class="dashboard-panel hidden"
+                    >
+
+                        <div class="section-heading">
+
+                            <div>
+                                <h3>Register New Member</h3>
+
+                                <p>
+                                    Register a new member using their
+                                    correct personal information.
+                                </p>
+                            </div>
+
+                        </div>
+
+
+                        <div class="content-card">
+
+                            <h4>Member Registration Details</h4>
+
+                            <div class="deposit-warning">
+
+                                <strong>
+                                    Important Security Notice
+                                </strong>
+
+                                <p>
+                                    The member must provide their own
+                                    email address. They will receive
+                                    an invitation to create their
+                                    personal password.
+                                </p>
+
+                                <p>
+                                    Never create, request or handle
+                                    a member's password.
+                                </p>
+
+                            </div>
+
+
+                            <form id="tellerMemberRegistrationForm">
+
+                                <label for="tellerNewMemberName">
+                                    Member Full Name
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="tellerNewMemberName"
+                                    placeholder="Enter member's full name"
+                                    autocomplete="name"
+                                    maxlength="150"
+                                    required
+                                >
+
+
+                                <label for="tellerNewMemberEmail">
+                                    Member Email Address
+                                </label>
+
+                                <input
+                                    type="email"
+                                    id="tellerNewMemberEmail"
+                                    placeholder="Enter member's email address"
+                                    autocomplete="email"
+                                    maxlength="254"
+                                    required
+                                >
+
+
+                                <label for="tellerNewMemberPhone">
+                                    Ghana Mobile Number
+                                </label>
+
+                                <input
+                                    type="tel"
+                                    id="tellerNewMemberPhone"
+                                    placeholder="e.g. 0241234567 or +233241234567"
+                                    autocomplete="tel"
+                                    maxlength="20"
+                                    required
+                                >
+
+
+                                <button
+                                    type="submit"
+                                    id="registerTellerMemberButton"
+                                    class="primary-button full-width"
+                                >
+                                    Register Member
+                                </button>
+
+                            </form>
+
+
+                            <div
+                                id="tellerMemberRegistrationMessage"
+                                class="message hidden"
+                                role="status"
+                                aria-live="polite"
+                            ></div>
+
+                        </div>
+
+                    </section>
+
+
+                    <!-- =========================================
+                         MY REGISTERED MEMBERS
+                    ========================================== -->
+
+                    <section
+                        id="myRegisteredMembersPanel"
+                        class="dashboard-panel hidden"
+                    >
+
+                        <div class="section-heading">
+
+                            <div>
+                                <h3>My Registered Members</h3>
+
+                                <p>
+                                    View members registered through
+                                    your teller account.
+                                </p>
+                            </div>
+
+                            <button
+                                type="button"
+                                id="refreshMyRegisteredMembersButton"
+                                class="secondary-button"
+                            >
+                                Refresh
+                            </button>
+
+                        </div>
+
+
+                        <div
+                            id="myRegisteredMembersMessage"
+                            class="message hidden"
+                            role="status"
+                            aria-live="polite"
+                        ></div>
+
+
+                        <div class="content-card">
+
+                            <div class="table-container">
+
+                                <table>
+
+                                    <thead>
+                                        <tr>
+                                            <th>Member ID</th>
+                                            <th>Full Name</th>
+                                            <th>Email</th>
+                                            <th>Phone</th>
+                                            <th>Date Registered</th>
+                                            <th>Verification Status</th>
+                                            <th>Account Status</th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody id="myRegisteredMembersTableBody">
+
+                                        <tr>
+                                            <td colspan="7" class="empty-state">
+                                                Your registered members will
+                                                appear here.
+                                            </td>
+                                        </tr>
+
+                                    </tbody>
+
+                                </table>
+
+                            </div>
+
+                        </div>
+
+                    </section>
+
+
+                    <!-- =========================================
+                         RECORD DEPOSIT
+                    ========================================== -->
+
+                    <section
+                        id="depositPanel"
+                        class="dashboard-panel"
+                    >
+
+                        <div class="section-heading">
+
+                            <div>
+                                <h3>Record Member Deposit</h3>
+
+                                <p>
+                                    Search for the member before
+                                    recording money received.
+                                </p>
+                            </div>
+
+                        </div>
+
+
+                        <!-- FIND MEMBER -->
+
+                        <div class="content-card">
+
+                            <h4>1. Find Member</h4>
+
+                            <form
+                                id="memberSearchForm"
+                                class="search-form"
+                            >
+
+                                <input
+                                    type="text"
+                                    id="memberSearchInput"
+                                    placeholder="Enter member ID or phone number"
+                                    required
+                                >
+
+                                <button
+                                    type="submit"
+                                    id="searchMemberButton"
+                                    class="primary-button"
+                                >
+                                    Search
+                                </button>
+
+                            </form>
+
+
+                            <div
+                                id="memberSearchMessage"
+                                class="message hidden"
+                                role="status"
+                            ></div>
+
+
+                            <div
+                                id="memberResults"
+                                class="member-results hidden"
+                            ></div>
+
+
+                            <div
+                                id="selectedMemberCard"
+                                class="selected-member hidden"
+                            >
+
+                                <div class="selected-heading">
+
+                                    <span class="success-dot"></span>
+
+                                    <strong>
+                                        Selected Member
+                                    </strong>
+
+                                </div>
+
+
+                                <div class="member-details">
+
+                                    <div>
+                                        <span>Full Name</span>
+                                        <strong id="selectedMemberName">---</strong>
+                                    </div>
+
+                                    <div>
+                                        <span>Member ID</span>
+                                        <strong id="selectedMemberId">---</strong>
+                                    </div>
+
+                                    <div>
+                                        <span>Phone</span>
+                                        <strong id="selectedMemberPhone">---</strong>
+                                    </div>
+
+                                    <div>
+                                        <span>Account Status</span>
+                                        <strong id="selectedMemberStatus">---</strong>
+                                    </div>
+
+                                </div>
+
+
+                                <button
+                                    type="button"
+                                    id="changeMemberButton"
+                                    class="text-button"
+                                >
+                                    Change Member
+                                </button>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- DEPOSIT DETAILS -->
+
+                        <div class="content-card deposit-card">
+
+                            <h4>2. Deposit Details</h4>
+
+                            <p class="muted small">
+                                Confirm that you have physically received
+                                or verified the money before submitting
+                                this transaction.
+                            </p>
+
+
+                            <form id="depositForm">
+
+                                <label for="depositAmount">
+                                    Deposit Amount (GH₵)
+                                </label>
+
+                                <input
+                                    type="number"
+                                    id="depositAmount"
+                                    min="0.01"
+                                    step="0.01"
+                                    placeholder="e.g. 100.00"
+                                    required
+                                >
+
+
+                                <label for="depositMethod">
+                                    Payment Method
+                                </label>
+
+                                <select id="depositMethod" required>
+
+                                    <option value="">
+                                        Select payment method
+                                    </option>
+
+                                    <option value="cash">
+                                        Cash
+                                    </option>
+
+                                    <option value="mobile_money">
+                                        Mobile Money
+                                    </option>
+
+                                    <option value="bank_transfer">
+                                        Bank Transfer
+                                    </option>
+
+                                </select>
+
+
+                                <div
+                                    id="paymentPhoneGroup"
+                                    class="hidden"
+                                >
+
+                                    <label for="paymentPhone">
+                                        Payment Phone Number
+                                    </label>
+
+                                    <input
+                                        type="tel"
+                                        id="paymentPhone"
+                                        placeholder="Enter payment phone number"
+                                    >
+
+                                </div>
+
+
+                                <div class="deposit-warning">
+
+                                    <strong>Important:</strong>
+
+                                    A successful submission immediately
+                                    credits the member's wallet. Verify
+                                    the amount and member carefully
+                                    before proceeding.
+
+                                </div>
+
+
+                                <button
+                                    type="submit"
+                                    id="recordDepositButton"
+                                    class="primary-button full-width"
+                                    disabled
+                                >
+                                    Record Deposit
+                                </button>
+
+                            </form>
+
+
+                            <div
+                                id="depositMessage"
+                                class="message hidden"
+                                role="status"
+                                aria-live="polite"
+                            ></div>
+
+
+                            <!-- DEPOSIT RECEIPT -->
+
+                            <div
+                                id="depositReceipt"
+                                class="receipt hidden"
+                            >
+
+                                <div class="receipt-icon">
+                                    ✓
+                                </div>
+
+                                <h3>Deposit Recorded</h3>
+
+                                <p id="receiptMessage">
+                                    Deposit recorded successfully.
+                                </p>
+
+                                <div class="receipt-reference">
+
+                                    <span>
+                                        Transaction Reference
+                                    </span>
+
+                                    <strong id="receiptReference">
+                                        ---
+                                    </strong>
+
+                                </div>
+
+                                <div class="receipt-amount">
+
+                                    <span>Amount</span>
+
+                                    <strong id="receiptAmount">
+                                        GH₵0.00
+                                    </strong>
+
+                                </div>
+
+                                <button
+                                    type="button"
+                                    id="newDepositButton"
+                                    class="primary-button"
+                                >
+                                    Record Another Deposit
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </section>
+
+
+                    <!-- =========================================
+                         TEST WITHDRAWALS
+                    ========================================== -->
+
+                    <section
+                        id="testWithdrawalPanel"
+                        class="dashboard-panel hidden"
+                    >
+
+                        <div class="section-heading">
+
+                            <div>
+                                <h3>Test Withdrawals</h3>
+
+                                <p>
+                                    Simulate teller withdrawal transactions
+                                    without moving real money.
+                                </p>
+                            </div>
+
+                        </div>
+
+
+                        <div class="deposit-warning">
+
+                            <strong>
+                                SIMULATION ONLY — NO REAL MONEY
+                            </strong>
+
+                            <p>
+                                This test facility does not deduct member
+                                wallet balances, transfer funds, initiate
+                                Paystack payments or authorize physical
+                                cash payments.
+                            </p>
+
+                        </div>
+
+
+                        <!-- FIND TEST MEMBER -->
+
+                        <div class="content-card">
+
+                            <h4>1. Find Member</h4>
+
+                            <form
+                                id="testMemberSearchForm"
+                                class="search-form"
+                            >
+
+                                <input
+                                    type="text"
+                                    id="testMemberSearchInput"
+                                    placeholder="Enter member ID or phone number"
+                                    required
+                                >
+
+                                <button
+                                    type="submit"
+                                    id="testSearchMemberButton"
+                                    class="primary-button"
+                                >
+                                    Search
+                                </button>
+
+                            </form>
+
+
+                            <div
+                                id="testMemberSearchMessage"
+                                class="message hidden"
+                            ></div>
+
+
+                            <div
+                                id="testMemberResults"
+                                class="member-results hidden"
+                            ></div>
+
+
+                            <div
+                                id="selectedTestMemberCard"
+                                class="selected-member hidden"
+                            >
+
+                                <div class="selected-heading">
+
+                                    <span class="success-dot"></span>
+
+                                    <strong>
+                                        Selected Test Member
+                                    </strong>
+
+                                </div>
+
+
+                                <div class="member-details">
+
+                                    <div>
+                                        <span>Full Name</span>
+                                        <strong id="testMemberName">---</strong>
+                                    </div>
+
+                                    <div>
+                                        <span>Member ID</span>
+                                        <strong id="testMemberId">---</strong>
+                                    </div>
+
+                                    <div>
+                                        <span>Phone</span>
+                                        <strong id="testMemberPhone">---</strong>
+                                    </div>
+
+                                    <div>
+                                        <span>Account Status</span>
+                                        <strong id="testMemberStatus">---</strong>
+                                    </div>
+
+                                </div>
+
+
+                                <button
+                                    type="button"
+                                    id="changeTestMemberButton"
+                                    class="text-button"
+                                >
+                                    Change Member
+                                </button>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- TEST WITHDRAWAL FORM -->
+
+                        <div class="content-card">
+
+                            <h4>2. Test Withdrawal Details</h4>
+
+                            <p class="muted small">
+                                Use fictional payment details for this
+                                simulation.
+                            </p>
+
+
+                            <form id="testWithdrawalForm">
+
+                                <label for="testWithdrawalAmount">
+                                    Withdrawal Amount (GH₵)
+                                </label>
+
+                                <input
+                                    type="number"
+                                    id="testWithdrawalAmount"
+                                    min="0.01"
+                                    step="0.01"
+                                    placeholder="e.g. 100.00"
+                                    required
+                                >
+
+
+                                <label for="testWithdrawalMethod">
+                                    Withdrawal Method
+                                </label>
+
+                                <select
+                                    id="testWithdrawalMethod"
+                                    required
+                                >
+
+                                    <option value="">
+                                        Select withdrawal method
+                                    </option>
+
+                                    <option value="mtn_momo">
+                                        MTN Mobile Money
+                                    </option>
+
+                                    <option value="telecel_cash">
+                                        Telecel Cash
+                                    </option>
+
+                                    <option value="at_money">
+                                        AT Money
+                                    </option>
+
+                                    <option value="bank">
+                                        Bank
+                                    </option>
+
+                                </select>
+
+
+                                <label for="testPaymentDetails">
+                                    Test Payment Details
+                                </label>
+
+                                <input
+                                    type="text"
+                                    id="testPaymentDetails"
+                                    minlength="5"
+                                    maxlength="120"
+                                    placeholder="Enter fictional test details"
+                                    required
+                                >
+
+
+                                <div class="deposit-warning">
+
+                                    <strong>Test confirmation:</strong>
+
+                                    Submitting this form creates a simulated
+                                    withdrawal record only. No actual payment
+                                    or wallet deduction will occur.
+
+                                </div>
+
+
+                                <button
+                                    type="submit"
+                                    id="recordTestWithdrawalButton"
+                                    class="primary-button full-width"
+                                    disabled
+                                >
+                                    Record Test Withdrawal
+                                </button>
+
+                            </form>
+
+
+                            <div
+                                id="testWithdrawalMessage"
+                                class="message hidden"
+                                role="status"
+                                aria-live="polite"
+                            ></div>
+
+
+                            <!-- TEST WITHDRAWAL RECEIPT -->
+
+                            <div
+                                id="testWithdrawalReceipt"
+                                class="receipt hidden"
+                            >
+
+                                <div class="receipt-icon">
+                                    ✓
+                                </div>
+
+                                <h3>
+                                    Test Withdrawal Recorded
+                                </h3>
+
+                                <p id="testReceiptMessage">
+                                    Simulation completed successfully.
+                                </p>
+
+                                <div class="receipt-reference">
+
+                                    <span>Test Reference</span>
+
+                                    <strong id="testReceiptReference">
+                                        ---
+                                    </strong>
+
+                                </div>
+
+                                <div class="receipt-amount">
+
+                                    <span>Simulated Amount</span>
+
+                                    <strong id="testReceiptAmount">
+                                        GH₵0.00
+                                    </strong>
+
+                                </div>
+
+                                <p>
+                                    <strong>Status:</strong>
+                                    SIMULATED — NO MONEY TRANSFERRED
+                                </p>
+
+                                <button
+                                    type="button"
+                                    id="newTestWithdrawalButton"
+                                    class="primary-button"
+                                >
+                                    Record Another Test
+                                </button>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- TEST WITHDRAWAL HISTORY -->
+
+                        <div class="content-card">
+
+                            <div class="section-heading">
+
+                                <div>
+                                    <h4>
+                                        3. My Test Withdrawal History
+                                    </h4>
+
+                                    <p class="muted small">
+                                        Only test withdrawals recorded
+                                        under your teller account are
+                                        displayed.
+                                    </p>
+                                </div>
+
+                                <button
+                                    type="button"
+                                    id="refreshTestWithdrawalHistoryButton"
+                                    class="secondary-button"
+                                >
+                                    Refresh
+                                </button>
+
+                            </div>
+
+
+                            <div
+                                id="testWithdrawalHistoryMessage"
+                                class="message hidden"
+                            ></div>
+
+
+                            <div class="table-container">
+
+                                <table>
+
+                                    <thead>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Member</th>
+                                            <th>Reference</th>
+                                            <th>Method</th>
+                                            <th>Amount</th>
+                                            <th>Status</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody id="testWithdrawalHistoryBody">
+
+                                        <tr>
+                                            <td colspan="7" class="empty-state">
+                                                Test withdrawal history
+                                                will appear here.
+                                            </td>
+                                        </tr>
+
+                                    </tbody>
+
+                                </table>
+
+                            </div>
+
+                        </div>
+
+                    </section>
+
+
+                    <!-- =========================================
+                         MY TRANSACTIONS
+                    ========================================== -->
+
+                    <section
+                        id="historyPanel"
+                        class="dashboard-panel hidden"
+                    >
+
+                        <div class="section-heading">
+
+                            <div>
+                                <h3>My Transactions</h3>
+
+                                <p>
+                                    Deposits recorded under your
+                                    teller account.
+                                </p>
+                            </div>
+
+                            <button
+                                type="button"
+                                id="refreshHistoryButton"
+                                class="secondary-button"
+                            >
+                                Refresh
+                            </button>
+
+                        </div>
+
+
+                        <div
+                            id="historyMessage"
+                            class="message hidden"
+                            role="status"
+                            aria-live="polite"
+                        ></div>
+
+
+                        <div class="content-card">
+
+                            <div class="table-container">
+
+                                <table>
+
+                                    <thead>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Member</th>
+                                            <th>Reference</th>
+                                            <th>Method</th>
+                                            <th>Amount</th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody id="historyTableBody">
+
+                                        <tr>
+                                            <td colspan="5" class="empty-state">
+                                                Loading transactions...
+                                            </td>
+                                        </tr>
+
+                                    </tbody>
+
+                                </table>
+
+                            </div>
+
+                        </div>
+
+                    </section>
+
+
+                    <!-- =========================================
+                         MY ACCOUNT
+                    ========================================== -->
+
+                    <section
+                        id="profilePanel"
+                        class="dashboard-panel hidden"
+                    >
+
+                        <div class="section-heading">
+
+                            <div>
+                                <h3>My Teller Account</h3>
+
+                                <p>
+                                    Your registered teller account
+                                    information.
+                                </p>
+                            </div>
+
+                        </div>
+
+
+                        <div class="content-card profile-card">
+
+                            <div class="profile-avatar">
+                                T
+                            </div>
+
+
+                            <div class="profile-details">
+
+                                <div>
+                                    <span>Full Name</span>
+                                    <strong id="profileName">---</strong>
+                                </div>
+
+                                <div>
+                                    <span>Email Address</span>
+                                    <strong id="profileEmail">---</strong>
+                                </div>
+
+                                <div>
+                                    <span>Phone Number</span>
+                                    <strong id="profilePhone">---</strong>
+                                </div>
+
+                                <div>
+                                    <span>Teller Code</span>
+                                    <strong id="profileCode">---</strong>
+                                </div>
+
+                                <div>
+                                    <span>Account Status</span>
+                                    <strong id="profileStatus">---</strong>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </section>
+
+
+                    <!-- =========================================
+                         CUSTOMER SUPPORT
+                    ========================================== -->
+
+                    <section
+                        id="supportPanel"
+                        class="dashboard-panel hidden"
+                    >
+
+                        <div class="section-heading">
+
+                            <div>
+                                <h3>Customer Support</h3>
+
+                                <p>
+                                    Manage customer reports and respond
+                                    to member issues. All active tellers
+                                    and administrators share this inbox.
+                                </p>
+                            </div>
+
+                            <button
+                                type="button"
+                                id="refreshSupportTicketsButton"
+                                class="secondary-button"
+                            >
+                                Refresh Reports
+                            </button>
+
+                        </div>
+
+
+                        <div
+                            id="tellerSupportMessage"
+                            class="message hidden"
+                            role="status"
+                            aria-live="polite"
+                        ></div>
+
+
+                        <!-- CUSTOMER REPORTS INBOX -->
+
+                        <div class="content-card">
+
+                            <div class="section-heading">
+
+                                <div>
+                                    <h4>Customer Reports Inbox</h4>
+
+                                    <p class="muted small">
+                                        View reports submitted by members.
+                                    </p>
+                                </div>
+
+                            </div>
+
+
+                            <input
+                                type="search"
+                                id="supportTicketSearch"
+                                placeholder="Search customer, member ID or report subject..."
+                                autocomplete="off"
+                            >
+
+
+                            <div
+                                id="tellerSupportTicketList"
+                                class="support-ticket-list"
+                            >
+
+                                <p class="empty-state">
+                                    Customer reports will appear here.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- CUSTOMER CONVERSATION -->
+
+                        <div
+                            id="tellerSupportConversation"
+                            class="content-card hidden"
+                        >
+
+                            <div class="section-heading">
+
+                                <div>
+                                    <h4 id="tellerSupportSubject">
+                                        Customer Report
+                                    </h4>
+
+                                    <p id="tellerSupportCustomer">
+                                        Customer information
+                                    </p>
+                                </div>
+
+                                <button
+                                    type="button"
+                                    id="closeTellerSupportConversation"
+                                    class="secondary-button"
+                                >
+                                    Back to Reports
+                                </button>
+
+                            </div>
+
+
+                            <!-- REPORT DETAILS -->
+
+                            <div class="member-details">
+
+                                <div>
+                                    <span>Category</span>
+                                    <strong id="tellerSupportCategory">
+                                        ---
+                                    </strong>
+                                </div>
+
+                                <div>
+                                    <span>Member ID</span>
+                                    <strong id="tellerSupportMemberId">
+                                        ---
+                                    </strong>
+                                </div>
+
+                                <div>
+                                    <span>Status</span>
+                                    <strong id="tellerSupportStatus">
+                                        ---
+                                    </strong>
+                                </div>
+
+                                <div>
+                                    <span>Submitted</span>
+                                    <strong id="tellerSupportDate">
+                                        ---
+                                    </strong>
+                                </div>
+
+                            </div>
+
+
+                            <!-- STATUS MANAGEMENT -->
+
+                            <div class="support-status-controls">
+
+                                <h4>Report Status</h4>
+
+                                <label for="tellerSupportStatusSelect">
+                                    Update Report Status
+                                </label>
+
+                                <select id="tellerSupportStatusSelect">
+
+                                    <option value="open">
+                                        Open
+                                    </option>
+
+                                    <option value="in_progress">
+                                        In Progress
+                                    </option>
+
+                                    <option value="resolved">
+                                        Resolved
+                                    </option>
+
+                                    <option value="closed">
+                                        Closed
+                                    </option>
+
+                                </select>
+
+
+                                <button
+                                    type="button"
+                                    id="updateTellerSupportStatusButton"
+                                    class="primary-button"
+                                >
+                                    Update Status
+                                </button>
+
+                            </div>
+
+
+                            <!-- CONVERSATION MESSAGES -->
+
+                            <div class="support-conversation-area">
+
+                                <h4>Conversation</h4>
+
+                                <div
+                                    id="tellerSupportMessageList"
+                                    class="support-message-list"
+                                >
+
+                                    <p class="empty-state">
+                                        Conversation messages will
+                                        appear here.
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- REPLY FORM -->
+
+                            <div class="support-reply-area">
+
+                                <form id="tellerSupportReplyForm">
+
+                                    <label for="tellerSupportReply">
+                                        Reply to Customer
+                                    </label>
+
+                                    <textarea
+                                        id="tellerSupportReply"
+                                        rows="4"
+                                        maxlength="5000"
+                                        placeholder="Type your response to the customer..."
+                                        required
+                                    ></textarea>
+
+                                    <button
+                                        type="submit"
+                                        id="tellerSupportReplyButton"
+                                        class="primary-button full-width"
+                                    >
+                                        Send Reply
+                                    </button>
+
+                                </form>
+
+
+                                <p
+                                    id="tellerSupportClosedNotice"
+                                    class="muted hidden"
+                                >
+                                    This report is closed and cannot
+                                    receive replies.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                    </section>
+
+
+                    <!-- =========================================
+                         DASHBOARD FOOTER
+                    ========================================== -->
+
+                    <footer class="dashboard-footer">
+
+                        <p>
+                            © <span id="currentYear"></span>
+                            Nexus Wealth Partners.
+                        </p>
+
+                        <p>
+                            Secure Teller Workspace
+                        </p>
+
+                    </footer>
+
                 </div>
 
             </div>
-
-
-            <!-- NAVIGATION -->
-
-            <nav class="dashboard-nav">
-
-                <button
-                    type="button"
-                    class="nav-button active"
-                    data-panel="depositPanel"
-                >
-                    Record Deposit
-                </button>
-
-                <button
-                    type="button"
-                    class="nav-button"
-                    data-panel="registerMemberPanel"
-                >
-                    Register New Member
-                </button>
-
-                <button
-                    type="button"
-                    class="nav-button"
-                    data-panel="myRegisteredMembersPanel"
-                >
-                    My Registered Members
-                </button>
-
-                <button
-                    type="button"
-                    class="nav-button"
-                    data-panel="testWithdrawalPanel"
-                >
-                    Test Withdrawals
-                </button>
-
-                <button
-                    type="button"
-                    class="nav-button"
-                    data-panel="historyPanel"
-                >
-                    My Transactions
-                </button>
-
-                <button
-                    type="button"
-                    class="nav-button"
-                    data-panel="profilePanel"
-                >
-                    My Account
-                </button>
-
-                <button
-                    type="button"
-                    class="nav-button"
-                    data-panel="supportPanel"
-                >
-                    Customer Support
-                </button>
-
-            </nav>
-
-
-            <!-- =================================================
-                 REGISTER NEW MEMBER PANEL
-            ================================================== -->
-
-            <section
-                id="registerMemberPanel"
-                class="dashboard-panel hidden"
-            >
-
-                <div class="section-heading">
-                    <div>
-                        <h3>Register New Member</h3>
-
-                        <p>
-                            Register a new member using their correct
-                            personal information.
-                        </p>
-                    </div>
-                </div>
-
-                <div class="content-card">
-
-                    <h4>Member Registration Details</h4>
-
-                    <div class="deposit-warning">
-                        <strong>Important Security Notice</strong>
-
-                        <p>
-                            The member must provide their own email address.
-                            They will receive an invitation to create their
-                            personal password.
-                        </p>
-
-                        <p>
-                            Never create, request or handle a member's password.
-                        </p>
-                    </div>
-
-                    <form id="tellerMemberRegistrationForm">
-
-                        <label for="tellerNewMemberName">
-                            Member Full Name
-                        </label>
-
-                        <input
-                            type="text"
-                            id="tellerNewMemberName"
-                            placeholder="Enter member's full name"
-                            autocomplete="name"
-                            maxlength="150"
-                            required
-                        >
-
-                        <label for="tellerNewMemberEmail">
-                            Member Email Address
-                        </label>
-
-                        <input
-                            type="email"
-                            id="tellerNewMemberEmail"
-                            placeholder="Enter member's email address"
-                            autocomplete="email"
-                            maxlength="254"
-                            required
-                        >
-
-                        <label for="tellerNewMemberPhone">
-                            Ghana Mobile Number
-                        </label>
-
-                        <input
-                            type="tel"
-                            id="tellerNewMemberPhone"
-                            placeholder="e.g. 0241234567 or +233241234567"
-                            autocomplete="tel"
-                            maxlength="20"
-                            required
-                        >
-
-                        <button
-                            type="submit"
-                            id="registerTellerMemberButton"
-                            class="primary-button full-width"
-                        >
-                            Register Member
-                        </button>
-
-                    </form>
-
-                    <div
-                        id="tellerMemberRegistrationMessage"
-                        class="message hidden"
-                        role="status"
-                        aria-live="polite"
-                    ></div>
-
-                </div>
-
-            </section>
-
-
-            <!-- =================================================
-                 MY REGISTERED MEMBERS PANEL
-            ================================================== -->
-
-            <section
-                id="myRegisteredMembersPanel"
-                class="dashboard-panel hidden"
-            >
-
-                <div class="section-heading">
-
-                    <div>
-                        <h3>My Registered Members</h3>
-
-                        <p>
-                            View members registered through your teller account.
-                        </p>
-                    </div>
-
-                    <button
-                        type="button"
-                        id="refreshMyRegisteredMembersButton"
-                        class="secondary-button"
-                    >
-                        Refresh
-                    </button>
-
-                </div>
-
-                <div
-                    id="myRegisteredMembersMessage"
-                    class="message hidden"
-                    role="status"
-                    aria-live="polite"
-                ></div>
-
-                <div class="content-card">
-
-                    <div class="table-container">
-
-                        <table>
-
-                            <thead>
-                                <tr>
-                                    <th>Member ID</th>
-                                    <th>Full Name</th>
-                                    <th>Email</th>
-                                    <th>Phone</th>
-                                    <th>Date Registered</th>
-                                    <th>Verification Status</th>
-                                    <th>Account Status</th>
-                                </tr>
-                            </thead>
-
-                            <tbody id="myRegisteredMembersTableBody">
-
-                                <tr>
-                                    <td colspan="7" class="empty-state">
-                                        Your registered members will appear here.
-                                    </td>
-                                </tr>
-
-                            </tbody>
-
-                        </table>
-
-                    </div>
-
-                </div>
-
-            </section>
-
-
-            <!-- =================================================
-                 DEPOSIT PANEL
-            ================================================== -->
-
-            <section id="depositPanel" class="dashboard-panel">
-
-                <div class="section-heading">
-                    <div>
-                        <h3>Record Member Deposit</h3>
-
-                        <p>
-                            Search for the member before recording money received.
-                        </p>
-                    </div>
-                </div>
-
-                <div class="content-card">
-
-                    <h4>1. Find Member</h4>
-
-                    <form id="memberSearchForm" class="search-form">
-
-                        <input
-                            type="text"
-                            id="memberSearchInput"
-                            placeholder="Enter member ID or phone number"
-                            required
-                        >
-
-                        <button
-                            type="submit"
-                            id="searchMemberButton"
-                            class="primary-button"
-                        >
-                            Search
-                        </button>
-
-                    </form>
-
-                    <div
-                        id="memberSearchMessage"
-                        class="message hidden"
-                    ></div>
-
-                    <div
-                        id="memberResults"
-                        class="member-results hidden"
-                    ></div>
-
-                    <div
-                        id="selectedMemberCard"
-                        class="selected-member hidden"
-                    >
-
-                        <div class="selected-heading">
-                            <span class="success-dot"></span>
-                            <strong>Selected Member</strong>
-                        </div>
-
-                        <div class="member-details">
-
-                            <div>
-                                <span>Full Name</span>
-                                <strong id="selectedMemberName">---</strong>
-                            </div>
-
-                            <div>
-                                <span>Member ID</span>
-                                <strong id="selectedMemberId">---</strong>
-                            </div>
-
-                            <div>
-                                <span>Phone</span>
-                                <strong id="selectedMemberPhone">---</strong>
-                            </div>
-
-                            <div>
-                                <span>Account Status</span>
-                                <strong id="selectedMemberStatus">---</strong>
-                            </div>
-
-                        </div>
-
-                        <button
-                            type="button"
-                            id="changeMemberButton"
-                            class="text-button"
-                        >
-                            Change Member
-                        </button>
-
-                    </div>
-
-                </div>
-
-                <div class="content-card deposit-card">
-
-                    <h4>2. Deposit Details</h4>
-
-                    <p class="muted small">
-                        Confirm that you have physically received or verified
-                        the money before submitting this transaction.
-                    </p>
-
-                    <form id="depositForm">
-
-                        <label for="depositAmount">
-                            Deposit Amount (GH₵)
-                        </label>
-
-                        <input
-                            type="number"
-                            id="depositAmount"
-                            min="0.01"
-                            step="0.01"
-                            placeholder="e.g. 100.00"
-                            required
-                        >
-
-                        <label for="depositMethod">
-                            Payment Method
-                        </label>
-
-                        <select id="depositMethod" required>
-                            <option value="">Select payment method</option>
-                            <option value="cash">Cash</option>
-                            <option value="mobile_money">Mobile Money</option>
-                            <option value="bank_transfer">Bank Transfer</option>
-                        </select>
-
-                        <div id="paymentPhoneGroup" class="hidden">
-
-                            <label for="paymentPhone">
-                                Payment Phone Number
-                            </label>
-
-                            <input
-                                type="tel"
-                                id="paymentPhone"
-                                placeholder="Enter payment phone number"
-                            >
-
-                        </div>
-
-                        <div class="deposit-warning">
-                            <strong>Important:</strong>
-                            A successful submission immediately credits
-                            the member's wallet. Verify the amount and
-                            member carefully before proceeding.
-                        </div>
-
-                        <button
-                            type="submit"
-                            id="recordDepositButton"
-                            class="primary-button full-width"
-                            disabled
-                        >
-                            Record Deposit
-                        </button>
-
-                    </form>
-
-                    <div
-                        id="depositMessage"
-                        class="message hidden"
-                    ></div>
-
-                    <div id="depositReceipt" class="receipt hidden">
-
-                        <div class="receipt-icon">✓</div>
-
-                        <h3>Deposit Recorded</h3>
-
-                        <p id="receiptMessage">
-                            Deposit recorded successfully.
-                        </p>
-
-                        <div class="receipt-reference">
-                            <span>Transaction Reference</span>
-                            <strong id="receiptReference">---</strong>
-                        </div>
-
-                        <div class="receipt-amount">
-                            <span>Amount</span>
-                            <strong id="receiptAmount">GH₵0.00</strong>
-                        </div>
-
-                        <button
-                            type="button"
-                            id="newDepositButton"
-                            class="primary-button"
-                        >
-                            Record Another Deposit
-                        </button>
-
-                    </div>
-
-                </div>
-
-            </section>
-
-
-            <!-- =================================================
-                 TEST WITHDRAWALS PANEL
-            ================================================== -->
-
-            <section
-                id="testWithdrawalPanel"
-                class="dashboard-panel hidden"
-            >
-
-                <div class="section-heading">
-                    <div>
-                        <h3>Test Withdrawals</h3>
-
-                        <p>
-                            Simulate teller withdrawal transactions without
-                            moving real money.
-                        </p>
-                    </div>
-                </div>
-
-                <div class="deposit-warning">
-
-                    <strong>SIMULATION ONLY — NO REAL MONEY</strong>
-
-                    <p>
-                        This test facility does not deduct member wallet
-                        balances, transfer funds, initiate Paystack payments
-                        or authorize physical cash payments.
-                    </p>
-
-                </div>
-
-                <div class="content-card">
-
-                    <h4>1. Find Member</h4>
-
-                    <form
-                        id="testMemberSearchForm"
-                        class="search-form"
-                    >
-
-                        <input
-                            type="text"
-                            id="testMemberSearchInput"
-                            placeholder="Enter member ID or phone number"
-                            required
-                        >
-
-                        <button
-                            type="submit"
-                            id="testSearchMemberButton"
-                            class="primary-button"
-                        >
-                            Search
-                        </button>
-
-                    </form>
-
-                    <div
-                        id="testMemberSearchMessage"
-                        class="message hidden"
-                    ></div>
-
-                    <div
-                        id="testMemberResults"
-                        class="member-results hidden"
-                    ></div>
-
-                    <div
-                        id="selectedTestMemberCard"
-                        class="selected-member hidden"
-                    >
-
-                        <div class="selected-heading">
-                            <span class="success-dot"></span>
-                            <strong>Selected Test Member</strong>
-                        </div>
-
-                        <div class="member-details">
-
-                            <div>
-                                <span>Full Name</span>
-                                <strong id="testMemberName">---</strong>
-                            </div>
-
-                            <div>
-                                <span>Member ID</span>
-                                <strong id="testMemberId">---</strong>
-                            </div>
-
-                            <div>
-                                <span>Phone</span>
-                                <strong id="testMemberPhone">---</strong>
-                            </div>
-
-                            <div>
-                                <span>Account Status</span>
-                                <strong id="testMemberStatus">---</strong>
-                            </div>
-
-                        </div>
-
-                        <button
-                            type="button"
-                            id="changeTestMemberButton"
-                            class="text-button"
-                        >
-                            Change Member
-                        </button>
-
-                    </div>
-
-                </div>
-
-                <div class="content-card">
-
-                    <h4>2. Test Withdrawal Details</h4>
-
-                    <p class="muted small">
-                        Use fictional payment details for this simulation.
-                    </p>
-
-                    <form id="testWithdrawalForm">
-
-                        <label for="testWithdrawalAmount">
-                            Withdrawal Amount (GH₵)
-                        </label>
-
-                        <input
-                            type="number"
-                            id="testWithdrawalAmount"
-                            min="0.01"
-                            step="0.01"
-                            placeholder="e.g. 100.00"
-                            required
-                        >
-
-                        <label for="testWithdrawalMethod">
-                            Withdrawal Method
-                        </label>
-
-                        <select id="testWithdrawalMethod" required>
-
-                            <option value="">
-                                Select withdrawal method
-                            </option>
-
-                            <option value="mtn_momo">
-                                MTN Mobile Money
-                            </option>
-
-                            <option value="telecel_cash">
-                                Telecel Cash
-                            </option>
-
-                            <option value="at_money">
-                                AT Money
-                            </option>
-
-                            <option value="bank">
-                                Bank
-                            </option>
-
-                        </select>
-
-                        <label for="testPaymentDetails">
-                            Test Payment Details
-                        </label>
-
-                        <input
-                            type="text"
-                            id="testPaymentDetails"
-                            minlength="5"
-                            maxlength="120"
-                            placeholder="Enter fictional test details"
-                            required
-                        >
-
-                        <div class="deposit-warning">
-
-                            <strong>Test confirmation:</strong>
-
-                            Submitting this form creates a simulated
-                            withdrawal record only. No actual payment
-                            or wallet deduction will occur.
-
-                        </div>
-
-                        <button
-                            type="submit"
-                            id="recordTestWithdrawalButton"
-                            class="primary-button full-width"
-                            disabled
-                        >
-                            Record Test Withdrawal
-                        </button>
-
-                    </form>
-
-                    <div
-                        id="testWithdrawalMessage"
-                        class="message hidden"
-                    ></div>
-
-                    <div
-                        id="testWithdrawalReceipt"
-                        class="receipt hidden"
-                    >
-
-                        <div class="receipt-icon">✓</div>
-
-                        <h3>Test Withdrawal Recorded</h3>
-
-                        <p id="testReceiptMessage">
-                            Simulation completed successfully.
-                        </p>
-
-                        <div class="receipt-reference">
-                            <span>Test Reference</span>
-                            <strong id="testReceiptReference">---</strong>
-                        </div>
-
-                        <div class="receipt-amount">
-                            <span>Simulated Amount</span>
-                            <strong id="testReceiptAmount">GH₵0.00</strong>
-                        </div>
-
-                        <p>
-                            <strong>Status:</strong>
-                            SIMULATED — NO MONEY TRANSFERRED
-                        </p>
-
-                        <button
-                            type="button"
-                            id="newTestWithdrawalButton"
-                            class="primary-button"
-                        >
-                            Record Another Test
-                        </button>
-
-                    </div>
-
-                </div>
-
-                <div class="content-card">
-
-                    <div class="section-heading">
-
-                        <div>
-                            <h4>3. My Test Withdrawal History</h4>
-
-                            <p class="muted small">
-                                Only test withdrawals recorded under
-                                your teller account are displayed.
-                            </p>
-                        </div>
-
-                        <button
-                            type="button"
-                            id="refreshTestWithdrawalHistoryButton"
-                            class="secondary-button"
-                        >
-                            Refresh
-                        </button>
-
-                    </div>
-
-                    <div
-                        id="testWithdrawalHistoryMessage"
-                        class="message hidden"
-                    ></div>
-
-                    <div class="table-container">
-
-                        <table>
-
-                            <thead>
-                                <tr>
-                                    <th>Date</th>
-                                    <th>Member</th>
-                                    <th>Reference</th>
-                                    <th>Method</th>
-                                    <th>Amount</th>
-                                    <th>Status</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-
-                            <tbody id="testWithdrawalHistoryBody">
-
-                                <tr>
-                                    <td colspan="7" class="empty-state">
-                                        Test withdrawal history will appear here.
-                                    </td>
-                                </tr>
-
-                            </tbody>
-
-                        </table>
-
-                    </div>
-
-                </div>
-
-            </section>
-
-
-            <!-- =================================================
-                 DEPOSIT HISTORY PANEL
-            ================================================== -->
-
-            <section
-                id="historyPanel"
-                class="dashboard-panel hidden"
-            >
-
-                <div class="section-heading">
-
-                    <div>
-                        <h3>My Transactions</h3>
-
-                        <p>
-                            Deposits recorded under your teller account.
-                        </p>
-                    </div>
-
-                    <button
-                        type="button"
-                        id="refreshHistoryButton"
-                        class="secondary-button"
-                    >
-                        Refresh
-                    </button>
-
-                </div>
-
-                <div
-                    id="historyMessage"
-                    class="message hidden"
-                ></div>
-
-                <div class="table-container">
-
-                    <table>
-
-                        <thead>
-                            <tr>
-                                <th>Date</th>
-                                <th>Member</th>
-                                <th>Reference</th>
-                                <th>Method</th>
-                                <th>Amount</th>
-                            </tr>
-                        </thead>
-
-                        <tbody id="historyTableBody">
-
-                            <tr>
-                                <td colspan="5" class="empty-state">
-                                    Loading transactions...
-                                </td>
-                            </tr>
-
-                        </tbody>
-
-                    </table>
-
-                </div>
-
-            </section>
-
-
-            <!-- =================================================
-                 PROFILE PANEL
-            ================================================== -->
-
-            <section
-                id="profilePanel"
-                class="dashboard-panel hidden"
-            >
-
-                <div class="section-heading">
-
-                    <div>
-                        <h3>My Teller Account</h3>
-
-                        <p>
-                            Your registered teller account information.
-                        </p>
-                    </div>
-
-                </div>
-
-                <div class="content-card profile-card">
-
-                    <div class="profile-avatar">T</div>
-
-                    <div class="profile-details">
-
-                        <div>
-                            <span>Full Name</span>
-                            <strong id="profileName">---</strong>
-                        </div>
-
-                        <div>
-                            <span>Email Address</span>
-                            <strong id="profileEmail">---</strong>
-                        </div>
-
-                        <div>
-                            <span>Phone Number</span>
-                            <strong id="profilePhone">---</strong>
-                        </div>
-
-                        <div>
-                            <span>Teller Code</span>
-                            <strong id="profileCode">---</strong>
-                        </div>
-
-                        <div>
-                            <span>Account Status</span>
-                            <strong id="profileStatus">---</strong>
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </section>
-
-
-            <!-- =================================================
-                 CUSTOMER SUPPORT PANEL
-            ================================================== -->
-
-            <section
-                id="supportPanel"
-                class="dashboard-panel hidden"
-            >
-
-                <div class="section-heading">
-
-                    <div>
-                        <h3>Customer Support</h3>
-
-                        <p>
-                            Manage customer reports and respond to member issues.
-                            All active tellers and administrators share this inbox.
-                        </p>
-                    </div>
-
-                    <button
-                        type="button"
-                        id="refreshSupportTicketsButton"
-                        class="secondary-button"
-                    >
-                        Refresh Reports
-                    </button>
-
-                </div>
-
-                <div
-                    id="tellerSupportMessage"
-                    class="message hidden"
-                ></div>
-
-                <!-- CUSTOMER REPORTS INBOX -->
-
-                <div class="content-card">
-
-                    <div class="section-heading">
-
-                        <div>
-                            <h4>Customer Reports Inbox</h4>
-
-                            <p class="muted small">
-                                View reports submitted by members.
-                            </p>
-                        </div>
-
-                    </div>
-
-                    <input
-                        type="search"
-                        id="supportTicketSearch"
-                        placeholder="Search customer, member ID or report subject..."
-                        autocomplete="off"
-                    >
-
-                    <div
-                        id="tellerSupportTicketList"
-                        class="support-ticket-list"
-                    >
-
-                        <p class="empty-state">
-                            Customer reports will appear here.
-                        </p>
-
-                    </div>
-
-                </div>
-
-                <!-- CUSTOMER CONVERSATION -->
-
-                <div
-                    id="tellerSupportConversation"
-                    class="content-card hidden"
-                >
-
-                    <div class="section-heading">
-
-                        <div>
-                            <h4 id="tellerSupportSubject">
-                                Customer Report
-                            </h4>
-
-                            <p id="tellerSupportCustomer">
-                                Customer information
-                            </p>
-                        </div>
-
-                        <button
-                            type="button"
-                            id="closeTellerSupportConversation"
-                            class="secondary-button"
-                        >
-                            Back to Reports
-                        </button>
-
-                    </div>
-
-                    <!-- REPORT DETAILS -->
-
-                    <div class="member-details">
-
-                        <div>
-                            <span>Category</span>
-                            <strong id="tellerSupportCategory">---</strong>
-                        </div>
-
-                        <div>
-                            <span>Member ID</span>
-                            <strong id="tellerSupportMemberId">---</strong>
-                        </div>
-
-                        <div>
-                            <span>Status</span>
-                            <strong id="tellerSupportStatus">---</strong>
-                        </div>
-
-                        <div>
-                            <span>Submitted</span>
-                            <strong id="tellerSupportDate">---</strong>
-                        </div>
-
-                    </div>
-
-                    <!-- STATUS MANAGEMENT -->
-
-                    <div class="support-status-controls">
-
-                        <h4>Report Status</h4>
-
-                        <label for="tellerSupportStatusSelect">
-                            Update report status
-                        </label>
-
-                        <select id="tellerSupportStatusSelect">
-
-                            <option value="open">Open</option>
-
-                            <option value="in_progress">
-                                In Progress
-                            </option>
-
-                            <option value="resolved">
-                                Resolved
-                            </option>
-
-                            <option value="closed">
-                                Closed
-                            </option>
-
-                        </select>
-
-                        <button
-                            type="button"
-                            id="updateTellerSupportStatusButton"
-                            class="primary-button"
-                        >
-                            Update Status
-                        </button>
-
-                    </div>
-
-                    <!-- CONVERSATION MESSAGES -->
-
-                    <div class="support-conversation-area">
-
-                        <h4>Conversation</h4>
-
-                        <div
-                            id="tellerSupportMessageList"
-                            class="support-message-list"
-                        >
-
-                            <p class="empty-state">
-                                Conversation messages will appear here.
-                            </p>
-
-                        </div>
-
-                    </div>
-
-                    <!-- REPLY FORM -->
-
-                    <div class="support-reply-area">
-
-                        <form id="tellerSupportReplyForm">
-
-                            <label for="tellerSupportReply">
-                                Reply to Customer
-                            </label>
-
-                            <textarea
-                                id="tellerSupportReply"
-                                rows="4"
-                                maxlength="5000"
-                                placeholder="Type your response to the customer..."
-                                required
-                            ></textarea>
-
-                            <button
-                                type="submit"
-                                id="tellerSupportReplyButton"
-                                class="primary-button full-width"
-                            >
-                                Send Reply
-                            </button>
-
-                        </form>
-
-                        <p
-                            id="tellerSupportClosedNotice"
-                            class="muted hidden"
-                        >
-                            This report is closed and cannot receive replies.
-                        </p>
-
-                    </div>
-
-                </div>
-
-            </section>
 
         </section>
 
     </main>
 
+
+    <!-- =====================================================
+         PAGE FOOTER
+    ====================================================== -->
+
     <footer class="footer">
 
         <p>
-            © <span id="currentYear"></span> Nexus Wealth Partners.
+            © <span id="currentYearFooter"></span>
+            Nexus Wealth Partners.
         </p>
 
-        <p>Secure Teller Portal</p>
+        <p>
+            Secure Teller Portal
+        </p>
 
     </footer>
 
+
+    <!-- =====================================================
+         CURRENT YEAR
+    ====================================================== -->
+
+    <script>
+        const currentYearElement =
+            document.getElementById("currentYear");
+
+        const currentYearFooterElement =
+            document.getElementById("currentYearFooter");
+
+        const currentYear = new Date().getFullYear();
+
+        if (currentYearElement) {
+            currentYearElement.textContent = currentYear;
+        }
+
+        if (currentYearFooterElement) {
+            currentYearFooterElement.textContent = currentYear;
+        }
+    </script>
+
 </body>
 </html>
+```
