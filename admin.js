@@ -5050,8 +5050,10 @@ async function loadAdminRefundRequests() {
 }
 
 
+
 /* =========================================================
    DISPLAY ADMIN REFUND REQUESTS
+   CUSTOMER NAME + EMAIL + REFUND AUDIT
 ========================================================= */
 
 function displayAdminRefundRequests(refunds) {
@@ -5060,7 +5062,7 @@ function displayAdminRefundRequests(refunds) {
 
     const records = Array.isArray(refunds) ? refunds : [];
 
-    // Safely format text before inserting database values into HTML.
+    // Safely format database values before inserting into HTML.
     const escapeHTML = value => String(value ?? "").replace(
         /[&<>"']/g,
         character => ({
@@ -5081,6 +5083,7 @@ function displayAdminRefundRequests(refunds) {
     };
 
     const formatDate = date => {
+
         if (!date) return "—";
 
         const parsedDate = new Date(date);
@@ -5098,14 +5101,36 @@ function displayAdminRefundRequests(refunds) {
         });
     };
 
-    const formatMember = userId => {
-        if (!userId) return "Unknown";
+    // Customer information from the database RPC.
+    const formatMember = refund => {
 
-        const id = String(userId);
+        const customerName =
+            String(refund.customer_name || "").trim();
 
-        return id.length > 12
-            ? id.substring(0, 8) + "..."
-            : id;
+        const customerEmail =
+            String(refund.customer_email || "").trim();
+
+        if (customerName && customerEmail) {
+            return `
+                <strong>${escapeHTML(customerName)}</strong>
+                <br>
+                <small>${escapeHTML(customerEmail)}</small>
+            `;
+        }
+
+        if (customerName) {
+            return `<strong>${escapeHTML(customerName)}</strong>`;
+        }
+
+        if (customerEmail) {
+            return escapeHTML(customerEmail);
+        }
+
+        return `
+            <span title="${escapeHTML(refund.user_id || "")}">
+                Customer information unavailable
+            </span>
+        `;
     };
 
     // Update refund statistics.
@@ -5128,6 +5153,7 @@ function displayAdminRefundRequests(refunds) {
     ).length;
 
     const updateStat = (id, value) => {
+
         const element = document.getElementById(id);
 
         if (element) {
@@ -5140,7 +5166,7 @@ function displayAdminRefundRequests(refunds) {
     updateStat("adminRefundsNeedsAttention", attentionCount);
     updateStat("adminProcessedRefunds", processedCount);
 
-    // Display empty state.
+    // Empty state.
     if (records.length === 0) {
 
         refundRequestsTable.innerHTML = `
@@ -5186,9 +5212,7 @@ function displayAdminRefundRequests(refunds) {
             refund.paystack_transaction_reference || "—"
         );
 
-        const member = escapeHTML(
-            formatMember(refund.user_id)
-        );
+        const member = formatMember(refund);
 
         const amount = escapeHTML(
             formatMoney(refund.amount)
@@ -5216,7 +5240,7 @@ function displayAdminRefundRequests(refunds) {
                     ${depositReference}
                 </td>
 
-                <td title="${escapeHTML(refund.user_id || "")}">
+                <td>
                     ${member}
                 </td>
 
@@ -5240,6 +5264,10 @@ function displayAdminRefundRequests(refunds) {
 
     }).join("");
 }
+
+
+    
+            
 
 /* =========================================================
    REFRESH ADMIN REFUND REQUESTS
