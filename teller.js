@@ -247,6 +247,38 @@ const closeTellerSupportConversation =
 const tellerSupportClosedNotice =
     document.getElementById("tellerSupportClosedNotice");
 
+// TELLER MEMBER REGISTRATION
+
+const tellerMemberRegistrationForm =
+    document.getElementById("tellerMemberRegistrationForm");
+
+const tellerNewMemberName =
+    document.getElementById("tellerNewMemberName");
+
+const tellerNewMemberEmail =
+    document.getElementById("tellerNewMemberEmail");
+
+const tellerNewMemberPhone =
+    document.getElementById("tellerNewMemberPhone");
+
+const registerTellerMemberButton =
+    document.getElementById("registerTellerMemberButton");
+
+const tellerMemberRegistrationMessage =
+    document.getElementById("tellerMemberRegistrationMessage");
+
+
+// MY REGISTERED MEMBERS
+
+const refreshMyRegisteredMembersButton =
+    document.getElementById("refreshMyRegisteredMembersButton");
+
+const myRegisteredMembersMessage =
+    document.getElementById("myRegisteredMembersMessage");
+
+const myRegisteredMembersTableBody =
+    document.getElementById("myRegisteredMembersTableBody");
+
 
 /* =========================================================
    3. APPLICATION STATE
@@ -271,6 +303,11 @@ let currentSupportTicket = null;
 
 let supportReplyInProgress = false;
 let supportStatusInProgress = false;
+
+// MEMBER REGISTRATION STATE
+
+let memberRegistrationInProgress = false;
+let registeredMembersLoadInProgress = false;
 
 
 /* =========================================================
@@ -366,40 +403,53 @@ function setButtonLoading(button, loading, normalText) {
 
 function showLogin() {
 
-    loginSection.classList.remove("hidden");
-    dashboardSection.classList.add("hidden");
-    logoutButton.classList.add("hidden");
+    loginSection?.classList.remove("hidden");
+    dashboardSection?.classList.add("hidden");
+    logoutButton?.classList.add("hidden");
 
     currentTeller = null;
     currentUser = null;
 
     // Clear live deposit selection.
-
     selectedMember = null;
     searchedMembers = [];
 
-    selectedMemberCard.classList.add("hidden");
-    memberResults.classList.add("hidden");
-    recordDepositButton.disabled = true;
+    selectedMemberCard?.classList.add("hidden");
+    memberResults?.classList.add("hidden");
+
+    if (recordDepositButton) {
+        recordDepositButton.disabled = true;
+    }
 
     // Clear test withdrawal selection.
-
     selectedTestMember = null;
     testSearchedMembers = [];
 
-    selectedTestMemberCard.classList.add("hidden");
-    testMemberResults.classList.add("hidden");
-    recordTestWithdrawalButton.disabled = true;
+    selectedTestMemberCard?.classList.add("hidden");
+    testMemberResults?.classList.add("hidden");
 
-    // Clear support state.
+    if (recordTestWithdrawalButton) {
+        recordTestWithdrawalButton.disabled = true;
+    }
 
+    // Clear customer support state.
     currentSupportTicket = null;
     tellerSupportTickets = [];
 
-    tellerSupportConversation.classList.add("hidden");
-    tellerSupportTicketList.innerHTML = `
-        <p class="empty-state">Sign in to view customer reports.</p>
-    `;
+    tellerSupportConversation?.classList.add("hidden");
+
+    if (tellerSupportTicketList) {
+        tellerSupportTicketList.innerHTML = `
+            <p class="empty-state">
+                Sign in to view customer reports.
+            </p>
+        `;
+    }
+
+    // Clear member registration state.
+    if (myRegisteredMembersMessage) {
+        hideMessage(myRegisteredMembersMessage);
+    }
 
 }
 
