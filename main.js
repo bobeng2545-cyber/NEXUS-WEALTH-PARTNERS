@@ -410,14 +410,18 @@ function setMobileDashboardView(screen, shouldScroll = true) {
         });
 
     });
+   
+   
+   document.querySelectorAll(
+      "#memberDashboard .dashboard-content-grid"
+   ).forEach(element => {
+      
+      if (element && element.classList) {
+         element.classList.remove("mobile-savings-visible");
+      }
+   
+   });
 
-    document.querySelectorAll(
-        "#memberDashboard .dashboard-content-grid"
-    ).forEach(element => {
-
-        element.classList.remove("mobile-savings-visible");
-
-    });
 
 
     /* DESKTOP VIEW */
