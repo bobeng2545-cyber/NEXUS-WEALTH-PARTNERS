@@ -1918,3 +1918,123 @@ a:focus-visible {
     }
 
 }
+
+
+/* =========================================================
+   30. FINAL DASHBOARD LAYOUT AND VISIBILITY FIXES
+========================================================= */
+
+/* Hide global login header when teller dashboard is visible */
+body:has(#dashboardSection:not(.hidden)) > .topbar {
+    display: none;
+}
+
+/* Hide global login footer when teller dashboard is visible */
+body:has(#dashboardSection:not(.hidden)) > .footer {
+    display: none;
+}
+
+/* Dashboard full-screen layout */
+.dashboard-section {
+    width: 100%;
+    min-height: 100vh;
+}
+
+.dashboard-layout {
+    min-height: 100vh;
+    align-items: stretch;
+}
+
+.sidebar {
+    min-height: 100vh;
+}
+
+/* Dashboard top header */
+.dashboard-topbar {
+    width: 100%;
+}
+
+.dashboard-topbar-right {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 18px;
+    flex-wrap: wrap;
+}
+
+/* Dashboard logout button */
+.dashboard-topbar-right .logout-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 40px;
+    padding: 9px 16px;
+    background: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--danger);
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.dashboard-topbar-right .logout-button:hover {
+    background: #fff0f0;
+    border-color: var(--danger);
+}
+
+/* Preserve JavaScript-controlled hidden state */
+.logout-button.hidden {
+    display: none !important;
+}
+
+/* Ensure hidden dashboard panels stay hidden */
+.dashboard-panel.hidden {
+    display: none !important;
+}
+
+/* Mobile dashboard adjustments */
+@media (max-width: 760px) {
+
+    .dashboard-layout {
+        min-height: auto;
+    }
+
+    .sidebar {
+        min-height: auto;
+    }
+
+    .dashboard-topbar {
+        align-items: center;
+        gap: 8px;
+    }
+
+    .dashboard-topbar-right {
+        gap: 8px;
+    }
+
+    .dashboard-topbar-right .logout-button {
+        min-height: 35px;
+        padding: 7px 10px;
+        font-size: 10px;
+    }
+
+    .topbar-account {
+        gap: 6px;
+    }
+
+}
+
+/* Very small phones */
+@media (max-width: 400px) {
+
+    .dashboard-topbar {
+        flex-wrap: wrap;
+        padding: 12px 0;
+    }
+
+    .dashboard-topbar-right {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+}
