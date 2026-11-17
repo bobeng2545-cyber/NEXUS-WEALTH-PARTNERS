@@ -4630,3 +4630,1516 @@ body > #notificationMenu.notification-open {
 .dashboard-welcome {
     clear: both;
 }
+
+
+/* =========================================================
+   NEXUS WEALTH PARTNERS
+   PROFESSIONAL MEMBER ACCOUNT DESIGN
+   Registration | Login | Dashboard | Wallet | Support
+========================================================= */
+
+.account-page {
+    --nexus-green: #087443;
+    --nexus-green-dark: #064d30;
+    --nexus-green-light: #eaf5ef;
+    --nexus-gold: #c7a45b;
+    --nexus-text: #17251e;
+    --nexus-muted: #718078;
+    --nexus-border: #e4ebe6;
+    --nexus-background: #f5f8f6;
+    --nexus-white: #ffffff;
+    --nexus-shadow: 0 10px 35px rgba(20, 50, 35, 0.07);
+
+    margin: 0;
+    background: var(--nexus-background);
+    color: var(--nexus-text);
+    font-family: Inter, "Segoe UI", Arial, sans-serif;
+    line-height: 1.6;
+}
+
+.account-page *,
+.account-page *::before,
+.account-page *::after {
+    box-sizing: border-box;
+}
+
+.account-page button,
+.account-page input,
+.account-page select,
+.account-page textarea {
+    font: inherit;
+}
+
+.account-page button,
+.account-page a {
+    -webkit-tap-highlight-color: transparent;
+}
+
+.account-page a {
+    color: var(--nexus-green);
+    text-decoration: none;
+}
+
+.account-page button {
+    cursor: pointer;
+}
+
+.account-page [hidden] {
+    display: none !important;
+}
+
+/* =========================================================
+   1. PUBLIC ACCOUNT HEADER
+========================================================= */
+
+.account-page .public-header {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+
+    min-height: 76px;
+    width: 100%;
+    padding: 12px 5.5%;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 25px;
+
+    background: rgba(255, 255, 255, 0.97);
+    border-bottom: 1px solid var(--nexus-border);
+    box-shadow: 0 3px 18px rgba(0, 0, 0, 0.035);
+    backdrop-filter: blur(12px);
+}
+
+.account-page .brand-logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 11px;
+    color: var(--nexus-green-dark);
+}
+
+.account-page .brand-symbol,
+.account-page .auth-brand-icon {
+    width: 43px;
+    height: 43px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: linear-gradient(
+        145deg,
+        var(--nexus-green),
+        var(--nexus-green-dark)
+    );
+
+    color: white;
+    border-radius: 12px;
+    font-size: 25px;
+    font-weight: 800;
+    box-shadow: 0 5px 14px rgba(8, 116, 67, 0.18);
+}
+
+.account-page .brand-text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.15;
+}
+
+.account-page .brand-text strong {
+    font-size: 19px;
+    font-weight: 850;
+    letter-spacing: 2px;
+}
+
+.account-page .brand-text small {
+    margin-top: 4px;
+    color: var(--nexus-muted);
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 2px;
+}
+
+.account-page .public-navigation ul {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.account-page .public-navigation a {
+    color: #46564d;
+    font-size: 13px;
+    font-weight: 650;
+    transition: color 0.2s ease;
+}
+
+.account-page .public-navigation a:hover {
+    color: var(--nexus-green);
+}
+
+.account-page .header-login {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    min-width: 105px;
+    padding: 10px 23px;
+
+    background: var(--nexus-green);
+    color: white;
+    border-radius: 8px;
+
+    font-size: 13px;
+    font-weight: 750;
+    transition: 0.2s ease;
+}
+
+.account-page .header-login:hover {
+    background: var(--nexus-green-dark);
+    transform: translateY(-1px);
+}
+
+/* =========================================================
+   2. MAIN ACCOUNT AREA
+========================================================= */
+
+.account-page #accountMain {
+    min-height: calc(100vh - 76px);
+    padding: 48px 20px 80px;
+}
+
+/* =========================================================
+   3. LOGIN / REGISTRATION / PASSWORD RESET
+========================================================= */
+
+.account-page .auth-screen {
+    display: none;
+
+    width: 100%;
+    max-width: 475px;
+
+    margin: 10px auto 50px;
+    padding: 36px 38px;
+
+    background: var(--nexus-white);
+    border: 1px solid var(--nexus-border);
+    border-radius: 18px;
+
+    box-shadow: var(--nexus-shadow);
+    animation: nexusAuthAppear 0.35s ease;
+}
+
+/* Show the section selected by the URL hash */
+
+.account-page #register:target,
+.account-page #login:target,
+.account-page #forgotPassword:target {
+    display: block;
+}
+
+@keyframes nexusAuthAppear {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.account-page .auth-card-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.account-page .auth-brand-icon {
+    width: 55px;
+    height: 55px;
+    margin: 0 auto 18px;
+    border-radius: 16px;
+    font-size: 30px;
+}
+
+.account-page .auth-welcome-label {
+    display: block;
+    margin-bottom: 8px;
+
+    color: var(--nexus-green);
+    font-size: 10px;
+    font-weight: 850;
+    letter-spacing: 1.8px;
+}
+
+.account-page .auth-card-header h2 {
+    margin: 0 0 8px;
+    color: var(--nexus-text);
+    font-size: 27px;
+    font-weight: 800;
+    letter-spacing: -0.7px;
+}
+
+.account-page .auth-card-header p {
+    margin: 0;
+    color: var(--nexus-muted);
+    font-size: 13px;
+}
+
+/* =========================================================
+   4. FORM ELEMENTS
+========================================================= */
+
+.account-page form label {
+    display: block;
+    margin: 17px 0 7px;
+
+    color: #34483c;
+    font-size: 12px;
+    font-weight: 750;
+}
+
+.account-page form input,
+.account-page form select,
+.account-page form textarea {
+    display: block;
+    width: 100%;
+    min-height: 48px;
+
+    padding: 12px 14px;
+
+    color: var(--nexus-text);
+    background: #fbfdfb;
+
+    border: 1px solid #dce6df;
+    border-radius: 8px;
+    outline: none;
+
+    font-size: 13px;
+    transition: border-color 0.2s ease,
+                box-shadow 0.2s ease,
+                background 0.2s ease;
+}
+
+.account-page form textarea {
+    min-height: 115px;
+    resize: vertical;
+}
+
+.account-page form input::placeholder,
+.account-page form textarea::placeholder {
+    color: #a0aaa3;
+}
+
+.account-page form input:focus,
+.account-page form select:focus,
+.account-page form textarea:focus {
+    background: white;
+    border-color: var(--nexus-green);
+    box-shadow: 0 0 0 3px rgba(8, 116, 67, 0.10);
+}
+
+.account-page form input:disabled,
+.account-page form select:disabled,
+.account-page form textarea:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+}
+
+.account-page form button[type="submit"] {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 100%;
+    min-height: 49px;
+    margin-top: 25px;
+    padding: 12px 18px;
+
+    color: white;
+    background: linear-gradient(
+        135deg,
+        var(--nexus-green),
+        var(--nexus-green-dark)
+    );
+
+    border: none;
+    border-radius: 8px;
+
+    font-size: 13px;
+    font-weight: 800;
+
+    box-shadow: 0 5px 13px rgba(8, 116, 67, 0.15);
+    transition: 0.2s ease;
+}
+
+.account-page form button[type="submit"]:hover {
+    filter: brightness(1.08);
+    transform: translateY(-1px);
+}
+
+.account-page form button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.account-page .auth-switch-text {
+    margin: 22px 0 0;
+    text-align: center;
+    color: var(--nexus-muted);
+    font-size: 12px;
+}
+
+.account-page .auth-switch-link {
+    margin-left: 4px;
+    color: var(--nexus-green);
+    font-weight: 800;
+}
+
+.account-page .forgot-password-link {
+    margin: 10px 0 0;
+    text-align: right;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.account-page .back-home-btn {
+    display: block;
+    width: 100%;
+    min-height: 43px;
+    margin-top: 12px;
+
+    color: #52645a;
+    background: #f3f7f4;
+
+    border: 1px solid var(--nexus-border);
+    border-radius: 8px;
+
+    font-size: 12px;
+    font-weight: 700;
+    transition: 0.2s ease;
+}
+
+.account-page .back-home-btn:hover {
+    color: var(--nexus-green);
+    background: var(--nexus-green-light);
+}
+
+/* =========================================================
+   5. MEMBER DASHBOARD
+========================================================= */
+
+.account-page .member-dashboard {
+    width: 100%;
+    max-width: 1450px;
+    margin: 0 auto;
+}
+
+.account-page .dashboard-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 25px;
+
+    margin-bottom: 27px;
+}
+
+.account-page .dashboard-welcome h2 {
+    margin: 0 0 6px;
+    color: var(--nexus-text);
+    font-size: 27px;
+    font-weight: 800;
+    letter-spacing: -0.8px;
+}
+
+.account-page .dashboard-welcome h2 span {
+    color: var(--nexus-green);
+}
+
+.account-page .dashboard-welcome p {
+    margin: 4px 0;
+    color: var(--nexus-muted);
+    font-size: 13px;
+}
+
+.account-page #memberId {
+    color: var(--nexus-green);
+    font-weight: 800;
+}
+
+/* =========================================================
+   6. NOTIFICATIONS AND LOGOUT
+========================================================= */
+
+.account-page .dashboard-account-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.account-page .notification-area {
+    position: relative;
+}
+
+.account-page .notification-button {
+    position: relative;
+
+    width: 43px;
+    height: 43px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: white;
+    border: 1px solid var(--nexus-border);
+    border-radius: 10px;
+
+    font-size: 19px;
+    transition: 0.2s ease;
+}
+
+.account-page .notification-button:hover {
+    background: var(--nexus-green-light);
+}
+
+.account-page .notification-count {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+
+    min-width: 19px;
+    height: 19px;
+    padding: 0 4px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: white;
+    background: #d83b42;
+    border: 2px solid white;
+    border-radius: 20px;
+
+    font-size: 10px;
+    font-weight: 800;
+}
+
+.account-page .notification-menu {
+    position: absolute;
+    top: 53px;
+    right: 0;
+    z-index: 2000;
+
+    width: min(350px, calc(100vw - 30px));
+    max-height: 420px;
+    overflow-y: auto;
+
+    padding: 15px;
+    background: white;
+    border: 1px solid var(--nexus-border);
+    border-radius: 12px;
+    box-shadow: 0 15px 45px rgba(0, 0, 0, 0.14);
+}
+
+.account-page .notification-menu-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--nexus-border);
+}
+
+.account-page .notification-menu-header h3 {
+    margin: 0;
+    font-size: 15px;
+}
+
+.account-page .notification-menu-header button {
+    padding: 5px;
+    color: var(--nexus-green);
+    background: transparent;
+    border: none;
+    font-size: 10px;
+    font-weight: 750;
+}
+
+.account-page .empty-notifications {
+    padding: 25px 10px;
+    text-align: center;
+    color: var(--nexus-muted);
+    font-size: 12px;
+}
+
+.account-page .member-logout-button {
+    min-height: 42px;
+    padding: 0 15px;
+
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    color: #a53636;
+    background: #fff4f3;
+    border: 1px solid #f3dfdc;
+    border-radius: 9px;
+
+    font-size: 12px;
+    font-weight: 750;
+    transition: 0.2s ease;
+}
+
+.account-page .member-logout-button:hover {
+    color: white;
+    background: #bd3838;
+}
+
+/* =========================================================
+   7. DASHBOARD SUMMARY CARDS
+========================================================= */
+
+.account-page .dashboard-cards {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 19px;
+    margin-bottom: 25px;
+}
+
+.account-page .dashboard-card {
+    position: relative;
+    min-width: 0;
+
+    padding: 23px;
+
+    background: white;
+    border: 1px solid var(--nexus-border);
+    border-radius: 13px;
+
+    box-shadow: 0 5px 20px rgba(20, 50, 35, 0.035);
+    transition: 0.2s ease;
+}
+
+.account-page .dashboard-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--nexus-shadow);
+}
+
+.account-page .dashboard-card .card-icon {
+    width: 43px;
+    height: 43px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin-bottom: 15px;
+
+    background: var(--nexus-green-light);
+    border-radius: 11px;
+    font-size: 21px;
+}
+
+.account-page .dashboard-card p {
+    margin: 0 0 7px;
+    color: var(--nexus-muted);
+    font-size: 12px;
+    font-weight: 650;
+}
+
+.account-page .dashboard-card h3 {
+    margin: 0;
+    color: var(--nexus-text);
+    font-size: clamp(19px, 2.1vw, 26px);
+    font-weight: 850;
+    letter-spacing: -0.6px;
+    overflow-wrap: anywhere;
+}
+
+.account-page .dashboard-card small {
+    display: block;
+    margin-top: 9px;
+    color: #8a9990;
+    font-size: 10px;
+}
+
+.account-page .balance-card {
+    border-top: 3px solid var(--nexus-green);
+}
+
+.account-page .balance-card h3 {
+    color: var(--nexus-green);
+}
+
+.account-page .pending-wallet-card {
+    border-top: 3px solid var(--nexus-gold);
+}
+
+/* =========================================================
+   8. MEMBER NAVIGATION
+========================================================= */
+
+.account-page .member-navigation {
+    position: relative;
+    z-index: 5;
+
+    display: flex;
+    align-items: center;
+    gap: 7px;
+
+    margin: 27px 0;
+    padding: 9px;
+
+    background: white;
+    border: 1px solid var(--nexus-border);
+    border-radius: 12px;
+}
+
+.account-page .member-navigation a {
+    min-width: 115px;
+    padding: 11px 18px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+
+    color: #627168;
+    border-radius: 8px;
+
+    font-size: 12px;
+    font-weight: 750;
+    transition: 0.2s ease;
+}
+
+.account-page .member-navigation a span {
+    font-size: 16px;
+}
+
+.account-page .member-navigation a small {
+    font-size: 12px;
+    font-weight: 750;
+}
+
+.account-page .member-navigation a:hover,
+.account-page .member-navigation a.active {
+    color: white;
+    background: var(--nexus-green);
+}
+
+/* =========================================================
+   9. DASHBOARD PANELS
+========================================================= */
+
+.account-page .dashboard-panel {
+    min-width: 0;
+    margin-bottom: 24px;
+    padding: 25px;
+
+    background: white;
+    border: 1px solid var(--nexus-border);
+    border-radius: 13px;
+
+    box-shadow: 0 5px 20px rgba(20, 50, 35, 0.035);
+}
+
+.account-page .dashboard-panel > h3,
+.account-page .support-create-card > h3 {
+    margin: 0 0 5px;
+    color: var(--nexus-text);
+    font-size: 18px;
+    font-weight: 800;
+}
+
+.account-page .dashboard-panel > p {
+    margin: 0 0 20px;
+    color: var(--nexus-muted);
+    font-size: 12px;
+}
+
+.account-page .dashboard-content-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: 20px;
+    align-items: stretch;
+}
+
+/* =========================================================
+   10. WALLET ACTIONS
+========================================================= */
+
+.account-page .wallet-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.account-page .wallet-actions a {
+    min-height: 44px;
+    padding: 11px 18px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    color: white;
+    background: var(--nexus-green);
+    border-radius: 8px;
+
+    font-size: 12px;
+    font-weight: 750;
+    transition: 0.2s ease;
+}
+
+.account-page .wallet-actions a:hover {
+    background: var(--nexus-green-dark);
+    transform: translateY(-1px);
+}
+
+.account-page .wallet-actions a + a {
+    color: var(--nexus-green);
+    background: var(--nexus-green-light);
+}
+
+.account-page .wallet-actions a + a:hover {
+    background: #dcefe3;
+}
+
+/* =========================================================
+   11. AVAILABLE BALANCE
+========================================================= */
+
+.account-page .available-balance-card {
+    margin: 18px 0 22px;
+    padding: 21px;
+
+    background: linear-gradient(
+        135deg,
+        var(--nexus-green-dark),
+        var(--nexus-green)
+    );
+
+    border-radius: 11px;
+    color: white;
+}
+
+.account-page .available-balance-card span {
+    display: block;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 11px;
+    font-weight: 650;
+}
+
+.account-page .available-balance-card h2 {
+    margin: 5px 0 0;
+    font-size: 27px;
+    font-weight: 850;
+}
+
+/* =========================================================
+   12. SAVINGS OVERVIEW
+========================================================= */
+
+.account-page .panel-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 22px;
+}
+
+.account-page .panel-heading h3 {
+    margin: 0;
+    font-size: 17px;
+}
+
+.account-page .panel-heading p {
+    margin: 4px 0 0;
+    color: var(--nexus-muted);
+    font-size: 11px;
+}
+
+.account-page .savings-overview-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    gap: 25px;
+    flex-wrap: wrap;
+}
+
+.account-page .savings-progress-circle {
+    width: 155px;
+    height: 155px;
+    flex: 0 0 155px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+    background: conic-gradient(
+        var(--nexus-green) 0deg,
+        #e8eee9 0deg
+    );
+
+    position: relative;
+}
+
+.account-page .savings-progress-circle::before {
+    content: "";
+    position: absolute;
+    inset: 12px;
+    background: white;
+    border-radius: 50%;
+}
+
+.account-page .progress-inner {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.account-page .progress-inner strong {
+    color: var(--nexus-green);
+    font-size: 27px;
+    font-weight: 850;
+}
+
+.account-page .progress-inner small {
+    color: var(--nexus-muted);
+    font-size: 10px;
+}
+
+.account-page .savings-target-details {
+    flex: 1;
+    min-width: 170px;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 17px;
+}
+
+.account-page .savings-target-details div {
+    padding: 12px;
+    background: #f7faf8;
+    border-radius: 8px;
+}
+
+.account-page .savings-target-details span {
+    display: block;
+    color: var(--nexus-muted);
+    font-size: 10px;
+}
+
+.account-page .savings-target-details strong {
+    display: block;
+    margin-top: 5px;
+    color: var(--nexus-text);
+    font-size: 14px;
+    overflow-wrap: anywhere;
+}
+
+/* =========================================================
+   13. ACCOUNT INFORMATION
+========================================================= */
+
+.account-page .information-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+
+    padding: 15px 0;
+    border-bottom: 1px solid #edf1ee;
+}
+
+.account-page .information-item:last-child {
+    border-bottom: none;
+}
+
+.account-page .information-item span {
+    color: var(--nexus-muted);
+    font-size: 12px;
+}
+
+.account-page .information-item strong {
+    color: var(--nexus-text);
+    font-size: 12px;
+    text-align: right;
+}
+
+.account-page .account-status {
+    padding: 5px 11px;
+    color: #087443 !important;
+    background: #e7f6ed;
+    border-radius: 20px;
+}
+
+/* =========================================================
+   14. TABLES
+========================================================= */
+
+.account-page .table-container {
+    width: 100%;
+    overflow-x: auto;
+
+    border: 1px solid var(--nexus-border);
+    border-radius: 10px;
+}
+
+.account-page .table-container table {
+    width: 100%;
+    min-width: 570px;
+    border-collapse: collapse;
+    background: white;
+}
+
+.account-page .table-container th {
+    padding: 15px 16px;
+
+    color: #52645a;
+    background: #f4f8f5;
+
+    font-size: 11px;
+    font-weight: 800;
+    text-align: left;
+    white-space: nowrap;
+
+    border-bottom: 1px solid var(--nexus-border);
+}
+
+.account-page .table-container td {
+    padding: 15px 16px;
+
+    color: #45554b;
+    font-size: 12px;
+
+    border-bottom: 1px solid #edf1ee;
+}
+
+.account-page .table-container tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.account-page .table-container tbody tr:hover {
+    background: #f9fcfa;
+}
+
+/* =========================================================
+   15. TRANSACTION FILTERS
+========================================================= */
+
+.account-page .transaction-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 18px 0;
+}
+
+.account-page .transaction-filters button {
+    padding: 9px 18px;
+
+    color: #607067;
+    background: #f3f7f4;
+
+    border: 1px solid var(--nexus-border);
+    border-radius: 7px;
+
+    font-size: 11px;
+    font-weight: 750;
+    transition: 0.2s ease;
+}
+
+.account-page .transaction-filters button:hover,
+.account-page .transaction-filters button.active {
+    color: white;
+    background: var(--nexus-green);
+    border-color: var(--nexus-green);
+}
+
+/* =========================================================
+   16. PENDING WITHDRAWALS
+========================================================= */
+
+.account-page .pending-withdrawal-summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+
+    margin: 18px 0;
+    padding: 17px;
+
+    background: #fff9ec;
+    border: 1px solid #f0e5c9;
+    border-radius: 9px;
+}
+
+.account-page .pending-withdrawal-summary span {
+    color: #786744;
+    font-size: 12px;
+}
+
+.account-page .pending-withdrawal-summary strong {
+    color: #85651f;
+    font-size: 18px;
+}
+
+/* =========================================================
+   17. WITHDRAWAL RULES
+========================================================= */
+
+.account-page .withdrawal-rules {
+    margin-top: 25px;
+    padding: 20px;
+
+    background: #f7faf8;
+    border: 1px solid var(--nexus-border);
+    border-radius: 10px;
+}
+
+.account-page .withdrawal-rules h3 {
+    margin: 0 0 12px;
+    color: var(--nexus-green-dark);
+    font-size: 14px;
+}
+
+.account-page .withdrawal-rules ul {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.account-page .withdrawal-rules li {
+    margin: 8px 0;
+    color: var(--nexus-muted);
+    font-size: 11px;
+}
+
+/* =========================================================
+   18. MEMBER PROFILE
+========================================================= */
+
+.account-page .profile-information {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.account-page .profile-information > div {
+    min-width: 0;
+    padding: 18px;
+
+    background: #f7faf8;
+    border: 1px solid var(--nexus-border);
+    border-radius: 9px;
+}
+
+.account-page .profile-information span {
+    display: block;
+    margin-bottom: 7px;
+    color: var(--nexus-muted);
+    font-size: 11px;
+}
+
+.account-page .profile-information strong {
+    display: block;
+    color: var(--nexus-text);
+    font-size: 13px;
+    overflow-wrap: anywhere;
+}
+
+/* =========================================================
+   19. CUSTOMER SUPPORT
+========================================================= */
+
+.account-page .support-page-intro {
+    margin-bottom: 23px;
+}
+
+.account-page .support-page-intro p,
+.account-page .support-create-card > p,
+.account-page .support-section-heading p {
+    color: var(--nexus-muted);
+    font-size: 12px;
+}
+
+.account-page .support-create-card {
+    max-width: 750px;
+    padding: 23px;
+
+    background: #f8fbf9;
+    border: 1px solid var(--nexus-border);
+    border-radius: 12px;
+}
+
+.account-page .support-create-card > p {
+    margin: 5px 0 15px;
+}
+
+.account-page .support-ticket-area {
+    margin-top: 30px;
+}
+
+.account-page .support-section-heading,
+.account-page .support-conversation-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    margin-bottom: 18px;
+}
+
+.account-page .support-section-heading h3,
+.account-page .support-conversation-heading h3 {
+    margin: 0;
+    color: var(--nexus-text);
+    font-size: 16px;
+}
+
+.account-page .support-section-heading p,
+.account-page .support-conversation-heading p {
+    margin: 5px 0 0;
+}
+
+.account-page #refreshSupportTickets,
+.account-page #closeSupportConversation {
+    padding: 10px 15px;
+
+    color: var(--nexus-green);
+    background: var(--nexus-green-light);
+
+    border: 1px solid #d5e9dc;
+    border-radius: 8px;
+
+    font-size: 11px;
+    font-weight: 750;
+}
+
+.account-page #refreshSupportTickets:hover,
+.account-page #closeSupportConversation:hover {
+    background: #dcefe3;
+}
+
+.account-page .support-conversation {
+    margin-top: 25px;
+    padding: 22px;
+
+    background: white;
+    border: 1px solid var(--nexus-border);
+    border-radius: 12px;
+}
+
+.account-page .support-message-list {
+    max-height: 450px;
+    overflow-y: auto;
+
+    margin: 20px 0;
+    padding: 15px;
+
+    background: #f6f9f7;
+    border: 1px solid var(--nexus-border);
+    border-radius: 9px;
+}
+
+/* =========================================================
+   20. MOBILE HEADERS
+========================================================= */
+
+.account-page .mobile-screen-header,
+.account-page .mobile-page-heading {
+    display: none;
+}
+
+/* =========================================================
+   21. FLOATING CUSTOMER SUPPORT BUTTON
+========================================================= */
+
+.account-page .floating-support-button {
+    position: fixed;
+    right: 22px;
+    bottom: 25px;
+    z-index: 10000;
+
+    width: 58px;
+    height: 58px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1px;
+
+    color: white;
+    background: var(--nexus-green);
+
+    border: 3px solid white;
+    border-radius: 50%;
+
+    box-shadow: 0 5px 22px rgba(0, 0, 0, 0.19);
+    transition: 0.25s ease;
+}
+
+.account-page .floating-support-button span {
+    font-size: 21px;
+    line-height: 1;
+}
+
+.account-page .floating-support-button small {
+    font-size: 8px;
+    font-weight: 800;
+}
+
+.account-page .floating-support-button:hover {
+    background: var(--nexus-green-dark);
+    transform: translateY(-4px);
+}
+
+/* =========================================================
+   22. MOBILE RESPONSIVENESS
+========================================================= */
+
+@media (max-width: 900px) {
+
+    .account-page .public-header {
+        padding: 12px 3%;
+    }
+
+    .account-page .public-navigation ul {
+        gap: 15px;
+    }
+
+    .account-page .dashboard-content-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .account-page .dashboard-cards {
+        gap: 12px;
+    }
+
+    .account-page .dashboard-card {
+        padding: 18px;
+    }
+}
+
+@media (max-width: 700px) {
+
+    .account-page #accountMain {
+        padding: 24px 13px 90px;
+    }
+
+    .account-page .public-header {
+        min-height: 66px;
+        padding: 10px 14px;
+        gap: 10px;
+    }
+
+    .account-page .brand-symbol {
+        width: 38px;
+        height: 38px;
+        font-size: 21px;
+    }
+
+    .account-page .brand-text strong {
+        font-size: 16px;
+    }
+
+    .account-page .brand-text small {
+        font-size: 8px;
+    }
+
+    .account-page .public-navigation {
+        display: none;
+    }
+
+    .account-page .header-login {
+        min-width: 78px;
+        padding: 9px 13px;
+        font-size: 11px;
+    }
+
+    .account-page .auth-screen {
+        margin: 5px auto 30px;
+        padding: 27px 20px;
+        border-radius: 14px;
+    }
+
+    .account-page .auth-card-header h2 {
+        font-size: 24px;
+    }
+
+    .account-page .dashboard-heading {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .account-page .dashboard-welcome h2 {
+        font-size: 22px;
+    }
+
+    .account-page .dashboard-account-actions {
+        width: 100%;
+        justify-content: flex-end;
+    }
+
+    .account-page .dashboard-cards {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .account-page .dashboard-card {
+        padding: 18px;
+    }
+
+    .account-page .dashboard-card h3 {
+        font-size: 23px;
+    }
+
+    .account-page .member-navigation {
+        position: sticky;
+        top: 65px;
+        z-index: 900;
+
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 3px;
+
+        margin: 20px 0;
+        padding: 6px;
+    }
+
+    .account-page .member-navigation a {
+        min-width: 0;
+        min-height: 57px;
+        padding: 7px 2px;
+
+        flex-direction: column;
+        gap: 2px;
+    }
+
+    .account-page .member-navigation a span {
+        font-size: 17px;
+    }
+
+    .account-page .member-navigation a small {
+        font-size: 9px;
+    }
+
+    .account-page .dashboard-panel {
+        padding: 18px 15px;
+        margin-bottom: 16px;
+    }
+
+    .account-page .dashboard-panel > h3 {
+        font-size: 16px;
+    }
+
+    .account-page .wallet-actions {
+        display: grid;
+        grid-template-columns: 1fr;
+    }
+
+    .account-page .wallet-actions a {
+        width: 100%;
+    }
+
+    .account-page .savings-overview-content {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .account-page .savings-progress-circle {
+        align-self: center;
+    }
+
+    .account-page .savings-target-details {
+        width: 100%;
+    }
+
+    .account-page .profile-information {
+        grid-template-columns: 1fr;
+    }
+
+    .account-page .support-create-card {
+        padding: 16px;
+    }
+
+    .account-page .support-section-heading,
+    .account-page .support-conversation-heading {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .account-page .support-section-heading button,
+    .account-page .support-conversation-heading button {
+        width: 100%;
+    }
+
+    .account-page .floating-support-button {
+        right: 15px;
+        bottom: 85px;
+        width: 49px;
+        height: 49px;
+    }
+
+    .account-page .floating-support-button span {
+        font-size: 18px;
+    }
+
+    .account-page .floating-support-button small {
+        font-size: 7px;
+    }
+
+    .account-page .mobile-screen-header,
+    .account-page .mobile-page-heading {
+        display: none;
+    }
+}
+
+@media (max-width: 380px) {
+
+    .account-page .savings-target-details {
+        grid-template-columns: 1fr;
+    }
+
+    .account-page .brand-text strong {
+        font-size: 14px;
+    }
+
+    .account-page .brand-text small {
+        letter-spacing: 1px;
+    }
+
+    .account-page .dashboard-welcome h2 {
+        font-size: 19px;
+    }
+}
+
+/* =========================================================
+   23. ACCESSIBILITY AND MOTION
+========================================================= */
+
+.account-page button:focus-visible,
+.account-page a:focus-visible {
+    outline: 3px solid rgba(8, 116, 67, 0.3);
+    outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .account-page *,
+    .account-page *::before,
+    .account-page *::after {
+        scroll-behavior: auto !important;
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+    }
+}
