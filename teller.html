@@ -23,20 +23,18 @@
 <body>
 
     <!-- =====================================================
-         TOP HEADER
+         GLOBAL HEADER - LOGIN SCREEN
     ====================================================== -->
 
     <header class="topbar">
 
         <div class="brand">
-
             <div class="brand-icon">N</div>
 
             <div class="brand-text">
                 <h1>Nexus Wealth Partners</h1>
                 <p>Teller Portal</p>
             </div>
-
         </div>
 
         <div class="header-actions">
@@ -49,24 +47,20 @@
                 Checking connection...
             </span>
 
-            <button
-                id="logoutButton"
-                class="logout-button hidden"
-                type="button"
-            >
-                Log Out
-            </button>
-
         </div>
 
     </header>
 
 
     <!-- =====================================================
-         LOGIN SECTION
+         MAIN CONTAINER
     ====================================================== -->
 
     <main class="main-container">
+
+        <!-- =================================================
+             LOGIN SECTION
+        ================================================== -->
 
         <section id="loginSection" class="login-section">
 
@@ -94,6 +88,7 @@
                         id="loginEmail"
                         placeholder="Enter your email"
                         autocomplete="username"
+                        maxlength="254"
                         required
                     >
 
@@ -127,7 +122,7 @@
                 ></div>
 
                 <div class="security-note">
-                    <span>🔒</span>
+                    <span aria-hidden="true">🔒</span>
                     Protected Teller Access
                 </div>
 
@@ -136,9 +131,9 @@
         </section>
 
 
-        <!-- =====================================================
+        <!-- =================================================
              TELLER DASHBOARD
-        ====================================================== -->
+        ================================================== -->
 
         <section
             id="dashboardSection"
@@ -147,9 +142,9 @@
 
             <div class="dashboard-layout">
 
-                <!-- =============================================
+                <!-- =========================================
                      SIDEBAR
-                ============================================== -->
+                ========================================== -->
 
                 <aside class="sidebar">
 
@@ -166,6 +161,8 @@
 
                     </div>
 
+
+                    <!-- TELLER PROFILE -->
 
                     <div class="sidebar-profile">
 
@@ -191,17 +188,19 @@
                     </div>
 
 
-                    <!-- Keep nav-button and data-panel
-                         because teller.js uses them. -->
+                    <!-- NAVIGATION -->
 
-                    <nav class="dashboard-nav">
+                    <nav
+                        class="dashboard-nav"
+                        aria-label="Teller dashboard navigation"
+                    >
 
                         <button
                             type="button"
                             class="nav-button active"
                             data-panel="depositPanel"
                         >
-                            <span class="nav-icon">▣</span>
+                            <span class="nav-icon" aria-hidden="true">▣</span>
                             <span>Record Deposit</span>
                         </button>
 
@@ -211,7 +210,7 @@
                             class="nav-button"
                             data-panel="registerMemberPanel"
                         >
-                            <span class="nav-icon">＋</span>
+                            <span class="nav-icon" aria-hidden="true">＋</span>
                             <span>Register New Member</span>
                         </button>
 
@@ -221,7 +220,7 @@
                             class="nav-button"
                             data-panel="myRegisteredMembersPanel"
                         >
-                            <span class="nav-icon">♙</span>
+                            <span class="nav-icon" aria-hidden="true">♙</span>
                             <span>My Registered Members</span>
                         </button>
 
@@ -231,7 +230,7 @@
                             class="nav-button"
                             data-panel="testWithdrawalPanel"
                         >
-                            <span class="nav-icon">⇄</span>
+                            <span class="nav-icon" aria-hidden="true">⇄</span>
                             <span>Test Withdrawals</span>
                         </button>
 
@@ -241,7 +240,7 @@
                             class="nav-button"
                             data-panel="historyPanel"
                         >
-                            <span class="nav-icon">◷</span>
+                            <span class="nav-icon" aria-hidden="true">◷</span>
                             <span>My Transactions</span>
                         </button>
 
@@ -251,7 +250,7 @@
                             class="nav-button"
                             data-panel="supportPanel"
                         >
-                            <span class="nav-icon">☏</span>
+                            <span class="nav-icon" aria-hidden="true">☏</span>
                             <span>Customer Support</span>
                         </button>
 
@@ -261,12 +260,14 @@
                             class="nav-button"
                             data-panel="profilePanel"
                         >
-                            <span class="nav-icon">⚙</span>
+                            <span class="nav-icon" aria-hidden="true">⚙</span>
                             <span>My Account</span>
                         </button>
 
                     </nav>
 
+
+                    <!-- SIDEBAR BOTTOM -->
 
                     <div class="sidebar-bottom">
 
@@ -276,12 +277,12 @@
                             rel="noopener noreferrer"
                             class="sidebar-website-link"
                         >
-                            <span>↗</span>
+                            <span aria-hidden="true">↗</span>
                             Visit Website
                         </a>
 
                         <div class="sidebar-security">
-                            <span>🔒</span>
+                            <span aria-hidden="true">🔒</span>
                             Secure Teller Workspace
                         </div>
 
@@ -290,9 +291,9 @@
                 </aside>
 
 
-                <!-- =============================================
+                <!-- =========================================
                      MAIN DASHBOARD CONTENT
-                ============================================== -->
+                ========================================== -->
 
                 <div class="dashboard-main">
 
@@ -312,6 +313,7 @@
                             </div>
 
                         </div>
+
 
                         <div class="dashboard-topbar-right">
 
@@ -333,14 +335,25 @@
 
                             </div>
 
+
+                            <!-- SINGLE LOGOUT BUTTON -->
+
+                            <button
+                                id="logoutButton"
+                                class="logout-button hidden"
+                                type="button"
+                            >
+                                Log Out
+                            </button>
+
                         </div>
 
                     </div>
 
 
-                    <!-- =========================================
+                    <!-- =====================================
                          WELCOME SECTION
-                    ========================================== -->
+                    ====================================== -->
 
                     <div class="welcome-section">
 
@@ -386,9 +399,9 @@
                     </div>
 
 
-                    <!-- =========================================
+                    <!-- =====================================
                          REGISTER NEW MEMBER
-                    ========================================== -->
+                    ====================================== -->
 
                     <section
                         id="registerMemberPanel"
@@ -501,9 +514,9 @@
                     </section>
 
 
-                    <!-- =========================================
+                    <!-- =====================================
                          MY REGISTERED MEMBERS
-                    ========================================== -->
+                    ====================================== -->
 
                     <section
                         id="myRegisteredMembersPanel"
@@ -578,9 +591,9 @@
                     </section>
 
 
-                    <!-- =========================================
+                    <!-- =====================================
                          RECORD DEPOSIT
-                    ========================================== -->
+                    ====================================== -->
 
                     <section
                         id="depositPanel"
@@ -616,6 +629,7 @@
                                     type="text"
                                     id="memberSearchInput"
                                     placeholder="Enter member ID or phone number"
+                                    aria-label="Member ID or phone number"
                                     required
                                 >
 
@@ -634,6 +648,7 @@
                                 id="memberSearchMessage"
                                 class="message hidden"
                                 role="status"
+                                aria-live="polite"
                             ></div>
 
 
@@ -855,9 +870,9 @@
                     </section>
 
 
-                    <!-- =========================================
+                    <!-- =====================================
                          TEST WITHDRAWALS
-                    ========================================== -->
+                    ====================================== -->
 
                     <section
                         id="testWithdrawalPanel"
@@ -909,6 +924,7 @@
                                     type="text"
                                     id="testMemberSearchInput"
                                     placeholder="Enter member ID or phone number"
+                                    aria-label="Test member ID or phone number"
                                     required
                                 >
 
@@ -926,6 +942,8 @@
                             <div
                                 id="testMemberSearchMessage"
                                 class="message hidden"
+                                role="status"
+                                aria-live="polite"
                             ></div>
 
 
@@ -1183,6 +1201,8 @@
                             <div
                                 id="testWithdrawalHistoryMessage"
                                 class="message hidden"
+                                role="status"
+                                aria-live="polite"
                             ></div>
 
 
@@ -1222,9 +1242,9 @@
                     </section>
 
 
-                    <!-- =========================================
+                    <!-- =====================================
                          MY TRANSACTIONS
-                    ========================================== -->
+                    ====================================== -->
 
                     <section
                         id="historyPanel"
@@ -1296,9 +1316,9 @@
                     </section>
 
 
-                    <!-- =========================================
+                    <!-- =====================================
                          MY ACCOUNT
-                    ========================================== -->
+                    ====================================== -->
 
                     <section
                         id="profilePanel"
@@ -1360,9 +1380,9 @@
                     </section>
 
 
-                    <!-- =========================================
+                    <!-- =====================================
                          CUSTOMER SUPPORT
-                    ========================================== -->
+                    ====================================== -->
 
                     <section
                         id="supportPanel"
@@ -1422,6 +1442,7 @@
                                 id="supportTicketSearch"
                                 placeholder="Search customer, member ID or report subject..."
                                 autocomplete="off"
+                                aria-label="Search customer reports"
                             >
 
 
@@ -1475,6 +1496,7 @@
 
                                 <div>
                                     <span>Category</span>
+
                                     <strong id="tellerSupportCategory">
                                         ---
                                     </strong>
@@ -1482,6 +1504,7 @@
 
                                 <div>
                                     <span>Member ID</span>
+
                                     <strong id="tellerSupportMemberId">
                                         ---
                                     </strong>
@@ -1489,6 +1512,7 @@
 
                                 <div>
                                     <span>Status</span>
+
                                     <strong id="tellerSupportStatus">
                                         ---
                                     </strong>
@@ -1496,6 +1520,7 @@
 
                                 <div>
                                     <span>Submitted</span>
+
                                     <strong id="tellerSupportDate">
                                         ---
                                     </strong>
@@ -1611,9 +1636,9 @@
                     </section>
 
 
-                    <!-- =========================================
+                    <!-- =====================================
                          DASHBOARD FOOTER
-                    ========================================== -->
+                    ====================================== -->
 
                     <footer class="dashboard-footer">
 
@@ -1638,7 +1663,7 @@
 
 
     <!-- =====================================================
-         PAGE FOOTER
+         GLOBAL PAGE FOOTER - LOGIN SCREEN
     ====================================================== -->
 
     <footer class="footer">
