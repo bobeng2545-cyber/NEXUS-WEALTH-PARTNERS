@@ -326,6 +326,7 @@ function showForgotPassword() {
 }
 
 
+
 /* =========================================
    11. MOBILE DASHBOARD NAVIGATION
 ========================================= */
@@ -413,45 +414,56 @@ function setMobileDashboardView(screen, shouldScroll = true) {
     document.querySelectorAll(
         "#memberDashboard .dashboard-content-grid"
     ).forEach(element => {
+
         element.classList.remove("mobile-savings-visible");
+
     });
+
 
     /* DESKTOP VIEW */
 
     if (!isMobile) {
 
-        document.body.classList.remove("mobile-inner-page");
+    document.body.classList.remove("mobile-inner-page");
+    dashboard.classList.remove("mobile-inner-page");
 
-        if (dashboard) {
-            dashboard.classList.remove("mobile-inner-page");
-            dashboard.style.paddingTop = "";
-        }
+    allSections.forEach(section => {
+        section.classList.remove("mobile-view-hidden");
+        section.classList.remove("dashboard-screen");
+        section.classList.remove("active-screen");
+        section.style.display = "";
+    });
 
-        if (homeHeader) {
-            homeHeader.style.display = "none";
-        }
+    document.querySelectorAll(".member-navigation a").forEach(link => {
+        link.classList.toggle(
+            "active",
+            link.dataset.screen === screen
+        );
+    });
 
-        if (screenHeader) {
-            screenHeader.style.display = "none";
-        }
+    const desktopTargets = {
+        home: ".dashboard-heading",
+        transactions: "#memberTransactions",
+        pendingWithdrawals: "#pendingWithdrawals",
+        savings: "#memberSavings",
+        profile: "#memberProfile",
+        support: "#memberSupport"
+    };
 
-        if (backButton) {
-            backButton.style.display = "none";
-        }
+    const targetSelector = desktopTargets[screen];
+    const target = targetSelector
+        ? document.querySelector(targetSelector)
+        : null;
 
-        document.querySelectorAll(
-            ".member-navigation a[data-screen]"
-        ).forEach(link => {
-
-            link.classList.toggle(
-                "active",
-                link.dataset.screen === "home"
-            );
-
+    if (shouldScroll && target) {
+        target.scrollIntoView({
+            behavior: "smooth",
+            block: "start"
         });
-
-        return;
     }
+
+    return;
+}
 
     /* MOBILE VIEW: HIDE ALL SCREENS FIRST */
 
@@ -3502,7 +3514,7 @@ if (floatingSupportButton) {
 
         // Open the support page on mobile.
         if (
-            window.innerWidth <= 768 &&
+            window.innerWidth <= 700 &&
             typeof setMobileDashboardView === "function"
         ) {
             setMobileDashboardView("support");
