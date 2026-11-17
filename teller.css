@@ -1615,8 +1615,16 @@ tbody tr:last-child td {
 
 /* =========================================================
    29. MOBILE RESPONSIVENESS
-   OPTIMIZED PHONE SIDEBAR
+   OFF-CANVAS TELLER NAVIGATION
 ========================================================= */
+
+/* Hide mobile menu controls on desktop and tablet */
+
+.teller-mobile-menu-button,
+.teller-sidebar-overlay,
+.close-teller-mobile-menu {
+    display: none;
+}
 
 @media (max-width: 760px) {
 
@@ -1625,6 +1633,10 @@ tbody tr:last-child td {
         width: 100%;
         max-width: 100%;
         overflow-x: hidden;
+    }
+
+    body.sidebar-open {
+        overflow: hidden;
     }
 
     .topbar {
@@ -1663,23 +1675,87 @@ tbody tr:last-child td {
     /* MAIN MOBILE LAYOUT */
 
     .dashboard-layout {
-        display: flex;
-        flex-direction: column;
-        align-items: stretch;
+        display: block;
+        position: relative;
         min-height: 100vh;
         width: 100%;
     }
 
-    /* MOBILE SIDEBAR */
+    /* MOBILE MENU BUTTON */
+
+    .teller-mobile-menu-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 9px;
+
+        min-height: 43px;
+        padding: 10px 16px;
+        margin: 14px 14px 0;
+
+        background: var(--navy);
+        color: white;
+
+        border: 1px solid var(--navy);
+        border-radius: 8px;
+
+        font-size: 12px;
+        font-weight: 800;
+
+        box-shadow: 0 3px 10px rgba(16, 43, 70, 0.12);
+    }
+
+    .teller-mobile-menu-button:hover {
+        background: var(--navy-light);
+    }
+
+    .mobile-menu-icon {
+        font-size: 19px;
+        line-height: 1;
+    }
+
+    /* DARK BACKGROUND OVERLAY */
+
+    .teller-sidebar-overlay {
+        display: block;
+
+        position: fixed;
+        inset: 0;
+
+        background: rgba(4, 16, 29, 0.62);
+
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+
+        z-index: 1100;
+
+        transition:
+            opacity 0.25s ease,
+            visibility 0.25s ease;
+    }
+
+    .teller-sidebar-overlay.active {
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+    }
+
+    /* OFF-CANVAS SIDEBAR */
 
     .sidebar {
-        position: relative;
-        top: auto;
-        left: auto;
+        position: fixed;
 
-        width: 100%;
-        max-width: 100%;
-        height: auto;
+        top: 0;
+        left: 0;
+        bottom: 0;
+
+        width: min(300px, 86vw);
+        max-width: 86vw;
+
+        height: 100vh;
+        height: 100dvh;
+
         min-width: 0;
         min-height: 0;
         max-height: none;
@@ -1690,10 +1766,54 @@ tbody tr:last-child td {
         padding: 0;
         margin: 0;
 
-        overflow: visible;
+        overflow: hidden;
 
+        background: var(--navy);
         border-radius: 0;
-        z-index: 100;
+
+        z-index: 1101;
+
+        transform: translateX(-105%);
+        visibility: hidden;
+
+        transition:
+            transform 0.28s ease,
+            visibility 0.28s ease;
+    }
+
+    .sidebar.mobile-open {
+        transform: translateX(0);
+        visibility: visible;
+    }
+
+    /* CLOSE BUTTON */
+
+    .close-teller-mobile-menu {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        position: absolute;
+        top: 13px;
+        right: 13px;
+
+        width: 34px;
+        height: 34px;
+
+        border: 1px solid rgba(255,255,255,0.25);
+        border-radius: 8px;
+
+        background: rgba(255,255,255,0.10);
+        color: white;
+
+        font-size: 19px;
+        line-height: 1;
+
+        z-index: 5;
+    }
+
+    .close-teller-mobile-menu:hover {
+        background: rgba(255,255,255,0.20);
     }
 
     /* SIDEBAR HEADER */
@@ -1701,7 +1821,8 @@ tbody tr:last-child td {
     .sidebar-header {
         width: 100%;
         flex: 0 0 auto;
-        padding: 13px 14px 0;
+
+        padding: 18px 14px 0;
     }
 
     .sidebar-brand {
@@ -1709,7 +1830,7 @@ tbody tr:last-child td {
         align-items: center;
         gap: 10px;
 
-        padding: 2px 5px 13px;
+        padding: 2px 42px 13px 5px;
         margin: 0;
 
         border-bottom: 1px solid rgba(255,255,255,0.12);
@@ -1719,6 +1840,7 @@ tbody tr:last-child td {
         width: 36px;
         height: 36px;
         min-width: 36px;
+
         font-size: 19px;
         border-radius: 9px;
     }
@@ -1750,6 +1872,7 @@ tbody tr:last-child td {
         width: 35px;
         height: 35px;
         min-width: 35px;
+
         font-size: 14px;
     }
 
@@ -1788,9 +1911,9 @@ tbody tr:last-child td {
 
         gap: 7px;
 
-        flex: 0 1 auto;
+        flex: 1 1 auto;
         min-height: 0;
-        max-height: 235px;
+        max-height: none;
 
         padding: 0 14px 12px;
 
@@ -1798,6 +1921,7 @@ tbody tr:last-child td {
         overflow-y: auto;
 
         overscroll-behavior: contain;
+
         scrollbar-width: thin;
         scrollbar-color: #49647d transparent;
     }
@@ -1867,7 +1991,6 @@ tbody tr:last-child td {
         gap: 8px;
 
         padding: 11px 14px 13px;
-
         margin: 0;
 
         background: var(--navy-dark);
@@ -2120,13 +2243,13 @@ tbody tr:last-child td {
         padding-right: 10px;
     }
 
-    /* Keep two navigation columns on narrow phones */
+    .teller-mobile-menu-button {
+        margin-left: 10px;
+    }
 
     .dashboard-nav {
         grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 6px;
-
-        max-height: 225px;
 
         padding-left: 10px;
         padding-right: 10px;
