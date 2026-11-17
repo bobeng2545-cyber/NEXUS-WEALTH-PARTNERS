@@ -140,156 +140,135 @@
                      SIDEBAR
                 ========================================== -->
 
-                <aside class="sidebar">
+                
+<aside class="sidebar">
 
-                    <!-- SIDEBAR BRAND -->
+    <!-- FIXED SIDEBAR HEADER -->
 
-                    <div class="sidebar-brand">
+    <div class="sidebar-header">
 
-                        <div class="sidebar-brand-icon">
-                            N
-                        </div>
+        <div class="sidebar-brand">
 
-                        <div>
-                            <h2>NEXUS</h2>
-                            <p>WEALTH PARTNERS</p>
-                        </div>
+            <div class="sidebar-brand-icon">
+                N
+            </div>
 
-                    </div>
+            <div>
+                <h2>NEXUS</h2>
+                <p>WEALTH PARTNERS</p>
+            </div>
 
+        </div>
 
-                    <!-- TELLER PROFILE -->
+        <div class="sidebar-profile">
 
-                    <div class="sidebar-profile">
+            <div class="sidebar-avatar">
+                T
+            </div>
 
-                        <div class="sidebar-avatar">
-                            T
-                        </div>
+            <div class="sidebar-profile-info">
 
-                        <div class="sidebar-profile-info">
+                <strong id="sidebarTellerName">
+                    Teller
+                </strong>
 
-                            <strong id="sidebarTellerName">
-                                Teller
-                            </strong>
+                <span>Teller Account</span>
 
-                            <span>Teller Account</span>
+            </div>
 
-                        </div>
+        </div>
 
-                    </div>
+        <div class="sidebar-label">
+            TELLER MENU
+        </div>
 
-
-                    <div class="sidebar-label">
-                        TELLER MENU
-                    </div>
-
-
-                    <!-- NAVIGATION -->
-
-                    <nav
-                        class="dashboard-nav"
-                        aria-label="Teller dashboard navigation"
-                    >
-
-                        <button
-                            type="button"
-                            class="nav-button active"
-                            data-panel="depositPanel"
-                        >
-                            <span class="nav-icon" aria-hidden="true">▣</span>
-                            <span>Record Deposit</span>
-                        </button>
-
-                        <button
-                            type="button"
-                            class="nav-button"
-                            data-panel="registerMemberPanel"
-                        >
-                            <span class="nav-icon" aria-hidden="true">＋</span>
-                            <span>Register New Member</span>
-                        </button>
-
-                        <button
-                            type="button"
-                            class="nav-button"
-                            data-panel="myRegisteredMembersPanel"
-                        >
-                            <span class="nav-icon" aria-hidden="true">♙</span>
-                            <span>My Registered Members</span>
-                        </button>
-
-                        <button
-                            type="button"
-                            class="nav-button"
-                            data-panel="testWithdrawalPanel"
-                        >
-                            <span class="nav-icon" aria-hidden="true">⇄</span>
-                            <span>Test Withdrawals</span>
-                        </button>
-
-                        <button
-                            type="button"
-                            class="nav-button"
-                            data-panel="historyPanel"
-                        >
-                            <span class="nav-icon" aria-hidden="true">◷</span>
-                            <span>My Transactions</span>
-                        </button>
-
-                        <button
-                            type="button"
-                            class="nav-button"
-                            data-panel="supportPanel"
-                        >
-                            <span class="nav-icon" aria-hidden="true">☏</span>
-                            <span>Customer Support</span>
-                        </button>
-
-                        <button
-                            type="button"
-                            class="nav-button"
-                            data-panel="profilePanel"
-                        >
-                            <span class="nav-icon" aria-hidden="true">⚙</span>
-                            <span>My Account</span>
-                        </button>
-
-                    </nav>
+    </div>
 
 
-                    <!-- SIDEBAR BOTTOM -->
+    <!-- INDEPENDENTLY SCROLLABLE NAVIGATION -->
 
-                    <div class="sidebar-bottom">
+    <nav
+        class="dashboard-nav"
+        aria-label="Teller dashboard navigation"
+    >
 
-                        <a
-                            href="https://bobeng2545-cyber.github.io/NEXUS-WEALTH-PARTNERS/"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            class="sidebar-website-link"
-                        >
-                            <span aria-hidden="true">↗</span>
-                            Visit Website
-                        </a>
+        <button type="button" class="nav-button active"
+            data-panel="depositPanel">
+            <span class="nav-icon" aria-hidden="true">▣</span>
+            <span>Record Deposit</span>
+        </button>
 
-                        <div class="sidebar-security">
-                            <span aria-hidden="true">🔒</span>
-                            Secure Teller Workspace
-                        </div>
+        <button type="button" class="nav-button"
+            data-panel="registerMemberPanel">
+            <span class="nav-icon" aria-hidden="true">＋</span>
+            <span>Register New Member</span>
+        </button>
 
-                        <!-- LOGOUT BUTTON -->
+        <button type="button" class="nav-button"
+            data-panel="myRegisteredMembersPanel">
+            <span class="nav-icon" aria-hidden="true">♙</span>
+            <span>My Registered Members</span>
+        </button>
 
-                        <button
-                            id="logoutButton"
-                            class="logout-button hidden"
-                            type="button"
-                        >
-                            <span aria-hidden="true">↪</span>
-                            <span>Logout</span>
-                        </button>
+        <button type="button" class="nav-button"
+            data-panel="testWithdrawalPanel">
+            <span class="nav-icon" aria-hidden="true">⇄</span>
+            <span>Test Withdrawals</span>
+        </button>
 
-                    </div>
+        <button type="button" class="nav-button"
+            data-panel="historyPanel">
+            <span class="nav-icon" aria-hidden="true">◷</span>
+            <span>My Transactions</span>
+        </button>
 
-                </aside>
+        <button type="button" class="nav-button"
+            data-panel="supportPanel">
+            <span class="nav-icon" aria-hidden="true">☏</span>
+            <span>Customer Support</span>
+        </button>
+
+        <button type="button" class="nav-button"
+            data-panel="profilePanel">
+            <span class="nav-icon" aria-hidden="true">⚙</span>
+            <span>My Account</span>
+        </button>
+
+    </nav>
+
+
+    <!-- FIXED SIDEBAR BOTTOM -->
+
+    <div class="sidebar-bottom">
+
+        <a
+            href="https://bobeng2545-cyber.github.io/NEXUS-WEALTH-PARTNERS/"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="sidebar-website-link"
+        >
+            <span aria-hidden="true">↗</span>
+            Visit Website
+        </a>
+
+        <div class="sidebar-security">
+            <span aria-hidden="true">🔒</span>
+            Secure Teller Workspace
+        </div>
+
+        <button
+            id="logoutButton"
+            class="logout-button hidden"
+            type="button"
+        >
+            <span aria-hidden="true">↪</span>
+            <span>Logout</span>
+        </button>
+
+    </div>
+
+</aside>
+
 
 
                 <!-- =========================================
