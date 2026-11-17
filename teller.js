@@ -663,6 +663,7 @@ logoutButton.addEventListener("click", async function () {
 });
 
 
+
 /* =========================================================
    8. TELLER PROFILE
 ========================================================= */
@@ -684,17 +685,51 @@ function renderTellerProfile() {
     const phone =
         currentTeller.phone || "—";
 
-    tellerName.textContent = name;
-    tellerCode.textContent = currentTeller.teller_code;
-    tellerStatus.textContent = currentTeller.status;
+    // Dashboard header
+    if (tellerName) {
+        tellerName.textContent = name;
+    }
 
-    profileName.textContent = name;
-    profileEmail.textContent = email;
-    profilePhone.textContent = phone;
-    profileCode.textContent = currentTeller.teller_code;
-    profileStatus.textContent = currentTeller.status;
+    // Sidebar
+    const sidebarTellerName =
+        document.getElementById("sidebarTellerName");
+
+    if (sidebarTellerName) {
+        sidebarTellerName.textContent = name;
+    }
+
+    // Welcome message
+    const welcomeTellerName =
+        document.getElementById("welcomeTellerName");
+
+    if (welcomeTellerName) {
+        welcomeTellerName.textContent = name;
+    }
+
+    // Teller information
+    if (tellerCode) {
+        tellerCode.textContent = currentTeller.teller_code || "—";
+    }
+
+    if (tellerStatus) {
+        tellerStatus.textContent = currentTeller.status || "—";
+    }
+
+    // Profile page
+    if (profileName) profileName.textContent = name;
+    if (profileEmail) profileEmail.textContent = email;
+    if (profilePhone) profilePhone.textContent = phone;
+
+    if (profileCode) {
+        profileCode.textContent = currentTeller.teller_code || "—";
+    }
+
+    if (profileStatus) {
+        profileStatus.textContent = currentTeller.status || "—";
+    }
 
 }
+
 
 
 /* =========================================================
