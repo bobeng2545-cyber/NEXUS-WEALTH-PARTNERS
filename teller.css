@@ -374,20 +374,16 @@ textarea:disabled {
     width: 100%;
 }
 
-/* Hide login header when dashboard is visible */
-
 body:has(#dashboardSection:not(.hidden)) > .topbar {
     display: none;
 }
-
-/* Hide login footer when dashboard is visible */
 
 body:has(#dashboardSection:not(.hidden)) > .footer {
     display: none;
 }
 
 /* =========================================================
-   9. SIDEBAR - FIXED DESKTOP LAYOUT
+   9. SIDEBAR - DESKTOP
 ========================================================= */
 
 .sidebar {
@@ -410,12 +406,10 @@ body:has(#dashboardSection:not(.hidden)) > .footer {
     color: white;
 
     z-index: 1000;
-
-    box-sizing: border-box;
 }
 
 /* =========================================================
-   10. FIXED SIDEBAR HEADER
+   10. SIDEBAR HEADER
 ========================================================= */
 
 .sidebar-header {
@@ -513,7 +507,7 @@ body:has(#dashboardSection:not(.hidden)) > .footer {
 }
 
 /* =========================================================
-   12. MIDDLE NAVIGATION - INDEPENDENT SCROLL
+   12. SIDEBAR NAVIGATION
 ========================================================= */
 
 .dashboard-nav {
@@ -598,7 +592,7 @@ body:has(#dashboardSection:not(.hidden)) > .footer {
 }
 
 /* =========================================================
-   13. FIXED SIDEBAR BOTTOM AND LOGOUT
+   13. SIDEBAR BOTTOM AND LOGOUT
 ========================================================= */
 
 .sidebar-bottom {
@@ -651,8 +645,6 @@ body:has(#dashboardSection:not(.hidden)) > .footer {
     font-size: 10px;
 }
 
-/* Logout button */
-
 .sidebar-bottom .logout-button {
     display: flex;
     align-items: center;
@@ -686,8 +678,6 @@ body:has(#dashboardSection:not(.hidden)) > .footer {
 .sidebar-bottom .logout-button span:first-child {
     font-size: 17px;
 }
-
-/* Preserve JavaScript-controlled hidden state */
 
 .logout-button.hidden {
     display: none !important;
@@ -1173,8 +1163,6 @@ tbody tr:last-child td {
     padding: 23px;
 }
 
-/* Inbox search */
-
 #supportTicketSearch {
     background: #f9fbfd;
     border-radius: 9px;
@@ -1184,8 +1172,6 @@ tbody tr:last-child td {
 #supportTicketSearch::placeholder {
     color: #99a5b3;
 }
-
-/* Ticket list */
 
 #tellerSupportTicketList {
     display: grid;
@@ -1247,8 +1233,6 @@ tbody tr:last-child td {
     margin-top: 12px;
 }
 
-/* Support status badges */
-
 .support-status-badge {
     display: inline-flex;
     align-items: center;
@@ -1281,8 +1265,6 @@ tbody tr:last-child td {
     color: #647168;
 }
 
-/* Conversation container */
-
 #tellerSupportConversation {
     background: #ffffff;
     border: 1px solid var(--border);
@@ -1305,8 +1287,6 @@ tbody tr:last-child td {
     color: var(--navy);
     overflow-wrap: anywhere;
 }
-
-/* Conversation details */
 
 #tellerSupportConversation .support-ticket-details {
     display: grid;
@@ -1340,8 +1320,6 @@ tbody tr:last-child td {
     overflow-wrap: anywhere;
 }
 
-/* Support status controls */
-
 .support-status-controls {
     padding: 17px;
     border: 1px solid var(--border);
@@ -1363,8 +1341,6 @@ tbody tr:last-child td {
 #updateTellerSupportStatusButton {
     margin-top: 12px;
 }
-
-/* Conversation messages */
 
 .support-conversation-area {
     margin-top: 24px;
@@ -1389,8 +1365,6 @@ tbody tr:last-child td {
     gap: 16px;
     scroll-behavior: smooth;
 }
-
-/* Individual messages */
 
 .support-message {
     max-width: 82%;
@@ -1461,8 +1435,6 @@ tbody tr:last-child td {
     text-align: right;
 }
 
-/* Reply section */
-
 #tellerSupportReplyForm {
     background: #f8fafc;
     border: 1px solid #e5ebf2;
@@ -1500,8 +1472,6 @@ tbody tr:last-child td {
     cursor: not-allowed;
 }
 
-/* Closed report notice */
-
 #tellerSupportClosedNotice {
     padding: 15px;
     margin-top: 18px;
@@ -1512,8 +1482,6 @@ tbody tr:last-child td {
     font-size: 12px;
     line-height: 1.6;
 }
-
-/* Support buttons */
 
 #closeTellerSupportConversation {
     margin-top: 10px;
@@ -1527,8 +1495,6 @@ tbody tr:last-child td {
 #tellerSupportMessage {
     margin-bottom: 16px;
 }
-
-/* Support scrollbar */
 
 #tellerSupportMessageList::-webkit-scrollbar {
     width: 7px;
@@ -1612,19 +1578,20 @@ tbody tr:last-child td {
     }
 }
 
-
 /* =========================================================
-   29. MOBILE RESPONSIVENESS
-   OFF-CANVAS TELLER NAVIGATION
+   29. MOBILE MENU CONTROLS
 ========================================================= */
-
-/* Hide mobile menu controls on desktop and tablet */
 
 .teller-mobile-menu-button,
 .teller-sidebar-overlay,
 .close-teller-mobile-menu {
     display: none;
 }
+
+/* =========================================================
+   30. MOBILE RESPONSIVENESS
+   OFF-CANVAS NAVIGATION DRAWER
+========================================================= */
 
 @media (max-width: 760px) {
 
@@ -1703,6 +1670,9 @@ tbody tr:last-child td {
         font-weight: 800;
 
         box-shadow: 0 3px 10px rgba(16, 43, 70, 0.12);
+
+        position: relative;
+        z-index: 1;
     }
 
     .teller-mobile-menu-button:hover {
@@ -1714,7 +1684,7 @@ tbody tr:last-child td {
         line-height: 1;
     }
 
-    /* DARK BACKGROUND OVERLAY */
+    /* OVERLAY */
 
     .teller-sidebar-overlay {
         display: block;
@@ -1741,7 +1711,7 @@ tbody tr:last-child td {
         pointer-events: auto;
     }
 
-    /* OFF-CANVAS SIDEBAR */
+    /* MOBILE SIDEBAR DRAWER */
 
     .sidebar {
         position: fixed;
@@ -1821,7 +1791,6 @@ tbody tr:last-child td {
     .sidebar-header {
         width: 100%;
         flex: 0 0 auto;
-
         padding: 18px 14px 0;
     }
 
@@ -1872,7 +1841,6 @@ tbody tr:last-child td {
         width: 35px;
         height: 35px;
         min-width: 35px;
-
         font-size: 14px;
     }
 
@@ -1898,18 +1866,18 @@ tbody tr:last-child td {
         font-size: 9px;
     }
 
-    /* MOBILE NAVIGATION */
+    /* VERTICAL MOBILE NAVIGATION */
 
     .dashboard-nav {
         width: 100%;
 
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        display: flex;
+        flex-direction: column;
 
-        align-content: start;
         align-items: stretch;
+        justify-content: flex-start;
 
-        gap: 7px;
+        gap: 6px;
 
         flex: 1 1 auto;
         min-height: 0;
@@ -1943,18 +1911,20 @@ tbody tr:last-child td {
         display: flex;
         align-items: center;
         justify-content: flex-start;
-        gap: 8px;
+        gap: 10px;
 
         width: 100%;
         min-width: 0;
-        min-height: 46px;
+        min-height: 45px;
 
-        padding: 9px 10px;
+        flex: 0 0 auto;
+
+        padding: 11px 12px;
 
         border-radius: 8px;
 
-        font-size: 10px;
-        line-height: 1.35;
+        font-size: 12px;
+        line-height: 1.4;
         font-weight: 600;
 
         text-align: left;
@@ -1971,10 +1941,10 @@ tbody tr:last-child td {
         align-items: center;
         justify-content: center;
 
-        width: 19px;
-        min-width: 19px;
+        width: 21px;
+        min-width: 21px;
 
-        font-size: 15px;
+        font-size: 17px;
         flex-shrink: 0;
     }
 
@@ -2019,7 +1989,6 @@ tbody tr:last-child td {
 
     .sidebar-security {
         grid-column: 1 / -1;
-
         width: 100%;
 
         margin: 0;
@@ -2100,7 +2069,6 @@ tbody tr:last-child td {
         flex-direction: column;
         align-items: stretch;
         gap: 10px;
-
         margin-bottom: 16px;
     }
 
@@ -2233,7 +2201,7 @@ tbody tr:last-child td {
 }
 
 /* =========================================================
-   30. SMALL PHONE SCREENS
+   31. SMALL PHONE SCREENS
 ========================================================= */
 
 @media (max-width: 400px) {
@@ -2247,25 +2215,17 @@ tbody tr:last-child td {
         margin-left: 10px;
     }
 
-    .dashboard-nav {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 6px;
-
-        padding-left: 10px;
-        padding-right: 10px;
-    }
-
     .nav-button {
-        min-height: 44px;
-        padding: 8px 7px;
-        gap: 6px;
-        font-size: 9px;
+        min-height: 43px;
+        padding: 9px 10px;
+        gap: 8px;
+        font-size: 11px;
     }
 
     .nav-icon {
-        width: 17px;
-        min-width: 17px;
-        font-size: 14px;
+        width: 19px;
+        min-width: 19px;
+        font-size: 16px;
     }
 
     .sidebar-header {
@@ -2310,9 +2270,8 @@ tbody tr:last-child td {
     }
 }
 
-
 /* =========================================================
-   31. ACCESSIBILITY
+   32. ACCESSIBILITY
 ========================================================= */
 
 button:focus-visible,
@@ -2322,7 +2281,7 @@ a:focus-visible {
 }
 
 /* =========================================================
-   32. PRINT
+   33. PRINT
 ========================================================= */
 
 @media print {
@@ -2331,6 +2290,9 @@ a:focus-visible {
     .topbar,
     .dashboard-footer,
     .footer,
+    .teller-mobile-menu-button,
+    .teller-sidebar-overlay,
+    .close-teller-mobile-menu,
     button {
         display: none !important;
     }
