@@ -27,6 +27,10 @@
     --sidebar-width: 265px;
 }
 
+/* =========================================================
+   1. GLOBAL RESET
+========================================================= */
+
 * {
     box-sizing: border-box;
     margin: 0;
@@ -56,13 +60,16 @@ button {
     cursor: pointer;
 }
 
+button:disabled {
+    cursor: not-allowed;
+}
+
 .hidden {
     display: none !important;
 }
 
-
 /* =========================================================
-   1. GLOBAL HEADER
+   2. GLOBAL LOGIN HEADER
 ========================================================= */
 
 .topbar {
@@ -98,6 +105,7 @@ button {
     width: 43px;
     height: 43px;
     font-size: 23px;
+    flex-shrink: 0;
 }
 
 .brand h1 {
@@ -132,28 +140,8 @@ button {
     color: var(--danger);
 }
 
-.logout-button,
-.secondary-button {
-    background: white;
-    border: 1px solid var(--border);
-    padding: 10px 16px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: 700;
-    color: var(--text);
-    transition: 0.2s ease;
-}
-
-.logout-button:hover,
-.secondary-button:hover {
-    border-color: var(--navy);
-    color: var(--navy);
-    background: #f7f9fc;
-}
-
-
 /* =========================================================
-   2. MAIN PAGE CONTAINER
+   3. MAIN PAGE CONTAINER
 ========================================================= */
 
 .main-container {
@@ -163,9 +151,8 @@ button {
     min-height: 65vh;
 }
 
-
 /* =========================================================
-   3. LOGIN PAGE
+   4. LOGIN PAGE
 ========================================================= */
 
 .login-section {
@@ -222,9 +209,8 @@ button {
     margin-top: 25px;
 }
 
-
 /* =========================================================
-   4. FORMS AND INPUTS
+   5. FORMS AND INPUTS
 ========================================================= */
 
 label {
@@ -276,9 +262,8 @@ textarea:disabled {
     cursor: not-allowed;
 }
 
-
 /* =========================================================
-   5. BUTTONS
+   6. BUTTONS
 ========================================================= */
 
 .primary-button {
@@ -313,6 +298,22 @@ textarea:disabled {
     width: 100%;
 }
 
+.secondary-button {
+    background: white;
+    border: 1px solid var(--border);
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-weight: 700;
+    color: var(--text);
+    transition: 0.2s ease;
+}
+
+.secondary-button:hover {
+    border-color: var(--navy);
+    color: var(--navy);
+    background: #f7f9fc;
+}
+
 .text-button {
     border: 0;
     background: transparent;
@@ -327,9 +328,8 @@ textarea:disabled {
     text-decoration: underline;
 }
 
-
 /* =========================================================
-   6. FEEDBACK MESSAGES
+   7. FEEDBACK MESSAGES
 ========================================================= */
 
 .message {
@@ -358,39 +358,80 @@ textarea:disabled {
     border: 1px solid #d4e5ff;
 }
 
-
 /* =========================================================
-   7. DASHBOARD LAYOUT
+   8. DASHBOARD VISIBILITY AND LAYOUT
 ========================================================= */
 
 .dashboard-section {
     width: 100%;
+    min-height: 100vh;
 }
 
 .dashboard-layout {
     display: flex;
     align-items: stretch;
-    min-height: calc(100vh - 72px);
+    min-height: 100vh;
     width: 100%;
 }
 
+/* Hide the login header when dashboard is visible */
+body:has(#dashboardSection:not(.hidden)) > .topbar {
+    display: none;
+}
+
+/* Hide the login footer when dashboard is visible */
+body:has(#dashboardSection:not(.hidden)) > .footer {
+    display: none;
+}
 
 /* =========================================================
-   8. SIDEBAR
+   9. SIDEBAR
 ========================================================= */
 
 .sidebar {
     width: var(--sidebar-width);
     min-width: var(--sidebar-width);
+
     background: var(--navy);
     color: white;
+
     display: flex;
     flex-direction: column;
+
     padding: 25px 16px 20px;
-    min-height: calc(100vh - 72px);
-    position: relative;
-    z-index: 10;
+
+    height: 100vh;
+    min-height: 100vh;
+    max-height: 100vh;
+
+    position: sticky;
+    top: 0;
+    align-self: flex-start;
+
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    z-index: 100;
+    scrollbar-width: thin;
+    scrollbar-color: #49647d transparent;
 }
+
+.sidebar::-webkit-scrollbar {
+    width: 5px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+    background: #49647d;
+    border-radius: 10px;
+}
+
+/* =========================================================
+   10. SIDEBAR BRAND
+========================================================= */
 
 .sidebar-brand {
     display: flex;
@@ -398,6 +439,7 @@ textarea:disabled {
     gap: 11px;
     padding: 2px 10px 25px;
     border-bottom: 1px solid rgba(255,255,255,0.12);
+    flex-shrink: 0;
 }
 
 .sidebar-brand-icon {
@@ -410,6 +452,7 @@ textarea:disabled {
     place-items: center;
     font-size: 23px;
     font-weight: 800;
+    flex-shrink: 0;
 }
 
 .sidebar-brand h2 {
@@ -426,6 +469,10 @@ textarea:disabled {
     font-weight: 700;
 }
 
+/* =========================================================
+   11. SIDEBAR PROFILE
+========================================================= */
+
 .sidebar-profile {
     display: flex;
     align-items: center;
@@ -433,10 +480,10 @@ textarea:disabled {
     padding: 20px 9px;
     margin-bottom: 15px;
     border-bottom: 1px solid rgba(255,255,255,0.12);
+    flex-shrink: 0;
 }
 
-.sidebar-avatar,
-.topbar-account-avatar {
+.sidebar-avatar {
     width: 39px;
     height: 39px;
     border-radius: 50%;
@@ -445,9 +492,6 @@ textarea:disabled {
     font-size: 15px;
     font-weight: 800;
     flex-shrink: 0;
-}
-
-.sidebar-avatar {
     background: #315675;
     color: white;
 }
@@ -476,11 +520,11 @@ textarea:disabled {
     font-weight: 800;
     letter-spacing: 1.2px;
     padding: 7px 11px 12px;
+    flex-shrink: 0;
 }
 
-
 /* =========================================================
-   9. SIDEBAR NAVIGATION
+   12. SIDEBAR NAVIGATION
 ========================================================= */
 
 .dashboard-nav {
@@ -488,6 +532,7 @@ textarea:disabled {
     flex-direction: column;
     gap: 5px;
     width: 100%;
+    flex-shrink: 0;
 }
 
 .nav-button {
@@ -528,14 +573,15 @@ textarea:disabled {
     font-size: 17px;
 }
 
-
 /* =========================================================
-   10. SIDEBAR BOTTOM
+   13. SIDEBAR BOTTOM AND LOGOUT
 ========================================================= */
 
 .sidebar-bottom {
     margin-top: auto;
     padding-top: 25px;
+    width: 100%;
+    flex-shrink: 0;
 }
 
 .sidebar-website-link {
@@ -564,82 +610,58 @@ textarea:disabled {
     font-size: 10px;
 }
 
+/* Logout button inside sidebar */
+.sidebar-bottom .logout-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+
+    width: 100%;
+    min-height: 43px;
+
+    margin-top: 15px;
+    padding: 11px 14px;
+
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.22);
+    border-radius: 8px;
+
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 800;
+
+    transition: background 0.2s, border-color 0.2s;
+}
+
+.sidebar-bottom .logout-button:hover {
+    background: #a92727;
+    border-color: #e05a5a;
+    color: white;
+}
+
+.sidebar-bottom .logout-button span:first-child {
+    font-size: 17px;
+}
+
+/* Preserve JavaScript-controlled hidden state */
+.logout-button.hidden {
+    display: none !important;
+}
 
 /* =========================================================
-   11. MAIN DASHBOARD CONTENT
+   14. MAIN DASHBOARD CONTENT
 ========================================================= */
 
 .dashboard-main {
     flex: 1;
     min-width: 0;
-    padding: 0 30px 25px;
+    padding: 30px 30px 25px;
     background: var(--background);
 }
 
-
 /* =========================================================
-   12. DASHBOARD TOP BAR
-========================================================= */
-
-.dashboard-topbar {
-    min-height: 83px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 15px;
-    border-bottom: 1px solid var(--border);
-    margin-bottom: 25px;
-}
-
-.topbar-eyebrow {
-    color: var(--muted);
-    font-size: 9px;
-    font-weight: 800;
-    letter-spacing: 1.2px;
-    margin-bottom: 5px;
-}
-
-.dashboard-topbar h2 {
-    font-size: 19px;
-    color: var(--navy);
-    font-weight: 800;
-}
-
-.dashboard-topbar-right {
-    display: flex;
-    align-items: center;
-}
-
-.topbar-account {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.topbar-account-avatar {
-    background: var(--blue-light);
-    color: var(--navy);
-}
-
-.topbar-account strong,
-.topbar-account span {
-    display: block;
-}
-
-.topbar-account strong {
-    color: var(--navy);
-    font-size: 12px;
-    margin-bottom: 4px;
-}
-
-.topbar-account span {
-    color: var(--muted);
-    font-size: 10px;
-}
-
-
-/* =========================================================
-   13. WELCOME SECTION
+   15. WELCOME SECTION
 ========================================================= */
 
 .welcome-section {
@@ -702,14 +724,17 @@ textarea:disabled {
     font-weight: 800;
 }
 
-
 /* =========================================================
-   14. DASHBOARD PANELS
+   16. DASHBOARD PANELS
 ========================================================= */
 
 .dashboard-panel {
     display: block;
     animation: panelFadeIn 0.22s ease;
+}
+
+.dashboard-panel.hidden {
+    display: none !important;
 }
 
 @keyframes panelFadeIn {
@@ -751,9 +776,8 @@ textarea:disabled {
     line-height: 1.6;
 }
 
-
 /* =========================================================
-   15. CONTENT CARDS
+   17. CONTENT CARDS
 ========================================================= */
 
 .content-card {
@@ -780,9 +804,8 @@ textarea:disabled {
     font-size: 11px;
 }
 
-
 /* =========================================================
-   16. MEMBER SEARCH
+   18. MEMBER SEARCH
 ========================================================= */
 
 .search-form {
@@ -832,9 +855,8 @@ textarea:disabled {
     flex-shrink: 0;
 }
 
-
 /* =========================================================
-   17. SELECTED MEMBER
+   19. SELECTED MEMBER
 ========================================================= */
 
 .selected-member {
@@ -861,9 +883,8 @@ textarea:disabled {
     border-radius: 50%;
 }
 
-
 /* =========================================================
-   18. MEMBER AND PROFILE DETAILS
+   20. MEMBER AND PROFILE DETAILS
 ========================================================= */
 
 .member-details,
@@ -897,9 +918,8 @@ textarea:disabled {
     overflow-wrap: anywhere;
 }
 
-
 /* =========================================================
-   19. DEPOSIT AND WITHDRAWAL FORMS
+   21. DEPOSIT AND WITHDRAWAL FORMS
 ========================================================= */
 
 .deposit-card {
@@ -930,9 +950,8 @@ textarea:disabled {
     margin-top: 5px;
 }
 
-
 /* =========================================================
-   20. TRANSACTION RECEIPTS
+   22. TRANSACTION RECEIPTS
 ========================================================= */
 
 .receipt {
@@ -995,9 +1014,8 @@ textarea:disabled {
     margin-top: 12px;
 }
 
-
 /* =========================================================
-   21. TABLES
+   23. TABLES
 ========================================================= */
 
 .table-container {
@@ -1052,9 +1070,8 @@ tbody tr:last-child td {
     font-size: 12px;
 }
 
-
 /* =========================================================
-   22. PROFILE
+   24. PROFILE
 ========================================================= */
 
 .profile-card {
@@ -1080,9 +1097,8 @@ tbody tr:last-child td {
     flex: 1;
 }
 
-
 /* =========================================================
-   23. CUSTOMER SUPPORT
+   25. CUSTOMER SUPPORT
 ========================================================= */
 
 #supportPanel {
@@ -1107,7 +1123,6 @@ tbody tr:last-child td {
     padding: 23px;
 }
 
-
 /* Inbox search */
 
 #supportTicketSearch {
@@ -1119,7 +1134,6 @@ tbody tr:last-child td {
 #supportTicketSearch::placeholder {
     color: #99a5b3;
 }
-
 
 /* Ticket list */
 
@@ -1183,8 +1197,7 @@ tbody tr:last-child td {
     margin-top: 12px;
 }
 
-
-/* Status badges */
+/* Support status badges */
 
 .support-status-badge {
     display: inline-flex;
@@ -1218,7 +1231,6 @@ tbody tr:last-child td {
     color: #647168;
 }
 
-
 /* Conversation container */
 
 #tellerSupportConversation {
@@ -1243,7 +1255,6 @@ tbody tr:last-child td {
     color: var(--navy);
     overflow-wrap: anywhere;
 }
-
 
 /* Conversation details */
 
@@ -1279,7 +1290,6 @@ tbody tr:last-child td {
     overflow-wrap: anywhere;
 }
 
-
 /* Support status controls */
 
 .support-status-controls {
@@ -1303,7 +1313,6 @@ tbody tr:last-child td {
 #updateTellerSupportStatusButton {
     margin-top: 12px;
 }
-
 
 /* Conversation messages */
 
@@ -1330,7 +1339,6 @@ tbody tr:last-child td {
     gap: 16px;
     scroll-behavior: smooth;
 }
-
 
 /* Individual messages */
 
@@ -1403,7 +1411,6 @@ tbody tr:last-child td {
     text-align: right;
 }
 
-
 /* Reply section */
 
 #tellerSupportReplyForm {
@@ -1443,7 +1450,6 @@ tbody tr:last-child td {
     cursor: not-allowed;
 }
 
-
 /* Closed report notice */
 
 #tellerSupportClosedNotice {
@@ -1456,7 +1462,6 @@ tbody tr:last-child td {
     font-size: 12px;
     line-height: 1.6;
 }
-
 
 /* Support buttons */
 
@@ -1472,7 +1477,6 @@ tbody tr:last-child td {
 #tellerSupportMessage {
     margin-bottom: 16px;
 }
-
 
 /* Support scrollbar */
 
@@ -1493,9 +1497,8 @@ tbody tr:last-child td {
     background: #9eafc1;
 }
 
-
 /* =========================================================
-   24. DASHBOARD FOOTER
+   26. DASHBOARD FOOTER
 ========================================================= */
 
 .dashboard-footer {
@@ -1510,9 +1513,8 @@ tbody tr:last-child td {
     font-size: 10px;
 }
 
-
 /* =========================================================
-   25. GENERAL PAGE FOOTER
+   27. GENERAL LOGIN FOOTER
 ========================================================= */
 
 .footer {
@@ -1525,9 +1527,8 @@ tbody tr:last-child td {
     background: white;
 }
 
-
 /* =========================================================
-   26. TABLET RESPONSIVENESS
+   28. TABLET RESPONSIVENESS
 ========================================================= */
 
 @media (max-width: 1050px) {
@@ -1549,12 +1550,10 @@ tbody tr:last-child td {
     .welcome-section {
         padding: 20px;
     }
-
 }
 
-
 /* =========================================================
-   27. MOBILE RESPONSIVENESS
+   29. MOBILE RESPONSIVENESS
 ========================================================= */
 
 @media (max-width: 760px) {
@@ -1582,20 +1581,23 @@ tbody tr:last-child td {
         display: none;
     }
 
-    .logout-button {
-        padding: 9px 12px;
-        font-size: 11px;
-    }
-
     .dashboard-layout {
         flex-direction: column;
         min-height: auto;
     }
 
+    /* Sidebar becomes a normal mobile section */
     .sidebar {
         width: 100%;
         min-width: 0;
+        height: auto;
         min-height: auto;
+        max-height: none;
+
+        position: relative;
+        top: auto;
+
+        overflow: visible;
         padding: 13px 12px;
     }
 
@@ -1664,36 +1666,14 @@ tbody tr:last-child td {
         padding: 10px 7px 0;
     }
 
+    .sidebar-bottom .logout-button {
+        margin-top: 10px;
+        min-height: 42px;
+    }
+
     .dashboard-main {
         width: 100%;
-        padding: 0 14px 20px;
-    }
-
-    .dashboard-topbar {
-        min-height: 68px;
-        margin-bottom: 17px;
-    }
-
-    .dashboard-topbar h2 {
-        font-size: 16px;
-    }
-
-    .topbar-eyebrow {
-        font-size: 8px;
-    }
-
-    .topbar-account-avatar {
-        width: 33px;
-        height: 33px;
-        font-size: 12px;
-    }
-
-    .topbar-account strong {
-        font-size: 10px;
-    }
-
-    .topbar-account span {
-        font-size: 9px;
+        padding: 20px 14px;
     }
 
     .welcome-section {
@@ -1719,10 +1699,15 @@ tbody tr:last-child td {
 
     .section-heading {
         align-items: flex-start;
+        flex-wrap: wrap;
     }
 
     .section-heading h3 {
         font-size: 17px;
+    }
+
+    .section-heading > button {
+        max-width: 100%;
     }
 
     .content-card {
@@ -1754,14 +1739,6 @@ tbody tr:last-child td {
 
     .profile-card {
         flex-direction: column;
-    }
-
-    .section-heading {
-        flex-wrap: wrap;
-    }
-
-    .section-heading > button {
-        max-width: 100%;
     }
 
     .table-container {
@@ -1838,12 +1815,10 @@ tbody tr:last-child td {
     #closeTellerSupportConversation {
         width: 100%;
     }
-
 }
 
-
 /* =========================================================
-   28. SMALL PHONE SCREENS
+   30. SMALL PHONE SCREENS
 ========================================================= */
 
 @media (max-width: 400px) {
@@ -1880,25 +1855,26 @@ tbody tr:last-child td {
     .receipt {
         padding: 17px;
     }
-
 }
 
-
 /* =========================================================
-   29. ACCESSIBILITY AND PRINT
+   31. ACCESSIBILITY
 ========================================================= */
 
 button:focus-visible,
 a:focus-visible {
-    outline: 3px solid rgba(36, 99, 165, 0.35);
+    outline: 3px solid rgba(36, 99, 165, 0.45);
     outline-offset: 3px;
 }
+
+/* =========================================================
+   32. PRINT
+========================================================= */
 
 @media print {
 
     .sidebar,
     .topbar,
-    .dashboard-topbar,
     .dashboard-footer,
     .footer,
     button {
@@ -1917,182 +1893,16 @@ a:focus-visible {
         box-shadow: none;
     }
 
-}
-
-
-/* =========================================================
-   30. FINAL DASHBOARD LAYOUT AND VISIBILITY FIXES
-========================================================= */
-
-/* Hide global login header when teller dashboard is visible */
-body:has(#dashboardSection:not(.hidden)) > .topbar {
-    display: none;
-}
-
-/* Hide global login footer when teller dashboard is visible */
-body:has(#dashboardSection:not(.hidden)) > .footer {
-    display: none;
-}
-
-/* Dashboard full-screen layout */
-.dashboard-section {
-    width: 100%;
-    min-height: 100vh;
-}
-
-.dashboard-layout {
-    min-height: 100vh;
-    align-items: stretch;
-}
-
-.sidebar {
-    min-height: 100vh;
-}
-
-/* Dashboard top header */
-.dashboard-topbar {
-    width: 100%;
-}
-
-.dashboard-topbar-right {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    gap: 18px;
-    flex-wrap: wrap;
-}
-
-/* Dashboard logout button */
-.dashboard-topbar-right .logout-button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 40px;
-    padding: 9px 16px;
-    background: #ffffff;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    color: var(--danger);
-    font-size: 12px;
-    font-weight: 700;
-}
-
-.dashboard-topbar-right .logout-button:hover {
-    background: #fff0f0;
-    border-color: var(--danger);
-}
-
-/* Preserve JavaScript-controlled hidden state */
-.logout-button.hidden {
-    display: none !important;
-}
-
-/* Ensure hidden dashboard panels stay hidden */
-.dashboard-panel.hidden {
-    display: none !important;
-}
-
-/* Mobile dashboard adjustments */
-@media (max-width: 760px) {
-
-    .dashboard-layout {
-        min-height: auto;
-    }
-
-    .sidebar {
-        min-height: auto;
-    }
-
-    .dashboard-topbar {
-        align-items: center;
-        gap: 8px;
-    }
-
-    .dashboard-topbar-right {
-        gap: 8px;
-    }
-
-    .dashboard-topbar-right .logout-button {
-        min-height: 35px;
-        padding: 7px 10px;
-        font-size: 10px;
-    }
-
-    .topbar-account {
-        gap: 6px;
-    }
-
-}
-
-/* Very small phones */
-@media (max-width: 400px) {
-
-    .dashboard-topbar {
-        flex-wrap: wrap;
-        padding: 12px 0;
-    }
-
-    .dashboard-topbar-right {
-        width: 100%;
-        justify-content: space-between;
-    }
-
-}
-
-
-/* =========================================================
-   31. FIXED DASHBOARD HEADER AND STICKY SIDEBAR
-========================================================= */
-
-/* Keep dashboard header visible while scrolling */
-.dashboard-topbar {
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-    background: #ffffff;
-    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.06);
-}
-
-/* Keep sidebar visible while scrolling */
-.sidebar {
-    position: sticky;
-    top: 0;
-    align-self: flex-start;
-    height: 100vh;
-    max-height: 100vh;
-    overflow-y: auto;
-    overflow-x: hidden;
-    z-index: 900;
-}
-
-/* Smooth sidebar scrolling */
-.sidebar {
-    scrollbar-width: thin;
-    scrollbar-color: #cbd5df transparent;
-}
-
-.sidebar::-webkit-scrollbar {
-    width: 5px;
-}
-
-.sidebar::-webkit-scrollbar-thumb {
-    background: #cbd5df;
-    border-radius: 10px;
-}
-
-/* Mobile layout: allow normal scrolling */
-@media (max-width: 760px) {
-    .sidebar {
-        position: relative;
-        top: auto;
-        height: auto;
-        max-height: none;
+    .table-container {
         overflow: visible;
+        box-shadow: none;
     }
 
-    .dashboard-topbar {
-        position: sticky;
-        top: 0;
-        z-index: 1000;
+    table {
+        min-width: 0;
     }
 }
+
+/* =========================================================
+   END OF TELLER PORTAL CSS
+========================================================= */
