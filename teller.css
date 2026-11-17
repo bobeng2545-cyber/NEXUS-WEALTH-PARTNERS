@@ -374,64 +374,56 @@ textarea:disabled {
     width: 100%;
 }
 
-/* Hide the login header when dashboard is visible */
+/* Hide login header when dashboard is visible */
+
 body:has(#dashboardSection:not(.hidden)) > .topbar {
     display: none;
 }
 
-/* Hide the login footer when dashboard is visible */
+/* Hide login footer when dashboard is visible */
+
 body:has(#dashboardSection:not(.hidden)) > .footer {
     display: none;
 }
 
 /* =========================================================
-   9. SIDEBAR
+   9. SIDEBAR - FIXED DESKTOP LAYOUT
 ========================================================= */
 
 .sidebar {
-    width: var(--sidebar-width);
-    min-width: var(--sidebar-width);
+    position: fixed;
+    top: 0;
+    left: 0;
 
-    background: var(--navy);
-    color: white;
+    width: var(--sidebar-width);
+    height: 100vh;
 
     display: flex;
     flex-direction: column;
 
-    padding: 25px 16px 20px;
+    padding: 0;
+    margin: 0;
 
-    height: 100vh;
-    min-height: 100vh;
-    max-height: 100vh;
+    overflow: hidden;
 
-    position: sticky;
-    top: 0;
-    align-self: flex-start;
+    background: var(--navy);
+    color: white;
 
-    overflow-y: auto;
-    overflow-x: hidden;
+    z-index: 1000;
 
-    z-index: 100;
-    scrollbar-width: thin;
-    scrollbar-color: #49647d transparent;
-}
-
-.sidebar::-webkit-scrollbar {
-    width: 5px;
-}
-
-.sidebar::-webkit-scrollbar-track {
-    background: transparent;
-}
-
-.sidebar::-webkit-scrollbar-thumb {
-    background: #49647d;
-    border-radius: 10px;
+    box-sizing: border-box;
 }
 
 /* =========================================================
-   10. SIDEBAR BRAND
+   10. FIXED SIDEBAR HEADER
 ========================================================= */
+
+.sidebar-header {
+    flex: 0 0 auto;
+    width: 100%;
+    padding: 24px 16px 0;
+    background: var(--navy);
+}
 
 .sidebar-brand {
     display: flex;
@@ -439,7 +431,6 @@ body:has(#dashboardSection:not(.hidden)) > .footer {
     gap: 11px;
     padding: 2px 10px 25px;
     border-bottom: 1px solid rgba(255,255,255,0.12);
-    flex-shrink: 0;
 }
 
 .sidebar-brand-icon {
@@ -480,7 +471,6 @@ body:has(#dashboardSection:not(.hidden)) > .footer {
     padding: 20px 9px;
     margin-bottom: 15px;
     border-bottom: 1px solid rgba(255,255,255,0.12);
-    flex-shrink: 0;
 }
 
 .sidebar-avatar {
@@ -520,35 +510,69 @@ body:has(#dashboardSection:not(.hidden)) > .footer {
     font-weight: 800;
     letter-spacing: 1.2px;
     padding: 7px 11px 12px;
-    flex-shrink: 0;
 }
 
 /* =========================================================
-   12. SIDEBAR NAVIGATION
+   12. MIDDLE NAVIGATION - INDEPENDENT SCROLL
 ========================================================= */
 
 .dashboard-nav {
     display: flex;
     flex-direction: column;
     gap: 5px;
+
     width: 100%;
-    flex-shrink: 0;
+
+    flex: 1 1 auto;
+    min-height: 0;
+
+    padding: 0 16px 15px;
+
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    overscroll-behavior: contain;
+
+    scrollbar-width: thin;
+    scrollbar-color: #49647d transparent;
+}
+
+.dashboard-nav::-webkit-scrollbar {
+    width: 5px;
+}
+
+.dashboard-nav::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.dashboard-nav::-webkit-scrollbar-thumb {
+    background: #49647d;
+    border-radius: 10px;
 }
 
 .nav-button {
     width: 100%;
+    min-height: 43px;
+
     display: flex;
     align-items: center;
     gap: 12px;
+
+    flex: 0 0 auto;
+
     text-align: left;
     border: 0;
     background: transparent;
     color: #c6d3df;
+
     padding: 12px 13px;
     border-radius: 8px;
+
     font-size: 12px;
     font-weight: 600;
+
     cursor: pointer;
+
     transition: background 0.2s, color 0.2s;
 }
 
@@ -574,26 +598,41 @@ body:has(#dashboardSection:not(.hidden)) > .footer {
 }
 
 /* =========================================================
-   13. SIDEBAR BOTTOM AND LOGOUT
+   13. FIXED SIDEBAR BOTTOM AND LOGOUT
 ========================================================= */
 
 .sidebar-bottom {
-    margin-top: auto;
-    padding-top: 25px;
+    flex: 0 0 auto;
+
     width: 100%;
-    flex-shrink: 0;
+
+    margin-top: 0;
+    padding: 13px 16px 20px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+
+    background: var(--navy-dark);
+
+    border-top: 1px solid rgba(255,255,255,0.12);
 }
 
 .sidebar-website-link {
     display: flex;
     align-items: center;
     gap: 10px;
+
     text-decoration: none;
     color: #dce8f2;
+
     font-size: 12px;
     font-weight: 600;
+
     padding: 12px;
+
     border-radius: 8px;
+
     transition: background 0.2s;
 }
 
@@ -604,13 +643,16 @@ body:has(#dashboardSection:not(.hidden)) > .footer {
 
 .sidebar-security {
     border-top: 1px solid rgba(255,255,255,0.12);
-    margin-top: 15px;
-    padding: 17px 8px 0;
+
+    margin-top: 0;
+    padding: 12px 8px 0;
+
     color: #9fb2c4;
     font-size: 10px;
 }
 
-/* Logout button inside sidebar */
+/* Logout button */
+
 .sidebar-bottom .logout-button {
     display: flex;
     align-items: center;
@@ -620,10 +662,11 @@ body:has(#dashboardSection:not(.hidden)) > .footer {
     width: 100%;
     min-height: 43px;
 
-    margin-top: 15px;
+    margin: 0;
     padding: 11px 14px;
 
     background: rgba(255,255,255,0.08);
+
     border: 1px solid rgba(255,255,255,0.22);
     border-radius: 8px;
 
@@ -645,6 +688,7 @@ body:has(#dashboardSection:not(.hidden)) > .footer {
 }
 
 /* Preserve JavaScript-controlled hidden state */
+
 .logout-button.hidden {
     display: none !important;
 }
@@ -654,9 +698,15 @@ body:has(#dashboardSection:not(.hidden)) > .footer {
 ========================================================= */
 
 .dashboard-main {
-    flex: 1;
+    width: calc(100% - var(--sidebar-width));
+
     min-width: 0;
+    min-height: 100vh;
+
+    margin-left: var(--sidebar-width);
+
     padding: 30px 30px 25px;
+
     background: var(--background);
 }
 
@@ -1542,7 +1592,17 @@ tbody tr:last-child td {
         padding-right: 22px;
     }
 
-    .sidebar {
+    .sidebar-header {
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+
+    .sidebar-bottom {
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+
+    .dashboard-nav {
         padding-left: 12px;
         padding-right: 12px;
     }
@@ -1587,18 +1647,28 @@ tbody tr:last-child td {
     }
 
     /* Sidebar becomes a normal mobile section */
-    .sidebar {
-        width: 100%;
-        min-width: 0;
-        height: auto;
-        min-height: auto;
-        max-height: none;
 
+    .sidebar {
         position: relative;
         top: auto;
+        left: auto;
+
+        width: 100%;
+        height: auto;
+        min-width: 0;
+        min-height: 0;
+        max-height: none;
 
         overflow: visible;
-        padding: 13px 12px;
+
+        display: flex;
+        flex-direction: column;
+
+        padding: 0;
+    }
+
+    .sidebar-header {
+        padding: 13px 12px 0;
     }
 
     .sidebar-brand {
@@ -1633,10 +1703,22 @@ tbody tr:last-child td {
         padding: 7px 7px 9px;
     }
 
+    /* Mobile navigation */
+
     .dashboard-nav {
+        flex: none;
+        min-height: 0;
+        max-height: 260px;
+
         display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));
+
         gap: 6px;
+
+        padding: 0 12px 12px;
+
+        overflow-y: auto;
+        overflow-x: hidden;
     }
 
     .nav-button {
@@ -1653,7 +1735,8 @@ tbody tr:last-child td {
     }
 
     .sidebar-bottom {
-        padding-top: 10px;
+        padding: 10px 12px 14px;
+        gap: 9px;
     }
 
     .sidebar-website-link {
@@ -1662,17 +1745,20 @@ tbody tr:last-child td {
     }
 
     .sidebar-security {
-        margin-top: 8px;
         padding: 10px 7px 0;
     }
 
     .sidebar-bottom .logout-button {
-        margin-top: 10px;
+        margin-top: 0;
         min-height: 42px;
     }
 
+    /* Main dashboard */
+
     .dashboard-main {
         width: 100%;
+        min-height: 0;
+        margin-left: 0;
         padding: 20px 14px;
     }
 
@@ -1882,6 +1968,8 @@ a:focus-visible {
     }
 
     .dashboard-main {
+        width: 100%;
+        margin-left: 0;
         padding: 0;
     }
 
@@ -1904,5 +1992,5 @@ a:focus-visible {
 }
 
 /* =========================================================
-   END OF TELLER PORTAL CSS
+   END OF NEXUS WEALTH PARTNERS TELLER CSS
 ========================================================= */
