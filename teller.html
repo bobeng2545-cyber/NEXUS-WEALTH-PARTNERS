@@ -30,12 +30,11 @@
                 Checking connection...
             </span>
 
-            <button id="logoutButton" class="logout-button hidden">
+            <button id="logoutButton" class="logout-button hidden" type="button">
                 Log out
             </button>
         </div>
     </header>
-
 
     <main class="main-container">
 
@@ -112,8 +111,8 @@
                     </h2>
 
                     <p class="muted">
-                        Manage member deposits, test withdrawal simulations
-                        and customer support reports.
+                        Manage member deposits, test withdrawal simulations,
+                        member registrations and customer support reports.
                     </p>
                 </div>
 
@@ -134,6 +133,7 @@
             <nav class="dashboard-nav">
 
                 <button
+                    type="button"
                     class="nav-button active"
                     data-panel="depositPanel"
                 >
@@ -141,6 +141,23 @@
                 </button>
 
                 <button
+                    type="button"
+                    class="nav-button"
+                    data-panel="registerMemberPanel"
+                >
+                    Register New Member
+                </button>
+
+                <button
+                    type="button"
+                    class="nav-button"
+                    data-panel="myRegisteredMembersPanel"
+                >
+                    My Registered Members
+                </button>
+
+                <button
+                    type="button"
                     class="nav-button"
                     data-panel="testWithdrawalPanel"
                 >
@@ -148,6 +165,7 @@
                 </button>
 
                 <button
+                    type="button"
                     class="nav-button"
                     data-panel="historyPanel"
                 >
@@ -155,6 +173,7 @@
                 </button>
 
                 <button
+                    type="button"
                     class="nav-button"
                     data-panel="profilePanel"
                 >
@@ -162,6 +181,7 @@
                 </button>
 
                 <button
+                    type="button"
                     class="nav-button"
                     data-panel="supportPanel"
                 >
@@ -169,6 +189,180 @@
                 </button>
 
             </nav>
+
+
+            <!-- =================================================
+                 REGISTER NEW MEMBER PANEL
+            ================================================== -->
+
+            <section
+                id="registerMemberPanel"
+                class="dashboard-panel hidden"
+            >
+
+                <div class="section-heading">
+                    <div>
+                        <h3>Register New Member</h3>
+
+                        <p>
+                            Register a new member using their correct
+                            personal information.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="content-card">
+
+                    <h4>Member Registration Details</h4>
+
+                    <div class="deposit-warning">
+                        <strong>Important Security Notice</strong>
+
+                        <p>
+                            The member must provide their own email address.
+                            They will receive an invitation to create their
+                            personal password.
+                        </p>
+
+                        <p>
+                            Never create, request or handle a member's password.
+                        </p>
+                    </div>
+
+                    <form id="tellerMemberRegistrationForm">
+
+                        <label for="tellerNewMemberName">
+                            Member Full Name
+                        </label>
+
+                        <input
+                            type="text"
+                            id="tellerNewMemberName"
+                            placeholder="Enter member's full name"
+                            autocomplete="name"
+                            maxlength="150"
+                            required
+                        >
+
+                        <label for="tellerNewMemberEmail">
+                            Member Email Address
+                        </label>
+
+                        <input
+                            type="email"
+                            id="tellerNewMemberEmail"
+                            placeholder="Enter member's email address"
+                            autocomplete="email"
+                            maxlength="254"
+                            required
+                        >
+
+                        <label for="tellerNewMemberPhone">
+                            Ghana Mobile Number
+                        </label>
+
+                        <input
+                            type="tel"
+                            id="tellerNewMemberPhone"
+                            placeholder="e.g. 0241234567 or +233241234567"
+                            autocomplete="tel"
+                            maxlength="20"
+                            required
+                        >
+
+                        <button
+                            type="submit"
+                            id="registerTellerMemberButton"
+                            class="primary-button full-width"
+                        >
+                            Register Member
+                        </button>
+
+                    </form>
+
+                    <div
+                        id="tellerMemberRegistrationMessage"
+                        class="message hidden"
+                        role="status"
+                        aria-live="polite"
+                    ></div>
+
+                </div>
+
+            </section>
+
+
+            <!-- =================================================
+                 MY REGISTERED MEMBERS PANEL
+            ================================================== -->
+
+            <section
+                id="myRegisteredMembersPanel"
+                class="dashboard-panel hidden"
+            >
+
+                <div class="section-heading">
+
+                    <div>
+                        <h3>My Registered Members</h3>
+
+                        <p>
+                            View members registered through your teller account.
+                        </p>
+                    </div>
+
+                    <button
+                        type="button"
+                        id="refreshMyRegisteredMembersButton"
+                        class="secondary-button"
+                    >
+                        Refresh
+                    </button>
+
+                </div>
+
+                <div
+                    id="myRegisteredMembersMessage"
+                    class="message hidden"
+                    role="status"
+                    aria-live="polite"
+                ></div>
+
+                <div class="content-card">
+
+                    <div class="table-container">
+
+                        <table>
+
+                            <thead>
+                                <tr>
+                                    <th>Member ID</th>
+                                    <th>Full Name</th>
+                                    <th>Email</th>
+                                    <th>Phone</th>
+                                    <th>Date Registered</th>
+                                    <th>Verification Status</th>
+                                    <th>Account Status</th>
+                                </tr>
+                            </thead>
+
+                            <tbody id="myRegisteredMembersTableBody">
+
+                                <tr>
+                                    <td colspan="7" class="empty-state">
+                                        Your registered members will appear here.
+                                    </td>
+                                </tr>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </section>
 
 
             <!-- =================================================
@@ -186,7 +380,6 @@
                         </p>
                     </div>
                 </div>
-
 
                 <div class="content-card">
 
@@ -220,7 +413,6 @@
                         id="memberResults"
                         class="member-results hidden"
                     ></div>
-
 
                     <div
                         id="selectedMemberCard"
@@ -267,7 +459,6 @@
                     </div>
 
                 </div>
-
 
                 <div class="content-card deposit-card">
 
@@ -341,7 +532,6 @@
                         class="message hidden"
                     ></div>
 
-
                     <div id="depositReceipt" class="receipt hidden">
 
                         <div class="receipt-icon">✓</div>
@@ -397,7 +587,6 @@
                     </div>
                 </div>
 
-
                 <div class="deposit-warning">
 
                     <strong>SIMULATION ONLY — NO REAL MONEY</strong>
@@ -409,7 +598,6 @@
                     </p>
 
                 </div>
-
 
                 <div class="content-card">
 
@@ -437,18 +625,15 @@
 
                     </form>
 
-
                     <div
                         id="testMemberSearchMessage"
                         class="message hidden"
                     ></div>
 
-
                     <div
                         id="testMemberResults"
                         class="member-results hidden"
                     ></div>
-
 
                     <div
                         id="selectedTestMemberCard"
@@ -459,7 +644,6 @@
                             <span class="success-dot"></span>
                             <strong>Selected Test Member</strong>
                         </div>
-
 
                         <div class="member-details">
 
@@ -485,7 +669,6 @@
 
                         </div>
 
-
                         <button
                             type="button"
                             id="changeTestMemberButton"
@@ -498,7 +681,6 @@
 
                 </div>
 
-
                 <div class="content-card">
 
                     <h4>2. Test Withdrawal Details</h4>
@@ -506,7 +688,6 @@
                     <p class="muted small">
                         Use fictional payment details for this simulation.
                     </p>
-
 
                     <form id="testWithdrawalForm">
 
@@ -523,15 +704,12 @@
                             required
                         >
 
-
                         <label for="testWithdrawalMethod">
                             Withdrawal Method
                         </label>
 
-                        <select
-                            id="testWithdrawalMethod"
-                            required
-                        >
+                        <select id="testWithdrawalMethod" required>
+
                             <option value="">
                                 Select withdrawal method
                             </option>
@@ -551,8 +729,8 @@
                             <option value="bank">
                                 Bank
                             </option>
-                        </select>
 
+                        </select>
 
                         <label for="testPaymentDetails">
                             Test Payment Details
@@ -567,7 +745,6 @@
                             required
                         >
 
-
                         <div class="deposit-warning">
 
                             <strong>Test confirmation:</strong>
@@ -577,7 +754,6 @@
                             or wallet deduction will occur.
 
                         </div>
-
 
                         <button
                             type="submit"
@@ -590,12 +766,10 @@
 
                     </form>
 
-
                     <div
                         id="testWithdrawalMessage"
                         class="message hidden"
                     ></div>
-
 
                     <div
                         id="testWithdrawalReceipt"
@@ -610,30 +784,20 @@
                             Simulation completed successfully.
                         </p>
 
-
                         <div class="receipt-reference">
-
                             <span>Test Reference</span>
-
                             <strong id="testReceiptReference">---</strong>
-
                         </div>
-
 
                         <div class="receipt-amount">
-
                             <span>Simulated Amount</span>
-
                             <strong id="testReceiptAmount">GH₵0.00</strong>
-
                         </div>
-
 
                         <p>
                             <strong>Status:</strong>
                             SIMULATED — NO MONEY TRANSFERRED
                         </p>
-
 
                         <button
                             type="button"
@@ -646,7 +810,6 @@
                     </div>
 
                 </div>
-
 
                 <div class="content-card">
 
@@ -671,12 +834,10 @@
 
                     </div>
 
-
                     <div
                         id="testWithdrawalHistoryMessage"
                         class="message hidden"
                     ></div>
-
 
                     <div class="table-container">
 
@@ -733,6 +894,7 @@
                     </div>
 
                     <button
+                        type="button"
                         id="refreshHistoryButton"
                         class="secondary-button"
                     >
@@ -741,12 +903,10 @@
 
                 </div>
 
-
                 <div
                     id="historyMessage"
                     class="message hidden"
                 ></div>
-
 
                 <div class="table-container">
 
@@ -799,7 +959,6 @@
                     </div>
 
                 </div>
-
 
                 <div class="content-card profile-card">
 
@@ -869,12 +1028,10 @@
 
                 </div>
 
-
                 <div
                     id="tellerSupportMessage"
                     class="message hidden"
                 ></div>
-
 
                 <!-- CUSTOMER REPORTS INBOX -->
 
@@ -892,14 +1049,12 @@
 
                     </div>
 
-
                     <input
                         type="search"
                         id="supportTicketSearch"
                         placeholder="Search customer, member ID or report subject..."
                         autocomplete="off"
                     >
-
 
                     <div
                         id="tellerSupportTicketList"
@@ -913,7 +1068,6 @@
                     </div>
 
                 </div>
-
 
                 <!-- CUSTOMER CONVERSATION -->
 
@@ -944,7 +1098,6 @@
 
                     </div>
 
-
                     <!-- REPORT DETAILS -->
 
                     <div class="member-details">
@@ -970,7 +1123,6 @@
                         </div>
 
                     </div>
-
 
                     <!-- STATUS MANAGEMENT -->
 
@@ -1010,7 +1162,6 @@
 
                     </div>
 
-
                     <!-- CONVERSATION MESSAGES -->
 
                     <div class="support-conversation-area">
@@ -1029,7 +1180,6 @@
                         </div>
 
                     </div>
-
 
                     <!-- REPLY FORM -->
 
@@ -1059,7 +1209,6 @@
 
                         </form>
 
-
                         <p
                             id="tellerSupportClosedNotice"
                             class="muted hidden"
@@ -1076,7 +1225,6 @@
         </section>
 
     </main>
-
 
     <footer class="footer">
 
