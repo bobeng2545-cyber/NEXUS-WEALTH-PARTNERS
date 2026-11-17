@@ -326,7 +326,6 @@ function showForgotPassword() {
 }
 
 
-
 /* =========================================
    11. MOBILE DASHBOARD NAVIGATION
 ========================================= */
@@ -410,64 +409,49 @@ function setMobileDashboardView(screen, shouldScroll = true) {
         });
 
     });
-   
-   
-   document.querySelectorAll(
-      "#memberDashboard .dashboard-content-grid"
-   ).forEach(element => {
-      
-      if (element && element.classList) {
-         element.classList.remove("mobile-savings-visible");
-      }
-   
-   });
 
-
+    document.querySelectorAll(
+        "#memberDashboard .dashboard-content-grid"
+    ).forEach(element => {
+        element.classList.remove("mobile-savings-visible");
+    });
 
     /* DESKTOP VIEW */
 
     if (!isMobile) {
 
-    document.body.classList.remove("mobile-inner-page");
-    dashboard.classList.remove("mobile-inner-page");
+        document.body.classList.remove("mobile-inner-page");
 
-    allSections.forEach(section => {
-        section.classList.remove("mobile-view-hidden");
-        section.classList.remove("dashboard-screen");
-        section.classList.remove("active-screen");
-        section.style.display = "";
-    });
+        if (dashboard) {
+            dashboard.classList.remove("mobile-inner-page");
+            dashboard.style.paddingTop = "";
+        }
 
-    document.querySelectorAll(".member-navigation a").forEach(link => {
-        link.classList.toggle(
-            "active",
-            link.dataset.screen === screen
-        );
-    });
+        if (homeHeader) {
+            homeHeader.style.display = "none";
+        }
 
-    const desktopTargets = {
-        home: ".dashboard-heading",
-        transactions: "#memberTransactions",
-        pendingWithdrawals: "#pendingWithdrawals",
-        savings: "#memberSavings",
-        profile: "#memberProfile",
-        support: "#memberSupport"
-    };
+        if (screenHeader) {
+            screenHeader.style.display = "none";
+        }
 
-    const targetSelector = desktopTargets[screen];
-    const target = targetSelector
-        ? document.querySelector(targetSelector)
-        : null;
+        if (backButton) {
+            backButton.style.display = "none";
+        }
 
-    if (shouldScroll && target) {
-        target.scrollIntoView({
-            behavior: "smooth",
-            block: "start"
+        document.querySelectorAll(
+            ".member-navigation a[data-screen]"
+        ).forEach(link => {
+
+            link.classList.toggle(
+                "active",
+                link.dataset.screen === "home"
+            );
+
         });
-    }
 
-    return;
-}
+        return;
+    }
 
     /* MOBILE VIEW: HIDE ALL SCREENS FIRST */
 
@@ -3518,7 +3502,7 @@ if (floatingSupportButton) {
 
         // Open the support page on mobile.
         if (
-            window.innerWidth <= 700 &&
+            window.innerWidth <= 768 &&
             typeof setMobileDashboardView === "function"
         ) {
             setMobileDashboardView("support");
