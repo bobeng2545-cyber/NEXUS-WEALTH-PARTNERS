@@ -399,59 +399,83 @@ function setMobileDashboardView(screen, shouldScroll = true) {
 
     allSections.forEach(selector => {
 
-        document.querySelectorAll(
-            "#memberDashboard " + selector
-        ).forEach(element => {
+    document.querySelectorAll(
+        "#memberDashboard " + selector
+    ).forEach(element => {
 
+        if (element && element.classList) {
             element.classList.remove("mobile-view-hidden");
             element.style.display = "";
-
-        });
+        }
 
     });
 
+});
+
     document.querySelectorAll(
-        "#memberDashboard .dashboard-content-grid"
+       "#memberDashboard .dashboard-content-grid"
     ).forEach(element => {
-        element.classList.remove("mobile-savings-visible");
+       
+       if (element && element.classList) {
+          element.classList.remove("mobile-savings-visible");
+       }
+    
     });
 
     /* DESKTOP VIEW */
 
-    if (!isMobile) {
+if (!isMobile) {
 
-        document.body.classList.remove("mobile-inner-page");
+    document.body.classList.remove("mobile-inner-page");
 
-        if (dashboard) {
-            dashboard.classList.remove("mobile-inner-page");
-            dashboard.style.paddingTop = "";
-        }
+    if (dashboard) {
+        dashboard.classList.remove("mobile-inner-page");
+        dashboard.style.paddingTop = "";
+    }
 
-        if (homeHeader) {
-            homeHeader.style.display = "none";
-        }
+    if (homeHeader) homeHeader.style.display = "none";
+    if (screenHeader) screenHeader.style.display = "none";
+    if (backButton) backButton.style.display = "none";
 
-        if (screenHeader) {
-            screenHeader.style.display = "none";
-        }
+    const desktopTargets = {
+        home: ".dashboard-heading",
+        transactions: "#memberTransactions",
+        pendingWithdrawals: "#pendingWithdrawals",
+        savings: "#memberSavings",
+        profile: "#memberProfile",
+        support: "#memberSupport"
+    };
 
-        if (backButton) {
-            backButton.style.display = "none";
-        }
+    document.querySelectorAll(
+        ".member-navigation a[data-screen]"
+    ).forEach(link => {
 
-        document.querySelectorAll(
-            ".member-navigation a[data-screen]"
-        ).forEach(link => {
-
+        if (link && link.classList) {
             link.classList.toggle(
                 "active",
-                link.dataset.screen === "home"
+                link.dataset.screen === screen
             );
+        }
 
-        });
+    });
 
-        return;
+    if (shouldScroll) {
+
+        const target = document.querySelector(
+            desktopTargets[screen] || ".dashboard-heading"
+        );
+
+        if (target) {
+            target.scrollIntoView({
+                behavior: "smooth",
+                block: "start"
+            });
+        }
+
     }
+
+    return;
+}
 
     /* MOBILE VIEW: HIDE ALL SCREENS FIRST */
 
@@ -3502,7 +3526,7 @@ if (floatingSupportButton) {
 
         // Open the support page on mobile.
         if (
-            window.innerWidth <= 768 &&
+            window.innerWidth <= 700 &&
             typeof setMobileDashboardView === "function"
         ) {
             setMobileDashboardView("support");
