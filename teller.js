@@ -731,10 +731,141 @@ function renderTellerProfile() {
 }
 
 
-
 /* =========================================================
-   9. DASHBOARD NAVIGATION
+   9. DASHBOARD NAVIGATION + MOBILE SIDEBAR
 ========================================================= */
+
+// MOBILE MENU ELEMENTS
+
+const tellerMobileMenuButton =
+    document.getElementById("tellerMobileMenuButton");
+
+const tellerSidebar =
+    document.getElementById("tellerSidebar");
+
+const tellerSidebarOverlay =
+    document.getElementById("tellerSidebarOverlay");
+
+const closeTellerMobileMenuButton =
+    document.getElementById("closeTellerMobileMenu");
+
+
+// OPEN MOBILE SIDEBAR
+
+function openTellerMobileMenu() {
+
+    if (!tellerSidebar || !tellerSidebarOverlay) return;
+
+    tellerSidebar.classList.add("mobile-open");
+    tellerSidebarOverlay.classList.add("active");
+
+    tellerMobileMenuButton?.setAttribute(
+        "aria-expanded",
+        "true"
+    );
+
+    tellerMobileMenuButton?.setAttribute(
+        "aria-label",
+        "Close teller menu"
+    );
+
+    tellerSidebarOverlay.setAttribute(
+        "aria-hidden",
+        "false"
+    );
+
+    document.body.classList.add("sidebar-open");
+
+}
+
+
+// CLOSE MOBILE SIDEBAR
+
+function closeTellerMobileDrawer() {
+
+    if (!tellerSidebar || !tellerSidebarOverlay) return;
+
+    tellerSidebar.classList.remove("mobile-open");
+    tellerSidebarOverlay.classList.remove("active");
+
+    tellerMobileMenuButton?.setAttribute(
+        "aria-expanded",
+        "false"
+    );
+
+    tellerMobileMenuButton?.setAttribute(
+        "aria-label",
+        "Open teller menu"
+    );
+
+    tellerSidebarOverlay.setAttribute(
+        "aria-hidden",
+        "true"
+    );
+
+    document.body.classList.remove("sidebar-open");
+
+}
+
+
+// MOBILE MENU BUTTON
+
+tellerMobileMenuButton?.addEventListener(
+    "click",
+    function () {
+
+        const isOpen =
+            tellerSidebar?.classList.contains("mobile-open");
+
+        if (isOpen) {
+            closeTellerMobileDrawer();
+        } else {
+            openTellerMobileMenu();
+        }
+
+    }
+);
+
+
+// CLOSE BUTTON INSIDE SIDEBAR
+
+closeTellerMobileMenuButton?.addEventListener(
+    "click",
+    closeTellerMobileDrawer
+);
+
+
+// CLOSE WHEN OVERLAY IS CLICKED
+
+tellerSidebarOverlay?.addEventListener(
+    "click",
+    closeTellerMobileDrawer
+);
+
+
+// CLOSE WHEN ESCAPE IS PRESSED
+
+document.addEventListener("keydown", function (event) {
+
+    if (event.key === "Escape") {
+        closeTellerMobileDrawer();
+    }
+
+});
+
+
+// CLOSE DRAWER WHEN SCREEN RETURNS TO DESKTOP
+
+window.addEventListener("resize", function () {
+
+    if (window.innerWidth > 760) {
+        closeTellerMobileDrawer();
+    }
+
+});
+
+
+// DASHBOARD CATEGORY NAVIGATION
 
 document.querySelectorAll(".nav-button").forEach(button => {
 
@@ -742,45 +873,88 @@ document.querySelectorAll(".nav-button").forEach(button => {
 
         const targetPanel = this.dataset.panel;
 
+        if (!targetPanel) {
+            console.error("Navigation button has no data-panel attribute.");
+            return;
+        }
+
+        const targetElement =
+            document.getElementById(targetPanel);
+
+        if (!targetElement) {
+
+            console.error(
+                "Dashboard panel not found:",
+                targetPanel
+            );
+
+            return;
+        }
+
+
+        // Remove active state from all navigation buttons.
+
         document.querySelectorAll(".nav-button").forEach(item => {
             item.classList.remove("active");
         });
+
+
+        // Hide all dashboard panels.
 
         document.querySelectorAll(".dashboard-panel").forEach(panel => {
             panel.classList.add("hidden");
         });
 
+
+        // Activate selected navigation button.
+
         this.classList.add("active");
 
-        const targetElement = document.getElementById(targetPanel);
 
-        if (!targetElement) {
-            console.error("Dashboard panel not found:", targetPanel);
-            return;
-        }
+        // Display selected dashboard panel.
 
         targetElement.classList.remove("hidden");
 
-        if (targetPanel === "historyPanel") {
-            await loadTellerHistory();
-        }
 
-        if (targetPanel === "testWithdrawalPanel") {
-            await loadTestWithdrawalHistory();
-        }
+        // Close mobile navigation after selecting a category.
 
-        if (targetPanel === "supportPanel") {
+        closeTellerMobileDrawer();
 
-            currentSupportTicket = null;
 
-            tellerSupportConversation.classList.add("hidden");
+        // Load selected category data.
 
-            await loadTellerSupportTickets();
+        try {
+
+            if (targetPanel === "historyPanel") {
+                await loadTellerHistory();
+            }
+
+            if (targetPanel === "testWithdrawalPanel") {
+                await loadTestWithdrawalHistory();
+            }
+
+            if (targetPanel === "supportPanel") {
+
+                currentSupportTicket = null;
+
+                tellerSupportConversation?.classList.add("hidden");
+
+                await loadTellerSupportTickets();
+            }
+
+        } catch (error) {
+
+            console.error(
+                "Dashboard panel loading error:",
+                error
+            );
+
         }
 
     });
 
 });
+
 
 
 /* =========================================================
