@@ -38,7 +38,6 @@
         </div>
 
         <div class="header-actions">
-
             <span
                 id="connectionStatus"
                 class="connection-status"
@@ -46,7 +45,6 @@
             >
                 Checking connection...
             </span>
-
         </div>
 
     </header>
@@ -79,9 +77,7 @@
 
                 <form id="loginForm">
 
-                    <label for="loginEmail">
-                        Email Address
-                    </label>
+                    <label for="loginEmail">Email Address</label>
 
                     <input
                         type="email"
@@ -92,9 +88,7 @@
                         required
                     >
 
-                    <label for="loginPassword">
-                        Password
-                    </label>
+                    <label for="loginPassword">Password</label>
 
                     <input
                         type="password"
@@ -147,6 +141,8 @@
                 ========================================== -->
 
                 <aside class="sidebar">
+
+                    <!-- SIDEBAR BRAND -->
 
                     <div class="sidebar-brand">
 
@@ -204,7 +200,6 @@
                             <span>Record Deposit</span>
                         </button>
 
-
                         <button
                             type="button"
                             class="nav-button"
@@ -213,7 +208,6 @@
                             <span class="nav-icon" aria-hidden="true">＋</span>
                             <span>Register New Member</span>
                         </button>
-
 
                         <button
                             type="button"
@@ -224,7 +218,6 @@
                             <span>My Registered Members</span>
                         </button>
 
-
                         <button
                             type="button"
                             class="nav-button"
@@ -233,7 +226,6 @@
                             <span class="nav-icon" aria-hidden="true">⇄</span>
                             <span>Test Withdrawals</span>
                         </button>
-
 
                         <button
                             type="button"
@@ -244,7 +236,6 @@
                             <span>My Transactions</span>
                         </button>
 
-
                         <button
                             type="button"
                             class="nav-button"
@@ -253,7 +244,6 @@
                             <span class="nav-icon" aria-hidden="true">☏</span>
                             <span>Customer Support</span>
                         </button>
-
 
                         <button
                             type="button"
@@ -286,6 +276,17 @@
                             Secure Teller Workspace
                         </div>
 
+                        <!-- LOGOUT BUTTON -->
+
+                        <button
+                            id="logoutButton"
+                            class="logout-button hidden"
+                            type="button"
+                        >
+                            <span aria-hidden="true">↪</span>
+                            <span>Logout</span>
+                        </button>
+
                     </div>
 
                 </aside>
@@ -296,59 +297,6 @@
                 ========================================== -->
 
                 <div class="dashboard-main">
-
-
-                    <!-- DASHBOARD TOP BAR -->
-
-                    <div class="dashboard-topbar">
-
-                        <div class="dashboard-topbar-left">
-
-                            <div>
-                                <p class="topbar-eyebrow">
-                                    NEXUS WEALTH PARTNERS
-                                </p>
-
-                                <h2>Teller Workspace</h2>
-                            </div>
-
-                        </div>
-
-
-                        <div class="dashboard-topbar-right">
-
-                            <div class="topbar-account">
-
-                                <div class="topbar-account-avatar">
-                                    T
-                                </div>
-
-                                <div>
-                                    <strong id="tellerName">
-                                        Teller
-                                    </strong>
-
-                                    <span>
-                                        Teller
-                                    </span>
-                                </div>
-
-                            </div>
-
-
-                            <!-- SINGLE LOGOUT BUTTON -->
-
-                            <button
-                                id="logoutButton"
-                                class="logout-button hidden"
-                                type="button"
-                            >
-                                Log Out
-                            </button>
-
-                        </div>
-
-                    </div>
 
 
                     <!-- =====================================
@@ -377,7 +325,6 @@
                             </p>
 
                         </div>
-
 
                         <div class="teller-code-card">
 
@@ -421,16 +368,13 @@
 
                         </div>
 
-
                         <div class="content-card">
 
                             <h4>Member Registration Details</h4>
 
                             <div class="deposit-warning">
 
-                                <strong>
-                                    Important Security Notice
-                                </strong>
+                                <strong>Important Security Notice</strong>
 
                                 <p>
                                     The member must provide their own
@@ -445,7 +389,6 @@
                                 </p>
 
                             </div>
-
 
                             <form id="tellerMemberRegistrationForm">
 
@@ -462,7 +405,6 @@
                                     required
                                 >
 
-
                                 <label for="tellerNewMemberEmail">
                                     Member Email Address
                                 </label>
@@ -475,7 +417,6 @@
                                     maxlength="254"
                                     required
                                 >
-
 
                                 <label for="tellerNewMemberPhone">
                                     Ghana Mobile Number
@@ -490,7 +431,6 @@
                                     required
                                 >
 
-
                                 <button
                                     type="submit"
                                     id="registerTellerMemberButton"
@@ -500,7 +440,6 @@
                                 </button>
 
                             </form>
-
 
                             <div
                                 id="tellerMemberRegistrationMessage"
@@ -544,14 +483,12 @@
 
                         </div>
 
-
                         <div
                             id="myRegisteredMembersMessage"
                             class="message hidden"
                             role="status"
                             aria-live="polite"
                         ></div>
-
 
                         <div class="content-card">
 
@@ -643,7 +580,6 @@
 
                             </form>
 
-
                             <div
                                 id="memberSearchMessage"
                                 class="message hidden"
@@ -651,12 +587,10 @@
                                 aria-live="polite"
                             ></div>
 
-
                             <div
                                 id="memberResults"
                                 class="member-results hidden"
                             ></div>
-
 
                             <div
                                 id="selectedMemberCard"
@@ -664,15 +598,9 @@
                             >
 
                                 <div class="selected-heading">
-
                                     <span class="success-dot"></span>
-
-                                    <strong>
-                                        Selected Member
-                                    </strong>
-
+                                    <strong>Selected Member</strong>
                                 </div>
-
 
                                 <div class="member-details">
 
@@ -697,7 +625,6 @@
                                     </div>
 
                                 </div>
-
 
                                 <button
                                     type="button"
@@ -724,7 +651,6 @@
                                 this transaction.
                             </p>
 
-
                             <form id="depositForm">
 
                                 <label for="depositAmount">
@@ -740,7 +666,6 @@
                                     required
                                 >
 
-
                                 <label for="depositMethod">
                                     Payment Method
                                 </label>
@@ -751,20 +676,11 @@
                                         Select payment method
                                     </option>
 
-                                    <option value="cash">
-                                        Cash
-                                    </option>
-
-                                    <option value="mobile_money">
-                                        Mobile Money
-                                    </option>
-
-                                    <option value="bank_transfer">
-                                        Bank Transfer
-                                    </option>
+                                    <option value="cash">Cash</option>
+                                    <option value="mobile_money">Mobile Money</option>
+                                    <option value="bank_transfer">Bank Transfer</option>
 
                                 </select>
-
 
                                 <div
                                     id="paymentPhoneGroup"
@@ -783,7 +699,6 @@
 
                                 </div>
 
-
                                 <div class="deposit-warning">
 
                                     <strong>Important:</strong>
@@ -795,7 +710,6 @@
 
                                 </div>
 
-
                                 <button
                                     type="submit"
                                     id="recordDepositButton"
@@ -806,7 +720,6 @@
                                 </button>
 
                             </form>
-
 
                             <div
                                 id="depositMessage"
@@ -823,9 +736,7 @@
                                 class="receipt hidden"
                             >
 
-                                <div class="receipt-icon">
-                                    ✓
-                                </div>
+                                <div class="receipt-icon">✓</div>
 
                                 <h3>Deposit Recorded</h3>
 
@@ -834,25 +745,13 @@
                                 </p>
 
                                 <div class="receipt-reference">
-
-                                    <span>
-                                        Transaction Reference
-                                    </span>
-
-                                    <strong id="receiptReference">
-                                        ---
-                                    </strong>
-
+                                    <span>Transaction Reference</span>
+                                    <strong id="receiptReference">---</strong>
                                 </div>
 
                                 <div class="receipt-amount">
-
                                     <span>Amount</span>
-
-                                    <strong id="receiptAmount">
-                                        GH₵0.00
-                                    </strong>
-
+                                    <strong id="receiptAmount">GH₵0.00</strong>
                                 </div>
 
                                 <button
@@ -891,7 +790,6 @@
                             </div>
 
                         </div>
-
 
                         <div class="deposit-warning">
 
@@ -938,7 +836,6 @@
 
                             </form>
 
-
                             <div
                                 id="testMemberSearchMessage"
                                 class="message hidden"
@@ -946,12 +843,10 @@
                                 aria-live="polite"
                             ></div>
 
-
                             <div
                                 id="testMemberResults"
                                 class="member-results hidden"
                             ></div>
-
 
                             <div
                                 id="selectedTestMemberCard"
@@ -959,15 +854,9 @@
                             >
 
                                 <div class="selected-heading">
-
                                     <span class="success-dot"></span>
-
-                                    <strong>
-                                        Selected Test Member
-                                    </strong>
-
+                                    <strong>Selected Test Member</strong>
                                 </div>
-
 
                                 <div class="member-details">
 
@@ -993,7 +882,6 @@
 
                                 </div>
 
-
                                 <button
                                     type="button"
                                     id="changeTestMemberButton"
@@ -1018,7 +906,6 @@
                                 simulation.
                             </p>
 
-
                             <form id="testWithdrawalForm">
 
                                 <label for="testWithdrawalAmount">
@@ -1034,7 +921,6 @@
                                     required
                                 >
 
-
                                 <label for="testWithdrawalMethod">
                                     Withdrawal Method
                                 </label>
@@ -1048,24 +934,12 @@
                                         Select withdrawal method
                                     </option>
 
-                                    <option value="mtn_momo">
-                                        MTN Mobile Money
-                                    </option>
-
-                                    <option value="telecel_cash">
-                                        Telecel Cash
-                                    </option>
-
-                                    <option value="at_money">
-                                        AT Money
-                                    </option>
-
-                                    <option value="bank">
-                                        Bank
-                                    </option>
+                                    <option value="mtn_momo">MTN Mobile Money</option>
+                                    <option value="telecel_cash">Telecel Cash</option>
+                                    <option value="at_money">AT Money</option>
+                                    <option value="bank">Bank</option>
 
                                 </select>
-
 
                                 <label for="testPaymentDetails">
                                     Test Payment Details
@@ -1080,7 +954,6 @@
                                     required
                                 >
 
-
                                 <div class="deposit-warning">
 
                                     <strong>Test confirmation:</strong>
@@ -1090,7 +963,6 @@
                                     or wallet deduction will occur.
 
                                 </div>
-
 
                                 <button
                                     type="submit"
@@ -1102,7 +974,6 @@
                                 </button>
 
                             </form>
-
 
                             <div
                                 id="testWithdrawalMessage"
@@ -1119,36 +990,22 @@
                                 class="receipt hidden"
                             >
 
-                                <div class="receipt-icon">
-                                    ✓
-                                </div>
+                                <div class="receipt-icon">✓</div>
 
-                                <h3>
-                                    Test Withdrawal Recorded
-                                </h3>
+                                <h3>Test Withdrawal Recorded</h3>
 
                                 <p id="testReceiptMessage">
                                     Simulation completed successfully.
                                 </p>
 
                                 <div class="receipt-reference">
-
                                     <span>Test Reference</span>
-
-                                    <strong id="testReceiptReference">
-                                        ---
-                                    </strong>
-
+                                    <strong id="testReceiptReference">---</strong>
                                 </div>
 
                                 <div class="receipt-amount">
-
                                     <span>Simulated Amount</span>
-
-                                    <strong id="testReceiptAmount">
-                                        GH₵0.00
-                                    </strong>
-
+                                    <strong id="testReceiptAmount">GH₵0.00</strong>
                                 </div>
 
                                 <p>
@@ -1176,9 +1033,7 @@
                             <div class="section-heading">
 
                                 <div>
-                                    <h4>
-                                        3. My Test Withdrawal History
-                                    </h4>
+                                    <h4>3. My Test Withdrawal History</h4>
 
                                     <p class="muted small">
                                         Only test withdrawals recorded
@@ -1197,14 +1052,12 @@
 
                             </div>
 
-
                             <div
                                 id="testWithdrawalHistoryMessage"
                                 class="message hidden"
                                 role="status"
                                 aria-live="polite"
                             ></div>
-
 
                             <div class="table-container">
 
@@ -1223,14 +1076,12 @@
                                     </thead>
 
                                     <tbody id="testWithdrawalHistoryBody">
-
                                         <tr>
                                             <td colspan="7" class="empty-state">
                                                 Test withdrawal history
                                                 will appear here.
                                             </td>
                                         </tr>
-
                                     </tbody>
 
                                 </table>
@@ -1272,14 +1123,12 @@
 
                         </div>
 
-
                         <div
                             id="historyMessage"
                             class="message hidden"
                             role="status"
                             aria-live="polite"
                         ></div>
-
 
                         <div class="content-card">
 
@@ -1298,13 +1147,11 @@
                                     </thead>
 
                                     <tbody id="historyTableBody">
-
                                         <tr>
                                             <td colspan="5" class="empty-state">
                                                 Loading transactions...
                                             </td>
                                         </tr>
-
                                     </tbody>
 
                                 </table>
@@ -1338,13 +1185,9 @@
 
                         </div>
 
-
                         <div class="content-card profile-card">
 
-                            <div class="profile-avatar">
-                                T
-                            </div>
-
+                            <div class="profile-avatar">T</div>
 
                             <div class="profile-details">
 
@@ -1411,7 +1254,6 @@
 
                         </div>
 
-
                         <div
                             id="tellerSupportMessage"
                             class="message hidden"
@@ -1436,7 +1278,6 @@
 
                             </div>
 
-
                             <input
                                 type="search"
                                 id="supportTicketSearch"
@@ -1444,7 +1285,6 @@
                                 autocomplete="off"
                                 aria-label="Search customer reports"
                             >
-
 
                             <div
                                 id="tellerSupportTicketList"
@@ -1496,34 +1336,22 @@
 
                                 <div>
                                     <span>Category</span>
-
-                                    <strong id="tellerSupportCategory">
-                                        ---
-                                    </strong>
+                                    <strong id="tellerSupportCategory">---</strong>
                                 </div>
 
                                 <div>
                                     <span>Member ID</span>
-
-                                    <strong id="tellerSupportMemberId">
-                                        ---
-                                    </strong>
+                                    <strong id="tellerSupportMemberId">---</strong>
                                 </div>
 
                                 <div>
                                     <span>Status</span>
-
-                                    <strong id="tellerSupportStatus">
-                                        ---
-                                    </strong>
+                                    <strong id="tellerSupportStatus">---</strong>
                                 </div>
 
                                 <div>
                                     <span>Submitted</span>
-
-                                    <strong id="tellerSupportDate">
-                                        ---
-                                    </strong>
+                                    <strong id="tellerSupportDate">---</strong>
                                 </div>
 
                             </div>
@@ -1541,24 +1369,12 @@
 
                                 <select id="tellerSupportStatusSelect">
 
-                                    <option value="open">
-                                        Open
-                                    </option>
-
-                                    <option value="in_progress">
-                                        In Progress
-                                    </option>
-
-                                    <option value="resolved">
-                                        Resolved
-                                    </option>
-
-                                    <option value="closed">
-                                        Closed
-                                    </option>
+                                    <option value="open">Open</option>
+                                    <option value="in_progress">In Progress</option>
+                                    <option value="resolved">Resolved</option>
+                                    <option value="closed">Closed</option>
 
                                 </select>
-
 
                                 <button
                                     type="button"
@@ -1619,7 +1435,6 @@
                                     </button>
 
                                 </form>
-
 
                                 <p
                                     id="tellerSupportClosedNotice"
