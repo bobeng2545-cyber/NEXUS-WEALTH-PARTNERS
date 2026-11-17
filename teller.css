@@ -2038,3 +2038,61 @@ body:has(#dashboardSection:not(.hidden)) > .footer {
     }
 
 }
+
+
+/* =========================================================
+   31. FIXED DASHBOARD HEADER AND STICKY SIDEBAR
+========================================================= */
+
+/* Keep dashboard header visible while scrolling */
+.dashboard-topbar {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background: #ffffff;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.06);
+}
+
+/* Keep sidebar visible while scrolling */
+.sidebar {
+    position: sticky;
+    top: 0;
+    align-self: flex-start;
+    height: 100vh;
+    max-height: 100vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+    z-index: 900;
+}
+
+/* Smooth sidebar scrolling */
+.sidebar {
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5df transparent;
+}
+
+.sidebar::-webkit-scrollbar {
+    width: 5px;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+    background: #cbd5df;
+    border-radius: 10px;
+}
+
+/* Mobile layout: allow normal scrolling */
+@media (max-width: 760px) {
+    .sidebar {
+        position: relative;
+        top: auto;
+        height: auto;
+        max-height: none;
+        overflow: visible;
+    }
+
+    .dashboard-topbar {
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+    }
+}
