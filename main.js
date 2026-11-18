@@ -1073,7 +1073,12 @@ function displayMemberInformation(user, profile) {
    15. LOAD MEMBER PROFILE
 ========================================= */
 
+
 async function loadMemberProfile(user) {
+
+    if (!user?.id) {
+        throw new Error("Authentication is required.");
+    }
 
     const { data, error } = await nexusSupabase
         .from("profiles")
@@ -1092,10 +1097,15 @@ async function loadMemberProfile(user) {
         );
     }
 
-    displayMemberInformation(user, data);
+    if (String(data.status || "").toLowerCase() !== "active") {
+        throw new Error(
+            "Your ordinary member account is not active. Please contact NEXUS WEALTH PARTNERS support."
+        );
+    }
 
     return data;
 }
+
 
 
 /* =========================================
@@ -1242,82 +1252,145 @@ async function loadMemberWallet(user) {
    17. LOAD MEMBER DASHBOARD DATA
 ========================================= */
 
+
 async function loadDashboard(user) {
 
-    if (!user) return;
+    if (!user?.id) return false;
 
-    showMemberDashboard();
+    try {
 
-    // Initialize support immediately so it is not blocked
-    // by an unrelated wallet or transaction loading error.
-    initializeNexusSupport();
+        // Check whether this account has ordinary member access.
+        const {
+            data: isActiveMember,
+            error: accessError
+        } = await nexusSupabase.rpc(
+            "is_active_nexus_member"
+        );
 
-    initializeNexusNotifications();
-
-    const dashboardTasks = [
-        {
-            name: "Member profile",
-            run: () => loadMemberProfile(user)
-        },
-        {
-            name: "Member wallet",
-            run: () => loadMemberWallet(user)
-        },
-        {
-            name: "Member transactions",
-            run: () => loadMemberTransactions(user)
-        },
-        {
-            name: "Pending withdrawals",
-            run: () => loadPendingWithdrawals(user)
-        },
-        {
-            name: "Notifications",
-            run: () => loadNexusNotifications(user)
-        },
-        {
-            name: "Customer support",
-            run: () => refreshNexusSupport()
+        if (accessError) {
+            throw accessError;
         }
-    ];
 
-    const results = await Promise.allSettled(
-        dashboardTasks.map(async task => {
-            try {
-                await task.run();
-                console.log(task.name + " loaded successfully.");
-            } catch (error) {
-                console.error(
-                    task.name + " loading error:",
-                    error
-                );
-                throw error;
+        // Teller-only, administrator-only and suspended accounts
+        // must not enter the ordinary member dashboard.
+        if (isActiveMember !== true) {
+
+            showPublicHome();
+
+            console.warn(
+                "Member dashboard access denied for:",
+                user.id
+            );
+
+            showMessage(
+                "This account does not have ordinary member dashboard access. " +
+                "Please use your authorized staff portal or contact support."
+            );
+
+            return false;
+        }
+
+        // Verify the member profile before displaying the dashboard.
+        await loadMemberProfile(user);
+
+        // Authorization succeeded. Display the dashboard now.
+        showMemberDashboard();
+
+        initializeNexusSupport();
+        initializeNexusNotifications();
+
+        const dashboardTasks = [
+            {
+                name: "Member wallet",
+                run: () => loadMemberWallet(user)
+            },
+            {
+                name: "Member transactions",
+                run: () => loadMemberTransactions(user)
+            },
+            {
+                name: "Pending withdrawals",
+                run: () => loadPendingWithdrawals(user)
+            },
+            {
+                name: "Notifications",
+                run: () => loadNexusNotifications(user)
+            },
+            {
+                name: "Customer support",
+                run: () => refreshNexusSupport()
             }
-        })
-    );
+        ];
 
-    const failedTasks = results
-        .map((result, index) => ({
-            result,
-            name: dashboardTasks[index].name
-        }))
-        .filter(item => item.result.status === "rejected");
+        const results = await Promise.allSettled(
+            dashboardTasks.map(async task => {
 
-    if (failedTasks.length > 0) {
+                try {
+
+                    await task.run();
+
+                    console.log(
+                        task.name + " loaded successfully."
+                    );
+
+                } catch (error) {
+
+                    console.error(
+                        task.name + " loading error:",
+                        error
+                    );
+
+                    throw error;
+                }
+            })
+        );
+
+        const failedTasks = results
+            .map((result, index) => ({
+                result,
+                name: dashboardTasks[index].name
+            }))
+            .filter(item =>
+                item.result.status === "rejected"
+            );
+
+        if (failedTasks.length > 0) {
+
+            console.error(
+                "Some dashboard sections failed:",
+                failedTasks
+            );
+
+            showMessage(
+                "Your dashboard has loaded, but some sections could not be updated. " +
+                "Please refresh the affected sections."
+            );
+        }
+
+        console.log(
+            "NEXUS member dashboard initialization completed."
+        );
+
+        return true;
+
+    } catch (error) {
 
         console.error(
-            "Some dashboard sections failed:",
-            failedTasks
+            "Member dashboard authorization/loading error:",
+            error
         );
+
+        showPublicHome();
 
         showMessage(
-            "Your dashboard has loaded, but some sections could not be updated. " +
-            "Please refresh the affected sections."
+            error.message ||
+            "Unable to verify your member account access. Please contact support."
         );
-    }
 
-    console.log("NEXUS member dashboard initialization completed.");
+        return false;
+    }
 }
+
 
 
 
