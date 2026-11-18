@@ -2841,12 +2841,13 @@ function displayAdminTransactions(
                 : "Cancel Withdrawal";
 
             actionButton.addEventListener("click", () => {
-                reverseNexusTransaction(
-                    isDeposit ? "deposit" : "withdrawal",
-                    transaction.id,
-                    transaction.amount,
-                    actionButton
-                );
+               reverseNexusTransaction(
+                  isDeposit ? "deposit" : "withdrawal",
+                  transaction.id,
+                  transaction.amount,
+                  actionButton,
+                  transaction.payment_method
+               );
             });
 
             actionCell.appendChild(actionButton);
