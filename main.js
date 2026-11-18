@@ -1156,6 +1156,7 @@ function displayMemberInformation(user, profile) {
 ========================================= */
 
 
+
 async function loadMemberProfile(user) {
 
     if (!user?.id) {
@@ -1179,11 +1180,15 @@ async function loadMemberProfile(user) {
         );
     }
 
+    // Verify ordinary member account status.
     if (String(data.status || "").toLowerCase() !== "active") {
         throw new Error(
             "Your ordinary member account is not active. Please contact NEXUS WEALTH PARTNERS support."
         );
     }
+
+    // Display member information on the dashboard.
+    displayMemberInformation(user, data);
 
     return data;
 }
