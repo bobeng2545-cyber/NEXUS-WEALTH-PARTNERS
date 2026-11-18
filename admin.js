@@ -1397,11 +1397,14 @@ function displayAdminMemberTransactions(userId) {
 }
 
 
+
 /* =========================================================
    16. UPDATE MEMBER ACCOUNT STATUS
+   OPTIONAL REASON + DATABASE AUDIT LOG
 ========================================================= */
 
 async function updateNexusMemberStatus(newStatus) {
+
     const selectedMemberId =
         memberProfileModal?.dataset.memberId;
 
@@ -1428,6 +1431,11 @@ async function updateNexusMemberStatus(newStatus) {
         return;
     }
 
+    const action =
+        newStatus === "Suspended"
+            ? "suspend"
+            : "activate";
+
     const confirmed = window.confirm(
         newStatus === "Suspended"
             ? `Are you sure you want to suspend ${profile.full_name || "this member"}?`
@@ -1435,6 +1443,21 @@ async function updateNexusMemberStatus(newStatus) {
     );
 
     if (!confirmed) return;
+
+    // Reason is optional.
+    const reasonInput = window.prompt(
+        `Enter an optional reason for ${action}ing this member.\n\nLeave blank if no reason is required.`
+    );
+
+    // Cancel means cancel the entire operation.
+    if (reasonInput === null) return;
+
+    const reason = reasonInput.trim();
+
+    if (reason.length > 500) {
+        alert("Reason cannot exceed 500 characters.");
+        return;
+    }
 
     const button =
         newStatus === "Suspended"
@@ -1450,12 +1473,14 @@ async function updateNexusMemberStatus(newStatus) {
     }
 
     try {
+
         const { data, error } =
             await nexusAdminSupabase.rpc(
                 "admin_update_member_status",
                 {
                     p_user_id: profile.id,
-                    p_new_status: newStatus
+                    p_new_status: newStatus,
+                    p_reason: reason || null
                 }
             );
 
@@ -1468,9 +1493,13 @@ async function updateNexusMemberStatus(newStatus) {
             );
         }
 
+        // Update local member record.
         profile.status = newStatus;
 
+        // Refresh member directory.
         displayAdminMembers(adminProfilesCache);
+
+        // Refresh open member profile.
         openAdminMemberProfile(profile.id);
 
         alert(
@@ -1479,6 +1508,7 @@ async function updateNexusMemberStatus(newStatus) {
         );
 
     } catch (error) {
+
         console.error(
             "Member account status update error:",
             error
@@ -1490,14 +1520,17 @@ async function updateNexusMemberStatus(newStatus) {
         );
 
     } finally {
+
         if (button) {
             button.disabled = false;
             button.textContent = originalText;
         }
+
     }
 }
 
 
+// SUSPEND MEMBER BUTTON
 if (suspendMemberButton) {
     suspendMemberButton.addEventListener(
         "click",
@@ -1505,6 +1538,8 @@ if (suspendMemberButton) {
     );
 }
 
+
+// ACTIVATE MEMBER BUTTON
 if (activateMemberButton) {
     activateMemberButton.addEventListener(
         "click",
@@ -4498,8 +4533,10 @@ if (createTellerForm) {
 }
 
 
+
 /* =========================================================
    37. UPDATE TELLER ACCOUNT STATUS
+   OPTIONAL REASON + DATABASE AUDIT LOG
 ========================================================= */
 
 async function updateAdminTellerStatus(
@@ -4507,6 +4544,7 @@ async function updateAdminTellerStatus(
     newStatus,
     button
 ) {
+
     if (
         !userId ||
         !["active", "suspended", "inactive"]
@@ -4531,15 +4569,30 @@ async function updateAdminTellerStatus(
         inactive: "deactivate"
     };
 
+    const action = actionLabels[newStatus];
+
     const confirmed = window.confirm(
-        "Are you sure you want to " +
-        actionLabels[newStatus] +
-        " the teller account belonging to " +
-        (teller.full_name || teller.email || "this teller") +
-        "?"
+        `Are you sure you want to ${action} the teller account belonging to ${
+            teller.full_name || teller.email || "this teller"
+        }?`
     );
 
     if (!confirmed) return;
+
+    // Reason is optional.
+    const reasonInput = window.prompt(
+        `Enter an optional reason for ${action}ing this teller.\n\nLeave blank if no reason is required.`
+    );
+
+    // Cancel means cancel the entire operation.
+    if (reasonInput === null) return;
+
+    const reason = reasonInput.trim();
+
+    if (reason.length > 500) {
+        alert("Reason cannot exceed 500 characters.");
+        return;
+    }
 
     const originalText =
         button?.textContent || "";
@@ -4550,12 +4603,14 @@ async function updateAdminTellerStatus(
     }
 
     try {
+
         const { data, error } =
             await nexusAdminSupabase.rpc(
                 "admin_update_nexus_teller_status",
                 {
                     p_user_id: userId,
-                    p_new_status: newStatus
+                    p_new_status: newStatus,
+                    p_reason: reason || null
                 }
             );
 
@@ -4573,9 +4628,11 @@ async function updateAdminTellerStatus(
             "Teller account updated successfully."
         );
 
+        // Refresh teller directory.
         await loadAdminTellers();
 
     } catch (error) {
+
         console.error(
             "Teller status update error:",
             error
@@ -4587,10 +4644,12 @@ async function updateAdminTellerStatus(
         );
 
     } finally {
+
         if (button) {
             button.disabled = false;
             button.textContent = originalText;
         }
+
     }
 }
 
