@@ -219,11 +219,18 @@ function hideAuthenticationScreens() {
    6. HIDE MEMBER DASHBOARD
 ========================================= */
 
+
 function hideMemberDashboard() {
 
     if (memberDashboard) {
+
         memberDashboard.style.display = "none";
-        memberDashboard.classList.remove("mobile-inner-page");
+
+        memberDashboard.classList.remove(
+            "mobile-inner-page",
+            "nexus-support-recovery-mode"
+        );
+
         memberDashboard.style.paddingTop = "";
     }
 }
@@ -658,6 +665,81 @@ function showMemberDashboard() {
     }
 
     setMobileDashboardView("home", false);
+
+    window.scrollTo({
+        top: 0,
+        behavior: "instant"
+    });
+}
+
+
+/* =========================================
+   SUSPENDED MEMBER SUPPORT-ONLY ACCESS
+========================================= */
+
+function showSupportRecoveryView() {
+
+    hideAuthenticationScreens();
+
+    // Hide normal public content.
+    publicSections.forEach(section => {
+        section.style.display = "none";
+    });
+
+    if (websiteHeader) websiteHeader.style.display = "";
+    if (websiteFooter) websiteFooter.style.display = "";
+
+    if (publicMain) {
+        publicMain.style.display = "block";
+    }
+
+    if (!memberDashboard) {
+        showPublicHome();
+        return;
+    }
+
+    // Add the recovery-only display rules once.
+    if (!document.getElementById("nexusSupportRecoveryStyles")) {
+
+        const style = document.createElement("style");
+
+        style.id = "nexusSupportRecoveryStyles";
+
+        style.textContent = `
+            #memberDashboard.nexus-support-recovery-mode > :not(#memberSupport) {
+                display: none !important;
+            }
+
+            #memberDashboard.nexus-support-recovery-mode #memberSupport {
+                display: block !important;
+                width: min(100% - 30px, 1000px);
+                margin: 30px auto;
+            }
+        `;
+
+        document.head.appendChild(style);
+    }
+
+    // Display only the customer support section.
+    memberDashboard.classList.remove("mobile-inner-page");
+    memberDashboard.classList.add("nexus-support-recovery-mode");
+    memberDashboard.style.display = "block";
+
+    document.body.classList.remove("mobile-inner-page");
+
+    const supportSection = getElement("memberSupport");
+
+    if (supportSection) {
+        supportSection.classList.remove("mobile-view-hidden");
+        supportSection.style.display = "block";
+    }
+
+    // Keep the authenticated session.
+    initializeNexusSupport();
+
+    refreshNexusSupport().catch(error => {
+        console.error("Support recovery loading error:", error);
+    });
 
     window.scrollTo({
         top: 0,
@@ -1271,24 +1353,55 @@ async function loadDashboard(user) {
             throw accessError;
         }
 
-        // Teller-only, administrator-only and suspended accounts
-        // must not enter the ordinary member dashboard.
-        if (isActiveMember !== true) {
+        
+if (isActiveMember !== true) {
 
-            showPublicHome();
+    // Check whether this is a suspended ordinary member.
+    const {
+        data: profileStatus,
+        error: profileStatusError
+    } = await nexusSupabase
+        .from("profiles")
+        .select("status")
+        .eq("id", user.id)
+        .maybeSingle();
 
-            console.warn(
-                "Member dashboard access denied for:",
-                user.id
-            );
+    if (profileStatusError) {
+        throw profileStatusError;
+    }
 
-            showMessage(
-                "This account does not have ordinary member dashboard access. " +
-                "Please use your authorized staff portal or contact support."
-            );
+    const status = String(
+        profileStatus?.status || ""
+    ).toLowerCase();
 
-            return false;
-        }
+    console.warn(
+        "Ordinary member dashboard access denied:",
+        user.id,
+        status
+    );
+
+    if (status === "suspended") {
+
+        showSupportRecoveryView();
+
+        showMessage(
+            "Your member account is suspended. " +
+            "You can still contact NEXUS support through this page."
+        );
+
+    } else {
+
+        showPublicHome();
+
+        showMessage(
+            "This account does not have ordinary member dashboard access. " +
+            "Please use your authorized staff portal."
+        );
+    }
+
+    return false;
+}
+
 
         // Verify the member profile before displaying the dashboard.
         await loadMemberProfile(user);
