@@ -4473,9 +4473,11 @@ if (createTellerForm) {
 
 
 
+
 /* =========================================================
    37. UPDATE TELLER ACCOUNT STATUS
    OPTIONAL REASON + DATABASE AUDIT LOG
+   WITH DATABASE STATUS VERIFICATION
 ========================================================= */
 
 async function updateAdminTellerStatus(
@@ -4486,8 +4488,7 @@ async function updateAdminTellerStatus(
 
     if (
         !userId ||
-        !["active", "suspended", "inactive"]
-            .includes(newStatus)
+        !["active", "suspended", "inactive"].includes(newStatus)
     ) {
         alert("Invalid teller account details.");
         return;
@@ -4518,12 +4519,10 @@ async function updateAdminTellerStatus(
 
     if (!confirmed) return;
 
-    // Reason is optional.
     const reasonInput = window.prompt(
         `Enter an optional reason for ${action}ing this teller.\n\nLeave blank if no reason is required.`
     );
 
-    // Cancel means cancel the entire operation.
     if (reasonInput === null) return;
 
     const reason = reasonInput.trim();
@@ -4533,8 +4532,7 @@ async function updateAdminTellerStatus(
         return;
     }
 
-    const originalText =
-        button?.textContent || "";
+    const originalText = button?.textContent || "";
 
     if (button) {
         button.disabled = true;
@@ -4542,6 +4540,11 @@ async function updateAdminTellerStatus(
     }
 
     try {
+
+        console.log("Updating teller status:", {
+            userId,
+            requestedStatus: newStatus
+        });
 
         const { data, error } =
             await nexusAdminSupabase.rpc(
@@ -4562,18 +4565,49 @@ async function updateAdminTellerStatus(
             );
         }
 
-        alert(
-            data.message ||
-            "Teller account updated successfully."
+        // Verify the actual database status.
+        const { data: verifiedTeller, error: verifyError } =
+            await nexusAdminSupabase
+                .from("nexus_tellers")
+                .select("user_id,teller_code,full_name,status,updated_at")
+                .eq("user_id", userId)
+                .maybeSingle();
+
+        if (verifyError) throw verifyError;
+
+        if (!verifiedTeller) {
+            throw new Error(
+                "Teller record could not be verified after updating."
+            );
+        }
+
+        console.log(
+            "Verified teller database status:",
+            verifiedTeller
         );
 
-        // Refresh teller directory.
+        if (
+            String(verifiedTeller.status).toLowerCase() !==
+            newStatus
+        ) {
+            throw new Error(
+                `Status verification failed. Requested: ${newStatus}. Database returned: ${verifiedTeller.status}.`
+            );
+        }
+
+        alert(
+            `Teller account successfully ${action}d.\n\n` +
+            `Teller: ${verifiedTeller.full_name}\n` +
+            `Code: ${verifiedTeller.teller_code}\n` +
+            `Database status: ${verifiedTeller.status}`
+        );
+
         await loadAdminTellers();
 
     } catch (error) {
 
         console.error(
-            "Teller status update error:",
+            "Teller status update or verification error:",
             error
         );
 
@@ -4591,6 +4625,8 @@ async function updateAdminTellerStatus(
 
     }
 }
+
+
 
 
 /* =========================================================
