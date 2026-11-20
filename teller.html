@@ -34,7 +34,7 @@
 
     <!-- TELLER APPLICATION -->
     <script src="teller.js" defer></script>
-    
+
     <!-- MEMBER STATEMENTS MODULE -->
     <script src="teller-statements.js" defer></script>
 </head>
@@ -42,7 +42,7 @@
 <body>
 
     <!-- =====================================================
-         GLOBAL HEADER - LOGIN SCREEN
+         GLOBAL HEADER
     ====================================================== -->
 
     <header class="topbar">
@@ -309,7 +309,7 @@
                         </button>
 
 
-                        <!-- NEW: MEMBER STATEMENTS -->
+                        <!-- MEMBER STATEMENTS -->
 
                         <button
                             type="button"
@@ -632,8 +632,6 @@
                         </div>
 
 
-                        <!-- FIND MEMBER -->
-
                         <div class="content-card">
 
                             <h4>1. Find Member</h4>
@@ -725,8 +723,6 @@
                         </div>
 
 
-                        <!-- DEPOSIT DETAILS -->
-
                         <div class="content-card deposit-card">
 
                             <h4>2. Deposit Details</h4>
@@ -815,8 +811,6 @@
                             ></div>
 
 
-                            <!-- DEPOSIT RECEIPT -->
-
                             <div id="depositReceipt" class="receipt hidden">
 
                                 <div class="receipt-icon">✓</div>
@@ -890,8 +884,6 @@
 
                         </div>
 
-
-                        <!-- FIND TEST MEMBER -->
 
                         <div class="content-card">
 
@@ -984,8 +976,6 @@
                         </div>
 
 
-                        <!-- TEST WITHDRAWAL FORM -->
-
                         <div class="content-card">
 
                             <h4>2. Test Withdrawal Details</h4>
@@ -1072,8 +1062,6 @@
                             ></div>
 
 
-                            <!-- TEST WITHDRAWAL RECEIPT -->
-
                             <div
                                 id="testWithdrawalReceipt"
                                 class="receipt hidden"
@@ -1118,8 +1106,6 @@
 
                         </div>
 
-
-                        <!-- TEST WITHDRAWAL HISTORY -->
 
                         <div class="content-card">
 
@@ -1264,7 +1250,7 @@
 
 
                     <!-- =====================================
-                         NEW MEMBER STATEMENTS
+                         MEMBER STATEMENTS
                     ====================================== -->
 
                     <section
@@ -1336,7 +1322,7 @@
 
                             <div
                                 id="statementMemberResults"
-                                class="member-results"
+                                class="member-results hidden"
                             ></div>
 
                         </div>
@@ -1353,6 +1339,7 @@
 
                                 <div>
                                     <h4>2. Member Account Details</h4>
+
                                     <p class="muted small">
                                         Confirm the selected member before
                                         generating the statement.
@@ -1448,7 +1435,7 @@
 
                                     <select id="statementTypeFilter">
 
-                                        <option value="">
+                                        <option value="all">
                                             All Transactions
                                         </option>
 
@@ -1473,7 +1460,7 @@
 
                                     <select id="statementStatusFilter">
 
-                                        <option value="">
+                                        <option value="all">
                                             All Statuses
                                         </option>
 
@@ -1505,23 +1492,11 @@
                                             Rejected
                                         </option>
 
+                                        <option value="reversed">
+                                            Reversed
+                                        </option>
+
                                     </select>
-
-                                </div>
-
-
-                                <div class="statement-filter-field">
-
-                                    <label for="statementReferenceFilter">
-                                        Transaction Reference
-                                    </label>
-
-                                    <input
-                                        type="search"
-                                        id="statementReferenceFilter"
-                                        placeholder="Search reference"
-                                        autocomplete="off"
-                                    >
 
                                 </div>
 
@@ -1630,6 +1605,7 @@
 
                                 <div>
                                     <h4>4. Transaction History</h4>
+
                                     <p class="muted small">
                                         Recorded deposits and actual
                                         withdrawal requests.
@@ -1659,7 +1635,6 @@
                                         <tr>
                                             <th>Date</th>
                                             <th>Transaction Type</th>
-                                            <th>Reference</th>
                                             <th>Payment Method</th>
                                             <th>Amount</th>
                                             <th>Status</th>
@@ -1670,7 +1645,7 @@
                                     <tbody id="statementTableBody">
 
                                         <tr>
-                                            <td colspan="6" class="empty-state">
+                                            <td colspan="5" class="empty-state">
                                                 Search for a member to view
                                                 their transaction statement.
                                             </td>
@@ -1791,8 +1766,6 @@
                         ></div>
 
 
-                        <!-- CUSTOMER REPORTS INBOX -->
-
                         <div class="content-card">
 
                             <div class="section-heading">
@@ -1831,8 +1804,6 @@
                         </div>
 
 
-                        <!-- CUSTOMER CONVERSATION -->
-
                         <div
                             id="tellerSupportConversation"
                             class="content-card hidden"
@@ -1862,8 +1833,6 @@
                             </div>
 
 
-                            <!-- REPORT DETAILS -->
-
                             <div class="member-details">
 
                                 <div>
@@ -1888,8 +1857,6 @@
 
                             </div>
 
-
-                            <!-- STATUS MANAGEMENT -->
 
                             <div class="support-status-controls">
 
@@ -1920,8 +1887,6 @@
                             </div>
 
 
-                            <!-- CONVERSATION MESSAGES -->
-
                             <div class="support-conversation-area">
 
                                 <h4>Conversation</h4>
@@ -1940,8 +1905,6 @@
 
                             </div>
 
-
-                            <!-- REPLY FORM -->
 
                             <div class="support-reply-area">
 
@@ -2011,7 +1974,7 @@
 
 
     <!-- =====================================================
-         GLOBAL PAGE FOOTER - LOGIN SCREEN
+         GLOBAL PAGE FOOTER
     ====================================================== -->
 
     <footer class="footer">
