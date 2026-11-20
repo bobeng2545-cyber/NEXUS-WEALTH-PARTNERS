@@ -1,4 +1,3 @@
-
 /* =========================================================
    NEXUS WEALTH PARTNERS
    TELLER PORTAL
@@ -25,6 +24,7 @@ const tellerSupabase = window.supabase.createClient(
 );
 
 window.tellerSupabase = tellerSupabase;
+
 
 /* =========================================================
    2. ELEMENT REFERENCES
@@ -248,6 +248,7 @@ const closeTellerSupportConversation =
 const tellerSupportClosedNotice =
     document.getElementById("tellerSupportClosedNotice");
 
+
 // TELLER MEMBER REGISTRATION
 
 const tellerMemberRegistrationForm =
@@ -305,10 +306,20 @@ let currentSupportTicket = null;
 let supportReplyInProgress = false;
 let supportStatusInProgress = false;
 
+
 // MEMBER REGISTRATION STATE
 
 let memberRegistrationInProgress = false;
 let registeredMembersLoadInProgress = false;
+
+
+// TELLER SUSPENSION PROTECTION
+
+let tellerStatusInterval = null;
+let tellerStatusChannel = null;
+let tellerStatusCheckInProgress = false;
+let tellerAccessLocked = false;
+let tellerInitializationInProgress = false;
 
 
 /* =========================================================
@@ -402,7 +413,291 @@ function setButtonLoading(button, loading, normalText) {
 }
 
 
+/* =========================================================
+   4.1 TELLER SUSPENSION MONITORING
+========================================================= */
+
+function stopTellerStatusMonitoring() {
+
+    if (tellerStatusInterval) {
+
+        clearInterval(tellerStatusInterval);
+
+        tellerStatusInterval = null;
+    }
+
+    if (tellerStatusChannel) {
+
+        tellerSupabase.removeChannel(tellerStatusChannel);
+
+        tellerStatusChannel = null;
+    }
+
+    tellerStatusCheckInProgress = false;
+
+}
+
+
+/*
+   Locks the teller portal and signs out the local session
+   when the teller account is suspended or deactivated.
+*/
+
+async function lockSuspendedTeller(message) {
+
+    if (tellerAccessLocked) return;
+
+    tellerAccessLocked = true;
+
+    stopTellerStatusMonitoring();
+
+    // Hide the dashboard immediately.
+    showLogin();
+
+    setConnectionStatus(
+        "Teller access suspended",
+        "offline"
+    );
+
+    showMessage(
+        loginMessage,
+        message ||
+        "Your teller account is no longer active. Contact the administrator.",
+        "error"
+    );
+
+    // Sign out this browser session.
+    const { error } = await tellerSupabase.auth.signOut({
+        scope: "local"
+    });
+
+    if (error) {
+
+        console.error(
+            "Suspended teller sign-out error:",
+            error
+        );
+
+    }
+
+}
+
+
+/*
+   Checks the teller's current status directly from Supabase.
+*/
+
+async function verifyTellerActive() {
+
+    if (
+        tellerStatusCheckInProgress ||
+        !currentTeller ||
+        !currentUser ||
+        tellerAccessLocked
+    ) {
+        return;
+    }
+
+    tellerStatusCheckInProgress = true;
+
+    const checkedUserId = currentUser.id;
+
+    try {
+
+        const { data, error } = await tellerSupabase
+            .from("nexus_tellers")
+            .select("user_id,status")
+            .eq("user_id", checkedUserId)
+            .maybeSingle();
+
+        if (error) {
+            throw error;
+        }
+
+        // Ignore results belonging to an old session.
+        if (
+            !currentUser ||
+            currentUser.id !== checkedUserId
+        ) {
+            return;
+        }
+
+        if (
+            !data ||
+            String(data.status || "").toLowerCase() !== "active"
+        ) {
+
+            await lockSuspendedTeller(
+                `Your teller account is ${data?.status || "unavailable"}. Please contact the administrator.`
+            );
+
+            return;
+        }
+
+        // Keep the displayed status current.
+        currentTeller.status = data.status;
+
+        if (tellerStatus) {
+            tellerStatus.textContent = data.status;
+        }
+
+        if (profileStatus) {
+            profileStatus.textContent = data.status;
+        }
+
+        setConnectionStatus(
+            "Secure connection active",
+            "online"
+        );
+
+    } catch (error) {
+
+        console.error(
+            "Teller status verification error:",
+            error
+        );
+
+        /*
+           Do not silently declare the account active when
+           the database cannot be reached.
+
+           The backend RPC functions must also enforce active
+           teller status before allowing protected operations.
+        */
+
+        setConnectionStatus(
+            "Unable to verify account status",
+            "offline"
+        );
+
+    } finally {
+
+        tellerStatusCheckInProgress = false;
+
+    }
+
+}
+
+
+/*
+   Starts automatic suspension monitoring.
+
+   Realtime provides faster detection.
+   Polling provides a fallback if Realtime is unavailable.
+*/
+
+function startTellerStatusMonitoring() {
+
+    stopTellerStatusMonitoring();
+
+    if (!currentTeller || !currentUser || tellerAccessLocked) {
+        return;
+    }
+
+    const userId = currentUser.id;
+
+    // Verify immediately.
+    verifyTellerActive();
+
+
+    // Database polling fallback: every 10 seconds.
+
+    tellerStatusInterval = setInterval(() => {
+
+        if (
+            currentUser &&
+            currentUser.id === userId &&
+            !tellerAccessLocked
+        ) {
+            verifyTellerActive();
+        }
+
+    }, 10000);
+
+
+    // Listen for database status changes.
+
+    tellerStatusChannel = tellerSupabase
+        .channel(`teller-status-${userId}`)
+        .on(
+            "postgres_changes",
+            {
+                event: "UPDATE",
+                schema: "public",
+                table: "nexus_tellers",
+                filter: `user_id=eq.${userId}`
+            },
+            payload => {
+
+                const newStatus = String(
+                    payload.new?.status || ""
+                ).toLowerCase();
+
+                if (newStatus !== "active") {
+
+                    lockSuspendedTeller(
+                        "Your teller account has been suspended or deactivated. Please contact the administrator."
+                    );
+
+                }
+
+            }
+        )
+        .subscribe(status => {
+
+            if (status === "CHANNEL_ERROR") {
+
+                console.warn(
+                    "Teller status Realtime connection failed. Polling remains active."
+                );
+
+            }
+
+        });
+
+}
+
+
+/*
+   Check the teller again when returning to the browser tab.
+*/
+
+document.addEventListener("visibilitychange", () => {
+
+    if (
+        !document.hidden &&
+        currentUser &&
+        !tellerAccessLocked
+    ) {
+        verifyTellerActive();
+    }
+
+});
+
+
+/*
+   Check the teller again when the browser window receives focus.
+*/
+
+window.addEventListener("focus", () => {
+
+    if (
+        currentUser &&
+        !tellerAccessLocked
+    ) {
+        verifyTellerActive();
+    }
+
+});
+
+
+/* =========================================================
+   4.2 SHOW LOGIN
+========================================================= */
+
 function showLogin() {
+
+    stopTellerStatusMonitoring();
 
     loginSection?.classList.remove("hidden");
     dashboardSection?.classList.add("hidden");
@@ -440,11 +735,13 @@ function showLogin() {
     tellerSupportConversation?.classList.add("hidden");
 
     if (tellerSupportTicketList) {
+
         tellerSupportTicketList.innerHTML = `
             <p class="empty-state">
                 Sign in to view customer reports.
             </p>
         `;
+
     }
 
     // Clear member registration state.
@@ -455,11 +752,21 @@ function showLogin() {
 }
 
 
+/* =========================================================
+   4.3 SHOW DASHBOARD
+========================================================= */
+
 function showDashboard() {
 
-    loginSection.classList.add("hidden");
-    dashboardSection.classList.remove("hidden");
-    logoutButton.classList.remove("hidden");
+    if (loginSection) {
+        loginSection.classList.add("hidden");
+    }
+
+    if (dashboardSection) {
+        dashboardSection.classList.remove("hidden");
+    }
+
+    logoutButton?.classList.remove("hidden");
 
 }
 
@@ -470,10 +777,20 @@ function showDashboard() {
 
 async function initializeTeller(user) {
 
+    if (tellerInitializationInProgress) return;
+
+    tellerInitializationInProgress = true;
+
+    tellerAccessLocked = false;
+
+    stopTellerStatusMonitoring();
+
     try {
 
         if (!user || !user.id) {
+
             showLogin();
+
             return;
         }
 
@@ -499,7 +816,9 @@ async function initializeTeller(user) {
 
         if (!data) {
 
-            await tellerSupabase.auth.signOut();
+            await tellerSupabase.auth.signOut({
+                scope: "local"
+            });
 
             showLogin();
 
@@ -514,15 +833,23 @@ async function initializeTeller(user) {
             return;
         }
 
-        if (String(data.status).toLowerCase() !== "active") {
+        // IMPORTANT: Reject every status except active.
 
-            await tellerSupabase.auth.signOut();
+        if (
+            String(data.status || "").toLowerCase() !== "active"
+        ) {
+
+            tellerAccessLocked = true;
+
+            await tellerSupabase.auth.signOut({
+                scope: "local"
+            });
 
             showLogin();
 
             showMessage(
                 loginMessage,
-                `Your teller account is ${data.status}. Please contact the administrator.`,
+                `Your teller account is ${data.status || "inactive"}. Please contact the administrator.`,
                 "error"
             );
 
@@ -538,17 +865,30 @@ async function initializeTeller(user) {
 
         showDashboard();
 
-        setConnectionStatus("Secure connection active", "online");
+        setConnectionStatus(
+            "Secure connection active",
+            "online"
+        );
 
+        // Start suspension monitoring immediately.
+        startTellerStatusMonitoring();
+
+        // Load existing dashboard information.
         await loadTellerHistory();
-
-        // Initialize the shared customer support inbox.
 
         await initializeTellerSupport();
 
     } catch (error) {
 
-        console.error("Teller verification error:", error);
+        console.error(
+            "Teller verification error:",
+            error
+        );
+
+        // Do not leave an unverified session open.
+        await tellerSupabase.auth.signOut({
+            scope: "local"
+        });
 
         showLogin();
 
@@ -558,7 +898,15 @@ async function initializeTeller(user) {
             "error"
         );
 
-        setConnectionStatus("Connection error", "offline");
+        setConnectionStatus(
+            "Connection error",
+            "offline"
+        );
+
+    } finally {
+
+        tellerInitializationInProgress = false;
+
     }
 
 }
@@ -571,6 +919,8 @@ async function initializeTeller(user) {
 loginForm.addEventListener("submit", async function (event) {
 
     event.preventDefault();
+
+    if (tellerInitializationInProgress) return;
 
     hideMessage(loginMessage);
 
@@ -588,7 +938,11 @@ loginForm.addEventListener("submit", async function (event) {
         return;
     }
 
-    setButtonLoading(loginButton, true, "Sign In");
+    setButtonLoading(
+        loginButton,
+        true,
+        "Sign In"
+    );
 
     try {
 
@@ -610,7 +964,10 @@ loginForm.addEventListener("submit", async function (event) {
 
     } catch (error) {
 
-        console.error("Teller login error:", error);
+        console.error(
+            "Teller login error:",
+            error
+        );
 
         showMessage(
             loginMessage,
@@ -620,7 +977,12 @@ loginForm.addEventListener("submit", async function (event) {
 
     } finally {
 
-        setButtonLoading(loginButton, false, "Sign In");
+        setButtonLoading(
+            loginButton,
+            false,
+            "Sign In"
+        );
+
     }
 
 });
@@ -636,6 +998,8 @@ logoutButton.addEventListener("click", async function () {
 
     try {
 
+        stopTellerStatusMonitoring();
+
         const { error } = await tellerSupabase.auth.signOut();
 
         if (error) {
@@ -644,7 +1008,9 @@ logoutButton.addEventListener("click", async function () {
 
         showLogin();
 
-        loginPassword.value = "";
+        if (loginPassword) {
+            loginPassword.value = "";
+        }
 
         hideMessage(loginMessage);
 
@@ -652,17 +1018,22 @@ logoutButton.addEventListener("click", async function () {
 
     } catch (error) {
 
-        console.error("Logout error:", error);
+        console.error(
+            "Logout error:",
+            error
+        );
 
-        alert(error.message || "Could not log out.");
+        alert(
+            error.message || "Could not log out."
+        );
 
     } finally {
 
         logoutButton.disabled = false;
+
     }
 
 });
-
 
 
 /* =========================================================
@@ -686,12 +1057,10 @@ function renderTellerProfile() {
     const phone =
         currentTeller.phone || "—";
 
-    // Dashboard header
     if (tellerName) {
         tellerName.textContent = name;
     }
 
-    // Sidebar
     const sidebarTellerName =
         document.getElementById("sidebarTellerName");
 
@@ -699,7 +1068,6 @@ function renderTellerProfile() {
         sidebarTellerName.textContent = name;
     }
 
-    // Welcome message
     const welcomeTellerName =
         document.getElementById("welcomeTellerName");
 
@@ -707,26 +1075,28 @@ function renderTellerProfile() {
         welcomeTellerName.textContent = name;
     }
 
-    // Teller information
     if (tellerCode) {
-        tellerCode.textContent = currentTeller.teller_code || "—";
+        tellerCode.textContent =
+            currentTeller.teller_code || "—";
     }
 
     if (tellerStatus) {
-        tellerStatus.textContent = currentTeller.status || "—";
+        tellerStatus.textContent =
+            currentTeller.status || "—";
     }
 
-    // Profile page
     if (profileName) profileName.textContent = name;
     if (profileEmail) profileEmail.textContent = email;
     if (profilePhone) profilePhone.textContent = phone;
 
     if (profileCode) {
-        profileCode.textContent = currentTeller.teller_code || "—";
+        profileCode.textContent =
+            currentTeller.teller_code || "—";
     }
 
     if (profileStatus) {
-        profileStatus.textContent = currentTeller.status || "—";
+        profileStatus.textContent =
+            currentTeller.status || "—";
     }
 
 }
@@ -735,8 +1105,6 @@ function renderTellerProfile() {
 /* =========================================================
    9. DASHBOARD NAVIGATION + MOBILE SIDEBAR
 ========================================================= */
-
-// MOBILE MENU ELEMENTS
 
 const tellerMobileMenuButton =
     document.getElementById("tellerMobileMenuButton");
@@ -750,8 +1118,6 @@ const tellerSidebarOverlay =
 const closeTellerMobileMenuButton =
     document.getElementById("closeTellerMobileMenu");
 
-
-// OPEN MOBILE SIDEBAR
 
 function openTellerMobileMenu() {
 
@@ -780,8 +1146,6 @@ function openTellerMobileMenu() {
 }
 
 
-// CLOSE MOBILE SIDEBAR
-
 function closeTellerMobileDrawer() {
 
     if (!tellerSidebar || !tellerSidebarOverlay) return;
@@ -809,8 +1173,6 @@ function closeTellerMobileDrawer() {
 }
 
 
-// MOBILE MENU BUTTON
-
 tellerMobileMenuButton?.addEventListener(
     "click",
     function () {
@@ -828,23 +1190,17 @@ tellerMobileMenuButton?.addEventListener(
 );
 
 
-// CLOSE BUTTON INSIDE SIDEBAR
-
 closeTellerMobileMenuButton?.addEventListener(
     "click",
     closeTellerMobileDrawer
 );
 
 
-// CLOSE WHEN OVERLAY IS CLICKED
-
 tellerSidebarOverlay?.addEventListener(
     "click",
     closeTellerMobileDrawer
 );
 
-
-// CLOSE WHEN ESCAPE IS PRESSED
 
 document.addEventListener("keydown", function (event) {
 
@@ -855,8 +1211,6 @@ document.addEventListener("keydown", function (event) {
 });
 
 
-// CLOSE DRAWER WHEN SCREEN RETURNS TO DESKTOP
-
 window.addEventListener("resize", function () {
 
     if (window.innerWidth > 760) {
@@ -866,11 +1220,11 @@ window.addEventListener("resize", function () {
 });
 
 
-// DASHBOARD CATEGORY NAVIGATION
-
 document.querySelectorAll(".nav-button").forEach(button => {
 
     button.addEventListener("click", async function () {
+
+        if (!currentTeller || tellerAccessLocked) return;
 
         const targetPanel = this.dataset.panel;
 
@@ -892,37 +1246,19 @@ document.querySelectorAll(".nav-button").forEach(button => {
             return;
         }
 
-
-        // Remove active state from all navigation buttons.
-
         document.querySelectorAll(".nav-button").forEach(item => {
             item.classList.remove("active");
         });
-
-
-        // Hide all dashboard panels.
 
         document.querySelectorAll(".dashboard-panel").forEach(panel => {
             panel.classList.add("hidden");
         });
 
-
-        // Activate selected navigation button.
-
         this.classList.add("active");
-
-
-        // Display selected dashboard panel.
 
         targetElement.classList.remove("hidden");
 
-
-        // Close mobile navigation after selecting a category.
-
         closeTellerMobileDrawer();
-
-
-        // Load selected category data.
 
         try {
 
@@ -957,7 +1293,6 @@ document.querySelectorAll(".nav-button").forEach(button => {
 });
 
 
-
 /* =========================================================
    10. LIVE DEPOSIT MEMBER SEARCH
 ========================================================= */
@@ -967,6 +1302,8 @@ memberSearchForm.addEventListener("submit", async function (event) {
     event.preventDefault();
 
     hideMessage(memberSearchMessage);
+
+    if (!currentTeller || tellerAccessLocked) return;
 
     memberResults.classList.add("hidden");
     selectedMemberCard.classList.add("hidden");
@@ -989,7 +1326,11 @@ memberSearchForm.addEventListener("submit", async function (event) {
         return;
     }
 
-    setButtonLoading(searchMemberButton, true, "Search");
+    setButtonLoading(
+        searchMemberButton,
+        true,
+        "Search"
+    );
 
     try {
 
@@ -1031,7 +1372,12 @@ memberSearchForm.addEventListener("submit", async function (event) {
 
     } finally {
 
-        setButtonLoading(searchMemberButton, false, "Search");
+        setButtonLoading(
+            searchMemberButton,
+            false,
+            "Search"
+        );
+
     }
 
 });
@@ -1075,6 +1421,8 @@ function renderMemberResults() {
 
         button.addEventListener("click", function () {
 
+            if (!currentTeller || tellerAccessLocked) return;
+
             const index = Number(this.dataset.index);
 
             const member = searchedMembers[index];
@@ -1091,6 +1439,8 @@ function renderMemberResults() {
 
 
 function selectMember(member) {
+
+    if (!currentTeller || tellerAccessLocked) return;
 
     selectedMember = member;
 
@@ -1112,6 +1462,8 @@ function selectMember(member) {
 
 
 changeMemberButton.addEventListener("click", function () {
+
+    if (!currentTeller || tellerAccessLocked) return;
 
     selectedMember = null;
 
@@ -1143,6 +1495,7 @@ depositMethod.addEventListener("change", function () {
         paymentPhone.required = false;
 
         paymentPhone.value = "";
+
     }
 
 });
@@ -1158,7 +1511,7 @@ depositForm.addEventListener("submit", async function (event) {
 
     hideMessage(depositMessage);
 
-    if (!currentTeller || !currentUser) {
+    if (!currentTeller || !currentUser || tellerAccessLocked) {
 
         showMessage(
             depositMessage,
@@ -1261,6 +1614,7 @@ depositForm.addEventListener("submit", async function (event) {
             throw new Error(
                 data?.message || "The deposit could not be recorded."
             );
+
         }
 
         depositForm.reset();
@@ -1301,6 +1655,7 @@ depositForm.addEventListener("submit", async function (event) {
         recordDepositButton.disabled = !selectedMember;
 
         recordDepositButton.textContent = "Record Deposit";
+
     }
 
 });
@@ -1311,6 +1666,8 @@ depositForm.addEventListener("submit", async function (event) {
 ========================================================= */
 
 newDepositButton.addEventListener("click", function () {
+
+    if (!currentTeller || tellerAccessLocked) return;
 
     selectedMember = null;
 
@@ -1345,7 +1702,7 @@ newDepositButton.addEventListener("click", function () {
 
 async function loadTellerHistory() {
 
-    if (!currentTeller) return;
+    if (!currentTeller || tellerAccessLocked) return;
 
     historyTableBody.innerHTML = `
         <tr>
@@ -1429,7 +1786,10 @@ async function loadTellerHistory() {
 }
 
 
-refreshHistoryButton.addEventListener("click", loadTellerHistory);
+refreshHistoryButton.addEventListener(
+    "click",
+    loadTellerHistory
+);
 
 
 /* =========================================================
@@ -1441,6 +1801,8 @@ testMemberSearchForm.addEventListener("submit", async function (event) {
     event.preventDefault();
 
     hideMessage(testMemberSearchMessage);
+
+    if (!currentTeller || tellerAccessLocked) return;
 
     testMemberResults.classList.add("hidden");
     selectedTestMemberCard.classList.add("hidden");
@@ -1459,17 +1821,6 @@ testMemberSearchForm.addEventListener("submit", async function (event) {
         showMessage(
             testMemberSearchMessage,
             "Enter a member ID or phone number.",
-            "error"
-        );
-
-        return;
-    }
-
-    if (!currentTeller || !currentUser) {
-
-        showMessage(
-            testMemberSearchMessage,
-            "Your teller session is unavailable. Please sign in again.",
             "error"
         );
 
@@ -1527,6 +1878,7 @@ testMemberSearchForm.addEventListener("submit", async function (event) {
             false,
             "Search"
         );
+
     }
 
 });
@@ -1578,6 +1930,8 @@ function renderTestMemberResults() {
 
             button.addEventListener("click", function () {
 
+                if (!currentTeller || tellerAccessLocked) return;
+
                 const index = Number(this.dataset.index);
 
                 const member = testSearchedMembers[index];
@@ -1598,6 +1952,8 @@ function renderTestMemberResults() {
 ========================================================= */
 
 function selectTestMember(member) {
+
+    if (!currentTeller || tellerAccessLocked) return;
 
     selectedTestMember = member;
 
@@ -1622,6 +1978,8 @@ function selectTestMember(member) {
 
 changeTestMemberButton.addEventListener("click", function () {
 
+    if (!currentTeller || tellerAccessLocked) return;
+
     selectedTestMember = null;
 
     selectedTestMemberCard.classList.add("hidden");
@@ -1645,7 +2003,7 @@ testWithdrawalForm.addEventListener("submit", async function (event) {
 
     testWithdrawalReceipt.classList.add("hidden");
 
-    if (!currentTeller || !currentUser) {
+    if (!currentTeller || !currentUser || tellerAccessLocked) {
 
         showMessage(
             testWithdrawalMessage,
@@ -1778,6 +2136,7 @@ testWithdrawalForm.addEventListener("submit", async function (event) {
                 data?.message ||
                 "The test withdrawal could not be recorded."
             );
+
         }
 
         testWithdrawalReceipt.classList.remove("hidden");
@@ -1824,6 +2183,7 @@ testWithdrawalForm.addEventListener("submit", async function (event) {
 
         recordTestWithdrawalButton.textContent =
             "Record Test Withdrawal";
+
     }
 
 });
@@ -1834,6 +2194,8 @@ testWithdrawalForm.addEventListener("submit", async function (event) {
 ========================================================= */
 
 newTestWithdrawalButton.addEventListener("click", function () {
+
+    if (!currentTeller || tellerAccessLocked) return;
 
     selectedTestMember = null;
 
@@ -1866,7 +2228,7 @@ newTestWithdrawalButton.addEventListener("click", function () {
 
 async function loadTestWithdrawalHistory() {
 
-    if (!currentTeller || !currentUser) return;
+    if (!currentTeller || !currentUser || tellerAccessLocked) return;
 
     testWithdrawalHistoryBody.innerHTML = `
         <tr>
@@ -2021,15 +2383,15 @@ testWithdrawalHistoryBody.addEventListener(
 
         if (!button) return;
 
+        if (!currentTeller || !currentUser || tellerAccessLocked) {
+            alert("Your teller session is unavailable. Please sign in again.");
+            return;
+        }
+
         const reference = button.dataset.reference;
 
         if (!reference) {
             alert("Test withdrawal reference is missing.");
-            return;
-        }
-
-        if (!currentTeller || !currentUser) {
-            alert("Your teller session is unavailable. Please sign in again.");
             return;
         }
 
@@ -2062,10 +2424,12 @@ testWithdrawalHistoryBody.addEventListener(
             }
 
             if (!data || data.success !== true) {
+
                 throw new Error(
                     data?.message ||
                     "The test withdrawal could not be cancelled."
                 );
+
             }
 
             showMessage(
@@ -2163,7 +2527,7 @@ function updateSupportReplyAvailability() {
 
 async function loadTellerSupportTickets() {
 
-    if (!currentTeller || !currentUser) return;
+    if (!currentTeller || !currentUser || tellerAccessLocked) return;
 
     tellerSupportTicketList.innerHTML = `
         <p class="empty-state">
@@ -2309,7 +2673,7 @@ function renderTellerSupportTickets() {
 
 async function openTellerSupportTicket(ticketId) {
 
-    if (!currentTeller || !currentUser) return;
+    if (!currentTeller || !currentUser || tellerAccessLocked) return;
 
     const ticket = tellerSupportTickets.find(
         item => String(item.ticket_id) === String(ticketId)
@@ -2370,7 +2734,13 @@ async function openTellerSupportTicket(ticketId) {
 
 async function loadTellerSupportMessages(ticketId) {
 
-    if (!ticketId || !currentTeller) return;
+    if (
+        !ticketId ||
+        !currentTeller ||
+        tellerAccessLocked
+    ) {
+        return;
+    }
 
     tellerSupportMessageList.innerHTML = `
         <p class="empty-state">
@@ -2479,6 +2849,8 @@ tellerSupportTicketList.addEventListener(
     "click",
     async function (event) {
 
+        if (!currentTeller || tellerAccessLocked) return;
+
         const ticketElement = event.target.closest(
             "[data-ticket-id]"
         );
@@ -2496,6 +2868,8 @@ tellerSupportTicketList.addEventListener(
 tellerSupportTicketList.addEventListener(
     "keydown",
     async function (event) {
+
+        if (!currentTeller || tellerAccessLocked) return;
 
         if (event.key !== "Enter" && event.key !== " ") {
             return;
@@ -2545,6 +2919,8 @@ closeTellerSupportConversation.addEventListener(
     "click",
     function () {
 
+        if (!currentTeller || tellerAccessLocked) return;
+
         tellerSupportConversation.classList.add("hidden");
 
         currentSupportTicket = null;
@@ -2572,7 +2948,7 @@ tellerSupportReplyForm.addEventListener(
 
         hideMessage(tellerSupportMessage);
 
-        if (!currentTeller || !currentUser) {
+        if (!currentTeller || !currentUser || tellerAccessLocked) {
 
             showTellerSupportMessage(
                 "Your teller session is unavailable. Please sign in again.",
@@ -2592,7 +2968,9 @@ tellerSupportReplyForm.addEventListener(
             return;
         }
 
-        if (currentSupportTicket.status === "closed") {
+        if (
+            String(currentSupportTicket.status).toLowerCase() === "closed"
+        ) {
 
             showTellerSupportMessage(
                 "This report is closed. Reopen it before sending a reply.",
@@ -2650,6 +3028,7 @@ tellerSupportReplyForm.addEventListener(
                 throw new Error(
                     data.message || "Your reply could not be sent."
                 );
+
             }
 
             tellerSupportReply.value = "";
@@ -2701,7 +3080,7 @@ updateTellerSupportStatusButton.addEventListener(
 
         hideMessage(tellerSupportMessage);
 
-        if (!currentTeller || !currentUser) {
+        if (!currentTeller || !currentUser || tellerAccessLocked) {
 
             showTellerSupportMessage(
                 "Your teller session is unavailable. Please sign in again.",
@@ -2776,6 +3155,7 @@ updateTellerSupportStatusButton.addEventListener(
                 throw new Error(
                     data.message || "The report status could not be updated."
                 );
+
             }
 
             currentSupportTicket.status = newStatus;
@@ -2825,7 +3205,7 @@ updateTellerSupportStatusButton.addEventListener(
 
 async function initializeTellerSupport() {
 
-    if (!currentTeller || !currentUser) return;
+    if (!currentTeller || !currentUser || tellerAccessLocked) return;
 
     currentSupportTicket = null;
 
@@ -2844,9 +3224,12 @@ tellerSupabase.auth.onAuthStateChange((event) => {
 
     if (event === "SIGNED_OUT") {
 
+        stopTellerStatusMonitoring();
+
         showLogin();
 
         setConnectionStatus("Signed out");
+
     }
 
 });
@@ -2858,8 +3241,15 @@ tellerSupabase.auth.onAuthStateChange((event) => {
 
 async function startTellerPortal() {
 
-    document.getElementById("currentYear").textContent =
-        new Date().getFullYear();
+    const currentYearElement =
+        document.getElementById("currentYear");
+
+    if (currentYearElement) {
+
+        currentYearElement.textContent =
+            new Date().getFullYear();
+
+    }
 
     try {
 
@@ -2880,22 +3270,33 @@ async function startTellerPortal() {
 
             showLogin();
 
-            setConnectionStatus("Ready to sign in", "online");
+            setConnectionStatus(
+                "Ready to sign in",
+                "online"
+            );
+
         }
 
     } catch (error) {
 
-        console.error("Portal startup error:", error);
+        console.error(
+            "Portal startup error:",
+            error
+        );
 
         showLogin();
 
-        setConnectionStatus("Connection failed", "offline");
+        setConnectionStatus(
+            "Connection failed",
+            "offline"
+        );
 
         showMessage(
             loginMessage,
             error.message || "Could not connect to the secure service.",
             "error"
         );
+
     }
 
 }
