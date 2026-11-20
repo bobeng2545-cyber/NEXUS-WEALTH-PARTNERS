@@ -3743,11 +3743,13 @@ function downloadMemberStatementPDF() {
 
 
 
+
 /* =========================================================
    32. PROFESSIONAL MEMBER STATEMENT EXCEL EXPORT
    NEXUS WEALTH PARTNERS
 
    Professional branded Excel statement.
+   No transaction summary.
    Read-only export.
    Does not modify wallet balances or transactions.
 ========================================================= */
@@ -3774,8 +3776,6 @@ function downloadMemberStatementExcel() {
 
 
     const transactions = exportData.transactions || [];
-
-    const totals = exportData.totals || {};
 
     const generatedDate = new Date();
 
@@ -3818,6 +3818,7 @@ function downloadMemberStatementExcel() {
 
     /* =====================================================
        2. WORKSHEET STRUCTURE
+       TRANSACTION SUMMARY REMOVED
     ===================================================== */
 
     const worksheetData = [
@@ -3868,32 +3869,6 @@ function downloadMemberStatementExcel() {
             "",
             "Generated On",
             generatedDate
-        ],
-
-        [],
-
-        ["TRANSACTION SUMMARY"],
-
-        [
-            "TOTAL SUCCESSFUL DEPOSITS",
-            "",
-            "",
-            "TOTAL WALLET DEBITS",
-            "",
-            "",
-            "MATCHING TRANSACTIONS",
-            ""
-        ],
-
-        [
-            Number(totals.totalDeposits) || 0,
-            "",
-            "",
-            Number(totals.totalWithdrawals) || 0,
-            "",
-            "",
-            Number(totals.transactionCount) || transactions.length,
-            ""
         ],
 
         [],
@@ -3991,6 +3966,7 @@ function downloadMemberStatementExcel() {
 
     /* =====================================================
        5. CORRECT ROW POSITIONS
+       SUMMARY ROWS REMOVED
     ===================================================== */
 
     const titleRow = 0;
@@ -4005,17 +3981,11 @@ function downloadMemberStatementExcel() {
 
     const statementDetailsRow = 9;
 
-    const summaryHeadingRow = 11;
+    const transactionHeadingRow = 11;
 
-    const summaryLabelRow = 12;
+    const transactionHeaderRow = 12;
 
-    const summaryValueRow = 13;
-
-    const transactionHeadingRow = 15;
-
-    const transactionHeaderRow = 16;
-
-    const firstTransactionRow = 17;
+    const firstTransactionRow = 13;
 
     const lastTransactionRow =
         firstTransactionRow + transactions.length - 1;
@@ -4039,22 +4009,19 @@ function downloadMemberStatementExcel() {
             e: { r: subtitleRow, c: 7 }
         },
 
-        // Section headings
+        // Account information heading
         {
             s: { r: accountHeadingRow, c: 0 },
             e: { r: accountHeadingRow, c: 7 }
         },
 
+        // Statement details heading
         {
             s: { r: statementHeadingRow, c: 0 },
             e: { r: statementHeadingRow, c: 7 }
         },
 
-        {
-            s: { r: summaryHeadingRow, c: 0 },
-            e: { r: summaryHeadingRow, c: 7 }
-        },
-
+        // Transaction details heading
         {
             s: { r: transactionHeadingRow, c: 0 },
             e: { r: transactionHeadingRow, c: 7 }
@@ -4102,38 +4069,6 @@ function downloadMemberStatementExcel() {
         {
             s: { r: 9, c: 5 },
             e: { r: 9, c: 7 }
-        },
-
-
-        // Summary cards
-        {
-            s: { r: 12, c: 0 },
-            e: { r: 12, c: 2 }
-        },
-
-        {
-            s: { r: 12, c: 3 },
-            e: { r: 12, c: 5 }
-        },
-
-        {
-            s: { r: 12, c: 6 },
-            e: { r: 12, c: 7 }
-        },
-
-        {
-            s: { r: 13, c: 0 },
-            e: { r: 13, c: 2 }
-        },
-
-        {
-            s: { r: 13, c: 3 },
-            e: { r: 13, c: 5 }
-        },
-
-        {
-            s: { r: 13, c: 6 },
-            e: { r: 13, c: 7 }
         }
 
     ];
@@ -4155,13 +4090,7 @@ function downloadMemberStatementExcel() {
 
     const darkText = "263747";
 
-    const mutedText = "64748B";
-
     const white = "FFFFFF";
-
-    const lightGreen = "E8F5EE";
-
-    const green = "087443";
 
 
     /* =====================================================
@@ -4312,8 +4241,6 @@ function downloadMemberStatementExcel() {
         accountHeadingRow,
 
         statementHeadingRow,
-
-        summaryHeadingRow,
 
         transactionHeadingRow
 
@@ -4528,103 +4455,7 @@ function downloadMemberStatementExcel() {
 
 
     /* =====================================================
-       13. SUMMARY CARDS
-    ===================================================== */
-
-    ["A13", "D13", "G13"].forEach(address => {
-
-        applyCellStyle(address, {
-
-            font: {
-
-                name: "Arial",
-
-                sz: 9,
-
-                bold: true,
-
-                color: {
-                    rgb: white
-                }
-
-            },
-
-            fill: {
-
-                patternType: "solid",
-
-                fgColor: {
-                    rgb: blue
-                }
-
-            },
-
-            alignment: {
-
-                horizontal: "center",
-
-                vertical: "center",
-
-                wrapText: true
-
-            },
-
-            border: thinBorder
-
-        });
-
-    });
-
-
-    ["A14", "D14", "G14"].forEach((address, index) => {
-
-        applyCellStyle(address, {
-
-            font: {
-
-                name: "Arial",
-
-                sz: 16,
-
-                bold: true,
-
-                color: {
-                    rgb: navy
-                }
-
-            },
-
-            fill: {
-
-                patternType: "solid",
-
-                fgColor: {
-                    rgb: lightGreen
-                }
-
-            },
-
-            alignment: {
-
-                horizontal: "center",
-
-                vertical: "center"
-
-            },
-
-            numFmt: index === 2
-                ? "#,##0"
-                : '"GH₵" #,##0.00',
-
-            border: thinBorder
-
-        });
-
-    });
-
-
-    /* =====================================================
-       14. TRANSACTION TABLE HEADER
+       13. TRANSACTION TABLE HEADER
     ===================================================== */
 
     applyRowStyle(transactionHeaderRow, 8, {
@@ -4669,7 +4500,7 @@ function downloadMemberStatementExcel() {
 
 
     /* =====================================================
-       15. TRANSACTION TABLE BODY
+       14. TRANSACTION TABLE BODY
     ===================================================== */
 
     for (
@@ -4848,7 +4679,7 @@ function downloadMemberStatementExcel() {
 
 
     /* =====================================================
-       16. COLUMN WIDTHS
+       15. COLUMN WIDTHS
     ===================================================== */
 
     worksheet["!cols"] = [
@@ -4873,7 +4704,7 @@ function downloadMemberStatementExcel() {
 
 
     /* =====================================================
-       17. ROW HEIGHTS
+       16. ROW HEIGHTS
     ===================================================== */
 
     worksheet["!rows"] = [
@@ -4902,14 +4733,6 @@ function downloadMemberStatementExcel() {
 
         { hpt: 24 },
 
-        { hpt: 34 },
-
-        { hpt: 40 },
-
-        { hpt: 12 },
-
-        { hpt: 24 },
-
         { hpt: 34 }
 
     ];
@@ -4931,7 +4754,7 @@ function downloadMemberStatementExcel() {
 
 
     /* =====================================================
-       18. TRANSACTION TABLE FILTER
+       17. TRANSACTION TABLE FILTER
     ===================================================== */
 
     if (transactions.length > 0) {
@@ -4939,7 +4762,7 @@ function downloadMemberStatementExcel() {
         worksheet["!autofilter"] = {
 
             ref:
-                "A17:H" + (lastTransactionRow + 1)
+                "A13:H" + (lastTransactionRow + 1)
 
         };
 
@@ -4947,7 +4770,7 @@ function downloadMemberStatementExcel() {
 
 
     /* =====================================================
-       19. PRINT SETTINGS
+       18. PRINT SETTINGS
     ===================================================== */
 
     worksheet["!margins"] = {
@@ -4981,7 +4804,7 @@ function downloadMemberStatementExcel() {
 
 
     /* =====================================================
-       20. WORKBOOK PROPERTIES
+       19. WORKBOOK PROPERTIES
     ===================================================== */
 
     const workbook = XLSX.utils.book_new();
@@ -5007,7 +4830,7 @@ function downloadMemberStatementExcel() {
 
 
     /* =====================================================
-       21. ADD WORKSHEET
+       20. ADD WORKSHEET
     ===================================================== */
 
     XLSX.utils.book_append_sheet(
@@ -5022,7 +4845,7 @@ function downloadMemberStatementExcel() {
 
 
     /* =====================================================
-       22. DOWNLOAD EXCEL FILE
+       21. DOWNLOAD EXCEL FILE
     ===================================================== */
 
     const fileDate =
@@ -5046,6 +4869,7 @@ function downloadMemberStatementExcel() {
     );
 
 }
+
 
 
 
