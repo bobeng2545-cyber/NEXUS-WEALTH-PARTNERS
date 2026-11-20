@@ -3741,10 +3741,14 @@ function downloadMemberStatementPDF() {
 
 
 
-/* =========================================
-   32. MEMBER STATEMENT EXCEL EXPORT
-========================================= */
 
+/* =========================================================
+   32. PROFESSIONAL MEMBER STATEMENT EXCEL EXPORT
+   NEXUS WEALTH PARTNERS
+
+   Read-only export.
+   Does not modify wallet balances or transactions.
+========================================================= */
 
 function downloadMemberStatementExcel() {
 
@@ -3752,145 +3756,715 @@ function downloadMemberStatementExcel() {
 
     if (!exportData) return;
 
-    if (!memberStatementAccount) {
-        alert("Member account details are not available. Please refresh your dashboard and try again.");
-        return;
-    }
-
-    if (typeof XLSX === "undefined") {
+    if (
+        typeof XLSX === "undefined" ||
+        !XLSX.utils ||
+        !XLSX.writeFile
+    ) {
         alert(
-            "The Excel export library could not be loaded. " +
+            "The professional Excel library could not be loaded. " +
             "Please refresh the page and try again."
         );
+
         return;
     }
 
     const transactions = exportData.transactions;
     const totals = exportData.totals;
-    const account = memberStatementAccount;
 
     const generatedDate = new Date();
 
     const statementReference =
         "NWP-STMT-" +
-        generatedDate.toISOString()
-            .replace(/[-:TZ.]/g, "")
-            .slice(0, 14);
+        generatedDate.getTime();
+
+    /* =========================================
+       ACCOUNT HOLDER INFORMATION
+    ========================================= */
+
+    function getProfileText(elementId, fallback) {
+
+        const element = document.getElementById(elementId);
+
+        const value = element?.textContent?.trim();
+
+        return value || fallback;
+    }
+
+    const accountName =
+        getProfileText("profileName", "Not available");
+
+    const accountEmail =
+        getProfileText("profileEmail", "Not available");
+
+    const accountPhone =
+        getProfileText("profilePhone", "Not available");
+
+    const memberId =
+        getProfileText("profileMemberId", "Not available");
+
+    const accountStatus =
+        getProfileText("accountStatus", "Not available");
+
+
+    /* =========================================
+       WORKSHEET STRUCTURE
+    ========================================= */
 
     const worksheetData = [
 
+        // 1
         ["NEXUS WEALTH PARTNERS"],
 
-        ["OFFICIAL MEMBER ACCOUNT STATEMENT"],
+        // 2
+        ["OFFICIAL MEMBER TRANSACTION STATEMENT"],
 
+        // 3
         [],
 
+        // 4
         ["ACCOUNT HOLDER INFORMATION"],
 
-        ["Account Holder", account.full_name],
+        // 5
+        ["Full Name", accountName, "", "", "Member ID", memberId],
 
-        ["Member ID", account.member_id],
+        // 6
+        ["Phone Number", accountPhone, "", "", "Email Address", accountEmail],
 
-        ["Registered Phone Number", account.phone],
+        // 7
+        ["Account Status", accountStatus, "", "", "Statement Reference", statementReference],
 
-        ["Registered Email Address", account.email],
-
-        ["Account Status", account.account_status],
-
+        // 8
         [],
 
-        ["STATEMENT INFORMATION"],
+        // 9
+        ["STATEMENT DETAILS"],
 
-        ["Statement Reference", statementReference],
+        // 10
+        ["Statement Period", getMemberStatementPeriodLabel(), "", "", "Generated On", generatedDate],
 
-        ["Statement Period", getMemberStatementPeriodLabel()],
-
-        ["Date Generated", generatedDate.toLocaleString("en-GH")],
-
+        // 11
         [],
 
+        // 12
         ["TRANSACTION SUMMARY"],
 
-        ["Total Successful Deposits (GHS)", totals.totalDeposits],
+        // 13
+        [
+            "TOTAL SUCCESSFUL DEPOSITS",
+            "",
+            "",
+            "TOTAL WALLET DEBITS",
+            "",
+            "",
+            "MATCHING TRANSACTIONS",
+            ""
+        ],
 
-        ["Total Wallet Debits (GHS)", totals.totalWithdrawals],
+        // 14
+        [
+            totals.totalDeposits,
+            "",
+            "",
+            totals.totalWithdrawals,
+            "",
+            "",
+            totals.transactionCount,
+            ""
+        ],
 
-        ["Matching Transactions", totals.transactionCount],
-
+        // 15
         [],
 
+        // 16
+        ["TRANSACTION DETAILS"],
+
+        // 17
         [
+            "No.",
             "Transaction",
             "Reference",
             "Date",
             "Type",
             "Amount (GHS)",
             "Status",
-            "Wallet Debited",
-            "Wallet Restored"
+            "Wallet Debited / Restored"
         ]
 
     ];
 
-    transactions.forEach(transaction => {
+
+    /* =========================================
+       TRANSACTION RECORDS
+    ========================================= */
+
+    transactions.forEach((transaction, index) => {
+
+        const amount = Number(transaction.amount) || 0;
+
+        const transactionDate = transaction.created_at
+            ? new Date(transaction.created_at)
+            : null;
+
+        const validDate =
+            transactionDate &&
+            !Number.isNaN(transactionDate.getTime());
+
+        let walletAction = "—";
+
+        if (transaction.type === "withdrawal") {
+
+            const debited = transaction.wallet_debited === true;
+            const restored = transaction.wallet_restored === true;
+
+            walletAction =
+                "Debited: " + (debited ? "Yes" : "No") +
+                " | Restored: " + (restored ? "Yes" : "No");
+        }
 
         worksheetData.push([
 
+            index + 1,
+
             getMemberTransactionLabel(transaction),
 
-            getMemberTransactionReference(transaction) || "",
+            getMemberTransactionReference(transaction) || "—",
 
-            new Date(
-                transaction.created_at
-            ).toLocaleString("en-GH"),
+            validDate ? transactionDate : "—",
 
-            transaction.type,
+            transaction.type === "deposit"
+                ? "Deposit"
+                : "Withdrawal",
 
-            Number(transaction.amount) || 0,
+            amount,
 
-            getMemberTransactionStatusLabel(
-                transaction.status
-            ),
+            getMemberTransactionStatusLabel(transaction.status),
 
-            transaction.type === "withdrawal"
-                ? transaction.wallet_debited
-                : "",
-
-            transaction.type === "withdrawal"
-                ? transaction.wallet_restored
-                : ""
+            walletAction
 
         ]);
     });
 
+
+    /* =========================================
+       CREATE WORKSHEET
+    ========================================= */
+
     const worksheet =
         XLSX.utils.aoa_to_sheet(worksheetData);
 
-    worksheet["!cols"] = [
-        { wch: 32 },
-        { wch: 30 },
-        { wch: 25 },
-        { wch: 18 },
-        { wch: 20 },
-        { wch: 28 },
-        { wch: 18 },
-        { wch: 18 }
+
+    /* =========================================
+       MERGED CELLS
+    ========================================= */
+
+    worksheet["!merges"] = [
+
+        // Main heading
+        { s: { r: 0, c: 0 }, e: { r: 0, c: 7 } },
+
+        // Subtitle
+        { s: { r: 1, c: 0 }, e: { r: 1, c: 7 } },
+
+        // Section headings
+        { s: { r: 3, c: 0 }, e: { r: 3, c: 7 } },
+        { s: { r: 8, c: 0 }, e: { r: 8, c: 7 } },
+        { s: { r: 11, c: 0 }, e: { r: 11, c: 7 } },
+        { s: { r: 15, c: 0 }, e: { r: 15, c: 7 } },
+
+        // Account details
+        { s: { r: 4, c: 1 }, e: { r: 4, c: 3 } },
+        { s: { r: 4, c: 5 }, e: { r: 4, c: 7 } },
+
+        { s: { r: 5, c: 1 }, e: { r: 5, c: 3 } },
+        { s: { r: 5, c: 5 }, e: { r: 5, c: 7 } },
+
+        { s: { r: 6, c: 1 }, e: { r: 6, c: 3 } },
+        { s: { r: 6, c: 5 }, e: { r: 6, c: 7 } },
+
+        // Statement details
+        { s: { r: 9, c: 1 }, e: { r: 9, c: 3 } },
+        { s: { r: 9, c: 5 }, e: { r: 9, c: 7 } },
+
+        // Summary cards
+        { s: { r: 12, c: 0 }, e: { r: 12, c: 2 } },
+        { s: { r: 12, c: 3 }, e: { r: 12, c: 5 } },
+        { s: { r: 12, c: 6 }, e: { r: 12, c: 7 } },
+
+        { s: { r: 13, c: 0 }, e: { r: 13, c: 2 } },
+        { s: { r: 13, c: 3 }, e: { r: 13, c: 5 } },
+        { s: { r: 13, c: 6 }, e: { r: 13, c: 7 } }
+
     ];
 
+
+    /* =========================================
+       PROFESSIONAL COLOUR PALETTE
+    ========================================= */
+
+    const navy = "102B46";
+    const green = "087443";
+    const lightGreen = "E8F5EE";
+    const lightBlue = "EAF0F6";
+    const borderColour = "D7E0E8";
+    const darkText = "263746";
+    const mutedText = "64748B";
+    const white = "FFFFFF";
+
+
+    /* =========================================
+       STYLE HELPERS
+    ========================================= */
+
+    function applyCellStyle(cellAddress, style) {
+
+        if (!worksheet[cellAddress]) return;
+
+        worksheet[cellAddress].s = style;
+    }
+
+    function applyRowStyle(rowNumber, columnCount, style) {
+
+        for (let column = 0; column < columnCount; column++) {
+
+            const address = XLSX.utils.encode_cell({
+                r: rowNumber,
+                c: column
+            });
+
+            applyCellStyle(address, style);
+        }
+    }
+
+    const thinBorder = {
+        top: { style: "thin", color: borderColour },
+        bottom: { style: "thin", color: borderColour },
+        left: { style: "thin", color: borderColour },
+        right: { style: "thin", color: borderColour }
+    };
+
+
+    /* =========================================
+       MAIN TITLE
+    ========================================= */
+
+    applyCellStyle("A1", {
+        font: {
+            name: "Arial",
+            sz: 22,
+            bold: true,
+            color: white
+        },
+        fill: {
+            patternType: "solid",
+            fgColor: { rgb: navy }
+        },
+        alignment: {
+            horizontal: "center",
+            vertical: "center"
+        }
+    });
+
+    applyCellStyle("A2", {
+        font: {
+            name: "Arial",
+            sz: 11,
+            bold: true,
+            color: white
+        },
+        fill: {
+            patternType: "solid",
+            fgColor: { rgb: green }
+        },
+        alignment: {
+            horizontal: "center",
+            vertical: "center"
+        }
+    });
+
+
+    /* =========================================
+       SECTION HEADINGS
+    ========================================= */
+
+    [4, 9, 12, 16].forEach(rowNumber => {
+
+        applyRowStyle(rowNumber, 8, {
+            font: {
+                name: "Arial",
+                sz: 11,
+                bold: true,
+                color: white
+            },
+            fill: {
+                patternType: "solid",
+                fgColor: { rgb: navy }
+            },
+            alignment: {
+                vertical: "center"
+            }
+        });
+
+    });
+
+
+    /* =========================================
+       ACCOUNT DETAILS
+    ========================================= */
+
+    [5, 6, 7].forEach(rowNumber => {
+
+        for (let column = 0; column < 8; column++) {
+
+            const address = XLSX.utils.encode_cell({
+                r: rowNumber,
+                c: column
+            });
+
+            applyCellStyle(address, {
+                font: {
+                    name: "Arial",
+                    sz: 10,
+                    color: darkText,
+                    bold: column === 0 || column === 4
+                },
+                fill: {
+                    patternType: "solid",
+                    fgColor: {
+                        rgb: column === 0 || column === 4
+                            ? lightBlue
+                            : white
+                    }
+                },
+                alignment: {
+                    vertical: "center",
+                    wrapText: true
+                },
+                border: thinBorder
+            });
+
+        }
+
+    });
+
+
+    /* =========================================
+       STATEMENT DETAILS
+    ========================================= */
+
+    for (let column = 0; column < 8; column++) {
+
+        const address = XLSX.utils.encode_cell({
+            r: 9,
+            c: column
+        });
+
+        applyCellStyle(address, {
+            font: {
+                name: "Arial",
+                sz: 10,
+                color: darkText,
+                bold: column === 0 || column === 4
+            },
+            fill: {
+                patternType: "solid",
+                fgColor: {
+                    rgb: column === 0 || column === 4
+                        ? lightBlue
+                        : white
+                }
+            },
+            alignment: {
+                vertical: "center",
+                wrapText: true
+            },
+            border: thinBorder
+        });
+
+    }
+
+    applyCellStyle("F10", {
+        font: {
+            name: "Arial",
+            sz: 10,
+            color: darkText
+        },
+        alignment: {
+            vertical: "center",
+            wrapText: true
+        },
+        numFmt: "dd mmm yyyy hh:mm",
+        border: thinBorder
+    });
+
+
+    /* =========================================
+       SUMMARY CARDS
+    ========================================= */
+
+    ["A13", "D13", "G13"].forEach(address => {
+
+        applyCellStyle(address, {
+            font: {
+                name: "Arial",
+                sz: 9,
+                bold: true,
+                color: white
+            },
+            fill: {
+                patternType: "solid",
+                fgColor: { rgb: green }
+            },
+            alignment: {
+                horizontal: "center",
+                vertical: "center",
+                wrapText: true
+            },
+            border: thinBorder
+        });
+
+    });
+
+    ["A14", "D14", "G14"].forEach((address, index) => {
+
+        applyCellStyle(address, {
+            font: {
+                name: "Arial",
+                sz: 16,
+                bold: true,
+                color: navy
+            },
+            fill: {
+                patternType: "solid",
+                fgColor: { rgb: lightGreen }
+            },
+            alignment: {
+                horizontal: "center",
+                vertical: "center"
+            },
+            numFmt: index === 2
+                ? "#,##0"
+                : '"GH₵" #,##0.00',
+            border: thinBorder
+        });
+
+    });
+
+
+    /* =========================================
+       TRANSACTION TABLE HEADER
+    ========================================= */
+
+    applyRowStyle(17, 8, {
+        font: {
+            name: "Arial",
+            sz: 10,
+            bold: true,
+            color: white
+        },
+        fill: {
+            patternType: "solid",
+            fgColor: { rgb: green }
+        },
+        alignment: {
+            horizontal: "center",
+            vertical: "center",
+            wrapText: true
+        },
+        border: thinBorder
+    });
+
+
+    /* =========================================
+       TRANSACTION TABLE BODY
+    ========================================= */
+
+    const firstTransactionRow = 18;
+
+    const lastTransactionRow =
+        firstTransactionRow + transactions.length - 1;
+
+    for (
+        let row = firstTransactionRow;
+        row <= lastTransactionRow;
+        row++
+    ) {
+
+        const worksheetRow = row + 1;
+
+        for (let column = 0; column < 8; column++) {
+
+            const address = XLSX.utils.encode_cell({
+                r: row,
+                c: column
+            });
+
+            applyCellStyle(address, {
+                font: {
+                    name: "Arial",
+                    sz: 9,
+                    color: darkText
+                },
+                fill: {
+                    patternType: "solid",
+                    fgColor: {
+                        rgb: row % 2 === 0
+                            ? white
+                            : "F4F7FA"
+                    }
+                },
+                alignment: {
+                    vertical: "center",
+                    wrapText: true,
+                    horizontal: column === 0 || column === 5
+                        ? "center"
+                        : "left"
+                },
+                border: thinBorder
+            });
+
+        }
+
+        // Amount formatting
+        applyCellStyle("F" + worksheetRow, {
+            font: {
+                name: "Arial",
+                sz: 9,
+                bold: true,
+                color: navy
+            },
+            alignment: {
+                horizontal: "right",
+                vertical: "center"
+            },
+            numFmt: '"GH₵" #,##0.00',
+            border: thinBorder
+        });
+
+        // Date formatting
+        applyCellStyle("D" + worksheetRow, {
+            font: {
+                name: "Arial",
+                sz: 9,
+                color: darkText
+            },
+            alignment: {
+                vertical: "center"
+            },
+            numFmt: "dd mmm yyyy hh:mm",
+            border: thinBorder
+        });
+
+    }
+
+
+    /* =========================================
+       COLUMN WIDTHS
+    ========================================= */
+
+    worksheet["!cols"] = [
+
+        { wch: 7 },
+        { wch: 27 },
+        { wch: 30 },
+        { wch: 23 },
+        { wch: 15 },
+        { wch: 20 },
+        { wch: 20 },
+        { wch: 32 }
+
+    ];
+
+
+    /* =========================================
+       ROW HEIGHTS
+    ========================================= */
+
+    worksheet["!rows"] = [
+
+        { hpt: 38 }, // Title
+        { hpt: 25 }, // Subtitle
+        { hpt: 10 },
+        { hpt: 24 }, // Account heading
+        { hpt: 25 },
+        { hpt: 25 },
+        { hpt: 25 },
+        { hpt: 10 },
+        { hpt: 24 }, // Statement details heading
+        { hpt: 28 },
+        { hpt: 10 },
+        { hpt: 24 }, // Summary heading
+        { hpt: 32 },
+        { hpt: 38 },
+        { hpt: 12 },
+        { hpt: 24 }, // Transaction heading
+        { hpt: 34 }  // Table header
+
+    ];
+
+    for (
+        let row = firstTransactionRow;
+        row <= lastTransactionRow;
+        row++
+    ) {
+
+        worksheet["!rows"][row] = {
+            hpt: 30
+        };
+
+    }
+
+
+    /* =========================================
+       TABLE FILTER
+    ========================================= */
+
+    if (transactions.length > 0) {
+
+        worksheet["!autofilter"] = {
+            ref: "A18:H" + (lastTransactionRow + 1)
+        };
+
+    }
+
+
+    /* =========================================
+       WORKBOOK
+    ========================================= */
+
     const workbook = XLSX.utils.book_new();
+
+    workbook.Props = {
+        Title: "NEXUS WEALTH PARTNERS Member Statement",
+        Subject: "Member Transaction Statement",
+        Author: "NEXUS WEALTH PARTNERS",
+        Company: "NEXUS WEALTH PARTNERS",
+        Category: "Financial Statement"
+    };
 
     XLSX.utils.book_append_sheet(
         workbook,
         worksheet,
-        "Account Statement"
+        "Member Statement"
     );
+
+
+    /* =========================================
+       DOWNLOAD
+    ========================================= */
+
+    const fileDate =
+        generatedDate.toISOString().slice(0, 10);
 
     XLSX.writeFile(
         workbook,
-        "NEXUS_Account_Statement_" +
-        new Date().toISOString().slice(0, 10) +
-        ".xlsx"
+        "NEXUS_Member_Statement_" + fileDate + ".xlsx",
+        {
+            bookType: "xlsx",
+            cellStyles: true
+        }
     );
+
 }
 
 
