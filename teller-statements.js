@@ -1263,162 +1263,766 @@
     }
 
 
-    /* =====================================================
-       16. DOWNLOAD EXCEL STATEMENT
-    ===================================================== */
+    
+/* =====================================================
+   16. PROFESSIONAL EXCEL STATEMENT EXPORT
+===================================================== */
 
-    excelButton.addEventListener(
-        "click",
-        function () {
+excelButton.addEventListener("click", function () {
 
-            try {
+    try {
 
-                if (!window.XLSX) {
+        if (!window.XLSX) {
+            throw new Error(
+                "Excel export library is unavailable. Refresh the page and try again."
+            );
+        }
 
-                    throw new Error(
-                        "Excel export library is unavailable. Refresh the page and try again."
-                    );
+        const rows = getStatementExportData();
+
+        const XLSX = window.XLSX;
+
+        const workbook = XLSX.utils.book_new();
+
+        const member = selectedStatementMember;
+
+        const generatedOn = formatStatementDate(new Date());
+
+        const statementPeriod = getStatementPeriod();
+
+        const sheetData = [
+
+            ["NEXUS WEALTH PARTNERS"],
+
+            ["OFFICIAL MEMBER ACCOUNT STATEMENT"],
+
+            [],
+
+            ["MEMBER INFORMATION"],
+
+            [
+                "Member Name",
+                member.full_name || "—",
+                "",
+                "Member ID",
+                member.member_id || "—"
+            ],
+
+            [
+                "Email Address",
+                member.email || "—",
+                "",
+                "Phone Number",
+                member.phone || "—"
+            ],
+
+            [
+                "Account Status",
+                displayStatus(member.account_status),
+                "",
+                "Statement Period",
+                statementPeriod
+            ],
+
+            [
+                "Generated On",
+                generatedOn,
+                "",
+                "Number of Records",
+                rows.length
+            ],
+
+            [],
+
+            ["TRANSACTION DETAILS"],
+
+            [
+                "Date",
+                "Transaction Type",
+                "Payment Method",
+                "Amount (GHS)",
+                "Status"
+            ]
+
+        ];
+
+
+        /* Add transaction records */
+
+        rows.forEach(row => {
+
+            sheetData.push([
+
+                row.Date,
+
+                row.Type,
+
+                row["Payment Method"],
+
+                Number(row.Amount),
+
+                row.Status
+
+            ]);
+
+        });
+
+
+        /* Add professional footer */
+
+        const footerRow = sheetData.length;
+
+        sheetData.push([]);
+
+        sheetData.push([
+            "This statement is generated electronically by NEXUS WEALTH PARTNERS."
+        ]);
+
+        sheetData.push([
+            "Please contact the organisation if you require assistance with this statement."
+        ]);
+
+
+        const worksheet =
+            XLSX.utils.aoa_to_sheet(sheetData);
+
+
+        /* =================================================
+           COLUMN WIDTHS
+        ================================================= */
+
+        worksheet["!cols"] = [
+
+            { wch: 24 },
+
+            { wch: 23 },
+
+            { wch: 25 },
+
+            { wch: 20 },
+
+            { wch: 20 }
+
+        ];
+
+
+        /* =================================================
+           MERGED CELLS
+        ================================================= */
+
+        worksheet["!merges"] = [
+
+            { s: { r: 0, c: 0 }, e: { r: 0, c: 4 } },
+
+            { s: { r: 1, c: 0 }, e: { r: 1, c: 4 } },
+
+            { s: { r: 3, c: 0 }, e: { r: 3, c: 4 } },
+
+            { s: { r: 9, c: 0 }, e: { r: 9, c: 4 } },
+
+            { s: { r: footerRow + 1, c: 0 }, e: { r: footerRow + 1, c: 4 } },
+
+            { s: { r: footerRow + 2, c: 0 }, e: { r: footerRow + 2, c: 4 } }
+
+        ];
+
+
+        /* =================================================
+           ROW HEIGHTS
+        ================================================= */
+
+        worksheet["!rows"] = [
+
+            { hpt: 34 },
+
+            { hpt: 24 },
+
+            { hpt: 12 },
+
+            { hpt: 25 },
+
+            { hpt: 25 },
+
+            { hpt: 25 },
+
+            { hpt: 25 },
+
+            { hpt: 25 },
+
+            { hpt: 12 },
+
+            { hpt: 27 },
+
+            { hpt: 30 }
+
+        ];
+
+
+        /* =================================================
+           PROFESSIONAL COLOUR PALETTE
+        ================================================= */
+
+        const navy = "102B46";
+
+        const blue = "1D4E75";
+
+        const lightBlue = "EAF1F7";
+
+        const lighterBlue = "F5F8FC";
+
+        const borderColour = "D6E0EA";
+
+        const darkText = "263747";
+
+        const mutedText = "64748B";
+
+        const white = "FFFFFF";
+
+
+        /* =================================================
+           STYLE HELPER
+        ================================================= */
+
+        function styleCell(
+            cellAddress,
+            style
+        ) {
+
+            if (!worksheet[cellAddress]) return;
+
+            worksheet[cellAddress].s = style;
+
+        }
+
+
+        const thinBorder = {
+
+            top: {
+                style: "thin",
+                color: borderColour
+            },
+
+            bottom: {
+                style: "thin",
+                color: borderColour
+            },
+
+            left: {
+                style: "thin",
+                color: borderColour
+            },
+
+            right: {
+                style: "thin",
+                color: borderColour
+            }
+
+        };
+
+
+        /* =================================================
+           COMPANY HEADING
+        ================================================= */
+
+        styleCell("A1", {
+
+            font: {
+                name: "Arial",
+                sz: 19,
+                bold: true,
+                color: {
+                    rgb: white
+                }
+            },
+
+            fill: {
+                fgColor: {
+                    rgb: navy
+                }
+            },
+
+            alignment: {
+                horizontal: "center",
+                vertical: "center"
+            }
+
+        });
+
+
+        styleCell("A2", {
+
+            font: {
+                name: "Arial",
+                sz: 11,
+                bold: true,
+                color: {
+                    rgb: blue
+                }
+            },
+
+            alignment: {
+                horizontal: "center",
+                vertical: "center"
+            }
+
+        });
+
+
+        /* =================================================
+           SECTION HEADINGS
+        ================================================= */
+
+        ["A4", "A10"].forEach(address => {
+
+            styleCell(address, {
+
+                font: {
+                    name: "Arial",
+                    sz: 11,
+                    bold: true,
+                    color: {
+                        rgb: white
+                    }
+                },
+
+                fill: {
+                    fgColor: {
+                        rgb: navy
+                    }
+                },
+
+                alignment: {
+                    horizontal: "left",
+                    vertical: "center",
+                    indent: 1
+                }
+
+            });
+
+        });
+
+
+        /* =================================================
+           MEMBER INFORMATION
+        ================================================= */
+
+        const informationRows = [5, 6, 7, 8];
+
+        informationRows.forEach(rowNumber => {
+
+            const rowIndex = rowNumber - 1;
+
+            const labelCells = [
+
+                `A${rowNumber}`,
+                `D${rowNumber}`
+
+            ];
+
+            const valueCells = [
+
+                `B${rowNumber}`,
+                `E${rowNumber}`
+
+            ];
+
+
+            labelCells.forEach(address => {
+
+                styleCell(address, {
+
+                    font: {
+                        name: "Arial",
+                        sz: 9,
+                        bold: true,
+                        color: {
+                            rgb: navy
+                        }
+                    },
+
+                    fill: {
+                        fgColor: {
+                            rgb: lightBlue
+                        }
+                    },
+
+                    alignment: {
+                        vertical: "center",
+                        wrapText: true
+                    },
+
+                    border: thinBorder
+
+                });
+
+            });
+
+
+            valueCells.forEach(address => {
+
+                styleCell(address, {
+
+                    font: {
+                        name: "Arial",
+                        sz: 9,
+                        color: {
+                            rgb: darkText
+                        }
+                    },
+
+                    alignment: {
+                        vertical: "center",
+                        wrapText: true
+                    },
+
+                    border: thinBorder
+
+                });
+
+            });
+
+        });
+
+
+        /* =================================================
+           TRANSACTION TABLE HEADER
+        ================================================= */
+
+        const headerRow = 11;
+
+        const headerCells = [
+
+            "A11",
+            "B11",
+            "C11",
+            "D11",
+            "E11"
+
+        ];
+
+
+        headerCells.forEach(address => {
+
+            styleCell(address, {
+
+                font: {
+                    name: "Arial",
+                    sz: 10,
+                    bold: true,
+                    color: {
+                        rgb: white
+                    }
+                },
+
+                fill: {
+                    fgColor: {
+                        rgb: blue
+                    }
+                },
+
+                alignment: {
+                    horizontal: "center",
+                    vertical: "center",
+                    wrapText: true
+                },
+
+                border: thinBorder
+
+            });
+
+        });
+
+
+        /* =================================================
+           TRANSACTION DATA FORMATTING
+        ================================================= */
+
+        const firstDataRow = headerRow + 1;
+
+        const lastDataRow = firstDataRow + rows.length - 1;
+
+
+        for (
+            let rowNumber = firstDataRow;
+            rowNumber <= lastDataRow;
+            rowNumber++
+        ) {
+
+            const excelRow = rowNumber;
+
+            const rowIndex = rowNumber - 1;
+
+            const alternate =
+                (rowNumber - firstDataRow) % 2 === 1;
+
+
+            for (
+                let column = 0;
+                column < 5;
+                column++
+            ) {
+
+                const address = XLSX.utils.encode_cell({
+
+                    r: rowIndex,
+
+                    c: column
+
+                });
+
+
+                const cell = worksheet[address];
+
+                if (!cell) continue;
+
+
+                cell.s = {
+
+                    font: {
+
+                        name: "Arial",
+
+                        sz: 9,
+
+                        color: {
+                            rgb: darkText
+                        },
+
+                        bold: column === 3
+
+                    },
+
+                    fill: {
+
+                        fgColor: {
+
+                            rgb: alternate
+                                ? lighterBlue
+                                : white
+
+                        }
+
+                    },
+
+                    alignment: {
+
+                        vertical: "center",
+
+                        horizontal:
+                            column === 3
+                                ? "right"
+                                : column === 0
+                                    ? "center"
+                                    : "left",
+
+                        wrapText: true
+
+                    },
+
+                    border: thinBorder
+
+                };
+
+
+                /* Format amount as Ghana cedis */
+
+                if (column === 3) {
+
+                    cell.t = "n";
+
+                    cell.z = '"GH₵" #,##0.00;[Red]-"GH₵" #,##0.00';
 
                 }
 
-
-                const rows = getStatementExportData();
-
-
-                const workbook = XLSX.utils.book_new();
-
-
-                const information = [
-
-                    ["NEXUS WEALTH PARTNERS"],
-
-                    ["MEMBER ACCOUNT STATEMENT"],
-
-                    [],
-
-                    [
-                        "Member Name",
-                        selectedStatementMember.full_name || "—"
-                    ],
-
-                    [
-                        "Member ID",
-                        selectedStatementMember.member_id || "—"
-                    ],
-
-                    [
-                        "Email",
-                        selectedStatementMember.email || "—"
-                    ],
-
-                    [
-                        "Phone",
-                        selectedStatementMember.phone || "—"
-                    ],
-
-                    [
-                        "Account Status",
-                        selectedStatementMember.account_status || "—"
-                    ],
-
-                    [
-                        "Statement Period",
-                        getStatementPeriod()
-                    ],
-
-                    [
-                        "Generated On",
-                        formatStatementDate(new Date())
-                    ],
-
-                    [],
-
-                    ["TRANSACTION DETAILS"]
-
-                ];
-
-
-                const informationSheet =
-                    XLSX.utils.aoa_to_sheet(information);
-
-
-                XLSX.utils.sheet_add_json(
-
-                    informationSheet,
-
-                    rows,
-
-                    {
-                        origin: "A13"
-                    }
-
-                );
-
-
-                informationSheet["!cols"] = [
-
-                    { wch: 28 },
-
-                    { wch: 28 },
-
-                    { wch: 25 },
-
-                    { wch: 20 },
-
-                    { wch: 22 }
-
-                ];
-
-
-                XLSX.utils.book_append_sheet(
-
-                    workbook,
-
-                    informationSheet,
-
-                    "Member Statement"
-
-                );
-
-
-                const safeMemberId =
-                    getSafeFileName(
-                        selectedStatementMember.member_id
-                    );
-
-
-                XLSX.writeFile(
-
-                    workbook,
-
-                    `NEXUS_Statement_${safeMemberId}.xlsx`
-
-                );
-
-
-            } catch (error) {
-
-                console.error(
-                    "Excel statement export error:",
-                    error
-                );
-
-
-                showStatementMessage(
-
-                    statementMessage,
-
-                    error.message ||
-                        "Could not export the Excel statement.",
-
-                    "error"
-
-                );
-
             }
 
+
+            worksheet["!rows"][rowIndex] = {
+                hpt: 23
+            };
+
         }
-    );
+
+
+        /* =================================================
+           FOOTER FORMATTING
+        ================================================= */
+
+        const footerTitleAddress =
+            `A${footerRow + 2}`;
+
+        const footerTextAddress =
+            `A${footerRow + 3}`;
+
+
+        styleCell(footerTitleAddress, {
+
+            font: {
+                name: "Arial",
+                sz: 9,
+                italic: true,
+                color: {
+                    rgb: mutedText
+                }
+            },
+
+            alignment: {
+                horizontal: "center",
+                vertical: "center"
+            }
+
+        });
+
+
+        styleCell(footerTextAddress, {
+
+            font: {
+                name: "Arial",
+                sz: 9,
+                italic: true,
+                color: {
+                    rgb: mutedText
+                }
+            },
+
+            alignment: {
+                horizontal: "center",
+                vertical: "center",
+                wrapText: true
+            }
+
+        });
+
+
+        /* =================================================
+           EXCEL TABLE FILTER
+        ================================================= */
+
+        if (rows.length > 0) {
+
+            worksheet["!autofilter"] = {
+
+                ref: `A11:E${lastDataRow}`
+
+            };
+
+        }
+
+
+        /* =================================================
+           PAGE AND PRINT SETTINGS
+        ================================================= */
+
+        worksheet["!margins"] = {
+
+            left: 0.35,
+
+            right: 0.35,
+
+            top: 0.55,
+
+            bottom: 0.55,
+
+            header: 0.2,
+
+            footer: 0.2
+
+        };
+
+
+        worksheet["!pageSetup"] = {
+
+            paperSize: 9,
+
+            orientation: "landscape",
+
+            fitToWidth: 1,
+
+            fitToHeight: 0
+
+        };
+
+
+        /* =================================================
+           WORKBOOK PROPERTIES
+        ================================================= */
+
+        workbook.Props = {
+
+            Title: "NEXUS WEALTH PARTNERS Member Statement",
+
+            Subject: "Official Member Account Transaction Statement",
+
+            Author: "NEXUS WEALTH PARTNERS",
+
+            Company: "NEXUS WEALTH PARTNERS",
+
+            Category: "Member Financial Statements"
+
+        };
+
+
+        /* =================================================
+           ADD WORKSHEET
+        ================================================= */
+
+        XLSX.utils.book_append_sheet(
+
+            workbook,
+
+            worksheet,
+
+            "Member Statement"
+
+        );
+
+
+        /* =================================================
+           DOWNLOAD FILE
+        ================================================= */
+
+        const safeMemberId = getSafeFileName(
+            member.member_id
+        );
+
+
+        XLSX.writeFile(
+
+            workbook,
+
+            `NEXUS_Member_Statement_${safeMemberId}.xlsx`,
+
+            {
+                bookType: "xlsx",
+                cellStyles: true
+            }
+
+        );
+
+
+    } catch (error) {
+
+        console.error(
+            "Excel statement export error:",
+            error
+        );
+
+
+        showStatementMessage(
+
+            statementMessage,
+
+            error.message ||
+                "Could not export the Excel statement.",
+
+            "error"
+
+        );
+
+    }
+
+});
+
 
 
     /* =====================================================
