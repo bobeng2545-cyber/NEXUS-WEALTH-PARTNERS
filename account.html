@@ -624,54 +624,163 @@
             </section>
 
 
-            <!-- TRANSACTION HISTORY -->
-            <section id="memberTransactions" class="dashboard-panel">
+            
+<!-- TRANSACTION HISTORY -->
+<section id="memberTransactions" class="dashboard-panel">
 
-                <div class="mobile-page-heading">
-                    <button type="button" class="mobile-back-button"
-                        onclick="showMobileDashboardScreen('home')"
-                        aria-label="Back to dashboard">
-                        &#8592;
-                    </button>
-                    <h2>Transactions</h2>
-                </div>
+    <div class="mobile-page-heading">
+        <button type="button" class="mobile-back-button"
+            onclick="showMobileDashboardScreen('home')"
+            aria-label="Back to dashboard">
+            &#8592;
+        </button>
+        <h2>Transactions</h2>
+    </div>
 
-                <h3 class="desktop-page-heading">My Transactions</h3>
-                <p>View your deposits and withdrawals.</p>
+    <h3 class="desktop-page-heading">My Transactions</h3>
+    <p>View, filter and download your transaction statements.</p>
 
-                <div class="transaction-filters" id="transactionFilters">
-                    <button type="button" class="active" data-filter="all">
-                        All
-                    </button>
-                    <button type="button" data-filter="deposit">
-                        Deposits
-                    </button>
-                    <button type="button" data-filter="withdrawal">
-                        Withdrawals
-                    </button>
-                </div>
+    <!-- TRANSACTION TYPE FILTERS -->
+    <div class="transaction-filters" id="transactionFilters">
+        <button type="button" class="active" data-filter="all">
+            All
+        </button>
+        <button type="button" data-filter="deposit">
+            Deposits
+        </button>
+        <button type="button" data-filter="withdrawal">
+            Withdrawals
+        </button>
+    </div>
 
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Transaction</th>
-                                <th>Date</th>
-                                <th>Amount</th>
-                                <th>Status</th>
-                                <th>Receipt</th>
-                            </tr>
-                        </thead>
+    <!-- STATEMENT FILTERS -->
+    <div class="statement-filters">
 
-                        <tbody id="transactionList">
-                            <tr>
-                                <td colspan="5">No transactions available.</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+        <div class="statement-filter-group">
+            <label for="statementDatePreset">Date period</label>
+            <select id="statementDatePreset">
+                <option value="all">All dates</option>
+                <option value="today">Today</option>
+                <option value="yesterday">Yesterday</option>
+                <option value="last7">Last 7 days</option>
+                <option value="last30">Last 30 days</option>
+                <option value="custom">Custom date range</option>
+            </select>
+        </div>
 
-            </section>
+        <div id="customStatementDates" hidden>
+
+            <div class="statement-filter-group">
+                <label for="statementStartDate">Start date</label>
+                <input type="date" id="statementStartDate">
+            </div>
+
+            <div class="statement-filter-group">
+                <label for="statementEndDate">End date</label>
+                <input type="date" id="statementEndDate">
+            </div>
+
+        </div>
+
+        <div class="statement-filter-group">
+            <label for="statementStatus">Transaction status</label>
+            <select id="statementStatus">
+                <option value="all">All statuses</option>
+                <option value="pending">Pending</option>
+                <option value="processing">Processing</option>
+                <option value="successful">Successful</option>
+                <option value="completed">Completed</option>
+                <option value="failed">Failed</option>
+                <option value="rejected">Rejected</option>
+                <option value="reversed">Reversed</option>
+            </select>
+        </div>
+
+        <div class="statement-filter-group">
+            <label for="statementReferenceSearch">
+                Search reference
+            </label>
+            <input
+                type="search"
+                id="statementReferenceSearch"
+                placeholder="Enter transaction reference">
+        </div>
+
+        <div class="statement-filter-actions">
+            <button type="button" id="applyStatementFilters">
+                Apply Filters
+            </button>
+
+            <button type="button" id="resetStatementFilters">
+                Reset Filters
+            </button>
+        </div>
+
+    </div>
+
+    <!-- STATEMENT SUMMARY -->
+    <div class="statement-summary">
+
+        <div class="statement-summary-card">
+            <span>Total Deposits</span>
+            <strong id="statementTotalDeposits">GH₵0.00</strong>
+        </div>
+
+        <div class="statement-summary-card">
+            <span>Wallet Debits</span>
+            <strong id="statementTotalWithdrawals">GH₵0.00</strong>
+        </div>
+
+        <div class="statement-summary-card">
+            <span>Matching Transactions</span>
+            <strong id="statementTransactionCount">0</strong>
+        </div>
+
+    </div>
+
+    <!-- STATEMENT EXPORTS -->
+    <div class="statement-export-actions">
+
+        <button type="button" id="downloadStatementPDF">
+            Download PDF
+        </button>
+
+        <button type="button" id="downloadStatementExcel">
+            Download Excel
+        </button>
+
+    </div>
+
+    <p id="statementFilterMessage" aria-live="polite"></p>
+
+    <!-- TRANSACTION TABLE -->
+    <div class="table-container">
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Transaction</th>
+                    <th>Reference</th>
+                    <th>Date</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                    <th>Receipt</th>
+                </tr>
+            </thead>
+
+            <tbody id="transactionList">
+                <tr>
+                    <td colspan="6">
+                        No transactions available.
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+
+</section>
+
 
 
             <!-- MONTHLY SAVINGS -->
