@@ -1373,7 +1373,7 @@
 
 
             <!-- =================================
-                 PENSION ACCOUNT
+                 NEXUS PENSION ACCOUNT
             ================================== -->
 
             <section
@@ -1404,30 +1404,34 @@
                     </div>
 
                     <div>
+
                         <h3 class="desktop-page-heading">
                             My Pension Account
                         </h3>
 
                         <p>
-                            Manage and monitor your separate pension account.
+                            Manage your pension destinations and monitor
+                            your contributions.
                         </p>
+
                     </div>
 
                 </div>
 
 
-                <!-- PENSION ACCOUNT SUMMARY -->
+                <!-- PENSION BALANCE -->
 
                 <div class="pension-summary-card">
 
-                    <span>My Pension Balance</span>
+                    <span>Total Pension Balance</span>
 
                     <strong id="memberPensionBalance">
                         GH₵0.00
                     </strong>
 
                     <small>
-                        Your pension account is separate from your savings account.
+                        Your pension balance is separate from your
+                        wallet and savings.
                     </small>
 
                 </div>
@@ -1442,22 +1446,31 @@
                         <h3>Pension Account Information</h3>
 
                         <div class="information-item">
+
                             <span>Account Type</span>
+
                             <strong>Separate Pension Account</strong>
+
                         </div>
 
                         <div class="information-item">
+
                             <span>Account Number</span>
+
                             <strong id="pensionAccountNumber">
                                 Not yet assigned
                             </strong>
+
                         </div>
 
                         <div class="information-item">
+
                             <span>Account Status</span>
+
                             <strong id="pensionAccountStatus">
                                 Not yet activated
                             </strong>
+
                         </div>
 
                     </div>
@@ -1465,27 +1478,36 @@
 
                     <div class="dashboard-panel pension-information-card">
 
-                        <h3>Pension Contributions</h3>
+                        <h3>Contribution Summary</h3>
 
                         <div class="information-item">
+
                             <span>Total Contributions</span>
+
                             <strong id="pensionTotalContributions">
                                 GH₵0.00
                             </strong>
+
                         </div>
 
                         <div class="information-item">
+
                             <span>Last Contribution</span>
+
                             <strong id="pensionLastContribution">
                                 Not available
                             </strong>
+
                         </div>
 
                         <div class="information-item">
+
                             <span>Contribution Records</span>
+
                             <strong id="pensionContributionCount">
                                 0
                             </strong>
+
                         </div>
 
                     </div>
@@ -1493,19 +1515,145 @@
                 </div>
 
 
-                <!-- PENSION AVAILABILITY NOTICE -->
+                <!-- PENSION DESTINATION AND CONTRIBUTION -->
+
+                <div class="dashboard-panel pension-contribution-panel">
+
+                    <h3>Choose Your Pension Destination</h3>
+
+                    <p>
+                        Select the pension destination to which you
+                        intend to make your contribution.
+                    </p>
+
+
+                    <form id="pensionContributionForm">
+
+                        <label for="pensionDestination">
+                            Pension Destination
+                        </label>
+
+                        <select
+                            id="pensionDestination"
+                            name="destination"
+                            required
+                        >
+
+                            <option value="">
+                                Select a pension destination
+                            </option>
+
+                            <option value="nexus_pension">
+                                NEXUS Pension Account
+                            </option>
+
+                            <option
+                                value="external_provider"
+                                disabled
+                            >
+                                Other approved pension provider — Coming soon
+                            </option>
+
+                        </select>
+
+
+                        <label for="pensionAmount">
+                            Contribution Amount (GH₵)
+                        </label>
+
+                        <input
+                            type="number"
+                            id="pensionAmount"
+                            name="amount"
+                            min="1"
+                            step="0.01"
+                            placeholder="Enter contribution amount"
+                            required
+                        >
+
+
+                        <label for="pensionPaymentMethod">
+                            Payment Method
+                        </label>
+
+                        <select
+                            id="pensionPaymentMethod"
+                            name="paymentMethod"
+                            required
+                        >
+
+                            <option value="">
+                                Select payment method
+                            </option>
+
+                            <option value="mtn_momo">
+                                MTN Mobile Money
+                            </option>
+
+                            <option value="telecel_cash">
+                                Telecel Cash
+                            </option>
+
+                            <option value="at_money">
+                                AT Money
+                            </option>
+
+                        </select>
+
+
+                        <label for="pensionPhone">
+                            Mobile Money Number
+                        </label>
+
+                        <input
+                            type="tel"
+                            id="pensionPhone"
+                            name="phone"
+                            placeholder="Enter mobile money number"
+                            autocomplete="tel"
+                            required
+                        >
+
+
+                        <button
+                            type="submit"
+                            id="pensionContributionButton"
+                        >
+                            Continue Pension Contribution
+                        </button>
+
+                    </form>
+
+
+                    <p class="pension-form-notice">
+                        Pension contributions will only be processed
+                        after the pension destination, payment
+                        integration and administrator controls have
+                        been properly configured.
+                    </p>
+
+                </div>
+
+
+                <!-- PENSION INFORMATION NOTICE -->
 
                 <div class="pension-notice">
 
-                    <h3>Pension Account Information</h3>
+                    <h3>Important Pension Information</h3>
 
                     <p>
-                        This is a separate pension account interface.
-                        Pension contributions, payment processing and
-                        withdrawals will be enabled only after the
-                        appropriate account structure, regulatory
-                        arrangements and administrator controls have
-                        been established.
+                        Pension contributions are maintained separately
+                        from ordinary wallet and savings transactions.
+                        Contributions must not be treated as successful
+                        until the payment provider and receiving pension
+                        arrangement have been properly verified.
+                    </p>
+
+                    <p>
+                        Pension withdrawals and transfers will only be
+                        made available when the applicable pension
+                        arrangements, eligibility requirements and
+                        administrator controls have been established.
                     </p>
 
                 </div>
@@ -1518,8 +1666,8 @@
                     <h3>Pension Contribution History</h3>
 
                     <p>
-                        View your pension contributions and their
-                        confirmation status.
+                        Review your pension contribution records and
+                        their payment confirmation statuses.
                     </p>
 
 
@@ -1531,6 +1679,7 @@
 
                                 <tr>
                                     <th>Date</th>
+                                    <th>Destination</th>
                                     <th>Reference</th>
                                     <th>Amount</th>
                                     <th>Status</th>
@@ -1541,7 +1690,7 @@
                             <tbody id="pensionContributionList">
 
                                 <tr>
-                                    <td colspan="4">
+                                    <td colspan="5">
                                         No pension contribution records available.
                                     </td>
                                 </tr>
