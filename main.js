@@ -1891,6 +1891,512 @@ nexusSupabase.auth.onAuthStateChange((event, session) => {
 
 /* =========================================
    25. MEMBER TRANSACTION HISTORY
+   FILTERING + STATEMENT EXPORTS
+========================================= */
+
+let memberTransactionsCache = [];
+
+
+/* =========================================
+   TRANSACTION DISPLAY HELPERS
+========================================= */
+
+function getMemberTransactionReference(transaction) {
+
+    return transaction.type === "deposit"
+        ? transaction.reference || ""
+        : transaction.payout_reference || "";
+}
+
+
+function getMemberTransactionLabel(transaction) {
+
+    const depositMethods = {
+        mtn: "MTN Mobile Money",
+        telecel: "Telecel Cash",
+        at: "AT Money",
+        mtn_momo: "MTN Mobile Money",
+        telecel_cash: "Telecel Cash",
+        at_money: "AT Money"
+    };
+
+    const withdrawalMethods = {
+        mtn_momo: "MTN Mobile Money",
+        telecel_cash: "Telecel Cash",
+        at_money: "AT Money",
+        bank: "Bank Account"
+    };
+
+    if (transaction.type === "deposit") {
+
+        return "Deposit - " +
+            (
+                depositMethods[transaction.payment_method] ||
+                transaction.payment_method ||
+                "Unknown Method"
+            );
+    }
+
+    return "Withdrawal - " +
+        (
+            withdrawalMethods[transaction.withdrawal_method] ||
+            transaction.withdrawal_method ||
+            "Unknown Method"
+        );
+}
+
+
+function getMemberTransactionStatusLabel(status) {
+
+    const statuses = {
+        pending: "Pending Approval",
+        processing: "Approved - Processing Payment",
+        successful: "Successful",
+        completed: "Payment Completed",
+        failed: "Failed",
+        rejected: "Rejected",
+        reversed: "Reversed"
+    };
+
+    return statuses[status] || status || "Unknown";
+}
+
+
+function escapeStatementHTML(value) {
+
+    return String(value ?? "").replace(/[&<>"']/g, character => {
+
+        const entities = {
+            "&": "&amp;",
+            "<": "&lt;",
+            ">": "&gt;",
+            '"': "&quot;",
+            "'": "&#039;"
+        };
+
+        return entities[character];
+    });
+}
+
+
+
+/* =========================================
+   DATE FILTER HELPERS
+========================================= */
+
+function getStatementDateRange() {
+
+    const preset = getElement("statementDatePreset")?.value || "all";
+
+    const now = new Date();
+
+    let startDate = null;
+    let endDate = null;
+
+    const today = new Date(
+        now.getFullYear(),
+        now.getMonth(),
+        now.getDate()
+    );
+
+    if (preset === "today") {
+
+        startDate = today;
+        endDate = new Date(today);
+
+        endDate.setDate(endDate.getDate() + 1);
+
+    } else if (preset === "yesterday") {
+
+        startDate = new Date(today);
+        startDate.setDate(startDate.getDate() - 1);
+
+        endDate = new Date(today);
+
+    } else if (preset === "last7") {
+
+        startDate = new Date(today);
+        startDate.setDate(startDate.getDate() - 6);
+
+        endDate = new Date(today);
+        endDate.setDate(endDate.getDate() + 1);
+
+    } else if (preset === "last30") {
+
+        startDate = new Date(today);
+        startDate.setDate(startDate.getDate() - 29);
+
+        endDate = new Date(today);
+        endDate.setDate(endDate.getDate() + 1);
+
+    } else if (preset === "custom") {
+
+        const startValue =
+            getElement("statementStartDate")?.value;
+
+        const endValue =
+            getElement("statementEndDate")?.value;
+
+        if (!startValue || !endValue) {
+
+            return {
+                valid: false,
+                message: "Please select both custom dates."
+            };
+        }
+
+        const startParts = startValue.split("-").map(Number);
+        const endParts = endValue.split("-").map(Number);
+
+        startDate = new Date(
+            startParts[0],
+            startParts[1] - 1,
+            startParts[2]
+        );
+
+        endDate = new Date(
+            endParts[0],
+            endParts[1] - 1,
+            endParts[2]
+        );
+
+       if (
+            Number.isNaN(startDate.getTime()) ||
+            Number.isNaN(endDate.getTime()) ||
+            endDate < startDate
+        ) {
+
+            return {
+                valid: false,
+                message: "Please enter a valid date range."
+            };
+        }
+
+        endDate.setDate(endDate.getDate() + 1);
+    }
+
+    return {
+        valid: true,
+        startDate,
+        endDate
+    };
+}
+
+/* =========================================
+   APPLY MEMBER STATEMENT FILTERS
+========================================= */
+
+function getFilteredMemberTransactions() {
+
+    const typeButton = document.querySelector(
+        "#transactionFilters button.active"
+    );
+
+    const selectedType =
+        typeButton?.dataset.filter || "all";
+
+    const selectedStatus =
+        getElement("statementStatus")?.value || "all";
+
+    const searchReference =
+        (
+            getElement("statementReferenceSearch")?.value || ""
+        ).trim().toLowerCase();
+
+    const dateRange = getStatementDateRange();
+
+    if (!dateRange.valid) {
+
+        return {
+            valid: false,
+            message: dateRange.message,
+            transactions: []
+        };
+    }
+
+    const transactions = memberTransactionsCache.filter(
+        transaction => {
+
+            if (
+                selectedType !== "all" &&
+                transaction.type !== selectedType
+            ) {
+                return false;
+            }
+
+            if (
+                selectedStatus !== "all" &&
+                transaction.status !== selectedStatus
+            ) {
+                return false;
+            }
+
+            const transactionDate = new Date(
+                transaction.created_at
+            );
+
+            if (
+                dateRange.startDate &&
+                transactionDate < dateRange.startDate
+            ) {
+                return false;
+            }
+
+            if (
+                dateRange.endDate &&
+                transactionDate >= dateRange.endDate
+            ) {
+                return false;
+            }
+
+            if (searchReference) {
+
+                const reference =
+                    getMemberTransactionReference(transaction)
+                        .toLowerCase();
+
+                if (!reference.includes(searchReference)) {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+    );
+
+    return {
+        valid: true,
+        message: "",
+        transactions
+    };
+}
+
+/* =========================================
+   MEMBER STATEMENT TOTALS
+========================================= */
+
+function calculateMemberStatementTotals(transactions) {
+
+    let totalDeposits = 0;
+    let totalWithdrawals = 0;
+
+    transactions.forEach(transaction => {
+
+        const amount = Number(transaction.amount) || 0;
+
+        if (
+            transaction.type === "deposit" &&
+            ["successful", "completed"].includes(transaction.status)
+        ) {
+
+            totalDeposits += amount;
+        }
+
+        /*
+         * Count a withdrawal as a wallet debit only when:
+         * 1. The wallet was actually debited.
+         * 2. The wallet amount has not been restored.
+         */
+
+        if (
+            transaction.type === "withdrawal" &&
+            transaction.wallet_debited === true &&
+            transaction.wallet_restored !== true
+        ) {
+
+            totalWithdrawals += amount;
+        }
+    });
+
+    return {
+        totalDeposits,
+        totalWithdrawals,
+        transactionCount: transactions.length
+    };
+}
+
+
+/* =========================================
+   RENDER MEMBER TRANSACTION TABLE
+========================================= */
+
+function renderMemberTransactions() {
+
+    const transactionList = getElement("transactionList");
+
+    if (!transactionList) return;
+
+    const result = getFilteredMemberTransactions();
+
+    transactionList.innerHTML = "";
+
+    if (!result.valid) {
+
+        transactionList.innerHTML = `
+            <tr>
+                <td colspan="6">
+                    ${escapeStatementHTML(result.message)}
+                </td>
+            </tr>
+        `;
+
+        updateMemberStatementSummary([]);
+
+        const message = getElement("statementFilterMessage");
+
+        if (message) {
+            message.textContent = result.message;
+        }
+
+        return;
+    }
+
+    const transactions = result.transactions;
+
+    updateMemberStatementSummary(transactions);
+
+    const message = getElement("statementFilterMessage");
+
+    if (message) {
+        message.textContent =
+            transactions.length +
+            " matching transaction(s) found.";
+    }
+
+    if (transactions.length === 0) {
+
+        transactionList.innerHTML = `
+            <tr>
+                <td colspan="6">
+                    No matching transactions available.
+                </td>
+            </tr>
+        `;
+
+        return;
+    }
+
+    transactions.forEach(transaction => {
+
+        const row = document.createElement("tr");
+
+        row.dataset.transactionType = transaction.type;
+
+        const transactionCell = document.createElement("td");
+        const referenceCell = document.createElement("td");
+        const dateCell = document.createElement("td");
+        const amountCell = document.createElement("td");
+        const statusCell = document.createElement("td");
+        const receiptCell = document.createElement("td");
+
+        transactionCell.textContent =
+            getMemberTransactionLabel(transaction);
+
+        referenceCell.textContent =
+            getMemberTransactionReference(transaction) || "—";
+
+        dateCell.textContent = new Date(
+            transaction.created_at
+        ).toLocaleString("en-GH", {
+            dateStyle: "medium",
+            timeStyle: "short"
+        });
+
+        const amount = Number(transaction.amount) || 0;
+
+        amountCell.textContent =
+            (transaction.type === "deposit" ? "+ " : "- ") +
+            formatMoney(amount);
+
+        statusCell.textContent =
+            getMemberTransactionStatusLabel(transaction.status);
+
+        const safeStatus = String(
+            transaction.status || "unknown"
+        ).toLowerCase().replace(/[^a-z0-9_-]/g, "");
+
+        statusCell.className =
+            "transaction-status status-" + safeStatus;
+
+        const receiptButton = document.createElement("button");
+
+        receiptButton.type = "button";
+        receiptButton.textContent = "View Receipt";
+        receiptButton.className = "view-receipt-button";
+
+        const canViewReceipt =
+            transaction.type === "deposit"
+                ? transaction.status === "successful"
+                : transaction.status === "completed";
+
+        receiptButton.disabled = !canViewReceipt;
+
+        if (canViewReceipt) {
+
+            receiptButton.addEventListener("click", function() {
+
+                generateTransactionReceipt(transaction);
+
+            });
+
+        } else {
+
+            receiptButton.textContent = "Unavailable";
+        }
+
+        receiptCell.appendChild(receiptButton);
+
+        row.appendChild(transactionCell);
+        row.appendChild(referenceCell);
+        row.appendChild(dateCell);
+        row.appendChild(amountCell);
+        row.appendChild(statusCell);
+        row.appendChild(receiptCell);
+
+        transactionList.appendChild(row);
+    });
+}
+
+/* =========================================
+   UPDATE MEMBER STATEMENT SUMMARY
+========================================= */
+
+function updateMemberStatementSummary(transactions) {
+
+    const totals =
+        calculateMemberStatementTotals(transactions);
+
+    const depositsElement =
+        getElement("statementTotalDeposits");
+
+    const withdrawalsElement =
+        getElement("statementTotalWithdrawals");
+
+    const countElement =
+        getElement("statementTransactionCount");
+
+    if (depositsElement) {
+
+        depositsElement.textContent =
+            formatMoney(totals.totalDeposits);
+    }
+
+    if (withdrawalsElement) {
+
+        withdrawalsElement.textContent =
+            formatMoney(totals.totalWithdrawals);
+    }
+
+    if (countElement) {
+
+        countElement.textContent =
+            totals.transactionCount.toLocaleString("en-GH");
+    }
+}
+
+
+/* =========================================
+   LOAD MEMBER TRANSACTIONS
 ========================================= */
 
 async function loadMemberTransactions(user) {
@@ -1901,31 +2407,53 @@ async function loadMemberTransactions(user) {
 
     transactionList.innerHTML = `
         <tr>
-            <td colspan="5">Loading transactions...</td>
+            <td colspan="6">Loading transactions...</td>
         </tr>
     `;
+
+    initializeTransactionFilters();
 
     try {
 
         const { data: deposits, error: depositError } =
             await nexusSupabase
                 .from("deposit_transactions")
-                .select("id, amount, payment_method, status, reference, created_at")
+                .select(`
+                    id,
+                    user_id,
+                    amount,
+                    payment_method,
+                    status,
+                    reference,
+                    created_at
+                `)
                 .eq("user_id", user.id)
                 .order("created_at", { ascending: false });
 
         if (depositError) throw depositError;
 
+
         const { data: withdrawals, error: withdrawalError } =
             await nexusSupabase
                 .from("withdrawal_requests")
-                .select("id, amount, withdrawal_method, status, created_at")
+                .select(`
+                    id,
+                    user_id,
+                    amount,
+                    withdrawal_method,
+                    status,
+                    payout_reference,
+                    wallet_debited,
+                    wallet_restored,
+                    created_at
+                `)
                 .eq("user_id", user.id)
                 .order("created_at", { ascending: false });
 
         if (withdrawalError) throw withdrawalError;
 
-        const transactions = [
+
+        memberTransactionsCache = [
 
             ...(deposits || []).map(item => ({
                 ...item,
@@ -1938,159 +2466,36 @@ async function loadMemberTransactions(user) {
             }))
         ];
 
-        transactions.sort((a, b) =>
+        memberTransactionsCache.sort((a, b) =>
             new Date(b.created_at) - new Date(a.created_at)
         );
 
-        transactionList.innerHTML = "";
-
-        if (transactions.length === 0) {
-
-            transactionList.innerHTML = `
-                <tr>
-                    <td colspan="5">
-                        No transactions available.
-                    </td>
-                </tr>
-            `;
-
-            return;
-        }
-
-        transactions.forEach(transaction => {
-
-            const row = document.createElement("tr");
-
-            row.dataset.transactionType = transaction.type;
-
-            const transactionCell = document.createElement("td");
-            const dateCell = document.createElement("td");
-            const amountCell = document.createElement("td");
-            const statusCell = document.createElement("td");
-            const receiptCell = document.createElement("td");
-
-            const depositMethods = {
-                mtn: "MTN Mobile Money",
-                telecel: "Telecel Cash",
-                at: "AT Money",
-                mtn_momo: "MTN Mobile Money",
-                telecel_cash: "Telecel Cash",
-                at_money: "AT Money"
-            };
-
-            const withdrawalMethods = {
-                mtn_momo: "MTN Mobile Money",
-                telecel_cash: "Telecel Cash",
-                at_money: "AT Money",
-                bank: "Bank Account"
-            };
-
-            const statuses = {
-                pending: "Pending Approval",
-                processing: "Approved - Processing Payment",
-                successful: "Successful",
-                completed: "Payment Completed",
-                failed: "Failed",
-                rejected: "Rejected",
-                reversed: "Reversed"
-            };
-
-            if (transaction.type === "deposit") {
-
-                transactionCell.textContent =
-                    "Deposit - " +
-                    (
-                        depositMethods[transaction.payment_method] ||
-                        transaction.payment_method
-                    );
-
-                amountCell.textContent =
-                    "+ " + formatMoney(transaction.amount);
-
-            } else {
-
-                transactionCell.textContent =
-                    "Withdrawal - " +
-                    (
-                        withdrawalMethods[transaction.withdrawal_method] ||
-                        transaction.withdrawal_method
-                    );
-
-                amountCell.textContent =
-                    "- " + formatMoney(transaction.amount);
-            }
-
-            dateCell.textContent = new Date(
-                transaction.created_at
-            ).toLocaleString("en-GH", {
-                dateStyle: "medium",
-                timeStyle: "short"
-            });
-
-            statusCell.textContent =
-                statuses[transaction.status] ||
-                transaction.status;
-
-            statusCell.className =
-                "transaction-status status-" + transaction.status;
-
-            const receiptButton = document.createElement("button");
-
-            receiptButton.type = "button";
-            receiptButton.textContent = "View Receipt";
-            receiptButton.className = "view-receipt-button";
-
-            const canViewReceipt =
-                transaction.type === "deposit"
-                    ? transaction.status === "successful"
-                    : transaction.status === "completed";
-
-            receiptButton.disabled = !canViewReceipt;
-
-            if (canViewReceipt) {
-
-                receiptButton.addEventListener("click", function() {
-                    generateTransactionReceipt(transaction);
-                });
-
-            } else {
-
-                receiptButton.textContent = "Unavailable";
-            }
-
-            receiptCell.appendChild(receiptButton);
-
-            row.appendChild(transactionCell);
-            row.appendChild(dateCell);
-            row.appendChild(amountCell);
-            row.appendChild(statusCell);
-            row.appendChild(receiptCell);
-
-            transactionList.appendChild(row);
-        });
-
-        const activeFilter = document.querySelector(
-            "#transactionFilters button.active"
-        );
-
-        if (activeFilter) {
-            activeFilter.click();
-        }
+        renderMemberTransactions();
 
     } catch (error) {
 
         console.error("Transaction loading error:", error);
 
+        memberTransactionsCache = [];
+
         transactionList.innerHTML = `
             <tr>
-                <td colspan="5">
+                <td colspan="6">
                     Unable to load transactions. Please refresh.
                 </td>
             </tr>
         `;
+
+        updateMemberStatementSummary([]);
+
+        const message = getElement("statementFilterMessage");
+
+        if (message) {
+            message.textContent =
+                "Unable to load your transaction statement.";
+        }
     }
 }
-
 
 /* =========================================
    26. LOAD PENDING WITHDRAWALS
@@ -2555,75 +2960,590 @@ if (withdrawalForm) {
 
 function initializeTransactionFilters() {
 
-    const filterContainer = getElement("transactionFilters");
-    const transactionList = getElement("transactionList");
+    const filterContainer =
+        getElement("transactionFilters");
+
+    const transactionList =
+        getElement("transactionList");
 
     if (!filterContainer || !transactionList) {
         return;
     }
 
+    /*
+     * Prevent duplicate event listeners if this function
+     * is called more than once.
+     */
+
+    if (filterContainer.dataset.initialized === "true") {
+        return;
+    }
+
+    filterContainer.dataset.initialized = "true";
+
+
+    /* Transaction type buttons */
+
     filterContainer.addEventListener("click", function(event) {
 
-        const button = event.target.closest("button[data-filter]");
+        const button = event.target.closest(
+            "button[data-filter]"
+        );
 
         if (!button) return;
 
-        const selectedFilter = button.dataset.filter;
+        filterContainer.querySelectorAll(
+            "button[data-filter]"
+        ).forEach(item => {
 
-        filterContainer.querySelectorAll("button").forEach(item => {
             item.classList.remove("active");
+
         });
 
         button.classList.add("active");
 
-        const rows = transactionList.querySelectorAll(
-            "tr[data-transaction-type]"
-        );
+        renderMemberTransactions();
+    });
 
-        let visibleCount = 0;
 
-        rows.forEach(row => {
+    /* Date preset */
 
-            const shouldShow =
-                selectedFilter === "all" ||
-                selectedFilter === row.dataset.transactionType;
+    const datePreset =
+        getElement("statementDatePreset");
 
-            row.hidden = !shouldShow;
+    const customDates =
+        getElement("customStatementDates");
 
-            if (shouldShow) {
-                visibleCount++;
+    if (datePreset) {
+
+        datePreset.addEventListener("change", function() {
+
+            if (customDates) {
+
+                customDates.hidden =
+                    datePreset.value !== "custom";
+            }
+
+        });
+    }
+
+
+    /* Apply filters */
+
+    const applyButton =
+        getElement("applyStatementFilters");
+
+    if (applyButton) {
+
+        applyButton.addEventListener("click", function() {
+
+            renderMemberTransactions();
+
+        });
+    }
+
+
+    /* Reset filters */
+
+    const resetButton =
+        getElement("resetStatementFilters");
+
+    if (resetButton) {
+
+        resetButton.addEventListener("click", function() {
+
+            if (datePreset) {
+                datePreset.value = "all";
+            }
+
+            if (customDates) {
+                customDates.hidden = true;
+            }
+
+            const startDate =
+                getElement("statementStartDate");
+
+            const endDate =
+                getElement("statementEndDate");
+
+            const status =
+                getElement("statementStatus");
+
+            const reference =
+                getElement("statementReferenceSearch");
+
+            if (startDate) startDate.value = "";
+            if (endDate) endDate.value = "";
+
+            if (status) status.value = "all";
+
+            if (reference) reference.value = "";
+
+            filterContainer.querySelectorAll(
+                "button[data-filter]"
+            ).forEach(item => {
+
+                item.classList.toggle(
+                    "active",
+                    item.dataset.filter === "all"
+                );
+
+            });
+
+            renderMemberTransactions();
+
+        });
+    }
+
+
+    /* Search when Enter is pressed */
+
+    const referenceSearch =
+        getElement("statementReferenceSearch");
+
+    if (referenceSearch) {
+
+        referenceSearch.addEventListener("keydown", function(event) {
+
+            if (event.key === "Enter") {
+
+                event.preventDefault();
+
+                renderMemberTransactions();
             }
         });
+    }
 
-        let emptyRow = getElement("noFilteredTransactions");
 
-        if (!visibleCount) {
+    /* Export buttons */
 
-            if (!emptyRow) {
+    const pdfButton =
+        getElement("downloadStatementPDF");
 
-                emptyRow = document.createElement("tr");
+    if (pdfButton) {
 
-                emptyRow.id = "noFilteredTransactions";
+        pdfButton.addEventListener("click", function() {
 
-                const cell = document.createElement("td");
+            downloadMemberStatementPDF();
 
-                cell.colSpan = 5;
+        });
+    }
 
-                cell.textContent =
-                    "No matching transactions available.";
+    const excelButton =
+        getElement("downloadStatementExcel");
 
-                emptyRow.appendChild(cell);
+    if (excelButton) {
 
-                transactionList.appendChild(emptyRow);
-            }
+        excelButton.addEventListener("click", function() {
 
-            emptyRow.hidden = false;
+            downloadMemberStatementExcel();
 
-        } else if (emptyRow) {
+        });
+    }
+}
 
-            emptyRow.hidden = true;
-        }
+
+/* =========================================
+   30. MEMBER STATEMENT EXPORT DATA
+========================================= */
+
+function getMemberStatementExportData() {
+
+    const result = getFilteredMemberTransactions();
+
+    if (!result.valid) {
+
+        alert(result.message);
+
+        return null;
+    }
+
+    if (result.transactions.length === 0) {
+
+        alert("There are no matching transactions to export.");
+
+        return null;
+    }
+
+    return {
+        transactions: result.transactions,
+        totals: calculateMemberStatementTotals(
+            result.transactions
+        )
+    };
+}
+
+
+function getMemberStatementPeriodLabel() {
+
+    const preset =
+        getElement("statementDatePreset")?.value || "all";
+
+    if (preset === "today") return "Today";
+
+    if (preset === "yesterday") return "Yesterday";
+
+    if (preset === "last7") return "Last 7 Days";
+
+    if (preset === "last30") return "Last 30 Days";
+
+    if (preset === "custom") {
+
+        return (
+            (getElement("statementStartDate")?.value || "") +
+            " to " +
+            (getElement("statementEndDate")?.value || "")
+        );
+    }
+
+    return "All Dates";
+}
+
+
+/* =========================================
+   31. MEMBER STATEMENT PDF EXPORT
+========================================= */
+
+function downloadMemberStatementPDF() {
+
+    const exportData = getMemberStatementExportData();
+
+    if (!exportData) return;
+
+    const printWindow = window.open(
+        "",
+        "_blank",
+        "width=1000,height=750"
+    );
+
+    if (!printWindow) {
+
+        alert(
+            "Your browser blocked the statement window. " +
+            "Please allow pop-ups for this website and try again."
+        );
+
+        return;
+    }
+
+    const transactions = exportData.transactions;
+    const totals = exportData.totals;
+
+    const rows = transactions.map(transaction => {
+
+        const reference =
+            getMemberTransactionReference(transaction);
+
+        const amount = Number(transaction.amount) || 0;
+
+        return `
+            <tr>
+                <td>${escapeStatementHTML(
+                    getMemberTransactionLabel(transaction)
+                )}</td>
+
+                <td>${escapeStatementHTML(reference || "—")}</td>
+
+                <td>${escapeStatementHTML(
+                    new Date(transaction.created_at).toLocaleString(
+                        "en-GH",
+                        {
+                            dateStyle: "medium",
+                            timeStyle: "short"
+                        }
+                    )
+                )}</td>
+
+                <td>
+                    ${transaction.type === "deposit" ? "+" : "-"}
+                    ${escapeStatementHTML(
+                        amount.toFixed(2)
+                    )}
+                </td>
+
+                <td>${escapeStatementHTML(
+                    getMemberTransactionStatusLabel(
+                        transaction.status
+                    )
+                )}</td>
+            </tr>
+        `;
+    }).join("");
+
+    const generatedAt = new Date().toLocaleString("en-GH");
+
+    const html = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+
+            <title>NEXUS WEALTH PARTNERS - Statement</title>
+
+            <style>
+
+                body {
+                    font-family: Arial, sans-serif;
+                    color: #172b3c;
+                    padding: 30px;
+                }
+
+                h1 {
+                    margin-bottom: 5px;
+                    color: #102b46;
+                }
+
+                .subtitle {
+                    color: #64748b;
+                    margin-bottom: 25px;
+                }
+
+                .summary {
+                    display: flex;
+                    gap: 25px;
+                    margin: 25px 0;
+                    flex-wrap: wrap;
+                }
+
+                .summary div {
+                    border: 1px solid #d8e0e8;
+                    padding: 15px;
+                    min-width: 160px;
+                    border-radius: 6px;
+                }
+
+                .summary strong {
+                    display: block;
+                    margin-top: 8px;
+                    font-size: 18px;
+                }
+
+                table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    margin-top: 20px;
+                    font-size: 12px;
+                }
+
+                th, td {
+                    border: 1px solid #d8e0e8;
+                    padding: 9px;
+                    text-align: left;
+                }
+
+                th {
+                    background: #102b46;
+                    color: white;
+                }
+
+                .footer {
+                    margin-top: 30px;
+                    color: #64748b;
+                    font-size: 11px;
+                }
+
+                @media print {
+                    body {
+                        padding: 0;
+                    }
+
+                    button {
+                        display: none;
+                    }
+                }
+
+            </style>
+        </head>
+
+        <body>
+
+            <h1>NEXUS WEALTH PARTNERS</h1>
+
+            <div class="subtitle">
+                Member Transaction Statement
+            </div>
+
+            <p>
+                <strong>Statement period:</strong>
+                ${escapeStatementHTML(
+                    getMemberStatementPeriodLabel()
+                )}
+            </p>
+
+            <p>
+                <strong>Generated:</strong>
+                ${escapeStatementHTML(generatedAt)}
+            </p>
+
+            <div class="summary">
+
+                <div>
+                    Total Successful Deposits
+                    <strong>GH₵${totals.totalDeposits.toFixed(2)}</strong>
+                </div>
+
+                <div>
+                    Total Wallet Debits
+                    <strong>GH₵${totals.totalWithdrawals.toFixed(2)}</strong>
+                </div>
+
+                <div>
+                    Matching Transactions
+                    <strong>${totals.transactionCount}</strong>
+                </div>
+
+            </div>
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>Transaction</th>
+                        <th>Reference</th>
+                        <th>Date</th>
+                        <th>Amount (GHS)</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    ${rows}
+                </tbody>
+
+            </table>
+
+            <div class="footer">
+                This statement is generated from the transaction
+                records available in your NEXUS member account.
+            </div>
+
+            <script>
+                window.onload = function() {
+                    window.print();
+                };
+            <\/script>
+
+        </body>
+        </html>
+    `;
+
+    printWindow.document.open();
+    printWindow.document.write(html);
+    printWindow.document.close();
+}
+
+
+/* =========================================
+   32. MEMBER STATEMENT EXCEL EXPORT
+========================================= */
+
+function downloadMemberStatementExcel() {
+
+    const exportData = getMemberStatementExportData();
+
+    if (!exportData) return;
+
+    if (typeof XLSX === "undefined") {
+
+        alert(
+            "The Excel export library could not be loaded. " +
+            "Please refresh the page and try again."
+        );
+
+        return;
+    }
+
+    const transactions = exportData.transactions;
+    const totals = exportData.totals;
+
+    const worksheetData = [
+
+        ["NEXUS WEALTH PARTNERS"],
+
+        ["Member Transaction Statement"],
+
+        ["Statement Period", getMemberStatementPeriodLabel()],
+
+        ["Generated", new Date().toLocaleString("en-GH")],
+
+        [],
+
+        ["Total Successful Deposits (GHS)", totals.totalDeposits],
+
+        ["Total Wallet Debits (GHS)", totals.totalWithdrawals],
+
+        ["Matching Transactions", totals.transactionCount],
+
+        [],
+
+        [
+            "Transaction",
+            "Reference",
+            "Date",
+            "Type",
+            "Amount (GHS)",
+            "Status",
+            "Wallet Debited",
+            "Wallet Restored"
+        ]
+
+    ];
+
+    transactions.forEach(transaction => {
+
+        worksheetData.push([
+
+            getMemberTransactionLabel(transaction),
+
+            getMemberTransactionReference(transaction) || "",
+
+            new Date(transaction.created_at).toLocaleString("en-GH"),
+
+            transaction.type,
+
+            Number(transaction.amount) || 0,
+
+            getMemberTransactionStatusLabel(transaction.status),
+
+            transaction.type === "withdrawal"
+                ? transaction.wallet_debited
+                : "",
+
+            transaction.type === "withdrawal"
+                ? transaction.wallet_restored
+                : ""
+
+        ]);
     });
+
+    const worksheet =
+        XLSX.utils.aoa_to_sheet(worksheetData);
+
+    worksheet["!cols"] = [
+        { wch: 30 },
+        { wch: 28 },
+        { wch: 24 },
+        { wch: 16 },
+        { wch: 18 },
+        { wch: 25 },
+        { wch: 18 },
+        { wch: 18 }
+    ];
+
+    const workbook = XLSX.utils.book_new();
+
+    XLSX.utils.book_append_sheet(
+        workbook,
+        worksheet,
+        "Member Statement"
+    );
+
+    XLSX.writeFile(
+        workbook,
+        "NEXUS_Member_Statement_" +
+        new Date().toISOString().slice(0, 10) +
+        ".xlsx"
+    );
 }
 
 
