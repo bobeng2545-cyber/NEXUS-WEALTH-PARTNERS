@@ -4905,3 +4905,37 @@ body > #notificationMenu.notification-open {
     }
 
 }
+
+
+/* =========================================================
+   MEMBER STATEMENT — FINAL SPACING ADJUSTMENTS
+========================================================= */
+
+/* Space between Apply Filter and Reset Filter */
+#memberTransactions div:has(> #applyStatementFilters):has(> #resetStatementFilters) {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Space between PDF and Excel download buttons */
+#memberTransactions div:has(> #downloadStatementPDF):has(> #downloadStatementExcel) {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Hide the complete transaction summary section */
+#memberTransactions div:has(#statementTotalDeposits):has(#statementTotalWithdrawals):has(#statementTransactionCount) {
+    display: none !important;
+}
+
+/* Keep buttons comfortable on mobile */
+@media (max-width: 600px) {
+    #memberTransactions div:has(> #applyStatementFilters):has(> #resetStatementFilters),
+    #memberTransactions div:has(> #downloadStatementPDF):has(> #downloadStatementExcel) {
+        gap: 8px;
+    }
+}
