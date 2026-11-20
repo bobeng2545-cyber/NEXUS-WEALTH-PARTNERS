@@ -4670,3 +4670,399 @@ body > #notificationMenu.notification-open {
     }
 
 }
+
+
+/* =========================================================
+   NEXUS WEALTH PARTNERS
+   MEMBER TRANSACTION STATEMENT — PREMIUM DESIGN
+========================================================= */
+
+#memberTransactions {
+    --statement-green: #087443;
+    --statement-dark: #102b46;
+    --statement-muted: #64748b;
+    --statement-border: #e2e8f0;
+    --statement-bg: #f8fafc;
+
+    background: #ffffff;
+    border: 1px solid var(--statement-border);
+    border-radius: 20px;
+    padding: clamp(18px, 3vw, 30px);
+    box-shadow: 0 8px 30px rgba(15, 35, 55, 0.055);
+    overflow: hidden;
+}
+
+/* Heading */
+
+#memberTransactions h2,
+#memberTransactions h3 {
+    color: var(--statement-dark);
+    font-weight: 800;
+    letter-spacing: -0.5px;
+}
+
+#memberTransactions h2 {
+    font-size: clamp(23px, 3vw, 30px);
+    margin-bottom: 8px;
+}
+
+#memberTransactions h3 {
+    font-size: 23px;
+    margin-bottom: 8px;
+}
+
+#memberTransactions > p {
+    color: var(--statement-muted);
+    font-size: 14px;
+    line-height: 1.7;
+    margin-bottom: 24px;
+}
+
+/* Existing transaction type filters */
+
+#memberTransactions .transaction-filters {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 9px;
+    margin: 20px 0;
+    padding: 6px;
+    width: fit-content;
+    max-width: 100%;
+    background: #f1f5f9;
+    border-radius: 12px;
+}
+
+#memberTransactions .transaction-filters button {
+    border: 1px solid transparent;
+    background: transparent;
+    color: #475569;
+    border-radius: 9px;
+    padding: 10px 17px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+#memberTransactions .transaction-filters button:hover {
+    color: var(--statement-green);
+    background: #ffffff;
+}
+
+#memberTransactions .transaction-filters button.active {
+    color: #ffffff;
+    background: var(--statement-green);
+    box-shadow: 0 3px 9px rgba(8, 116, 67, 0.2);
+}
+
+/* Statement filter controls */
+
+#memberTransactions #statementDatePreset,
+#memberTransactions #statementStatus,
+#memberTransactions #statementStartDate,
+#memberTransactions #statementEndDate,
+#memberTransactions #statementReferenceSearch {
+    width: 100%;
+    min-height: 45px;
+    padding: 11px 13px;
+    border: 1px solid #dbe3ec;
+    border-radius: 10px;
+    outline: none;
+    background: #ffffff;
+    color: #1e293b;
+    font-family: inherit;
+    font-size: 13px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+#memberTransactions #statementDatePreset:focus,
+#memberTransactions #statementStatus:focus,
+#memberTransactions #statementStartDate:focus,
+#memberTransactions #statementEndDate:focus,
+#memberTransactions #statementReferenceSearch:focus {
+    border-color: var(--statement-green);
+    box-shadow: 0 0 0 3px rgba(8, 116, 67, 0.10);
+}
+
+#memberTransactions label {
+    display: block;
+    color: #334155;
+    font-size: 12px;
+    font-weight: 700;
+    margin-bottom: 7px;
+}
+
+/* Custom date selection */
+
+#memberTransactions #customStatementDates {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-top: 14px;
+}
+
+#memberTransactions #customStatementDates > div {
+    flex: 1 1 180px;
+    min-width: 0;
+}
+
+/* Search field */
+
+#memberTransactions #statementReferenceSearch {
+    max-width: 100%;
+}
+
+/* Apply and reset buttons */
+
+#memberTransactions #applyStatementFilters,
+#memberTransactions #resetStatementFilters {
+    min-height: 43px;
+    padding: 11px 19px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+#memberTransactions #applyStatementFilters {
+    background: var(--statement-green);
+    border: 1px solid var(--statement-green);
+    color: #ffffff;
+}
+
+#memberTransactions #applyStatementFilters:hover {
+    background: #065c36;
+    transform: translateY(-1px);
+}
+
+#memberTransactions #resetStatementFilters {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    color: #475569;
+}
+
+#memberTransactions #resetStatementFilters:hover {
+    background: #f1f5f9;
+}
+
+/* Statement summary cards */
+
+#memberTransactions #statementTotalDeposits,
+#memberTransactions #statementTotalWithdrawals,
+#memberTransactions #statementTransactionCount {
+    display: inline-block;
+    color: var(--statement-dark);
+    font-size: 21px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    margin-top: 7px;
+    overflow-wrap: anywhere;
+}
+
+#memberTransactions #statementTotalDeposits,
+#memberTransactions #statementTotalWithdrawals,
+#memberTransactions #statementTransactionCount {
+    font-variant-numeric: tabular-nums;
+}
+
+#memberTransactions #statementTotalDeposits {
+    color: #087443;
+}
+
+#memberTransactions #statementTotalWithdrawals {
+    color: #b45309;
+}
+
+/* Export buttons */
+
+#memberTransactions #downloadStatementPDF,
+#memberTransactions #downloadStatementExcel {
+    min-height: 44px;
+    padding: 11px 17px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+#memberTransactions #downloadStatementPDF {
+    color: #ffffff;
+    background: var(--statement-dark);
+    border: 1px solid var(--statement-dark);
+}
+
+#memberTransactions #downloadStatementPDF:hover {
+    background: #1b4263;
+    transform: translateY(-1px);
+}
+
+#memberTransactions #downloadStatementExcel {
+    color: #087443;
+    background: #ecfdf5;
+    border: 1px solid #bbf7d0;
+}
+
+#memberTransactions #downloadStatementExcel:hover {
+    background: #dcfce7;
+    transform: translateY(-1px);
+}
+
+/* Filter feedback message */
+
+#memberTransactions #statementFilterMessage {
+    color: #b45309;
+    font-size: 13px;
+    font-weight: 600;
+    margin: 12px 0;
+    line-height: 1.6;
+}
+
+/* Transaction table */
+
+#memberTransactions .table-container {
+    width: 100%;
+    overflow-x: auto;
+    margin-top: 20px;
+    border: 1px solid var(--statement-border);
+    border-radius: 14px;
+    background: #ffffff;
+    -webkit-overflow-scrolling: touch;
+}
+
+#memberTransactions table {
+    width: 100%;
+    min-width: 680px;
+    border-collapse: separate;
+    border-spacing: 0;
+    text-align: left;
+}
+
+#memberTransactions thead {
+    background: #f1f5f9;
+}
+
+#memberTransactions th {
+    padding: 16px 15px;
+    color: #475569;
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    white-space: nowrap;
+    border-bottom: 1px solid var(--statement-border);
+}
+
+#memberTransactions td {
+    padding: 15px;
+    color: #334155;
+    font-size: 13px;
+    border-bottom: 1px solid #edf1f5;
+    vertical-align: middle;
+}
+
+#memberTransactions tbody tr {
+    transition: background 0.2s ease;
+}
+
+#memberTransactions tbody tr:hover {
+    background: #f8fafc;
+}
+
+#memberTransactions tbody tr:last-child td {
+    border-bottom: none;
+}
+
+#memberTransactions td:first-child {
+    font-weight: 700;
+    color: var(--statement-dark);
+}
+
+#memberTransactions td:nth-child(3) {
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+#memberTransactions td:last-child {
+    white-space: nowrap;
+}
+
+/* Receipt and action buttons */
+
+#memberTransactions td button {
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+/* Empty and loading states */
+
+#memberTransactions tbody td[colspan] {
+    padding: 35px 15px;
+    color: var(--statement-muted);
+    text-align: center;
+    font-weight: 600;
+}
+
+/* Mobile layout */
+
+@media screen and (max-width: 700px) {
+
+    #memberTransactions {
+        padding: 17px 12px;
+        border-radius: 15px;
+    }
+
+    #memberTransactions .transaction-filters {
+        width: 100%;
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 5px;
+    }
+
+    #memberTransactions .transaction-filters button {
+        padding: 10px 5px;
+        font-size: 11px;
+    }
+
+    #memberTransactions #customStatementDates {
+        flex-direction: column;
+    }
+
+    #memberTransactions #customStatementDates > div {
+        width: 100%;
+    }
+
+    #memberTransactions #downloadStatementPDF,
+    #memberTransactions #downloadStatementExcel {
+        flex: 1 1 140px;
+    }
+
+    #memberTransactions th,
+    #memberTransactions td {
+        padding: 13px 11px;
+    }
+
+    #memberTransactions table {
+        min-width: 650px;
+    }
+}
+
+@media screen and (max-width: 380px) {
+
+    #memberTransactions .transaction-filters button {
+        font-size: 10px;
+        padding: 9px 3px;
+    }
+
+    #memberTransactions #statementTotalDeposits,
+    #memberTransactions #statementTotalWithdrawals,
+    #memberTransactions #statementTransactionCount {
+        font-size: 18px;
+    }
+}
