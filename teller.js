@@ -24,6 +24,7 @@ const tellerSupabase = window.supabase.createClient(
     SUPABASE_ANON_KEY
 );
 
+window.tellerSupabase = tellerSupabase;
 
 /* =========================================================
    2. ELEMENT REFERENCES
