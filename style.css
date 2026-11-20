@@ -2976,7 +2976,7 @@ body > #notificationMenu.notification-open {
         z-index: 99999 !important;
 
         display: grid !important;
-        grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+        grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
 
         gap: 0 !important;
         width: 100% !important;
