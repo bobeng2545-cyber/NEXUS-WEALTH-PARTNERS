@@ -4939,3 +4939,135 @@ body > #notificationMenu.notification-open {
         gap: 8px;
     }
 }
+
+
+/* =========================================
+   NEXUS FINANCIAL ACCOUNTS
+========================================= */
+
+.nexus-financial-accounts {
+    width: 100%;
+    margin: 25px 0;
+}
+
+.financial-accounts-heading {
+    margin-bottom: 16px;
+}
+
+.financial-accounts-heading h3 {
+    margin: 0 0 6px;
+    color: #18352a;
+    font-size: 19px;
+    font-weight: 750;
+}
+
+.financial-accounts-heading p {
+    margin: 0;
+    color: #748078;
+    font-size: 13px;
+}
+
+.financial-accounts-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.financial-account-card {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+    min-width: 0;
+    padding: 23px;
+    border: 1px solid transparent;
+    border-radius: 16px;
+    text-decoration: none;
+    transition: transform 0.2s ease,
+                box-shadow 0.2s ease;
+}
+
+.financial-account-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.07);
+}
+
+.savings-account-card {
+    background: #effaf3;
+    border-color: #d6efdf;
+}
+
+.pension-account-card {
+    background: #eff5ff;
+    border-color: #d8e5fb;
+}
+
+.financial-account-icon {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 13px;
+    background: rgba(255, 255, 255, 0.8);
+    font-size: 25px;
+}
+
+.financial-account-details h3 {
+    margin: 0 0 5px;
+    color: #18352a;
+    font-size: 19px;
+    font-weight: 750;
+}
+
+.financial-account-details p {
+    margin: 0 0 13px;
+    color: #68766e;
+    font-size: 13px;
+}
+
+.financial-account-details strong {
+    display: block;
+    font-size: 23px;
+    font-weight: 800;
+    color: #087443;
+}
+
+.pension-account-card .financial-account-details strong {
+    color: #2459a6;
+}
+
+.financial-account-link {
+    margin-top: 2px;
+    font-size: 13px;
+    font-weight: 700;
+    color: #087443;
+}
+
+.pension-account-card .financial-account-link {
+    color: #2459a6;
+}
+
+/* MOBILE */
+
+@media (max-width: 600px) {
+
+    .nexus-financial-accounts {
+        margin: 20px 0;
+    }
+
+    .financial-accounts-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .financial-account-card {
+        padding: 18px;
+        gap: 12px;
+    }
+
+    .financial-account-details strong {
+        font-size: 21px;
+    }
+
+}
