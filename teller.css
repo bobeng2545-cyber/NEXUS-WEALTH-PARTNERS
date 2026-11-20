@@ -2324,3 +2324,115 @@ a:focus-visible {
 /* =========================================================
    END OF NEXUS WEALTH PARTNERS TELLER CSS
 ========================================================= */
+
+
+
+/* =========================================================
+   MEMBER STATEMENT SUMMARY CARDS
+========================================================= */
+
+.statement-summary,
+.statement-stats,
+.statement-overview {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+    width: 100%;
+    margin: 18px 0 22px;
+}
+
+.statement-summary-card,
+.statement-stat-card,
+.statement-overview-card {
+    min-width: 0;
+    padding: 19px 20px;
+    background: #ffffff;
+    border: 1px solid #e5eaf0;
+    border-radius: 13px;
+    box-shadow: 0 3px 12px rgba(16, 43, 70, 0.045);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease,
+                transform 0.2s ease;
+}
+
+.statement-summary-card:hover,
+.statement-stat-card:hover,
+.statement-overview-card:hover {
+    border-color: #cbd8e5;
+    box-shadow: 0 6px 18px rgba(16, 43, 70, 0.08);
+    transform: translateY(-2px);
+}
+
+.statement-summary-card .summary-label,
+.statement-stat-card .summary-label,
+.statement-overview-card .summary-label {
+    display: block;
+    margin-bottom: 10px;
+    color: #64748b;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.4;
+    letter-spacing: 0.2px;
+}
+
+.statement-summary-card .summary-value,
+.statement-stat-card .summary-value,
+.statement-overview-card .summary-value {
+    display: block;
+    color: #102b46;
+    font-size: 27px;
+    font-weight: 750;
+    line-height: 1.15;
+    font-variant-numeric: tabular-nums;
+}
+
+/* Mobile layout */
+@media (max-width: 600px) {
+    .statement-summary,
+    .statement-stats,
+    .statement-overview {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+        margin: 14px 0 18px;
+    }
+
+    .statement-summary-card,
+    .statement-stat-card,
+    .statement-overview-card {
+        padding: 14px;
+        border-radius: 11px;
+    }
+
+    .statement-summary-card .summary-label,
+    .statement-stat-card .summary-label,
+    .statement-overview-card .summary-label {
+        font-size: 11px;
+        margin-bottom: 8px;
+    }
+
+    .statement-summary-card .summary-value,
+    .statement-stat-card .summary-value,
+    .statement-overview-card .summary-value {
+        font-size: 23px;
+    }
+}
+
+@media (max-width: 360px) {
+    .statement-summary,
+    .statement-stats,
+    .statement-overview {
+        gap: 8px;
+    }
+
+    .statement-summary-card,
+    .statement-stat-card,
+    .statement-overview-card {
+        padding: 12px;
+    }
+
+    .statement-summary-card .summary-value,
+    .statement-stat-card .summary-value,
+    .statement-overview-card .summary-value {
+        font-size: 21px;
+    }
+}
+
