@@ -1187,10 +1187,29 @@ async function loadMemberProfile(user) {
         );
     }
 
-    // Display member information on the dashboard.
-    displayMemberInformation(user, data);
-
-    return data;
+    // Save verified account-holder details for statement exports.
+   memberStatementAccount = {
+      full_name:
+         data.full_name ||
+         user.user_metadata?.full_name ||
+         "Member",
+      
+      member_id: data.member_id || "Pending",
+      
+      phone:
+         data.phone ||
+         user.user_metadata?.phone ||
+         "Not provided",
+      
+      email: user.email || "Not provided",
+      
+      account_status: data.status || "Active"
+   };
+   
+   // Display member information on the dashboard.
+   displayMemberInformation(user, data);
+   
+   return data;
 }
 
 
@@ -1895,6 +1914,7 @@ nexusSupabase.auth.onAuthStateChange((event, session) => {
 ========================================= */
 
 let memberTransactionsCache = [];
+let memberStatementAccount = null;
 
 
 /* =========================================
@@ -3204,11 +3224,17 @@ function getMemberStatementPeriodLabel() {
    31. MEMBER STATEMENT PDF EXPORT
 ========================================= */
 
+
 function downloadMemberStatementPDF() {
 
     const exportData = getMemberStatementExportData();
 
     if (!exportData) return;
+
+    if (!memberStatementAccount) {
+        alert("Member account details are not available. Please refresh your dashboard and try again.");
+        return;
+    }
 
     const printWindow = window.open(
         "",
@@ -3217,17 +3243,26 @@ function downloadMemberStatementPDF() {
     );
 
     if (!printWindow) {
-
         alert(
             "Your browser blocked the statement window. " +
             "Please allow pop-ups for this website and try again."
         );
-
         return;
     }
 
     const transactions = exportData.transactions;
     const totals = exportData.totals;
+    const account = memberStatementAccount;
+
+    const generatedDate = new Date();
+
+    const generatedAt = generatedDate.toLocaleString("en-GH");
+
+    const statementReference =
+        "NWP-STMT-" +
+        generatedDate.toISOString()
+            .replace(/[-:TZ.]/g, "")
+            .slice(0, 14);
 
     const rows = transactions.map(transaction => {
 
@@ -3254,11 +3289,9 @@ function downloadMemberStatementPDF() {
                     )
                 )}</td>
 
-                <td>
+                <td class="amount">
                     ${transaction.type === "deposit" ? "+" : "-"}
-                    ${escapeStatementHTML(
-                        amount.toFixed(2)
-                    )}
+                    GH₵${amount.toFixed(2)}
                 </td>
 
                 <td>${escapeStatementHTML(
@@ -3270,85 +3303,224 @@ function downloadMemberStatementPDF() {
         `;
     }).join("");
 
-    const generatedAt = new Date().toLocaleString("en-GH");
-
     const html = `
         <!DOCTYPE html>
-        <html>
+        <html lang="en">
         <head>
             <meta charset="UTF-8">
 
-            <title>NEXUS WEALTH PARTNERS - Statement</title>
+            <meta name="viewport"
+                content="width=device-width, initial-scale=1.0">
+
+            <title>NEXUS WEALTH PARTNERS - Account Statement</title>
 
             <style>
 
+                * {
+                    box-sizing: border-box;
+                }
+
                 body {
                     font-family: Arial, sans-serif;
-                    color: #172b3c;
-                    padding: 30px;
+                    color: #263747;
+                    margin: 0;
+                    padding: 35px;
+                    background: #fff;
                 }
 
-                h1 {
-                    margin-bottom: 5px;
-                    color: #102b46;
+                .statement {
+                    max-width: 1050px;
+                    margin: auto;
                 }
 
-                .subtitle {
-                    color: #64748b;
+                .header {
+                    border-bottom: 4px solid #087443;
+                    padding-bottom: 18px;
                     margin-bottom: 25px;
                 }
 
-                .summary {
-                    display: flex;
-                    gap: 25px;
-                    margin: 25px 0;
-                    flex-wrap: wrap;
+                .brand {
+                    color: #102b46;
+                    font-size: 25px;
+                    font-weight: 800;
+                    letter-spacing: 1px;
+                    margin: 0;
                 }
 
-                .summary div {
-                    border: 1px solid #d8e0e8;
-                    padding: 15px;
-                    min-width: 160px;
+                .brand-subtitle {
+                    color: #64748b;
+                    font-size: 12px;
+                    margin-top: 6px;
+                    letter-spacing: 2px;
+                }
+
+                .document-title {
+                    text-align: right;
+                    margin-top: 22px;
+                }
+
+                .document-title h2 {
+                    color: #102b46;
+                    margin: 0 0 5px;
+                    font-size: 21px;
+                }
+
+                .document-title p {
+                    margin: 0;
+                    color: #64748b;
+                    font-size: 12px;
+                }
+
+                .account-section {
+                    border: 1px solid #dce4eb;
+                    border-radius: 7px;
+                    padding: 18px;
+                    margin-bottom: 22px;
+                }
+
+                .section-title {
+                    color: #102b46;
+                    font-size: 14px;
+                    font-weight: 700;
+                    border-bottom: 1px solid #e2e8f0;
+                    padding-bottom: 10px;
+                    margin: 0 0 14px;
+                }
+
+                .account-grid {
+                    display: grid;
+                    grid-template-columns: repeat(2, 1fr);
+                    gap: 15px 30px;
+                }
+
+                .detail-label {
+                    color: #64748b;
+                    font-size: 10px;
+                    text-transform: uppercase;
+                    letter-spacing: .5px;
+                    margin-bottom: 5px;
+                }
+
+                .detail-value {
+                    color: #102b46;
+                    font-size: 13px;
+                    font-weight: 700;
+                    overflow-wrap: anywhere;
+                }
+
+                .statement-meta {
+                    background: #f8fafc;
+                    padding: 14px 18px;
                     border-radius: 6px;
+                    margin-bottom: 22px;
+                    display: grid;
+                    grid-template-columns: repeat(2, 1fr);
+                    gap: 12px;
                 }
 
-                .summary strong {
+                .summary {
+                    display: grid;
+                    grid-template-columns: repeat(3, 1fr);
+                    gap: 12px;
+                    margin: 20px 0;
+                }
+
+                .summary-card {
+                    border: 1px solid #dce4eb;
+                    border-radius: 6px;
+                    padding: 14px;
+                }
+
+                .summary-card span {
                     display: block;
+                    color: #64748b;
+                    font-size: 11px;
+                }
+
+                .summary-card strong {
+                    display: block;
+                    color: #102b46;
+                    font-size: 17px;
                     margin-top: 8px;
-                    font-size: 18px;
                 }
 
                 table {
                     width: 100%;
                     border-collapse: collapse;
-                    margin-top: 20px;
-                    font-size: 12px;
+                    margin-top: 18px;
+                    font-size: 11px;
                 }
 
                 th, td {
-                    border: 1px solid #d8e0e8;
-                    padding: 9px;
+                    border: 1px solid #dce4eb;
+                    padding: 10px 8px;
                     text-align: left;
                 }
 
                 th {
                     background: #102b46;
                     color: white;
+                    font-size: 10px;
+                    text-transform: uppercase;
+                }
+
+                tbody tr:nth-child(even) {
+                    background: #f8fafc;
+                }
+
+                .amount {
+                    white-space: nowrap;
+                    font-weight: 700;
                 }
 
                 .footer {
-                    margin-top: 30px;
+                    border-top: 1px solid #dce4eb;
+                    margin-top: 35px;
+                    padding-top: 15px;
                     color: #64748b;
-                    font-size: 11px;
+                    font-size: 10px;
+                    line-height: 1.7;
+                    text-align: center;
                 }
 
                 @media print {
                     body {
-                        padding: 0;
+                        padding: 10px;
                     }
 
-                    button {
-                        display: none;
+                    .statement {
+                        max-width: none;
+                    }
+
+                    thead {
+                        display: table-header-group;
+                    }
+
+                    tr {
+                        page-break-inside: avoid;
+                    }
+                }
+
+                @media (max-width: 600px) {
+                    body {
+                        padding: 15px;
+                    }
+
+                    .account-grid,
+                    .statement-meta {
+                        grid-template-columns: 1fr;
+                    }
+
+                    .summary {
+                        grid-template-columns: 1fr;
+                    }
+
+                    table {
+                        font-size: 9px;
+                    }
+
+                    th, td {
+                        padding: 6px 4px;
                     }
                 }
 
@@ -3357,64 +3529,199 @@ function downloadMemberStatementPDF() {
 
         <body>
 
-            <h1>NEXUS WEALTH PARTNERS</h1>
+            <div class="statement">
 
-            <div class="subtitle">
-                Member Transaction Statement
-            </div>
+                <div class="header">
 
-            <p>
-                <strong>Statement period:</strong>
-                ${escapeStatementHTML(
-                    getMemberStatementPeriodLabel()
-                )}
-            </p>
+                    <h1 class="brand">
+                        NEXUS WEALTH PARTNERS
+                    </h1>
 
-            <p>
-                <strong>Generated:</strong>
-                ${escapeStatementHTML(generatedAt)}
-            </p>
+                    <div class="brand-subtitle">
+                        FINANCIAL SERVICES
+                    </div>
 
-            <div class="summary">
+                    <div class="document-title">
+                        <h2>ACCOUNT STATEMENT</h2>
+                        <p>Official Member Transaction Record</p>
+                    </div>
 
-                <div>
-                    Total Successful Deposits
-                    <strong>GH₵${totals.totalDeposits.toFixed(2)}</strong>
                 </div>
 
-                <div>
-                    Total Wallet Debits
-                    <strong>GH₵${totals.totalWithdrawals.toFixed(2)}</strong>
+                <div class="account-section">
+
+                    <h3 class="section-title">
+                        ACCOUNT HOLDER INFORMATION
+                    </h3>
+
+                    <div class="account-grid">
+
+                        <div>
+                            <div class="detail-label">
+                                Account Holder
+                            </div>
+
+                            <div class="detail-value">
+                                ${escapeStatementHTML(account.full_name)}
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="detail-label">
+                                Member ID
+                            </div>
+
+                            <div class="detail-value">
+                                ${escapeStatementHTML(account.member_id)}
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="detail-label">
+                                Registered Phone Number
+                            </div>
+
+                            <div class="detail-value">
+                                ${escapeStatementHTML(account.phone)}
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="detail-label">
+                                Registered Email Address
+                            </div>
+
+                            <div class="detail-value">
+                                ${escapeStatementHTML(account.email)}
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="detail-label">
+                                Account Status
+                            </div>
+
+                            <div class="detail-value">
+                                ${escapeStatementHTML(account.account_status)}
+                            </div>
+                        </div>
+
+                    </div>
+
                 </div>
 
-                <div>
-                    Matching Transactions
-                    <strong>${totals.transactionCount}</strong>
+                <div class="statement-meta">
+
+                    <div>
+                        <div class="detail-label">
+                            Statement Period
+                        </div>
+
+                        <div class="detail-value">
+                            ${escapeStatementHTML(
+                                getMemberStatementPeriodLabel()
+                            )}
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="detail-label">
+                            Statement Reference
+                        </div>
+
+                        <div class="detail-value">
+                            ${escapeStatementHTML(statementReference)}
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="detail-label">
+                            Date Generated
+                        </div>
+
+                        <div class="detail-value">
+                            ${escapeStatementHTML(generatedAt)}
+                        </div>
+                    </div>
+
                 </div>
 
-            </div>
+                <h3 class="section-title">
+                    TRANSACTION SUMMARY
+                </h3>
 
-            <table>
+                <div class="summary">
 
-                <thead>
-                    <tr>
-                        <th>Transaction</th>
-                        <th>Reference</th>
-                        <th>Date</th>
-                        <th>Amount (GHS)</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
+                    <div class="summary-card">
+                        <span>Total Successful Deposits</span>
 
-                <tbody>
-                    ${rows}
-                </tbody>
+                        <strong>
+                            GH₵${totals.totalDeposits.toFixed(2)}
+                        </strong>
+                    </div>
 
-            </table>
+                    <div class="summary-card">
+                        <span>Total Wallet Debits</span>
 
-            <div class="footer">
-                This statement is generated from the transaction
-                records available in your NEXUS member account.
+                        <strong>
+                            GH₵${totals.totalWithdrawals.toFixed(2)}
+                        </strong>
+                    </div>
+
+                    <div class="summary-card">
+                        <span>Matching Transactions</span>
+
+                        <strong>
+                            ${totals.transactionCount}
+                        </strong>
+                    </div>
+
+                </div>
+
+                <h3 class="section-title">
+                    TRANSACTION DETAILS
+                </h3>
+
+                <table>
+
+                    <thead>
+                        <tr>
+                            <th>Transaction</th>
+                            <th>Reference</th>
+                            <th>Date</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        ${rows}
+                    </tbody>
+
+                </table>
+
+                <div class="footer">
+
+                    <strong>NEXUS WEALTH PARTNERS</strong>
+
+                    <p>
+                        This statement is generated from the
+                        transaction records available in your
+                        NEXUS member account.
+                    </p>
+
+                    <p>
+                        This document is intended for account
+                        information and record-keeping purposes.
+                    </p>
+
+                    <p>
+                        Statement Reference:
+                        ${escapeStatementHTML(statementReference)}
+                    </p>
+
+                </div>
+
             </div>
 
             <script>
@@ -3433,9 +3740,11 @@ function downloadMemberStatementPDF() {
 }
 
 
+
 /* =========================================
    32. MEMBER STATEMENT EXCEL EXPORT
 ========================================= */
+
 
 function downloadMemberStatementExcel() {
 
@@ -3443,30 +3752,64 @@ function downloadMemberStatementExcel() {
 
     if (!exportData) return;
 
-    if (typeof XLSX === "undefined") {
+    if (!memberStatementAccount) {
+        alert("Member account details are not available. Please refresh your dashboard and try again.");
+        return;
+    }
 
+    if (typeof XLSX === "undefined") {
         alert(
             "The Excel export library could not be loaded. " +
             "Please refresh the page and try again."
         );
-
         return;
     }
 
     const transactions = exportData.transactions;
     const totals = exportData.totals;
+    const account = memberStatementAccount;
+
+    const generatedDate = new Date();
+
+    const statementReference =
+        "NWP-STMT-" +
+        generatedDate.toISOString()
+            .replace(/[-:TZ.]/g, "")
+            .slice(0, 14);
 
     const worksheetData = [
 
         ["NEXUS WEALTH PARTNERS"],
 
-        ["Member Transaction Statement"],
+        ["OFFICIAL MEMBER ACCOUNT STATEMENT"],
+
+        [],
+
+        ["ACCOUNT HOLDER INFORMATION"],
+
+        ["Account Holder", account.full_name],
+
+        ["Member ID", account.member_id],
+
+        ["Registered Phone Number", account.phone],
+
+        ["Registered Email Address", account.email],
+
+        ["Account Status", account.account_status],
+
+        [],
+
+        ["STATEMENT INFORMATION"],
+
+        ["Statement Reference", statementReference],
 
         ["Statement Period", getMemberStatementPeriodLabel()],
 
-        ["Generated", new Date().toLocaleString("en-GH")],
+        ["Date Generated", generatedDate.toLocaleString("en-GH")],
 
         [],
+
+        ["TRANSACTION SUMMARY"],
 
         ["Total Successful Deposits (GHS)", totals.totalDeposits],
 
@@ -3497,13 +3840,17 @@ function downloadMemberStatementExcel() {
 
             getMemberTransactionReference(transaction) || "",
 
-            new Date(transaction.created_at).toLocaleString("en-GH"),
+            new Date(
+                transaction.created_at
+            ).toLocaleString("en-GH"),
 
             transaction.type,
 
             Number(transaction.amount) || 0,
 
-            getMemberTransactionStatusLabel(transaction.status),
+            getMemberTransactionStatusLabel(
+                transaction.status
+            ),
 
             transaction.type === "withdrawal"
                 ? transaction.wallet_debited
@@ -3520,12 +3867,12 @@ function downloadMemberStatementExcel() {
         XLSX.utils.aoa_to_sheet(worksheetData);
 
     worksheet["!cols"] = [
+        { wch: 32 },
         { wch: 30 },
-        { wch: 28 },
-        { wch: 24 },
-        { wch: 16 },
-        { wch: 18 },
         { wch: 25 },
+        { wch: 18 },
+        { wch: 20 },
+        { wch: 28 },
         { wch: 18 },
         { wch: 18 }
     ];
@@ -3535,16 +3882,17 @@ function downloadMemberStatementExcel() {
     XLSX.utils.book_append_sheet(
         workbook,
         worksheet,
-        "Member Statement"
+        "Account Statement"
     );
 
     XLSX.writeFile(
         workbook,
-        "NEXUS_Member_Statement_" +
+        "NEXUS_Account_Statement_" +
         new Date().toISOString().slice(0, 10) +
         ".xlsx"
     );
 }
+
 
 
 /* =========================================
