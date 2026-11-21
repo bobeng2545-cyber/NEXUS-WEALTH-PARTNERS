@@ -666,91 +666,178 @@
             </section>
 
 
-            <!-- =================================
-                 DEPOSIT MONEY
-            ================================== -->
+            
+<!-- =================================
+     DEPOSIT MONEY
+================================== -->
 
-            <section
-                id="depositFunds"
-                class="dashboard-panel home-dashboard-content"
+<section
+    id="depositFunds"
+    class="dashboard-panel home-dashboard-content"
+>
+
+    <h3>Deposit Money</h3>
+
+    <p>
+        Choose whether you want to deposit into your Savings wallet
+        or submit a Pension contribution request.
+    </p>
+
+    <div class="available-balance-card">
+
+        <span>Current Savings Wallet Balance</span>
+
+        <h2 id="depositCurrentBalance">GHS 0.00</h2>
+
+    </div>
+
+    <form id="depositForm">
+
+        <label for="depositDestination">
+            Deposit Destination
+        </label>
+
+        <select
+            id="depositDestination"
+            name="destination"
+            required
+        >
+
+            <option value="">
+                Select where you want to deposit
+            </option>
+
+            <option value="savings">
+                Savings Account
+            </option>
+
+            <option value="pension" disabled>
+                Pension Account — Request Only
+            </option>
+
+        </select>
+
+        <p
+            id="depositDestinationNotice"
+            aria-live="polite"
+        >
+            Select a destination to continue.
+        </p>
+
+        <label for="depositAmount">
+            Amount (GHS)
+        </label>
+
+        <input
+            type="number"
+            id="depositAmount"
+            name="amount"
+            min="1"
+            max="100000"
+            step="0.01"
+            placeholder="Enter amount"
+            required
+        >
+
+        <!-- SAVINGS PAYMENT DETAILS -->
+
+        <div id="depositPaymentDetails" hidden>
+
+            <label for="depositMethod">
+                Savings Deposit Method
+            </label>
+
+            <select
+                id="depositMethod"
+                name="method"
             >
 
-                <h3>Deposit Money</h3>
+                <option value="">
+                    Select Deposit Method
+                </option>
 
-                <p>Add money to your Nexus wallet.</p>
+                <option value="mtn_momo">
+                    MTN Mobile Money
+                </option>
 
+                <option value="telecel_cash">
+                    Telecel Cash
+                </option>
 
-                <div class="available-balance-card">
+                <option value="at_money">
+                    AT Money
+                </option>
 
-                    <span>Current Wallet Balance</span>
+            </select>
 
-                    <h2 id="depositCurrentBalance">GHS 0.00</h2>
+            <label for="depositPhone">
+                Mobile Money Number
+            </label>
 
-                </div>
+            <input
+                type="tel"
+                id="depositPhone"
+                name="phone"
+                placeholder="Enter mobile money number"
+                autocomplete="tel"
+            >
 
-
-                <form id="depositForm">
-
-                    <label for="depositAmount">
-                        Amount to Deposit (GHS)
-                    </label>
-
-                    <input
-                        type="number"
-                        id="depositAmount"
-                        name="amount"
-                        min="1"
-                        step="0.01"
-                        placeholder="Enter deposit amount"
-                        required
-                    >
-
-
-                    <label for="depositMethod">Deposit Method</label>
-
-                    <select id="depositMethod" name="method" required>
-
-                        <option value="">Select Deposit Method</option>
-
-                        <option value="mtn_momo">
-                            MTN Mobile Money
-                        </option>
-
-                        <option value="telecel_cash">
-                            Telecel Cash
-                        </option>
-
-                        <option value="at_money">
-                            AT Money
-                        </option>
-
-                    </select>
+        </div>
 
 
-                    <label for="depositPhone">
-                        Mobile Money Number
-                    </label>
+        <!-- PENSION REQUEST DETAILS -->
 
-                    <input
-                        type="tel"
-                        id="depositPhone"
-                        name="phone"
-                        placeholder="Enter mobile money number"
-                        autocomplete="tel"
-                        required
-                    >
+        <div id="depositPensionDetails" hidden>
 
-                    <button type="submit">Continue to Deposit</button>
+            <div class="pension-notice">
 
-                </form>
-
+                <h4>Pension Simulation Only</h4>
 
                 <p>
-                    Your wallet will only be credited after the payment
-                    provider confirms a successful deposit.
+                    This submits a pension contribution request for
+                    administrator review. It does not initiate a
+                    payment or transfer money.
                 </p>
 
-            </section>
+                <p>
+                    No wallet deduction, pension balance credit or
+                    pension ledger transaction will occur.
+                </p>
+
+            </div>
+
+            <label for="depositPensionNote">
+                Additional Note (Optional)
+            </label>
+
+            <textarea
+                id="depositPensionNote"
+                name="pensionNote"
+                maxlength="1000"
+                rows="3"
+                placeholder="Enter an optional note"
+            ></textarea>
+
+        </div>
+
+
+        <button
+            type="submit"
+            id="depositSubmitButton"
+        >
+            Continue
+        </button>
+
+    </form>
+
+    <p>
+        Savings payments are verified by the payment provider before
+        the Savings wallet is credited. Pension selections are
+        simulation-only requests and do not collect money.
+    </p>
+
+</section>
+
 
 
             <!-- =================================
@@ -1372,338 +1459,285 @@
             </section>
 
 
-            <!-- =================================
-                 NEXUS PENSION ACCOUNT
-            ================================== -->
+            
+<!-- =================================
+     NEXUS PENSION ACCOUNT
+================================== -->
 
-            <section
-                id="memberPension"
-                class="dashboard-panel pension-dashboard-panel"
-            >
+<section
+    id="memberPension"
+    class="dashboard-panel pension-dashboard-panel"
+>
 
-                <div class="mobile-page-heading">
+    <div class="mobile-page-heading">
 
-                    <button
-                        type="button"
-                        class="mobile-back-button"
-                        onclick="showMobileDashboardScreen('home')"
-                        aria-label="Back to dashboard"
-                    >
-                        &#8592;
-                    </button>
+        <button
+            type="button"
+            class="mobile-back-button"
+            onclick="showMobileDashboardScreen('home')"
+            aria-label="Back to dashboard"
+        >
+            &#8592;
+        </button>
 
-                    <h2>My Pension</h2>
+        <h2>My Pension</h2>
 
-                </div>
+    </div>
 
 
-                <div class="pension-page-heading">
+    <div class="pension-page-heading">
 
-                    <div class="pension-heading-icon">
-                        🏛️
-                    </div>
+        <div class="pension-heading-icon">
+            🏛️
+        </div>
 
-                    <div>
+        <div>
 
-                        <h3 class="desktop-page-heading">
-                            My Pension Account
-                        </h3>
+            <h3 class="desktop-page-heading">
+                My Pension Account
+            </h3>
 
-                        <p>
-                            Manage your pension destinations and monitor
-                            your contributions.
-                        </p>
+            <p>
+                View your separate pension account and contribution
+                request records.
+            </p>
 
-                    </div>
+        </div>
 
-                </div>
+    </div>
 
 
-                <!-- PENSION BALANCE -->
+    <!-- PENSION BALANCE -->
 
-                <div class="pension-summary-card">
+    <div class="pension-summary-card">
 
-                    <span>Total Pension Balance</span>
+        <span>Total Pension Account Balance</span>
 
-                    <strong id="memberPensionBalance">
-                        GH₵0.00
-                    </strong>
+        <strong id="memberPensionBalance">
+            GH₵0.00
+        </strong>
 
-                    <small>
-                        Your pension balance is separate from your
-                        wallet and savings.
-                    </small>
+        <small>
+            This balance is separate from your Savings wallet.
+        </small>
 
-                </div>
+    </div>
 
 
-                <!-- PENSION ACCOUNT DETAILS -->
+    <!-- PENSION ACCOUNT DETAILS -->
 
-                <div class="dashboard-content-grid">
+    <div class="dashboard-content-grid">
 
-                    <div class="dashboard-panel pension-information-card">
+        <div class="dashboard-panel pension-information-card">
 
-                        <h3>Pension Account Information</h3>
+            <h3>Pension Account Information</h3>
 
-                        <div class="information-item">
+            <div class="information-item">
 
-                            <span>Account Type</span>
+                <span>Account Type</span>
 
-                            <strong>Separate Pension Account</strong>
+                <strong>Separate Pension Account</strong>
 
-                        </div>
+            </div>
 
-                        <div class="information-item">
+            <div class="information-item">
 
-                            <span>Account Number</span>
+                <span>Account Number</span>
 
-                            <strong id="pensionAccountNumber">
-                                Not yet assigned
-                            </strong>
+                <strong id="pensionAccountNumber">
+                    Not yet assigned
+                </strong>
 
-                        </div>
+            </div>
 
-                        <div class="information-item">
+            <div class="information-item">
 
-                            <span>Account Status</span>
+                <span>Account Status</span>
 
-                            <strong id="pensionAccountStatus">
-                                Not yet activated
-                            </strong>
+                <strong id="pensionAccountStatus">
+                    Not yet activated
+                </strong>
 
-                        </div>
+            </div>
 
-                    </div>
+            <div class="information-item">
 
+                <span>Member Sector</span>
 
-                    <div class="dashboard-panel pension-information-card">
+                <strong id="pensionMemberSector">
+                    Not verified
+                </strong>
 
-                        <h3>Contribution Summary</h3>
+            </div>
 
-                        <div class="information-item">
+            <div class="information-item">
 
-                            <span>Total Contributions</span>
+                <span>Scheme Classification</span>
 
-                            <strong id="pensionTotalContributions">
-                                GH₵0.00
-                            </strong>
+                <strong id="pensionClassification">
+                    Not verified
+                </strong>
 
-                        </div>
+            </div>
 
-                        <div class="information-item">
+            <div class="information-item">
 
-                            <span>Last Contribution</span>
+                <span>Pension Subaccounts</span>
 
-                            <strong id="pensionLastContribution">
-                                Not available
-                            </strong>
+                <strong id="pensionSubaccountSummary">
+                    Not available
+                </strong>
 
-                        </div>
+            </div>
 
-                        <div class="information-item">
+        </div>
 
-                            <span>Contribution Records</span>
 
-                            <strong id="pensionContributionCount">
-                                0
-                            </strong>
+        <div class="dashboard-panel pension-information-card">
 
-                        </div>
+            <h3>Contribution Request Summary</h3>
 
-                    </div>
+            <div class="information-item">
 
-                </div>
+                <span>Confirmed Contributions</span>
 
+                <strong id="pensionTotalContributions">
+                    Not enabled
+                </strong>
 
-                <!-- PENSION DESTINATION AND CONTRIBUTION -->
+            </div>
 
-                <div class="dashboard-panel pension-contribution-panel">
+            <div class="information-item">
 
-                    <h3>Choose Your Pension Destination</h3>
+                <span>Last Request</span>
 
-                    <p>
-                        Select the pension destination to which you
-                        intend to make your contribution.
-                    </p>
+                <strong id="pensionLastContribution">
+                    Not available
+                </strong>
 
+            </div>
 
-                    <form id="pensionContributionForm">
+            <div class="information-item">
 
-                        <label for="pensionDestination">
-                            Pension Destination
-                        </label>
+                <span>Contribution Requests</span>
 
-                        <select
-                            id="pensionDestination"
-                            name="destination"
-                            required
-                        >
+                <strong id="pensionContributionCount">
+                    0
+                </strong>
 
-                            <option value="">
-                                Select a pension destination
-                            </option>
+            </div>
 
-                            <option value="nexus_pension">
-                                NEXUS Pension Account
-                            </option>
+        </div>
 
-                            <option
-                                value="external_provider"
-                                disabled
-                            >
-                                Other approved pension provider — Coming soon
-                            </option>
+    </div>
 
-                        </select>
 
+    <!-- PENSION CONTRIBUTION INFORMATION -->
 
-                        <label for="pensionAmount">
-                            Contribution Amount (GH₵)
-                        </label>
+    <div class="dashboard-panel pension-contribution-panel">
 
-                        <input
-                            type="number"
-                            id="pensionAmount"
-                            name="amount"
-                            min="1"
-                            step="0.01"
-                            placeholder="Enter contribution amount"
-                            required
-                        >
+        <h3>Make a Pension Contribution Request</h3>
 
+        <p>
+            To submit a request, go to Deposit Money on your dashboard
+            and select Pension Account as your destination.
+        </p>
 
-                        <label for="pensionPaymentMethod">
-                            Payment Method
-                        </label>
+        <div class="pension-notice">
 
-                        <select
-                            id="pensionPaymentMethod"
-                            name="paymentMethod"
-                            required
-                        >
+            <h4>DEVELOPMENT / SIMULATION ONLY</h4>
 
-                            <option value="">
-                                Select payment method
-                            </option>
+            <p>
+                Pension contributions are not currently enabled
+                for real-money collection.
+            </p>
 
-                            <option value="mtn_momo">
-                                MTN Mobile Money
-                            </option>
+            <p>
+                Selecting Pension submits a nonfinancial contribution
+                request for administrator review only.
+            </p>
 
-                            <option value="telecel_cash">
-                                Telecel Cash
-                            </option>
+            <p>
+                It does not initiate Paystack, Mobile Money or any
+                other payment. It does not debit your wallet, credit
+                your pension balance or post a pension transaction.
+            </p>
 
-                            <option value="at_money">
-                                AT Money
-                            </option>
+        </div>
 
-                        </select>
+    </div>
 
 
-                        <label for="pensionPhone">
-                            Mobile Money Number
-                        </label>
+    <!-- PENSION INFORMATION NOTICE -->
 
-                        <input
-                            type="tel"
-                            id="pensionPhone"
-                            name="phone"
-                            placeholder="Enter mobile money number"
-                            autocomplete="tel"
-                            required
-                        >
+    <div class="pension-notice">
 
+        <h3>Important Pension Information</h3>
 
-                        <button
-                            type="submit"
-                            id="pensionContributionButton"
-                        >
-                            Continue Pension Contribution
-                        </button>
+        <p>
+            NEXUS Pension is maintained separately from ordinary
+            Savings accounts and wallet transactions.
+        </p>
 
-                    </form>
+        <p>
+            Real-money pension operations will remain disabled until
+            the required licensed trustee, approved scheme
+            arrangements and applicable controls are established.
+        </p>
 
+        <p>
+            Pension withdrawals, investment activity and payment
+            processing are not currently available.
+        </p>
 
-                    <p class="pension-form-notice">
-                        Pension contributions will only be processed
-                        after the pension destination, payment
-                        integration and administrator controls have
-                        been properly configured.
-                    </p>
+    </div>
 
-                </div>
 
+    <!-- PENSION CONTRIBUTION REQUEST HISTORY -->
 
-                <!-- PENSION INFORMATION NOTICE -->
+    <div class="dashboard-panel pension-history-panel">
 
-                <div class="pension-notice">
+        <h3>Pension Contribution Request History</h3>
 
-                    <h3>Important Pension Information</h3>
+        <p>
+            Review requests submitted to the NEXUS Pension
+            administration team.
+        </p>
 
-                    <p>
-                        Pension contributions are maintained separately
-                        from ordinary wallet and savings transactions.
-                        Contributions must not be treated as successful
-                        until the payment provider and receiving pension
-                        arrangement have been properly verified.
-                    </p>
+        <div class="table-container">
 
-                    <p>
-                        Pension withdrawals and transfers will only be
-                        made available when the applicable pension
-                        arrangements, eligibility requirements and
-                        administrator controls have been established.
-                    </p>
+            <table>
 
-                </div>
+                <thead>
 
+                    <tr>
+                        <th>Date</th>
+                        <th>Destination</th>
+                        <th>Reference</th>
+                        <th>Amount</th>
+                        <th>Request Status</th>
+                    </tr>
 
-                <!-- PENSION CONTRIBUTION HISTORY -->
+                </thead>
 
-                <div class="dashboard-panel pension-history-panel">
+                <tbody id="pensionContributionList">
 
-                    <h3>Pension Contribution History</h3>
+                    <tr>
+                        <td colspan="5">
+                            No pension contribution requests available.
+                        </td>
+                    </tr>
 
-                    <p>
-                        Review your pension contribution records and
-                        their payment confirmation statuses.
-                    </p>
+                </tbody>
 
+            </table>
 
-                    <div class="table-container">
+        </div>
 
-                        <table>
+    </div>
 
-                            <thead>
+</section>
 
-                                <tr>
-                                    <th>Date</th>
-                                    <th>Destination</th>
-                                    <th>Reference</th>
-                                    <th>Amount</th>
-                                    <th>Status</th>
-                                </tr>
-
-                            </thead>
-
-                            <tbody id="pensionContributionList">
-
-                                <tr>
-                                    <td colspan="5">
-                                        No pension contribution records available.
-                                    </td>
-                                </tr>
-
-                            </tbody>
-
-                        </table>
-
-                    </div>
-
-                </div>
-
-            </section>
 
 
             <!-- =================================
