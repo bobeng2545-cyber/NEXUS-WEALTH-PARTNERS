@@ -610,243 +610,324 @@
                     </section>
 
 
-                    <!-- =====================================
-                         RECORD DEPOSIT
-                    ====================================== -->
+                    
+<!-- =====================================
+     RECORD DEPOSIT
+====================================== -->
+
+<section
+    id="depositPanel"
+    class="dashboard-panel"
+>
+
+    <div class="section-heading">
+        <div>
+            <h3>Record Member Deposit</h3>
+            <p>
+                Search for the member before initiating
+                or recording a deposit.
+            </p>
+        </div>
+    </div>
+
+    <div class="content-card">
+
+        <h4>1. Find Member</h4>
+
+        <form
+            id="memberSearchForm"
+            class="search-form"
+        >
+
+            <input
+                type="text"
+                id="memberSearchInput"
+                placeholder="Enter member ID or phone number"
+                aria-label="Member ID or phone number"
+                required
+            >
+
+            <button
+                type="submit"
+                id="searchMemberButton"
+                class="primary-button"
+            >
+                Search
+            </button>
+
+        </form>
+
+        <div
+            id="memberSearchMessage"
+            class="message hidden"
+            role="status"
+            aria-live="polite"
+        ></div>
+
+        <div
+            id="memberResults"
+            class="member-results hidden"
+        ></div>
+
+        <div
+            id="selectedMemberCard"
+            class="selected-member hidden"
+        >
+
+            <div class="selected-heading">
+                <span class="success-dot"></span>
+                <strong>Selected Member</strong>
+            </div>
+
+            <div class="member-details">
+
+                <div>
+                    <span>Full Name</span>
+                    <strong id="selectedMemberName">---</strong>
+                </div>
+
+                <div>
+                    <span>Member ID</span>
+                    <strong id="selectedMemberId">---</strong>
+                </div>
+
+                <div>
+                    <span>Phone</span>
+                    <strong id="selectedMemberPhone">---</strong>
+                </div>
+
+                <div>
+                    <span>Account Status</span>
+                    <strong id="selectedMemberStatus">---</strong>
+                </div>
 
-                    <section
-                        id="depositPanel"
-                        class="dashboard-panel"
-                    >
+            </div>
 
-                        <div class="section-heading">
+            <button
+                type="button"
+                id="changeMemberButton"
+                class="text-button"
+            >
+                Change Member
+            </button>
 
-                            <div>
-                                <h3>Record Member Deposit</h3>
-                                <p>
-                                    Search for the member before
-                                    recording money received.
-                                </p>
-                            </div>
+        </div>
 
-                        </div>
+    </div>
 
 
-                        <div class="content-card">
+    <div class="content-card deposit-card">
 
-                            <h4>1. Find Member</h4>
+        <h4>2. Deposit Details</h4>
 
-                            <form
-                                id="memberSearchForm"
-                                class="search-form"
-                            >
+        <p class="muted small">
+            Select the correct payment method. Paystack
+            deposits remain pending until payment is verified.
+        </p>
 
-                                <input
-                                    type="text"
-                                    id="memberSearchInput"
-                                    placeholder="Enter member ID or phone number"
-                                    aria-label="Member ID or phone number"
-                                    required
-                                >
+        <form id="depositForm">
 
-                                <button
-                                    type="submit"
-                                    id="searchMemberButton"
-                                    class="primary-button"
-                                >
-                                    Search
-                                </button>
+            <label for="depositAmount">
+                Deposit Amount (GH₵)
+            </label>
 
-                            </form>
+            <input
+                type="number"
+                id="depositAmount"
+                min="1"
+                max="100000"
+                step="0.01"
+                placeholder="e.g. 100.00"
+                required
+            >
 
+            <label for="depositMethod">
+                Payment Method
+            </label>
 
-                            <div
-                                id="memberSearchMessage"
-                                class="message hidden"
-                                role="status"
-                                aria-live="polite"
-                            ></div>
+            <select id="depositMethod" required>
 
+                <option value="">
+                    Select payment method
+                </option>
 
-                            <div
-                                id="memberResults"
-                                class="member-results hidden"
-                            ></div>
+                <option value="cash">
+                    Cash – Physical Payment
+                </option>
 
+                <option value="mobile_money">
+                    Mobile Money – Paystack
+                </option>
 
-                            <div
-                                id="selectedMemberCard"
-                                class="selected-member hidden"
-                            >
+                <option value="bank_transfer">
+                    Bank Transfer
+                </option>
 
-                                <div class="selected-heading">
-                                    <span class="success-dot"></span>
-                                    <strong>Selected Member</strong>
-                                </div>
+            </select>
 
 
-                                <div class="member-details">
+            <!-- MOBILE MONEY NETWORK -->
 
-                                    <div>
-                                        <span>Full Name</span>
-                                        <strong id="selectedMemberName">---</strong>
-                                    </div>
+            <div
+                id="paymentNetworkGroup"
+                class="hidden"
+            >
 
-                                    <div>
-                                        <span>Member ID</span>
-                                        <strong id="selectedMemberId">---</strong>
-                                    </div>
+                <label for="paymentNetwork">
+                    Mobile Money Network
+                </label>
 
-                                    <div>
-                                        <span>Phone</span>
-                                        <strong id="selectedMemberPhone">---</strong>
-                                    </div>
+                <select id="paymentNetwork">
 
-                                    <div>
-                                        <span>Account Status</span>
-                                        <strong id="selectedMemberStatus">---</strong>
-                                    </div>
+                    <option value="">
+                        Select mobile money network
+                    </option>
 
-                                </div>
+                    <option value="mtn">
+                        MTN Mobile Money
+                    </option>
 
+                    <option value="telecel">
+                        Telecel Cash
+                    </option>
 
-                                <button
-                                    type="button"
-                                    id="changeMemberButton"
-                                    class="text-button"
-                                >
-                                    Change Member
-                                </button>
+                    <option value="at">
+                        AT Money
+                    </option>
 
-                            </div>
+                </select>
 
-                        </div>
+            </div>
 
 
-                        <div class="content-card deposit-card">
+            <!-- PAYMENT PHONE -->
 
-                            <h4>2. Deposit Details</h4>
+            <div
+                id="paymentPhoneGroup"
+                class="hidden"
+            >
 
-                            <p class="muted small">
-                                Confirm that you have physically received
-                                or verified the money before submitting
-                                this transaction.
-                            </p>
+                <label for="paymentPhone">
+                    Mobile Money Phone Number
+                </label>
 
+                <input
+                    type="tel"
+                    id="paymentPhone"
+                    placeholder="0241234567 or +233241234567"
+                    maxlength="20"
+                    autocomplete="tel"
+                >
 
-                            <form id="depositForm">
+                <p class="muted small">
+                    Enter the number that will be used
+                    for the Paystack mobile money payment.
+                </p>
 
-                                <label for="depositAmount">
-                                    Deposit Amount (GH₵)
-                                </label>
+            </div>
 
-                                <input
-                                    type="number"
-                                    id="depositAmount"
-                                    min="0.01"
-                                    step="0.01"
-                                    placeholder="e.g. 100.00"
-                                    required
-                                >
 
+            <!-- CASH INFORMATION -->
 
-                                <label for="depositMethod">
-                                    Payment Method
-                                </label>
+            <div
+                id="cashDepositNotice"
+                class="deposit-warning hidden"
+            >
 
-                                <select id="depositMethod" required>
+                <strong>Physical Cash Deposit</strong>
 
-                                    <option value="">
-                                        Select payment method
-                                    </option>
+                <p>
+                    Use this option only after physically
+                    receiving the cash from the member.
+                </p>
 
-                                    <option value="cash">Cash</option>
-                                    <option value="mobile_money">Mobile Money</option>
-                                    <option value="bank_transfer">Bank Transfer</option>
+            </div>
 
-                                </select>
 
+            <!-- PAYSTACK INFORMATION -->
 
-                                <div id="paymentPhoneGroup" class="hidden">
+            <div
+                id="paystackDepositNotice"
+                class="deposit-warning hidden"
+            >
 
-                                    <label for="paymentPhone">
-                                        Payment Phone Number
-                                    </label>
+                <strong>Paystack Payment</strong>
 
-                                    <input
-                                        type="tel"
-                                        id="paymentPhone"
-                                        placeholder="Enter payment phone number"
-                                    >
+                <p>
+                    Selecting this option initializes a
+                    Paystack payment. The member's wallet
+                    must not be credited until Paystack
+                    confirms successful payment.
+                </p>
 
-                                </div>
+                <p>
+                    Do not issue a successful deposit receipt
+                    merely because a payment link was created.
+                </p>
 
+            </div>
 
-                                <div class="deposit-warning">
-                                    <strong>Important:</strong>
-                                    A successful submission immediately
-                                    credits the member's wallet. Verify
-                                    the amount and member carefully
-                                    before proceeding.
-                                </div>
 
+            <button
+                type="submit"
+                id="recordDepositButton"
+                class="primary-button full-width"
+                disabled
+            >
+                Continue
+            </button>
 
-                                <button
-                                    type="submit"
-                                    id="recordDepositButton"
-                                    class="primary-button full-width"
-                                    disabled
-                                >
-                                    Record Deposit
-                                </button>
+        </form>
 
-                            </form>
 
+        <div
+            id="depositMessage"
+            class="message hidden"
+            role="status"
+            aria-live="polite"
+        ></div>
 
-                            <div
-                                id="depositMessage"
-                                class="message hidden"
-                                role="status"
-                                aria-live="polite"
-                            ></div>
 
+        <!-- SUCCESSFUL DEPOSIT RECEIPT -->
 
-                            <div id="depositReceipt" class="receipt hidden">
+        <div
+            id="depositReceipt"
+            class="receipt hidden"
+        >
 
-                                <div class="receipt-icon">✓</div>
+            <div class="receipt-icon">✓</div>
 
-                                <h3>Deposit Recorded</h3>
+            <h3>Deposit Recorded</h3>
 
-                                <p id="receiptMessage">
-                                    Deposit recorded successfully.
-                                </p>
+            <p id="receiptMessage">
+                Deposit recorded successfully.
+            </p>
 
+            <div class="receipt-reference">
+                <span>Transaction Reference</span>
+                <strong id="receiptReference">---</strong>
+            </div>
 
-                                <div class="receipt-reference">
-                                    <span>Transaction Reference</span>
-                                    <strong id="receiptReference">---</strong>
-                                </div>
+            <div class="receipt-amount">
+                <span>Amount</span>
+                <strong id="receiptAmount">GH₵0.00</strong>
+            </div>
 
+            <button
+                type="button"
+                id="newDepositButton"
+                class="primary-button"
+            >
+                Record Another Deposit
+            </button>
 
-                                <div class="receipt-amount">
-                                    <span>Amount</span>
-                                    <strong id="receiptAmount">GH₵0.00</strong>
-                                </div>
+        </div>
 
+    </div>
 
-                                <button
-                                    type="button"
-                                    id="newDepositButton"
-                                    class="primary-button"
-                                >
-                                    Record Another Deposit
-                                </button>
+</section>
 
-                            </div>
-
-                        </div>
-
-                    </section>
+                    
 
 
                     <!-- =====================================
