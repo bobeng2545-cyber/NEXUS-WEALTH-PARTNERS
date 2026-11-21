@@ -3063,109 +3063,59 @@ async function loadPendingWithdrawals(user) {
 
 
 
+
 /* =========================================
    27. MEMBER DEPOSIT PROCESSING
-   SAVINGS + PENSION DESTINATIONS
+   SAVINGS PAYSTACK + PENSION REQUEST ONLY
 ========================================= */
 
 const depositForm = getElement("depositForm");
-
-const depositDestination =
-    getElement("depositDestination");
-
-const depositPaymentDetails =
-    getElement("depositPaymentDetails");
-
-const depositPensionDetails =
-    getElement("depositPensionDetails");
-
-const depositDestinationNotice =
-    getElement("depositDestinationNotice");
-
-const depositSubmitButton =
-    getElement("depositSubmitButton");
+const depositDestination = getElement("depositDestination");
+const depositPaymentDetails = getElement("depositPaymentDetails");
+const depositPensionDetails = getElement("depositPensionDetails");
+const depositDestinationNotice = getElement("depositDestinationNotice");
+const depositSubmitButton = getElement("depositSubmitButton");
 
 
-/* DESTINATION INTERFACE */
+/* =========================================
+   27A. DESTINATION DISPLAY
+========================================= */
 
 function updateDepositDestinationUI() {
 
-    const destination =
-        depositDestination?.value || "";
-
-    const methodInput =
-        getElement("depositMethod");
-
-    const phoneInput =
-        getElement("depositPhone");
-
-
-    const isSavings = destination === "savings";
-
-    const isPension = destination === "pension";
-
+    const destination = depositDestination?.value || "";
 
     if (depositPaymentDetails) {
-        depositPaymentDetails.hidden = !isSavings;
+        depositPaymentDetails.hidden = destination !== "savings";
     }
 
     if (depositPensionDetails) {
-        depositPensionDetails.hidden = !isPension;
+        depositPensionDetails.hidden = destination !== "pension";
     }
-
-
-    if (methodInput) {
-        methodInput.required = isSavings;
-    }
-
-    if (phoneInput) {
-        phoneInput.required = isSavings;
-    }
-
 
     if (depositDestinationNotice) {
 
-        if (isSavings) {
-
+        if (destination === "savings") {
             depositDestinationNotice.textContent =
-                "Savings deposits use your existing Paystack payment process.";
-
-        } else if (isPension) {
-
+                "Savings deposits are processed through Paystack.";
+        } else if (destination === "pension") {
             depositDestinationNotice.textContent =
-                "Pension is currently simulation-only. No payment will be collected.";
-
+                "Pension contribution requests are submitted for administrator review. No payment will be collected.";
         } else {
-
             depositDestinationNotice.textContent =
                 "Select a destination to continue.";
-
         }
-
     }
-
 
     if (depositSubmitButton) {
 
-        if (isSavings) {
-
-            depositSubmitButton.textContent =
-                "Continue to Savings Deposit";
-
-        } else if (isPension) {
-
-            depositSubmitButton.textContent =
-                "Submit Pension Request";
-
-        } else {
-
-            depositSubmitButton.textContent =
-                "Continue";
-
-        }
-
+        depositSubmitButton.textContent =
+            destination === "pension"
+                ? "Submit Pension Request"
+                : destination === "savings"
+                    ? "Continue to Deposit"
+                    : "Continue";
     }
-
 }
 
 
@@ -3176,12 +3126,13 @@ if (depositDestination) {
         updateDepositDestinationUI
     );
 
+    updateDepositDestinationUI();
 }
 
-updateDepositDestinationUI();
 
-
-/* HANDLE DEPOSIT FORM */
+/* =========================================
+   27B. FORM SUBMISSION
+========================================= */
 
 if (depositForm) {
 
@@ -3189,23 +3140,29 @@ if (depositForm) {
 
         event.preventDefault();
 
+        const destination =
+            depositDestination?.value;
 
         const amount = Number(
             getElement("depositAmount")?.value
         );
 
-        const destination =
-            depositDestination?.value || "";
+        const submitButton = depositSubmitButton ||
+            depositForm.querySelector('button[type="submit"]');
 
-        const selectedMethod =
-            getElement("depositMethod")?.value || "";
 
-        const phone =
-            getElement("depositPhone")?.value.trim() || "";
+        /* =====================================
+           COMMON VALIDATION
+        ===================================== */
 
-        const pensionNote =
-            getElement("depositPensionNote")?.value.trim() || null;
+        if (!["savings", "pension"].includes(destination)) {
 
+            showMessage(
+                "Please select a valid deposit destination."
+            );
+
+            return;
+        }
 
         if (
             !Number.isFinite(amount) ||
@@ -3221,92 +3178,18 @@ if (depositForm) {
         }
 
 
-        if (!["savings", "pension"].includes(destination)) {
+        /* =====================================
+           AUTHENTICATION
+        ===================================== */
 
-            showMessage(
-                "Please select Savings or Pension as your destination."
-            );
-
-            return;
+        if (submitButton) {
+            submitButton.disabled = true;
         }
-
-
-        if (
-            destination === "pension" &&
-            !memberPensionRequestEnabled
-        ) {
-
-            showMessage(
-                "Your Pension account is not ready to receive contribution requests. " +
-                "Please contact the NEXUS administrator."
-            );
-
-            return;
-        }
-
-
-        const methodMap = {
-
-            mtn_momo: "mtn",
-
-            telecel_cash: "telecel",
-
-            at_money: "at"
-
-        };
-
-
-        let method = null;
-
-
-        /* VALIDATE SAVINGS PAYMENT DETAILS ONLY */
-
-        if (destination === "savings") {
-
-            method = methodMap[selectedMethod];
-
-            if (!method) {
-
-                showMessage(
-                    "Please select a valid Savings deposit method."
-                );
-
-                return;
-            }
-
-            if (!/^0\d{9}$/.test(phone)) {
-
-                showMessage(
-                    "Enter a valid 10-digit Ghana mobile money number."
-                );
-
-                return;
-            }
-
-        }
-
-
-        if (depositSubmitButton) {
-
-            depositSubmitButton.disabled = true;
-
-            depositSubmitButton.textContent =
-                destination === "pension"
-                    ? "Submitting Request..."
-                    : "Connecting to Paystack...";
-
-        }
-
-
-        let redirectingToPaystack = false;
-
 
         try {
 
-            const {
-                data: authData,
-                error: authError
-            } = await nexusSupabase.auth.getUser();
+            const { data: authData, error: authError } =
+                await nexusSupabase.auth.getUser();
 
             if (authError) throw authError;
 
@@ -3315,93 +3198,124 @@ if (depositForm) {
                 throw new Error(
                     "Your session has expired. Please log in again."
                 );
-
             }
 
 
             /* =====================================
-               PENSION: NONFINANCIAL REQUEST ONLY
-            ====================================== */
+               PENSION CONTRIBUTION REQUEST
+               SIMULATION ONLY
+            ===================================== */
 
             if (destination === "pension") {
 
-                const {
-                    data,
-                    error
-                } = await nexusSupabase.rpc(
-                    "submit_nexus_pension_contribution_request",
-                    {
-                        p_amount: amount,
-                        p_member_note: pensionNote
-                    }
-                );
-
-                if (error) throw error;
-
-                if (
-                    data &&
-                    typeof data === "object" &&
-                    data.success === false
-                ) {
-
-                    throw new Error(
-                        data.message ||
-                        "Your pension contribution request could not be submitted."
-                    );
-
+                if (submitButton) {
+                    submitButton.textContent =
+                        "Submitting Pension Request...";
                 }
 
+                const pensionNote =
+                    getElement("depositPensionNote")
+                        ?.value.trim() || null;
+
+                const { data, error } =
+                    await nexusSupabase.rpc(
+                        "submit_nexus_pension_contribution_request",
+                        {
+                            p_amount: amount,
+                            p_member_note: pensionNote
+                        }
+                    );
+
+                if (error) {
+                    throw error;
+                }
+
+                if (!data || data.success !== true) {
+
+                    throw new Error(
+                        data?.message ||
+                        "Your Pension request could not be confirmed."
+                    );
+                }
 
                 depositForm.reset();
 
                 updateDepositDestinationUI();
 
-                await loadMemberPension(authData.user);
+                if (typeof loadMemberPension === "function") {
+                    const { data: refreshedAuth } =
+                        await nexusSupabase.auth.getUser();
 
+                    if (refreshedAuth?.user) {
+                        await loadMemberPension(refreshedAuth.user);
+                    }
+                }
 
                 showMessage(
-                    "Your Pension contribution request has been submitted.\n\n" +
-                    "Amount: " + formatMoney(amount) + "\n\n" +
-                    "Status: Submitted for administrator review.\n\n" +
-                    "IMPORTANT: No payment was collected. " +
-                    "Your Savings wallet was not debited. " +
-                    "Your Pension balance was not credited. " +
-                    "No pension financial transaction was created."
+                    data.message ||
+                    "Your Pension contribution request has been submitted for administrator review. No payment was collected, no wallet was debited and your Pension balance was not credited."
                 );
 
                 return;
-
             }
 
 
             /* =====================================
-               SAVINGS: EXISTING PAYSTACK PROCESS
-            ====================================== */
+               SAVINGS DEPOSIT
+               ORIGINAL PAYSTACK PROCESS
+            ===================================== */
 
-            const {
-                data,
-                error
-            } = await nexusSupabase.functions.invoke(
-                "nexus-deposit",
-                {
-                    body: {
-                        amount,
-                        method,
-                        phone
+            const selectedMethod =
+                getElement("depositMethod")?.value;
+
+            const phone =
+                getElement("depositPhone")?.value.trim();
+
+            const methodMap = {
+                mtn_momo: "mtn",
+                telecel_cash: "telecel",
+                at_money: "at"
+            };
+
+            const method = methodMap[selectedMethod];
+
+            if (!method) {
+
+                throw new Error(
+                    "Please select a valid Savings deposit method."
+                );
+            }
+
+            if (!/^0\d{9}$/.test(phone)) {
+
+                throw new Error(
+                    "Enter a valid 10-digit Ghana mobile money number."
+                );
+            }
+
+            if (submitButton) {
+                submitButton.textContent =
+                    "Connecting to Paystack...";
+            }
+
+            const { data, error } =
+                await nexusSupabase.functions.invoke(
+                    "nexus-deposit",
+                    {
+                        body: {
+                            amount,
+                            method,
+                            phone
+                        }
                     }
-                }
-            );
-
+                );
 
             if (error) {
-
                 throw new Error(
                     error.message ||
                     "Unable to initialize your Savings deposit."
                 );
-
             }
-
 
             if (
                 !data ||
@@ -3413,17 +3327,12 @@ if (depositForm) {
                     data?.message ||
                     "Paystack did not return a payment link."
                 );
-
             }
-
 
             console.log(
                 "Savings deposit initialized:",
                 data.reference
             );
-
-
-            redirectingToPaystack = true;
 
             window.location.assign(data.authorization_url);
 
@@ -3431,34 +3340,28 @@ if (depositForm) {
         } catch (error) {
 
             console.error(
-                "NEXUS deposit error:",
+                "Deposit or Pension request error:",
                 error
             );
 
             showMessage(
                 error.message ||
-                "Unable to process your request. Please try again."
+                "Unable to complete your request. Please try again."
             );
-
 
         } finally {
 
-            if (
-                depositSubmitButton &&
-                !redirectingToPaystack
-            ) {
+            if (submitButton) {
 
-                depositSubmitButton.disabled = false;
+                submitButton.disabled = false;
 
                 updateDepositDestinationUI();
-
             }
-
         }
 
     });
-
 }
+
 
 
 
