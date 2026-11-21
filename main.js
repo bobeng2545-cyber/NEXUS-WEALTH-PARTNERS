@@ -334,8 +334,10 @@ function showForgotPassword() {
 
 
 
+
 /* =========================================
-   11. MOBILE DASHBOARD NAVIGATION
+   11. MEMBER DASHBOARD NAVIGATION
+   SAVINGS + PENSION + MOBILE RESPONSIVENESS
 ========================================= */
 
 let currentDashboardView = "home";
@@ -417,8 +419,10 @@ function setMobileDashboardView(screen, shouldScroll = true) {
             "#memberDashboard " + selector
         ).forEach(element => {
 
-            element.classList.remove("mobile-view-hidden");
-            element.style.display = "";
+            if (element && element.classList) {
+                element.classList.remove("mobile-view-hidden");
+                element.style.display = "";
+            }
 
         });
 
@@ -428,10 +432,11 @@ function setMobileDashboardView(screen, shouldScroll = true) {
         "#memberDashboard .dashboard-content-grid"
     ).forEach(element => {
 
-        element.classList.remove("mobile-savings-visible");
+        if (element && element.classList) {
+            element.classList.remove("mobile-savings-visible");
+        }
 
     });
-
 
     /* DESKTOP VIEW */
 
@@ -462,10 +467,12 @@ function setMobileDashboardView(screen, shouldScroll = true) {
             ".member-navigation a[data-screen]"
         ).forEach(link => {
 
-            link.classList.toggle(
-                "active",
-                link.dataset.screen === screen
-            );
+            if (link && link.classList) {
+                link.classList.toggle(
+                    "active",
+                    link.dataset.screen === screen
+                );
+            }
 
         });
 
@@ -476,19 +483,16 @@ function setMobileDashboardView(screen, shouldScroll = true) {
             );
 
             if (target) {
-
                 target.scrollIntoView({
                     behavior: "smooth",
                     block: "start"
                 });
-
             }
 
         }
 
         return;
     }
-
 
     /* MOBILE VIEW: HIDE ALL SCREENS FIRST */
 
@@ -505,7 +509,6 @@ function setMobileDashboardView(screen, shouldScroll = true) {
 
     });
 
-
     /* SHOW SELECTED SCREEN */
 
     screenSections[screen].forEach(selector => {
@@ -521,7 +524,6 @@ function setMobileDashboardView(screen, shouldScroll = true) {
 
     });
 
-
     /* SAVINGS OVERVIEW */
 
     if (screen === "savings") {
@@ -531,14 +533,11 @@ function setMobileDashboardView(screen, shouldScroll = true) {
         );
 
         if (savingsWrapper) {
-
             savingsWrapper.classList.add("mobile-savings-visible");
             savingsWrapper.style.display = "grid";
-
         }
 
     }
-
 
     /* CONTROL MOBILE HEADERS */
 
@@ -578,7 +577,6 @@ function setMobileDashboardView(screen, shouldScroll = true) {
 
     }
 
-
     if (screenTitle) {
         screenTitle.textContent = screenTitles[screen];
     }
@@ -587,7 +585,6 @@ function setMobileDashboardView(screen, shouldScroll = true) {
         backButton.style.display =
             screen === "home" ? "none" : "flex";
     }
-
 
     document.querySelectorAll(
         ".member-navigation a[data-screen]"
@@ -599,7 +596,6 @@ function setMobileDashboardView(screen, shouldScroll = true) {
         );
 
     });
-
 
     if (shouldScroll) {
 
@@ -654,6 +650,7 @@ window.addEventListener("resize", function() {
     }
 
 });
+
 
 
 
