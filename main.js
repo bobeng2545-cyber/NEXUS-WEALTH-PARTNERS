@@ -1514,23 +1514,19 @@ async function loadMemberPension(user) {
         )
     );
 
-    memberPensionRequestEnabled = pensionReady;
-
-    if (pensionOption) {
-        pensionOption.disabled = !pensionReady;
-    }
-
-    if (
-        destinationSelect?.value === "pension" &&
-        !pensionReady
-    ) {
-
-        destinationSelect.value = "";
-    }
-
-    if (typeof updateDepositDestinationUI === "function") {
-        updateDepositDestinationUI();
-    }
+    /* PENSION DESTINATION MUST ALWAYS BE SELECTABLE */
+   
+   memberPensionRequestEnabled = pensionReady;
+   
+   if (pensionOption) {
+      pensionOption.disabled = false;
+   }
+   
+   /* DO NOT RESET THE MEMBER'S PENSION SELECTION */
+   
+   if (typeof updateDepositDestinationUI === "function") {
+      updateDepositDestinationUI();
+   }
 
 
     /* DISPLAY PENSION BALANCE */
