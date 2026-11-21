@@ -333,6 +333,7 @@ function showForgotPassword() {
 }
 
 
+
 /* =========================================
    11. MOBILE DASHBOARD NAVIGATION
 ========================================= */
@@ -354,6 +355,7 @@ function setMobileDashboardView(screen, shouldScroll = true) {
         transactions: "Transactions",
         pendingWithdrawals: "Pending Withdrawals",
         savings: "My Savings",
+        pension: "My Pension",
         profile: "My Profile",
         support: "Customer Support"
     };
@@ -363,6 +365,7 @@ function setMobileDashboardView(screen, shouldScroll = true) {
         "#pendingWithdrawals",
         "#memberTransactions",
         "#memberSavings",
+        "#memberPension",
         "#memberProfile",
         "#memberSupport"
     ];
@@ -386,6 +389,10 @@ function setMobileDashboardView(screen, shouldScroll = true) {
             "#memberSavings"
         ],
 
+        pension: [
+            "#memberPension"
+        ],
+
         profile: [
             "#memberProfile"
         ],
@@ -406,83 +413,82 @@ function setMobileDashboardView(screen, shouldScroll = true) {
 
     allSections.forEach(selector => {
 
-    document.querySelectorAll(
-        "#memberDashboard " + selector
-    ).forEach(element => {
+        document.querySelectorAll(
+            "#memberDashboard " + selector
+        ).forEach(element => {
 
-        if (element && element.classList) {
             element.classList.remove("mobile-view-hidden");
             element.style.display = "";
-        }
+
+        });
 
     });
-
-});
 
     document.querySelectorAll(
-       "#memberDashboard .dashboard-content-grid"
+        "#memberDashboard .dashboard-content-grid"
     ).forEach(element => {
-       
-       if (element && element.classList) {
-          element.classList.remove("mobile-savings-visible");
-       }
-    
+
+        element.classList.remove("mobile-savings-visible");
+
     });
+
 
     /* DESKTOP VIEW */
 
-if (!isMobile) {
+    if (!isMobile) {
 
-    document.body.classList.remove("mobile-inner-page");
+        document.body.classList.remove("mobile-inner-page");
 
-    if (dashboard) {
-        dashboard.classList.remove("mobile-inner-page");
-        dashboard.style.paddingTop = "";
-    }
+        if (dashboard) {
+            dashboard.classList.remove("mobile-inner-page");
+            dashboard.style.paddingTop = "";
+        }
 
-    if (homeHeader) homeHeader.style.display = "none";
-    if (screenHeader) screenHeader.style.display = "none";
-    if (backButton) backButton.style.display = "none";
+        if (homeHeader) homeHeader.style.display = "none";
+        if (screenHeader) screenHeader.style.display = "none";
+        if (backButton) backButton.style.display = "none";
 
-    const desktopTargets = {
-        home: ".dashboard-heading",
-        transactions: "#memberTransactions",
-        pendingWithdrawals: "#pendingWithdrawals",
-        savings: "#memberSavings",
-        profile: "#memberProfile",
-        support: "#memberSupport"
-    };
+        const desktopTargets = {
+            home: ".dashboard-heading",
+            transactions: "#memberTransactions",
+            pendingWithdrawals: "#pendingWithdrawals",
+            savings: "#memberSavings",
+            pension: "#memberPension",
+            profile: "#memberProfile",
+            support: "#memberSupport"
+        };
 
-    document.querySelectorAll(
-        ".member-navigation a[data-screen]"
-    ).forEach(link => {
+        document.querySelectorAll(
+            ".member-navigation a[data-screen]"
+        ).forEach(link => {
 
-        if (link && link.classList) {
             link.classList.toggle(
                 "active",
                 link.dataset.screen === screen
             );
+
+        });
+
+        if (shouldScroll) {
+
+            const target = document.querySelector(
+                desktopTargets[screen] || ".dashboard-heading"
+            );
+
+            if (target) {
+
+                target.scrollIntoView({
+                    behavior: "smooth",
+                    block: "start"
+                });
+
+            }
+
         }
 
-    });
-
-    if (shouldScroll) {
-
-        const target = document.querySelector(
-            desktopTargets[screen] || ".dashboard-heading"
-        );
-
-        if (target) {
-            target.scrollIntoView({
-                behavior: "smooth",
-                block: "start"
-            });
-        }
-
+        return;
     }
 
-    return;
-}
 
     /* MOBILE VIEW: HIDE ALL SCREENS FIRST */
 
@@ -499,6 +505,7 @@ if (!isMobile) {
 
     });
 
+
     /* SHOW SELECTED SCREEN */
 
     screenSections[screen].forEach(selector => {
@@ -514,6 +521,7 @@ if (!isMobile) {
 
     });
 
+
     /* SAVINGS OVERVIEW */
 
     if (screen === "savings") {
@@ -523,11 +531,14 @@ if (!isMobile) {
         );
 
         if (savingsWrapper) {
+
             savingsWrapper.classList.add("mobile-savings-visible");
             savingsWrapper.style.display = "grid";
+
         }
 
     }
+
 
     /* CONTROL MOBILE HEADERS */
 
@@ -567,6 +578,7 @@ if (!isMobile) {
 
     }
 
+
     if (screenTitle) {
         screenTitle.textContent = screenTitles[screen];
     }
@@ -575,6 +587,7 @@ if (!isMobile) {
         backButton.style.display =
             screen === "home" ? "none" : "flex";
     }
+
 
     document.querySelectorAll(
         ".member-navigation a[data-screen]"
@@ -587,6 +600,7 @@ if (!isMobile) {
 
     });
 
+
     if (shouldScroll) {
 
         window.scrollTo({
@@ -595,6 +609,7 @@ if (!isMobile) {
         });
 
     }
+
 }
 
 
@@ -639,6 +654,7 @@ window.addEventListener("resize", function() {
     }
 
 });
+
 
 
 /* =========================================
@@ -1355,9 +1371,371 @@ async function loadMemberWallet(user) {
 
 
 /* =========================================
-   17. LOAD MEMBER DASHBOARD DATA
+   16A. NEXUS MEMBER PENSION
+   SEPARATE FROM SAVINGS
+   SIMULATION ONLY
 ========================================= */
 
+let memberPensionRequestEnabled = false;
+
+async function loadMemberPension(user) {
+
+    if (!user?.id) {
+        throw new Error("Member authentication is required.");
+    }
+
+    const balanceElement =
+        getElement("memberPensionBalance");
+
+    const dashboardBalance =
+        getElement("dashboardPensionBalance");
+
+    const accountNumberElement =
+        getElement("pensionAccountNumber");
+
+    const accountStatusElement =
+        getElement("pensionAccountStatus");
+
+    const sectorElement =
+        getElement("pensionMemberSector");
+
+    const classificationElement =
+        getElement("pensionClassification");
+
+    const subaccountElement =
+        getElement("pensionSubaccountSummary");
+
+    const contributionTotalElement =
+        getElement("pensionTotalContributions");
+
+    const lastContributionElement =
+        getElement("pensionLastContribution");
+
+    const contributionCountElement =
+        getElement("pensionContributionCount");
+
+    const contributionList =
+        getElement("pensionContributionList");
+
+    const destinationSelect =
+        getElement("depositDestination");
+
+    const pensionOption =
+        destinationSelect?.querySelector(
+            'option[value="pension"]'
+        );
+
+
+    /* LOAD THE MEMBER'S OWN PENSION ACCOUNT */
+
+    const {
+        data: account,
+        error: accountError
+    } = await nexusSupabase
+        .from("nexus_pension_accounts")
+        .select(`
+            id,
+            account_number,
+            currency,
+            balance,
+            status,
+            member_sector,
+            mandatory_scheme_status,
+            classification_verified_at
+        `)
+        .eq("user_id", user.id)
+        .maybeSingle();
+
+    if (accountError) {
+        throw accountError;
+    }
+
+
+    let subaccounts = [];
+
+    if (account) {
+
+        const {
+            data,
+            error
+        } = await nexusSupabase
+            .from("nexus_pension_subaccounts")
+            .select(`
+                sub_account_type,
+                balance,
+                status
+            `)
+            .eq("account_id", account.id);
+
+        if (error) {
+            throw error;
+        }
+
+        subaccounts = data || [];
+
+    }
+
+
+    /* LOAD ONLY THIS MEMBER'S REQUESTS */
+
+    const {
+        data: requests,
+        error: requestError
+    } = await nexusSupabase
+        .from("nexus_pension_contribution_requests")
+        .select(`
+            id,
+            amount,
+            currency,
+            request_reference,
+            status,
+            created_at,
+            member_note
+        `)
+        .eq("member_user_id", user.id)
+        .order("created_at", { ascending: false })
+        .limit(100);
+
+    if (requestError) {
+        throw requestError;
+    }
+
+    const pensionRequests = requests || [];
+
+
+    /* VERIFY WHETHER THE MEMBER CAN SUBMIT A REQUEST */
+
+    const pensionReady = Boolean(
+        account &&
+        String(account.status).toLowerCase() === "active" &&
+        account.classification_verified_at &&
+        ["formal", "informal"].includes(
+            String(account.member_sector || "").toLowerCase()
+        ) &&
+        ["covered", "not_covered"].includes(
+            String(account.mandatory_scheme_status || "").toLowerCase()
+        )
+    );
+
+    memberPensionRequestEnabled = pensionReady;
+
+    if (pensionOption) {
+        pensionOption.disabled = !pensionReady;
+    }
+
+    if (
+        destinationSelect?.value === "pension" &&
+        !pensionReady
+    ) {
+
+        destinationSelect.value = "";
+    }
+
+    if (typeof updateDepositDestinationUI === "function") {
+        updateDepositDestinationUI();
+    }
+
+
+    /* DISPLAY PENSION BALANCE */
+
+    const pensionBalance = Number(account?.balance) || 0;
+
+    if (balanceElement) {
+        balanceElement.textContent = formatMoney(pensionBalance);
+    }
+
+    if (dashboardBalance) {
+        dashboardBalance.textContent = formatMoney(pensionBalance);
+    }
+
+
+    /* DISPLAY ACCOUNT INFORMATION */
+
+    if (accountNumberElement) {
+
+        accountNumberElement.textContent =
+            account?.account_number || "Not yet assigned";
+
+    }
+
+    if (accountStatusElement) {
+
+        accountStatusElement.textContent =
+            account
+                ? String(account.status || "Unknown")
+                    .replaceAll("_", " ")
+                    .toUpperCase()
+                : "Not yet created";
+
+    }
+
+    if (sectorElement) {
+
+        sectorElement.textContent =
+            account?.member_sector
+                ? account.member_sector.toUpperCase()
+                : "Not verified";
+
+    }
+
+    if (classificationElement) {
+
+        classificationElement.textContent =
+            account?.mandatory_scheme_status
+                ? account.mandatory_scheme_status
+                    .replaceAll("_", " ")
+                    .toUpperCase()
+                : "Not verified";
+
+    }
+
+
+    /* DISPLAY SUBACCOUNTS */
+
+    if (subaccountElement) {
+
+        if (subaccounts.length === 0) {
+
+            subaccountElement.textContent =
+                "No subaccounts configured";
+
+        } else {
+
+            subaccountElement.textContent =
+                subaccounts.map(item => {
+
+                    const type = String(
+                        item.sub_account_type || ""
+                    ).replaceAll("_", " ");
+
+                    return (
+                        type +
+                        " (" +
+                        String(item.status || "unknown") +
+                        ")"
+                    );
+
+                }).join(", ");
+
+        }
+
+    }
+
+
+    /* REAL CONTRIBUTIONS REMAIN DISABLED */
+
+    if (contributionTotalElement) {
+        contributionTotalElement.textContent = "Not enabled";
+    }
+
+    if (lastContributionElement) {
+        lastContributionElement.textContent = "No payment received";
+    }
+
+    if (contributionCountElement) {
+
+        contributionCountElement.textContent =
+            String(pensionRequests.length);
+
+    }
+
+
+    /* DISPLAY CONTRIBUTION REQUEST HISTORY */
+
+    if (contributionList) {
+
+        contributionList.replaceChildren();
+
+        if (pensionRequests.length === 0) {
+
+            const row = document.createElement("tr");
+            const cell = document.createElement("td");
+
+            cell.colSpan = 5;
+
+            cell.textContent =
+                "No pension contribution requests available.";
+
+            row.appendChild(cell);
+            contributionList.appendChild(row);
+
+        } else {
+
+            const statusLabels = {
+
+                submitted: "Submitted",
+
+                under_review: "Under Review",
+
+                accepted_for_future_processing:
+                    "Accepted for Future Processing — No Payment Received",
+
+                rejected: "Rejected",
+
+                cancelled: "Cancelled"
+
+            };
+
+            pensionRequests.forEach(request => {
+
+                const row = document.createElement("tr");
+
+                const dateCell = document.createElement("td");
+                const destinationCell = document.createElement("td");
+                const referenceCell = document.createElement("td");
+                const amountCell = document.createElement("td");
+                const statusCell = document.createElement("td");
+
+                dateCell.textContent = request.created_at
+                    ? new Date(request.created_at).toLocaleString("en-GH")
+                    : "Date unavailable";
+
+                destinationCell.textContent =
+                    "NEXUS Pension";
+
+                referenceCell.textContent =
+                    request.request_reference || "—";
+
+                amountCell.textContent =
+                    formatMoney(request.amount);
+
+                statusCell.textContent =
+                    statusLabels[request.status] ||
+                    String(request.status || "Unknown")
+                        .replaceAll("_", " ");
+
+                row.append(
+                    dateCell,
+                    destinationCell,
+                    referenceCell,
+                    amountCell,
+                    statusCell
+                );
+
+                contributionList.appendChild(row);
+
+            });
+
+        }
+
+    }
+
+
+    return {
+        account,
+        subaccounts,
+        requests: pensionRequests,
+        request_enabled: pensionReady
+    };
+
+}
+
+
+
+
+/* =========================================
+   17. LOAD MEMBER DASHBOARD DATA
+========================================= */
 
 async function loadDashboard(user) {
 
@@ -1365,7 +1743,6 @@ async function loadDashboard(user) {
 
     try {
 
-        // Check whether this account has ordinary member access.
         const {
             data: isActiveMember,
             error: accessError
@@ -1377,87 +1754,91 @@ async function loadDashboard(user) {
             throw accessError;
         }
 
-        
-if (isActiveMember !== true) {
+        if (isActiveMember !== true) {
 
-    // Check whether this is a suspended ordinary member.
-    const {
-        data: profileStatus,
-        error: profileStatusError
-    } = await nexusSupabase
-        .from("profiles")
-        .select("status")
-        .eq("id", user.id)
-        .maybeSingle();
+            const {
+                data: profileStatus,
+                error: profileStatusError
+            } = await nexusSupabase
+                .from("profiles")
+                .select("status")
+                .eq("id", user.id)
+                .maybeSingle();
 
-    if (profileStatusError) {
-        throw profileStatusError;
-    }
+            if (profileStatusError) {
+                throw profileStatusError;
+            }
 
-    const status = String(
-        profileStatus?.status || ""
-    ).toLowerCase();
+            const status = String(
+                profileStatus?.status || ""
+            ).toLowerCase();
 
-    console.warn(
-        "Ordinary member dashboard access denied:",
-        user.id,
-        status
-    );
+            if (status === "suspended") {
 
-    if (status === "suspended") {
+                showSupportRecoveryView();
 
-        showSupportRecoveryView();
+                showMessage(
+                    "Your member account is suspended. " +
+                    "You can still contact NEXUS support through this page."
+                );
 
-        showMessage(
-            "Your member account is suspended. " +
-            "You can still contact NEXUS support through this page."
-        );
+            } else {
 
-    } else {
+                showPublicHome();
 
-        showPublicHome();
+                showMessage(
+                    "This account does not have ordinary member dashboard access. " +
+                    "Please use your authorized staff portal."
+                );
 
-        showMessage(
-            "This account does not have ordinary member dashboard access. " +
-            "Please use your authorized staff portal."
-        );
-    }
+            }
 
-    return false;
-}
+            return false;
+        }
 
 
-        // Verify the member profile before displaying the dashboard.
         await loadMemberProfile(user);
 
-        // Authorization succeeded. Display the dashboard now.
         showMemberDashboard();
 
         initializeNexusSupport();
         initializeNexusNotifications();
 
+
         const dashboardTasks = [
+
             {
                 name: "Member wallet",
                 run: () => loadMemberWallet(user)
             },
+
             {
                 name: "Member transactions",
                 run: () => loadMemberTransactions(user)
             },
+
             {
                 name: "Pending withdrawals",
                 run: () => loadPendingWithdrawals(user)
             },
+
+            {
+                name: "Member pension",
+                run: () => loadMemberPension(user)
+            },
+
             {
                 name: "Notifications",
                 run: () => loadNexusNotifications(user)
             },
+
             {
                 name: "Customer support",
                 run: () => refreshNexusSupport()
             }
+
         ];
+
 
         const results = await Promise.allSettled(
             dashboardTasks.map(async task => {
@@ -1479,8 +1860,10 @@ if (isActiveMember !== true) {
 
                     throw error;
                 }
+
             })
         );
+
 
         const failedTasks = results
             .map((result, index) => ({
@@ -1490,6 +1873,7 @@ if (isActiveMember !== true) {
             .filter(item =>
                 item.result.status === "rejected"
             );
+
 
         if (failedTasks.length > 0) {
 
@@ -1502,7 +1886,9 @@ if (isActiveMember !== true) {
                 "Your dashboard has loaded, but some sections could not be updated. " +
                 "Please refresh the affected sections."
             );
+
         }
+
 
         console.log(
             "NEXUS member dashboard initialization completed."
@@ -1526,7 +1912,9 @@ if (isActiveMember !== true) {
 
         return false;
     }
+
 }
+
 
 
 
@@ -1708,6 +2096,7 @@ if (forgotPasswordForm) {
 }
 
 
+
 /* =========================================
    21. NAVIGATION LINKS
 ========================================= */
@@ -1715,32 +2104,48 @@ if (forgotPasswordForm) {
 document.addEventListener("click", function(event) {
 
     const loginLink = event.target.closest('a[href="#login"]');
+
     const registerLink = event.target.closest('a[href="#register"]');
+
     const forgotLink = event.target.closest('a[href="#forgotPassword"]');
 
+
     if (loginLink) {
+
         event.preventDefault();
+
         showLogin();
+
         return;
     }
+
 
     if (registerLink) {
+
         event.preventDefault();
+
         showRegistration();
+
         return;
     }
+
 
     if (forgotLink) {
+
         event.preventDefault();
+
         showForgotPassword();
+
         return;
     }
 
+
     const dashboardLink = event.target.closest(
-        ".member-navigation a[data-screen]"
+        '#memberDashboard a[data-screen]'
     );
 
     if (!dashboardLink) return;
+
 
     const selectedView = dashboardLink.dataset.screen;
 
@@ -1753,6 +2158,7 @@ document.addEventListener("click", function(event) {
     }
 
 });
+
 
 
 /* =========================================
@@ -2659,11 +3065,126 @@ async function loadPendingWithdrawals(user) {
 }
 
 
+
 /* =========================================
    27. MEMBER DEPOSIT PROCESSING
+   SAVINGS + PENSION DESTINATIONS
 ========================================= */
 
 const depositForm = getElement("depositForm");
+
+const depositDestination =
+    getElement("depositDestination");
+
+const depositPaymentDetails =
+    getElement("depositPaymentDetails");
+
+const depositPensionDetails =
+    getElement("depositPensionDetails");
+
+const depositDestinationNotice =
+    getElement("depositDestinationNotice");
+
+const depositSubmitButton =
+    getElement("depositSubmitButton");
+
+
+/* DESTINATION INTERFACE */
+
+function updateDepositDestinationUI() {
+
+    const destination =
+        depositDestination?.value || "";
+
+    const methodInput =
+        getElement("depositMethod");
+
+    const phoneInput =
+        getElement("depositPhone");
+
+
+    const isSavings = destination === "savings";
+
+    const isPension = destination === "pension";
+
+
+    if (depositPaymentDetails) {
+        depositPaymentDetails.hidden = !isSavings;
+    }
+
+    if (depositPensionDetails) {
+        depositPensionDetails.hidden = !isPension;
+    }
+
+
+    if (methodInput) {
+        methodInput.required = isSavings;
+    }
+
+    if (phoneInput) {
+        phoneInput.required = isSavings;
+    }
+
+
+    if (depositDestinationNotice) {
+
+        if (isSavings) {
+
+            depositDestinationNotice.textContent =
+                "Savings deposits use your existing Paystack payment process.";
+
+        } else if (isPension) {
+
+            depositDestinationNotice.textContent =
+                "Pension is currently simulation-only. No payment will be collected.";
+
+        } else {
+
+            depositDestinationNotice.textContent =
+                "Select a destination to continue.";
+
+        }
+
+    }
+
+
+    if (depositSubmitButton) {
+
+        if (isSavings) {
+
+            depositSubmitButton.textContent =
+                "Continue to Savings Deposit";
+
+        } else if (isPension) {
+
+            depositSubmitButton.textContent =
+                "Submit Pension Request";
+
+        } else {
+
+            depositSubmitButton.textContent =
+                "Continue";
+
+        }
+
+    }
+
+}
+
+
+if (depositDestination) {
+
+    depositDestination.addEventListener(
+        "change",
+        updateDepositDestinationUI
+    );
+
+}
+
+updateDepositDestinationUI();
+
+
+/* HANDLE DEPOSIT FORM */
 
 if (depositForm) {
 
@@ -2671,23 +3192,23 @@ if (depositForm) {
 
         event.preventDefault();
 
+
         const amount = Number(
             getElement("depositAmount")?.value
         );
 
+        const destination =
+            depositDestination?.value || "";
+
         const selectedMethod =
-            getElement("depositMethod")?.value;
+            getElement("depositMethod")?.value || "";
 
         const phone =
-            getElement("depositPhone")?.value.trim();
+            getElement("depositPhone")?.value.trim() || "";
 
-        const methodMap = {
-            mtn_momo: "mtn",
-            telecel_cash: "telecel",
-            at_money: "at"
-        };
+        const pensionNote =
+            getElement("depositPensionNote")?.value.trim() || null;
 
-        const method = methodMap[selectedMethod];
 
         if (
             !Number.isFinite(amount) ||
@@ -2696,103 +3217,252 @@ if (depositForm) {
         ) {
 
             showMessage(
-                "Enter a deposit amount between GHS 1 and GHS 100,000."
+                "Enter an amount between GHS 1 and GHS 100,000."
             );
 
             return;
         }
 
-        if (!method) {
 
-            showMessage("Please select a valid deposit method.");
-
-            return;
-        }
-
-        if (!/^0\d{9}$/.test(phone)) {
+        if (!["savings", "pension"].includes(destination)) {
 
             showMessage(
-                "Enter a valid 10-digit Ghana mobile money number."
+                "Please select Savings or Pension as your destination."
             );
 
             return;
         }
 
-        const submitButton = depositForm.querySelector(
-            'button[type="submit"]'
-        );
 
-        if (submitButton) {
-            submitButton.disabled = true;
-            submitButton.textContent = "Connecting to Paystack...";
+        if (
+            destination === "pension" &&
+            !memberPensionRequestEnabled
+        ) {
+
+            showMessage(
+                "Your Pension account is not ready to receive contribution requests. " +
+                "Please contact the NEXUS administrator."
+            );
+
+            return;
         }
+
+
+        const methodMap = {
+
+            mtn_momo: "mtn",
+
+            telecel_cash: "telecel",
+
+            at_money: "at"
+
+        };
+
+
+        let method = null;
+
+
+        /* VALIDATE SAVINGS PAYMENT DETAILS ONLY */
+
+        if (destination === "savings") {
+
+            method = methodMap[selectedMethod];
+
+            if (!method) {
+
+                showMessage(
+                    "Please select a valid Savings deposit method."
+                );
+
+                return;
+            }
+
+            if (!/^0\d{9}$/.test(phone)) {
+
+                showMessage(
+                    "Enter a valid 10-digit Ghana mobile money number."
+                );
+
+                return;
+            }
+
+        }
+
+
+        if (depositSubmitButton) {
+
+            depositSubmitButton.disabled = true;
+
+            depositSubmitButton.textContent =
+                destination === "pension"
+                    ? "Submitting Request..."
+                    : "Connecting to Paystack...";
+
+        }
+
+
+        let redirectingToPaystack = false;
+
 
         try {
 
-            const { data: authData, error: authError } =
-                await nexusSupabase.auth.getUser();
+            const {
+                data: authData,
+                error: authError
+            } = await nexusSupabase.auth.getUser();
 
             if (authError) throw authError;
 
             if (!authData.user) {
+
                 throw new Error(
                     "Your session has expired. Please log in again."
                 );
+
             }
 
-            const { data, error } =
-                await nexusSupabase.functions.invoke(
-                    "nexus-deposit",
+
+            /* =====================================
+               PENSION: NONFINANCIAL REQUEST ONLY
+            ====================================== */
+
+            if (destination === "pension") {
+
+                const {
+                    data,
+                    error
+                } = await nexusSupabase.rpc(
+                    "submit_nexus_pension_contribution_request",
                     {
-                        body: {
-                            amount,
-                            method,
-                            phone
-                        }
+                        p_amount: amount,
+                        p_member_note: pensionNote
                     }
                 );
 
+                if (error) throw error;
+
+                if (
+                    data &&
+                    typeof data === "object" &&
+                    data.success === false
+                ) {
+
+                    throw new Error(
+                        data.message ||
+                        "Your pension contribution request could not be submitted."
+                    );
+
+                }
+
+
+                depositForm.reset();
+
+                updateDepositDestinationUI();
+
+                await loadMemberPension(authData.user);
+
+
+                showMessage(
+                    "Your Pension contribution request has been submitted.\n\n" +
+                    "Amount: " + formatMoney(amount) + "\n\n" +
+                    "Status: Submitted for administrator review.\n\n" +
+                    "IMPORTANT: No payment was collected. " +
+                    "Your Savings wallet was not debited. " +
+                    "Your Pension balance was not credited. " +
+                    "No pension financial transaction was created."
+                );
+
+                return;
+
+            }
+
+
+            /* =====================================
+               SAVINGS: EXISTING PAYSTACK PROCESS
+            ====================================== */
+
+            const {
+                data,
+                error
+            } = await nexusSupabase.functions.invoke(
+                "nexus-deposit",
+                {
+                    body: {
+                        amount,
+                        method,
+                        phone
+                    }
+                }
+            );
+
+
             if (error) {
+
                 throw new Error(
                     error.message ||
-                    "Unable to initialize your deposit."
+                    "Unable to initialize your Savings deposit."
                 );
+
             }
+
 
             if (
                 !data ||
                 data.success !== true ||
                 !data.authorization_url
             ) {
+
                 throw new Error(
                     data?.message ||
                     "Paystack did not return a payment link."
                 );
+
             }
 
+
             console.log(
-                "Deposit initialized:",
+                "Savings deposit initialized:",
                 data.reference
             );
 
+
+            redirectingToPaystack = true;
+
             window.location.assign(data.authorization_url);
+
 
         } catch (error) {
 
-            console.error("Deposit error:", error);
+            console.error(
+                "NEXUS deposit error:",
+                error
+            );
 
             showMessage(
                 error.message ||
-                "Unable to process your deposit. Please try again."
+                "Unable to process your request. Please try again."
             );
 
-            if (submitButton) {
-                submitButton.disabled = false;
-                submitButton.textContent = "Continue to Deposit";
+
+        } finally {
+
+            if (
+                depositSubmitButton &&
+                !redirectingToPaystack
+            ) {
+
+                depositSubmitButton.disabled = false;
+
+                updateDepositDestinationUI();
+
             }
+
         }
+
     });
+
 }
+
 
 
 /* =========================================
