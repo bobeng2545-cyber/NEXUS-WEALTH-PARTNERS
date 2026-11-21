@@ -1,6 +1,8 @@
+
 /* =========================================================
    NEXUS WEALTH PARTNERS
    TELLER PORTAL
+   COMPLETE TELLER.JS
    ========================================================= */
 
 
@@ -71,8 +73,22 @@ const changeMemberButton = document.getElementById("changeMemberButton");
 const depositForm = document.getElementById("depositForm");
 const depositAmount = document.getElementById("depositAmount");
 const depositMethod = document.getElementById("depositMethod");
+
 const paymentPhoneGroup = document.getElementById("paymentPhoneGroup");
 const paymentPhone = document.getElementById("paymentPhone");
+
+const paymentNetworkGroup =
+    document.getElementById("paymentNetworkGroup");
+
+const paymentNetwork =
+    document.getElementById("paymentNetwork");
+
+const cashDepositNotice =
+    document.getElementById("cashDepositNotice");
+
+const paystackDepositNotice =
+    document.getElementById("paystackDepositNotice");
+
 const recordDepositButton = document.getElementById("recordDepositButton");
 const depositMessage = document.getElementById("depositMessage");
 
@@ -297,23 +313,14 @@ let testSearchedMembers = [];
 let selectedTestMember = null;
 let testWithdrawalInProgress = false;
 
-
-// CUSTOMER SUPPORT STATE
-
 let tellerSupportTickets = [];
 let currentSupportTicket = null;
 
 let supportReplyInProgress = false;
 let supportStatusInProgress = false;
 
-
-// MEMBER REGISTRATION STATE
-
 let memberRegistrationInProgress = false;
 let registeredMembersLoadInProgress = false;
-
-
-// TELLER SUSPENSION PROTECTION
 
 let tellerStatusInterval = null;
 let tellerStatusChannel = null;
@@ -413,6 +420,27 @@ function setButtonLoading(button, loading, normalText) {
 }
 
 
+function isActiveTellerSession() {
+
+    return Boolean(
+        currentTeller &&
+        currentUser &&
+        !tellerAccessLocked &&
+        String(currentTeller.status || "").toLowerCase() === "active"
+    );
+
+}
+
+
+function getErrorMessage(error, fallback) {
+
+    return error?.message ||
+        error?.error_description ||
+        fallback;
+
+}
+
+
 /* =========================================================
    4.1 TELLER SUSPENSION MONITORING
 ========================================================= */
@@ -438,11 +466,6 @@ function stopTellerStatusMonitoring() {
 }
 
 
-/*
-   Locks the teller portal and signs out the local session
-   when the teller account is suspended or deactivated.
-*/
-
 async function lockSuspendedTeller(message) {
 
     if (tellerAccessLocked) return;
@@ -451,7 +474,6 @@ async function lockSuspendedTeller(message) {
 
     stopTellerStatusMonitoring();
 
-    // Hide the dashboard immediately.
     showLogin();
 
     setConnectionStatus(
@@ -466,26 +488,16 @@ async function lockSuspendedTeller(message) {
         "error"
     );
 
-    // Sign out this browser session.
     const { error } = await tellerSupabase.auth.signOut({
         scope: "local"
     });
 
     if (error) {
-
-        console.error(
-            "Suspended teller sign-out error:",
-            error
-        );
-
+        console.error("Suspended teller sign-out error:", error);
     }
 
 }
 
-
-/*
-   Checks the teller's current status directly from Supabase.
-*/
 
 async function verifyTellerActive() {
 
@@ -510,15 +522,9 @@ async function verifyTellerActive() {
             .eq("user_id", checkedUserId)
             .maybeSingle();
 
-        if (error) {
-            throw error;
-        }
+        if (error) throw error;
 
-        // Ignore results belonging to an old session.
-        if (
-            !currentUser ||
-            currentUser.id !== checkedUserId
-        ) {
+        if (!currentUser || currentUser.id !== checkedUserId) {
             return;
         }
 
@@ -534,7 +540,6 @@ async function verifyTellerActive() {
             return;
         }
 
-        // Keep the displayed status current.
         currentTeller.status = data.status;
 
         if (tellerStatus) {
@@ -552,18 +557,7 @@ async function verifyTellerActive() {
 
     } catch (error) {
 
-        console.error(
-            "Teller status verification error:",
-            error
-        );
-
-        /*
-           Do not silently declare the account active when
-           the database cannot be reached.
-
-           The backend RPC functions must also enforce active
-           teller status before allowing protected operations.
-        */
+        console.error("Teller status verification error:", error);
 
         setConnectionStatus(
             "Unable to verify account status",
@@ -579,13 +573,6 @@ async function verifyTellerActive() {
 }
 
 
-/*
-   Starts automatic suspension monitoring.
-
-   Realtime provides faster detection.
-   Polling provides a fallback if Realtime is unavailable.
-*/
-
 function startTellerStatusMonitoring() {
 
     stopTellerStatusMonitoring();
@@ -596,11 +583,7 @@ function startTellerStatusMonitoring() {
 
     const userId = currentUser.id;
 
-    // Verify immediately.
     verifyTellerActive();
-
-
-    // Database polling fallback: every 10 seconds.
 
     tellerStatusInterval = setInterval(() => {
 
@@ -613,9 +596,6 @@ function startTellerStatusMonitoring() {
         }
 
     }, 10000);
-
-
-    // Listen for database status changes.
 
     tellerStatusChannel = tellerSupabase
         .channel(`teller-status-${userId}`)
@@ -658,10 +638,6 @@ function startTellerStatusMonitoring() {
 }
 
 
-/*
-   Check the teller again when returning to the browser tab.
-*/
-
 document.addEventListener("visibilitychange", () => {
 
     if (
@@ -675,16 +651,9 @@ document.addEventListener("visibilitychange", () => {
 });
 
 
-/*
-   Check the teller again when the browser window receives focus.
-*/
-
 window.addEventListener("focus", () => {
 
-    if (
-        currentUser &&
-        !tellerAccessLocked
-    ) {
+    if (currentUser && !tellerAccessLocked) {
         verifyTellerActive();
     }
 
@@ -706,7 +675,6 @@ function showLogin() {
     currentTeller = null;
     currentUser = null;
 
-    // Clear live deposit selection.
     selectedMember = null;
     searchedMembers = [];
 
@@ -717,7 +685,6 @@ function showLogin() {
         recordDepositButton.disabled = true;
     }
 
-    // Clear test withdrawal selection.
     selectedTestMember = null;
     testSearchedMembers = [];
 
@@ -728,23 +695,19 @@ function showLogin() {
         recordTestWithdrawalButton.disabled = true;
     }
 
-    // Clear customer support state.
     currentSupportTicket = null;
     tellerSupportTickets = [];
 
     tellerSupportConversation?.classList.add("hidden");
 
     if (tellerSupportTicketList) {
-
         tellerSupportTicketList.innerHTML = `
             <p class="empty-state">
                 Sign in to view customer reports.
             </p>
         `;
-
     }
 
-    // Clear member registration state.
     if (myRegisteredMembersMessage) {
         hideMessage(myRegisteredMembersMessage);
     }
@@ -758,14 +721,8 @@ function showLogin() {
 
 function showDashboard() {
 
-    if (loginSection) {
-        loginSection.classList.add("hidden");
-    }
-
-    if (dashboardSection) {
-        dashboardSection.classList.remove("hidden");
-    }
-
+    loginSection?.classList.add("hidden");
+    dashboardSection?.classList.remove("hidden");
     logoutButton?.classList.remove("hidden");
 
 }
@@ -780,7 +737,6 @@ async function initializeTeller(user) {
     if (tellerInitializationInProgress) return;
 
     tellerInitializationInProgress = true;
-
     tellerAccessLocked = false;
 
     stopTellerStatusMonitoring();
@@ -788,9 +744,7 @@ async function initializeTeller(user) {
     try {
 
         if (!user || !user.id) {
-
             showLogin();
-
             return;
         }
 
@@ -810,9 +764,7 @@ async function initializeTeller(user) {
             .eq("user_id", user.id)
             .maybeSingle();
 
-        if (error) {
-            throw error;
-        }
+        if (error) throw error;
 
         if (!data) {
 
@@ -832,8 +784,6 @@ async function initializeTeller(user) {
 
             return;
         }
-
-        // IMPORTANT: Reject every status except active.
 
         if (
             String(data.status || "").toLowerCase() !== "active"
@@ -870,22 +820,16 @@ async function initializeTeller(user) {
             "online"
         );
 
-        // Start suspension monitoring immediately.
         startTellerStatusMonitoring();
 
-        // Load existing dashboard information.
         await loadTellerHistory();
 
         await initializeTellerSupport();
 
     } catch (error) {
 
-        console.error(
-            "Teller verification error:",
-            error
-        );
+        console.error("Teller verification error:", error);
 
-        // Do not leave an unverified session open.
         await tellerSupabase.auth.signOut({
             scope: "local"
         });
@@ -894,14 +838,11 @@ async function initializeTeller(user) {
 
         showMessage(
             loginMessage,
-            error.message || "Could not verify your teller account.",
+            getErrorMessage(error, "Could not verify your teller account."),
             "error"
         );
 
-        setConnectionStatus(
-            "Connection error",
-            "offline"
-        );
+        setConnectionStatus("Connection error", "offline");
 
     } finally {
 
@@ -916,7 +857,7 @@ async function initializeTeller(user) {
    6. LOGIN
 ========================================================= */
 
-loginForm.addEventListener("submit", async function (event) {
+loginForm?.addEventListener("submit", async function (event) {
 
     event.preventDefault();
 
@@ -924,8 +865,8 @@ loginForm.addEventListener("submit", async function (event) {
 
     hideMessage(loginMessage);
 
-    const email = loginEmail.value.trim();
-    const password = loginPassword.value;
+    const email = loginEmail?.value.trim();
+    const password = loginPassword?.value;
 
     if (!email || !password) {
 
@@ -938,11 +879,7 @@ loginForm.addEventListener("submit", async function (event) {
         return;
     }
 
-    setButtonLoading(
-        loginButton,
-        true,
-        "Sign In"
-    );
+    setButtonLoading(loginButton, true, "Sign In");
 
     try {
 
@@ -952,9 +889,7 @@ loginForm.addEventListener("submit", async function (event) {
                 password
             });
 
-        if (error) {
-            throw error;
-        }
+        if (error) throw error;
 
         if (!data.user) {
             throw new Error("Login could not be completed.");
@@ -964,24 +899,17 @@ loginForm.addEventListener("submit", async function (event) {
 
     } catch (error) {
 
-        console.error(
-            "Teller login error:",
-            error
-        );
+        console.error("Teller login error:", error);
 
         showMessage(
             loginMessage,
-            error.message || "Login failed. Check your credentials.",
+            getErrorMessage(error, "Login failed. Check your credentials."),
             "error"
         );
 
     } finally {
 
-        setButtonLoading(
-            loginButton,
-            false,
-            "Sign In"
-        );
+        setButtonLoading(loginButton, false, "Sign In");
 
     }
 
@@ -992,7 +920,7 @@ loginForm.addEventListener("submit", async function (event) {
    7. LOGOUT
 ========================================================= */
 
-logoutButton.addEventListener("click", async function () {
+logoutButton?.addEventListener("click", async function () {
 
     logoutButton.disabled = true;
 
@@ -1002,9 +930,7 @@ logoutButton.addEventListener("click", async function () {
 
         const { error } = await tellerSupabase.auth.signOut();
 
-        if (error) {
-            throw error;
-        }
+        if (error) throw error;
 
         showLogin();
 
@@ -1018,14 +944,9 @@ logoutButton.addEventListener("click", async function () {
 
     } catch (error) {
 
-        console.error(
-            "Logout error:",
-            error
-        );
+        console.error("Logout error:", error);
 
-        alert(
-            error.message || "Could not log out."
-        );
+        alert(getErrorMessage(error, "Could not log out."));
 
     } finally {
 
@@ -1054,12 +975,9 @@ function renderTellerProfile() {
         currentUser.email ||
         "—";
 
-    const phone =
-        currentTeller.phone || "—";
+    const phone = currentTeller.phone || "—";
 
-    if (tellerName) {
-        tellerName.textContent = name;
-    }
+    if (tellerName) tellerName.textContent = name;
 
     const sidebarTellerName =
         document.getElementById("sidebarTellerName");
@@ -1076,13 +994,11 @@ function renderTellerProfile() {
     }
 
     if (tellerCode) {
-        tellerCode.textContent =
-            currentTeller.teller_code || "—";
+        tellerCode.textContent = currentTeller.teller_code || "—";
     }
 
     if (tellerStatus) {
-        tellerStatus.textContent =
-            currentTeller.status || "—";
+        tellerStatus.textContent = currentTeller.status || "—";
     }
 
     if (profileName) profileName.textContent = name;
@@ -1090,13 +1006,11 @@ function renderTellerProfile() {
     if (profilePhone) profilePhone.textContent = phone;
 
     if (profileCode) {
-        profileCode.textContent =
-            currentTeller.teller_code || "—";
+        profileCode.textContent = currentTeller.teller_code || "—";
     }
 
     if (profileStatus) {
-        profileStatus.textContent =
-            currentTeller.status || "—";
+        profileStatus.textContent = currentTeller.status || "—";
     }
 
 }
@@ -1126,20 +1040,10 @@ function openTellerMobileMenu() {
     tellerSidebar.classList.add("mobile-open");
     tellerSidebarOverlay.classList.add("active");
 
-    tellerMobileMenuButton?.setAttribute(
-        "aria-expanded",
-        "true"
-    );
+    tellerMobileMenuButton?.setAttribute("aria-expanded", "true");
+    tellerMobileMenuButton?.setAttribute("aria-label", "Close teller menu");
 
-    tellerMobileMenuButton?.setAttribute(
-        "aria-label",
-        "Close teller menu"
-    );
-
-    tellerSidebarOverlay.setAttribute(
-        "aria-hidden",
-        "false"
-    );
+    tellerSidebarOverlay.setAttribute("aria-hidden", "false");
 
     document.body.classList.add("sidebar-open");
 
@@ -1153,48 +1057,34 @@ function closeTellerMobileDrawer() {
     tellerSidebar.classList.remove("mobile-open");
     tellerSidebarOverlay.classList.remove("active");
 
-    tellerMobileMenuButton?.setAttribute(
-        "aria-expanded",
-        "false"
-    );
+    tellerMobileMenuButton?.setAttribute("aria-expanded", "false");
+    tellerMobileMenuButton?.setAttribute("aria-label", "Open teller menu");
 
-    tellerMobileMenuButton?.setAttribute(
-        "aria-label",
-        "Open teller menu"
-    );
-
-    tellerSidebarOverlay.setAttribute(
-        "aria-hidden",
-        "true"
-    );
+    tellerSidebarOverlay.setAttribute("aria-hidden", "true");
 
     document.body.classList.remove("sidebar-open");
 
 }
 
 
-tellerMobileMenuButton?.addEventListener(
-    "click",
-    function () {
+tellerMobileMenuButton?.addEventListener("click", function () {
 
-        const isOpen =
-            tellerSidebar?.classList.contains("mobile-open");
+    const isOpen =
+        tellerSidebar?.classList.contains("mobile-open");
 
-        if (isOpen) {
-            closeTellerMobileDrawer();
-        } else {
-            openTellerMobileMenu();
-        }
-
+    if (isOpen) {
+        closeTellerMobileDrawer();
+    } else {
+        openTellerMobileMenu();
     }
-);
+
+});
 
 
 closeTellerMobileMenuButton?.addEventListener(
     "click",
     closeTellerMobileDrawer
 );
-
 
 tellerSidebarOverlay?.addEventListener(
     "click",
@@ -1224,7 +1114,7 @@ document.querySelectorAll(".nav-button").forEach(button => {
 
     button.addEventListener("click", async function () {
 
-        if (!currentTeller || tellerAccessLocked) return;
+        if (!isActiveTellerSession()) return;
 
         const targetPanel = this.dataset.panel;
 
@@ -1237,12 +1127,7 @@ document.querySelectorAll(".nav-button").forEach(button => {
             document.getElementById(targetPanel);
 
         if (!targetElement) {
-
-            console.error(
-                "Dashboard panel not found:",
-                targetPanel
-            );
-
+            console.error("Dashboard panel not found:", targetPanel);
             return;
         }
 
@@ -1255,7 +1140,6 @@ document.querySelectorAll(".nav-button").forEach(button => {
         });
 
         this.classList.add("active");
-
         targetElement.classList.remove("hidden");
 
         closeTellerMobileDrawer();
@@ -1279,12 +1163,13 @@ document.querySelectorAll(".nav-button").forEach(button => {
                 await loadTellerSupportTickets();
             }
 
+            if (targetPanel === "myRegisteredMembersPanel") {
+                await loadMyRegisteredMembers();
+            }
+
         } catch (error) {
 
-            console.error(
-                "Dashboard panel loading error:",
-                error
-            );
+            console.error("Dashboard panel loading error:", error);
 
         }
 
@@ -1297,23 +1182,25 @@ document.querySelectorAll(".nav-button").forEach(button => {
    10. LIVE DEPOSIT MEMBER SEARCH
 ========================================================= */
 
-memberSearchForm.addEventListener("submit", async function (event) {
+memberSearchForm?.addEventListener("submit", async function (event) {
 
     event.preventDefault();
 
     hideMessage(memberSearchMessage);
 
-    if (!currentTeller || tellerAccessLocked) return;
+    if (!isActiveTellerSession()) return;
 
-    memberResults.classList.add("hidden");
-    selectedMemberCard.classList.add("hidden");
+    memberResults?.classList.add("hidden");
+    selectedMemberCard?.classList.add("hidden");
 
     selectedMember = null;
     searchedMembers = [];
 
-    recordDepositButton.disabled = true;
+    if (recordDepositButton) {
+        recordDepositButton.disabled = true;
+    }
 
-    const searchValue = memberSearchInput.value.trim();
+    const searchValue = memberSearchInput?.value.trim();
 
     if (!searchValue) {
 
@@ -1326,24 +1213,16 @@ memberSearchForm.addEventListener("submit", async function (event) {
         return;
     }
 
-    setButtonLoading(
-        searchMemberButton,
-        true,
-        "Search"
-    );
+    setButtonLoading(searchMemberButton, true, "Search");
 
     try {
 
         const { data, error } = await tellerSupabase.rpc(
             "lookup_teller_member",
-            {
-                p_search: searchValue
-            }
+            { p_search: searchValue }
         );
 
-        if (error) {
-            throw error;
-        }
+        if (error) throw error;
 
         searchedMembers = Array.isArray(data) ? data : [];
 
@@ -1366,17 +1245,13 @@ memberSearchForm.addEventListener("submit", async function (event) {
 
         showMessage(
             memberSearchMessage,
-            error.message || "Member search failed.",
+            getErrorMessage(error, "Member search failed."),
             "error"
         );
 
     } finally {
 
-        setButtonLoading(
-            searchMemberButton,
-            false,
-            "Search"
-        );
+        setButtonLoading(searchMemberButton, false, "Search");
 
     }
 
@@ -1384,6 +1259,8 @@ memberSearchForm.addEventListener("submit", async function (event) {
 
 
 function renderMemberResults() {
+
+    if (!memberResults) return;
 
     memberResults.innerHTML = "";
 
@@ -1421,15 +1298,12 @@ function renderMemberResults() {
 
         button.addEventListener("click", function () {
 
-            if (!currentTeller || tellerAccessLocked) return;
+            if (!isActiveTellerSession()) return;
 
             const index = Number(this.dataset.index);
-
             const member = searchedMembers[index];
 
-            if (member) {
-                selectMember(member);
-            }
+            if (member) selectMember(member);
 
         });
 
@@ -1440,78 +1314,112 @@ function renderMemberResults() {
 
 function selectMember(member) {
 
-    if (!currentTeller || tellerAccessLocked) return;
+    if (!isActiveTellerSession()) return;
 
     selectedMember = member;
 
-    selectedMemberName.textContent = member.full_name;
-    selectedMemberId.textContent = member.member_id;
-    selectedMemberPhone.textContent = member.phone || "Not provided";
-    selectedMemberStatus.textContent = member.status || "Not specified";
+    if (selectedMemberName) {
+        selectedMemberName.textContent = member.full_name || "—";
+    }
 
-    selectedMemberCard.classList.remove("hidden");
-    memberResults.classList.add("hidden");
+    if (selectedMemberId) {
+        selectedMemberId.textContent = member.member_id || "—";
+    }
 
-    recordDepositButton.disabled = false;
+    if (selectedMemberPhone) {
+        selectedMemberPhone.textContent = member.phone || "Not provided";
+    }
+
+    if (selectedMemberStatus) {
+        selectedMemberStatus.textContent = member.status || "Not specified";
+    }
+
+    selectedMemberCard?.classList.remove("hidden");
+    memberResults?.classList.add("hidden");
+
+    if (recordDepositButton) {
+        recordDepositButton.disabled = false;
+    }
 
     hideMessage(depositMessage);
 
-    depositReceipt.classList.add("hidden");
+    depositReceipt?.classList.add("hidden");
 
 }
 
 
-changeMemberButton.addEventListener("click", function () {
+changeMemberButton?.addEventListener("click", function () {
 
-    if (!currentTeller || tellerAccessLocked) return;
+    if (!isActiveTellerSession()) return;
 
     selectedMember = null;
 
-    selectedMemberCard.classList.add("hidden");
+    selectedMemberCard?.classList.add("hidden");
 
-    recordDepositButton.disabled = true;
+    if (recordDepositButton) {
+        recordDepositButton.disabled = true;
+    }
 
-    memberSearchInput.focus();
+    memberSearchInput?.focus();
 
 });
 
 
 /* =========================================================
-   11. DEPOSIT PAYMENT METHOD FIELD
+   11. DEPOSIT PAYMENT METHOD FIELDS
 ========================================================= */
 
-depositMethod.addEventListener("change", function () {
+function updateDepositPaymentFields() {
 
-    if (this.value === "mobile_money") {
+    const method = depositMethod?.value || "";
 
-        paymentPhoneGroup.classList.remove("hidden");
+    const isMobileMoney = method === "mobile_money";
+    const isCash = method === "cash";
 
-        paymentPhone.required = true;
+    paymentPhoneGroup?.classList.toggle("hidden", !isMobileMoney);
+    paymentNetworkGroup?.classList.toggle("hidden", !isMobileMoney);
 
-    } else {
+    cashDepositNotice?.classList.toggle("hidden", !isCash);
+    paystackDepositNotice?.classList.toggle("hidden", !isMobileMoney);
 
-        paymentPhoneGroup.classList.add("hidden");
+    if (paymentPhone) {
+        paymentPhone.required = isMobileMoney;
 
-        paymentPhone.required = false;
-
-        paymentPhone.value = "";
-
+        if (!isMobileMoney) {
+            paymentPhone.value = "";
+        }
     }
 
-});
+    if (paymentNetwork) {
+        paymentNetwork.required = isMobileMoney;
+
+        if (!isMobileMoney) {
+            paymentNetwork.value = "";
+        }
+    }
+
+}
+
+
+depositMethod?.addEventListener(
+    "change",
+    updateDepositPaymentFields
+);
+
+updateDepositPaymentFields();
 
 
 /* =========================================================
    12. RECORD LIVE TELLER DEPOSIT
 ========================================================= */
 
-depositForm.addEventListener("submit", async function (event) {
+depositForm?.addEventListener("submit", async function (event) {
 
     event.preventDefault();
 
     hideMessage(depositMessage);
 
-    if (!currentTeller || !currentUser || tellerAccessLocked) {
+    if (!isActiveTellerSession()) {
 
         showMessage(
             depositMessage,
@@ -1535,17 +1443,23 @@ depositForm.addEventListener("submit", async function (event) {
 
     if (depositInProgress) return;
 
-    const amount = Number(depositAmount.value);
+    const amountText = depositAmount?.value.trim() || "";
+    const amount = Number(amountText);
 
-    const method = depositMethod.value;
+    const method = depositMethod?.value || "";
+    const phone = paymentPhone?.value.trim() || "";
+    const network = paymentNetwork?.value || "";
 
-    const phone = paymentPhone.value.trim();
-
-    if (!Number.isFinite(amount) || amount <= 0) {
+    if (
+        !amountText ||
+        !Number.isFinite(amount) ||
+        amount <= 0 ||
+        !/^\d+(\.\d{1,2})?$/.test(amountText)
+    ) {
 
         showMessage(
             depositMessage,
-            "Enter a valid deposit amount greater than zero.",
+            "Enter a valid deposit amount greater than zero, using no more than two decimal places.",
             "error"
         );
 
@@ -1563,27 +1477,79 @@ depositForm.addEventListener("submit", async function (event) {
         return;
     }
 
-    if (method === "mobile_money" && !phone) {
+    /*
+       Bank transfer is blocked until a verified bank-transfer
+       process is implemented. Never credit an unverified transfer.
+    */
+
+    if (method === "bank_transfer") {
 
         showMessage(
             depositMessage,
-            "Enter the Mobile Money phone number.",
+            "Bank transfer deposits are not enabled yet. Use Cash or Mobile Money.",
             "error"
         );
 
         return;
     }
 
-    const confirmed = window.confirm(
-        `Confirm this deposit?\n\n` +
-        `Member: ${selectedMember.full_name}\n` +
-        `Member ID: ${selectedMember.member_id}\n` +
-        `Amount: ${formatMoney(amount)}\n` +
-        `Payment Method: ${method.replace("_", " ")}\n\n` +
-        `The member's wallet will be credited immediately.`
-    );
+    if (method === "mobile_money") {
 
-    if (!confirmed) return;
+        if (!["mtn", "telecel", "at"].includes(network)) {
+
+            showMessage(
+                depositMessage,
+                "Select MTN MoMo, Telecel Cash or AT Money.",
+                "error"
+            );
+
+            return;
+        }
+
+        if (!phone) {
+
+            showMessage(
+                depositMessage,
+                "Enter the Mobile Money phone number.",
+                "error"
+            );
+
+            return;
+        }
+
+    }
+
+    const memberName = selectedMember.full_name;
+    const memberId = selectedMember.member_id;
+
+    const paymentLabel = method === "cash"
+        ? "Cash"
+        : `${network.toUpperCase()} Mobile Money`;
+
+    const confirmationMessage = method === "cash"
+
+        ? (
+            "CONFIRM CASH DEPOSIT\n\n" +
+            `Member: ${memberName}\n` +
+            `Member ID: ${memberId}\n` +
+            `Amount: ${formatMoney(amount)}\n\n` +
+            "Confirm only if you have physically received the cash.\n\n" +
+            "The member's wallet will be credited after confirmation."
+        )
+
+        : (
+            "CONFIRM MOBILE MONEY PAYMENT\n\n" +
+            `Member: ${memberName}\n` +
+            `Member ID: ${memberId}\n` +
+            `Amount: ${formatMoney(amount)}\n` +
+            `Network: ${paymentLabel}\n` +
+            `Phone: ${phone}\n\n` +
+            "The member's wallet will NOT be credited at this stage.\n" +
+            "The payment must first be verified by the payment server.\n\n" +
+            "Continue to Paystack?"
+        );
+
+    if (!window.confirm(confirmationMessage)) return;
 
     depositInProgress = true;
 
@@ -1595,48 +1561,137 @@ depositForm.addEventListener("submit", async function (event) {
 
     try {
 
-        const { data, error } = await tellerSupabase.rpc(
-            "record_teller_deposit",
-            {
-                p_member_id: selectedMember.member_id,
-                p_amount: amount,
-                p_payment_method: method,
-                p_payment_phone: method === "mobile_money" ? phone : null
-            }
-        );
+        // Check the teller's status again before processing.
+        await verifyTellerActive();
 
-        if (error) {
-            throw error;
+        if (!isActiveTellerSession()) {
+            throw new Error("Your teller account is no longer active.");
         }
 
-        if (!data || data.success !== true) {
+        /* -------------------------------------------------
+           CASH DEPOSIT
+        ------------------------------------------------- */
 
-            throw new Error(
-                data?.message || "The deposit could not be recorded."
+        if (method === "cash") {
+
+            const { data, error } = await tellerSupabase.rpc(
+                "record_teller_deposit",
+                {
+                    p_member_id: memberId,
+                    p_amount: amount,
+                    p_payment_method: "cash",
+                    p_payment_phone: null
+                }
             );
 
+            if (error) throw error;
+
+            if (!data || data.success !== true) {
+
+                throw new Error(
+                    data?.message || "The cash deposit could not be recorded."
+                );
+
+            }
+
+            depositForm.reset();
+
+            updateDepositPaymentFields();
+
+            depositReceipt?.classList.remove("hidden");
+
+            if (receiptMessage) {
+                receiptMessage.textContent =
+                    `${data.member_name || memberName}'s wallet has been credited successfully.`;
+            }
+
+            if (receiptReference) {
+                receiptReference.textContent = data.reference || "—";
+            }
+
+            if (receiptAmount) {
+                receiptAmount.textContent = formatMoney(data.amount ?? amount);
+            }
+
+            showMessage(
+                depositMessage,
+                "Cash deposit completed successfully.",
+                "success"
+            );
+
+            await loadTellerHistory();
+
+            return;
         }
 
-        depositForm.reset();
 
-        paymentPhoneGroup.classList.add("hidden");
+        /* -------------------------------------------------
+           MOBILE MONEY - PAYSTACK INITIALIZATION
+        ------------------------------------------------- */
 
-        depositReceipt.classList.remove("hidden");
+        if (method === "mobile_money") {
 
-        receiptMessage.textContent =
-            `${data.member_name}'s wallet has been credited successfully.`;
+            const { data, error } =
+                await tellerSupabase.functions.invoke(
+                    "nexus-teller-deposit",
+                    {
+                        body: {
+                            member_id: memberId,
+                            amount: amount,
+                            payment_method: network,
+                            payment_phone: phone
+                        }
+                    }
+                );
 
-        receiptReference.textContent = data.reference;
+            if (error) {
 
-        receiptAmount.textContent = formatMoney(data.amount);
+                throw new Error(
+                    error.message ||
+                    "Could not initialize the Mobile Money payment."
+                );
 
-        showMessage(
-            depositMessage,
-            "Deposit completed successfully.",
-            "success"
-        );
+            }
 
-        await loadTellerHistory();
+            if (
+                !data ||
+                data.success !== true ||
+                !data.authorization_url
+            ) {
+
+                throw new Error(
+                    data?.message ||
+                    "The payment server did not return a valid Paystack checkout link."
+                );
+
+            }
+
+            /*
+               This is only payment initialization.
+
+               Do not display a successful deposit receipt.
+               Do not call record_teller_deposit.
+               Do not credit the member's wallet here.
+
+               The backend must verify the Paystack transaction
+               and credit the wallet only after verification.
+            */
+
+            showMessage(
+                depositMessage,
+                "Payment initialized. Redirecting to secure Paystack checkout. The member's wallet has not yet been credited.",
+                "info"
+            );
+
+            if (recordDepositButton) {
+                recordDepositButton.disabled = true;
+                recordDepositButton.textContent = "Redirecting...";
+            }
+
+            window.location.assign(data.authorization_url);
+
+            return;
+        }
 
     } catch (error) {
 
@@ -1644,7 +1699,7 @@ depositForm.addEventListener("submit", async function (event) {
 
         showMessage(
             depositMessage,
-            error.message || "Deposit recording failed.",
+            getErrorMessage(error, "Deposit processing failed."),
             "error"
         );
 
@@ -1652,9 +1707,13 @@ depositForm.addEventListener("submit", async function (event) {
 
         depositInProgress = false;
 
-        recordDepositButton.disabled = !selectedMember;
+        if (recordDepositButton) {
 
-        recordDepositButton.textContent = "Record Deposit";
+            recordDepositButton.disabled = !selectedMember;
+
+            recordDepositButton.textContent = "Record Deposit";
+
+        }
 
     }
 
@@ -1665,33 +1724,33 @@ depositForm.addEventListener("submit", async function (event) {
    13. START ANOTHER LIVE DEPOSIT
 ========================================================= */
 
-newDepositButton.addEventListener("click", function () {
+newDepositButton?.addEventListener("click", function () {
 
-    if (!currentTeller || tellerAccessLocked) return;
+    if (!isActiveTellerSession()) return;
 
     selectedMember = null;
-
     searchedMembers = [];
 
-    memberSearchInput.value = "";
+    if (memberSearchInput) {
+        memberSearchInput.value = "";
+    }
 
-    depositForm.reset();
+    depositForm?.reset();
 
-    paymentPhoneGroup.classList.add("hidden");
+    updateDepositPaymentFields();
 
-    selectedMemberCard.classList.add("hidden");
+    selectedMemberCard?.classList.add("hidden");
+    memberResults?.classList.add("hidden");
+    depositReceipt?.classList.add("hidden");
 
-    memberResults.classList.add("hidden");
-
-    depositReceipt.classList.add("hidden");
-
-    recordDepositButton.disabled = true;
+    if (recordDepositButton) {
+        recordDepositButton.disabled = true;
+    }
 
     hideMessage(depositMessage);
-
     hideMessage(memberSearchMessage);
 
-    memberSearchInput.focus();
+    memberSearchInput?.focus();
 
 });
 
@@ -1702,7 +1761,9 @@ newDepositButton.addEventListener("click", function () {
 
 async function loadTellerHistory() {
 
-    if (!currentTeller || tellerAccessLocked) return;
+    if (!isActiveTellerSession()) return;
+
+    if (!historyTableBody) return;
 
     historyTableBody.innerHTML = `
         <tr>
@@ -1718,14 +1779,10 @@ async function loadTellerHistory() {
 
         const { data, error } = await tellerSupabase.rpc(
             "list_my_teller_deposits",
-            {
-                p_limit: 50
-            }
+            { p_limit: 50 }
         );
 
-        if (error) {
-            throw error;
-        }
+        if (error) throw error;
 
         const transactions = Array.isArray(data) ? data : [];
 
@@ -1751,13 +1808,19 @@ async function loadTellerHistory() {
             return `
                 <tr>
                     <td>${escapeHTML(formatDate(transaction.created_at))}</td>
+
                     <td>
                         <strong>${escapeHTML(transaction.full_name)}</strong><br>
                         <small>${escapeHTML(transaction.member_id)}</small>
                     </td>
+
                     <td>${escapeHTML(transaction.reference)}</td>
+
                     <td>${escapeHTML(method)}</td>
-                    <td><strong>${escapeHTML(formatMoney(transaction.amount))}</strong></td>
+
+                    <td>
+                        <strong>${escapeHTML(formatMoney(transaction.amount))}</strong>
+                    </td>
                 </tr>
             `;
 
@@ -1777,7 +1840,7 @@ async function loadTellerHistory() {
 
         showMessage(
             historyMessage,
-            error.message || "Unable to load transaction history.",
+            getErrorMessage(error, "Unable to load transaction history."),
             "error"
         );
 
@@ -1786,7 +1849,7 @@ async function loadTellerHistory() {
 }
 
 
-refreshHistoryButton.addEventListener(
+refreshHistoryButton?.addEventListener(
     "click",
     loadTellerHistory
 );
@@ -1796,25 +1859,27 @@ refreshHistoryButton.addEventListener(
    15. TEST WITHDRAWAL MEMBER SEARCH
 ========================================================= */
 
-testMemberSearchForm.addEventListener("submit", async function (event) {
+testMemberSearchForm?.addEventListener("submit", async function (event) {
 
     event.preventDefault();
 
     hideMessage(testMemberSearchMessage);
 
-    if (!currentTeller || tellerAccessLocked) return;
+    if (!isActiveTellerSession()) return;
 
-    testMemberResults.classList.add("hidden");
-    selectedTestMemberCard.classList.add("hidden");
+    testMemberResults?.classList.add("hidden");
+    selectedTestMemberCard?.classList.add("hidden");
 
     selectedTestMember = null;
     testSearchedMembers = [];
 
-    recordTestWithdrawalButton.disabled = true;
+    if (recordTestWithdrawalButton) {
+        recordTestWithdrawalButton.disabled = true;
+    }
 
-    testWithdrawalReceipt.classList.add("hidden");
+    testWithdrawalReceipt?.classList.add("hidden");
 
-    const searchValue = testMemberSearchInput.value.trim();
+    const searchValue = testMemberSearchInput?.value.trim();
 
     if (!searchValue) {
 
@@ -1827,24 +1892,16 @@ testMemberSearchForm.addEventListener("submit", async function (event) {
         return;
     }
 
-    setButtonLoading(
-        testSearchMemberButton,
-        true,
-        "Search"
-    );
+    setButtonLoading(testSearchMemberButton, true, "Search");
 
     try {
 
         const { data, error } = await tellerSupabase.rpc(
             "lookup_teller_member",
-            {
-                p_search: searchValue
-            }
+            { p_search: searchValue }
         );
 
-        if (error) {
-            throw error;
-        }
+        if (error) throw error;
 
         testSearchedMembers = Array.isArray(data) ? data : [];
 
@@ -1867,17 +1924,13 @@ testMemberSearchForm.addEventListener("submit", async function (event) {
 
         showMessage(
             testMemberSearchMessage,
-            error.message || "Member search failed.",
+            getErrorMessage(error, "Member search failed."),
             "error"
         );
 
     } finally {
 
-        setButtonLoading(
-            testSearchMemberButton,
-            false,
-            "Search"
-        );
+        setButtonLoading(testSearchMemberButton, false, "Search");
 
     }
 
@@ -1889,6 +1942,8 @@ testMemberSearchForm.addEventListener("submit", async function (event) {
 ========================================================= */
 
 function renderTestMemberResults() {
+
+    if (!testMemberResults) return;
 
     testMemberResults.innerHTML = "";
 
@@ -1930,15 +1985,12 @@ function renderTestMemberResults() {
 
             button.addEventListener("click", function () {
 
-                if (!currentTeller || tellerAccessLocked) return;
+                if (!isActiveTellerSession()) return;
 
                 const index = Number(this.dataset.index);
-
                 const member = testSearchedMembers[index];
 
-                if (member) {
-                    selectTestMember(member);
-                }
+                if (member) selectTestMember(member);
 
             });
 
@@ -1953,22 +2005,34 @@ function renderTestMemberResults() {
 
 function selectTestMember(member) {
 
-    if (!currentTeller || tellerAccessLocked) return;
+    if (!isActiveTellerSession()) return;
 
     selectedTestMember = member;
 
-    testMemberName.textContent = member.full_name;
-    testMemberId.textContent = member.member_id;
-    testMemberPhone.textContent = member.phone || "Not provided";
-    testMemberStatus.textContent = member.status || "Not specified";
+    if (testMemberName) {
+        testMemberName.textContent = member.full_name || "—";
+    }
 
-    selectedTestMemberCard.classList.remove("hidden");
+    if (testMemberId) {
+        testMemberId.textContent = member.member_id || "—";
+    }
 
-    testMemberResults.classList.add("hidden");
+    if (testMemberPhone) {
+        testMemberPhone.textContent = member.phone || "Not provided";
+    }
 
-    recordTestWithdrawalButton.disabled = false;
+    if (testMemberStatus) {
+        testMemberStatus.textContent = member.status || "Not specified";
+    }
 
-    testWithdrawalReceipt.classList.add("hidden");
+    selectedTestMemberCard?.classList.remove("hidden");
+    testMemberResults?.classList.add("hidden");
+
+    if (recordTestWithdrawalButton) {
+        recordTestWithdrawalButton.disabled = false;
+    }
+
+    testWithdrawalReceipt?.classList.add("hidden");
 
     hideMessage(testWithdrawalMessage);
     hideMessage(testMemberSearchMessage);
@@ -1976,17 +2040,19 @@ function selectTestMember(member) {
 }
 
 
-changeTestMemberButton.addEventListener("click", function () {
+changeTestMemberButton?.addEventListener("click", function () {
 
-    if (!currentTeller || tellerAccessLocked) return;
+    if (!isActiveTellerSession()) return;
 
     selectedTestMember = null;
 
-    selectedTestMemberCard.classList.add("hidden");
+    selectedTestMemberCard?.classList.add("hidden");
 
-    recordTestWithdrawalButton.disabled = true;
+    if (recordTestWithdrawalButton) {
+        recordTestWithdrawalButton.disabled = true;
+    }
 
-    testMemberSearchInput.focus();
+    testMemberSearchInput?.focus();
 
 });
 
@@ -1995,15 +2061,15 @@ changeTestMemberButton.addEventListener("click", function () {
    18. RECORD TEST WITHDRAWAL SIMULATION
 ========================================================= */
 
-testWithdrawalForm.addEventListener("submit", async function (event) {
+testWithdrawalForm?.addEventListener("submit", async function (event) {
 
     event.preventDefault();
 
     hideMessage(testWithdrawalMessage);
 
-    testWithdrawalReceipt.classList.add("hidden");
+    testWithdrawalReceipt?.classList.add("hidden");
 
-    if (!currentTeller || !currentUser || tellerAccessLocked) {
+    if (!isActiveTellerSession()) {
 
         showMessage(
             testWithdrawalMessage,
@@ -2027,13 +2093,11 @@ testWithdrawalForm.addEventListener("submit", async function (event) {
 
     if (testWithdrawalInProgress) return;
 
-    const amountText = testWithdrawalAmount.value.trim();
-
+    const amountText = testWithdrawalAmount?.value.trim() || "";
     const amount = Number(amountText);
 
-    const method = testWithdrawalMethod.value;
-
-    const details = testPaymentDetails.value.trim();
+    const method = testWithdrawalMethod?.value || "";
+    const details = testPaymentDetails?.value.trim() || "";
 
     if (
         !amountText ||
@@ -2126,9 +2190,7 @@ testWithdrawalForm.addEventListener("submit", async function (event) {
             }
         );
 
-        if (error) {
-            throw error;
-        }
+        if (error) throw error;
 
         if (!data || data.success !== true) {
 
@@ -2139,16 +2201,22 @@ testWithdrawalForm.addEventListener("submit", async function (event) {
 
         }
 
-        testWithdrawalReceipt.classList.remove("hidden");
+        testWithdrawalReceipt?.classList.remove("hidden");
 
-        testReceiptMessage.textContent =
-            "TEST SIMULATION RECORDED — NO MONEY WAS TRANSFERRED.";
+        if (testReceiptMessage) {
+            testReceiptMessage.textContent =
+                "TEST SIMULATION RECORDED — NO MONEY WAS TRANSFERRED.";
+        }
 
-        testReceiptReference.textContent =
-            data.test_reference || "—";
+        if (testReceiptReference) {
+            testReceiptReference.textContent =
+                data.test_reference || "—";
+        }
 
-        testReceiptAmount.textContent =
-            formatMoney(data.amount);
+        if (testReceiptAmount) {
+            testReceiptAmount.textContent =
+                formatMoney(data.amount);
+        }
 
         showMessage(
             testWithdrawalMessage,
@@ -2162,15 +2230,11 @@ testWithdrawalForm.addEventListener("submit", async function (event) {
 
     } catch (error) {
 
-        console.error(
-            "Test withdrawal recording error:",
-            error
-        );
+        console.error("Test withdrawal recording error:", error);
 
         showMessage(
             testWithdrawalMessage,
-            error.message ||
-            "Test withdrawal simulation failed.",
+            getErrorMessage(error, "Test withdrawal simulation failed."),
             "error"
         );
 
@@ -2178,11 +2242,15 @@ testWithdrawalForm.addEventListener("submit", async function (event) {
 
         testWithdrawalInProgress = false;
 
-        recordTestWithdrawalButton.disabled =
-            !selectedTestMember;
+        if (recordTestWithdrawalButton) {
 
-        recordTestWithdrawalButton.textContent =
-            "Record Test Withdrawal";
+            recordTestWithdrawalButton.disabled =
+                !selectedTestMember;
+
+            recordTestWithdrawalButton.textContent =
+                "Record Test Withdrawal";
+
+        }
 
     }
 
@@ -2193,31 +2261,31 @@ testWithdrawalForm.addEventListener("submit", async function (event) {
    19. START ANOTHER TEST WITHDRAWAL
 ========================================================= */
 
-newTestWithdrawalButton.addEventListener("click", function () {
+newTestWithdrawalButton?.addEventListener("click", function () {
 
-    if (!currentTeller || tellerAccessLocked) return;
+    if (!isActiveTellerSession()) return;
 
     selectedTestMember = null;
-
     testSearchedMembers = [];
 
-    testMemberSearchInput.value = "";
+    if (testMemberSearchInput) {
+        testMemberSearchInput.value = "";
+    }
 
-    testWithdrawalForm.reset();
+    testWithdrawalForm?.reset();
 
-    selectedTestMemberCard.classList.add("hidden");
+    selectedTestMemberCard?.classList.add("hidden");
+    testMemberResults?.classList.add("hidden");
+    testWithdrawalReceipt?.classList.add("hidden");
 
-    testMemberResults.classList.add("hidden");
-
-    testWithdrawalReceipt.classList.add("hidden");
-
-    recordTestWithdrawalButton.disabled = true;
+    if (recordTestWithdrawalButton) {
+        recordTestWithdrawalButton.disabled = true;
+    }
 
     hideMessage(testWithdrawalMessage);
-
     hideMessage(testMemberSearchMessage);
 
-    testMemberSearchInput.focus();
+    testMemberSearchInput?.focus();
 
 });
 
@@ -2228,7 +2296,9 @@ newTestWithdrawalButton.addEventListener("click", function () {
 
 async function loadTestWithdrawalHistory() {
 
-    if (!currentTeller || !currentUser || tellerAccessLocked) return;
+    if (!isActiveTellerSession()) return;
+
+    if (!testWithdrawalHistoryBody) return;
 
     testWithdrawalHistoryBody.innerHTML = `
         <tr>
@@ -2244,14 +2314,10 @@ async function loadTestWithdrawalHistory() {
 
         const { data, error } = await tellerSupabase.rpc(
             "list_my_teller_test_withdrawals",
-            {
-                p_limit: 50
-            }
+            { p_limit: 50 }
         );
 
-        if (error) {
-            throw error;
-        }
+        if (error) throw error;
 
         const withdrawals = Array.isArray(data) ? data : [];
 
@@ -2284,8 +2350,7 @@ async function loadTestWithdrawalHistory() {
                     "—";
 
                 const status =
-                    String(withdrawal.status || "simulated")
-                        .toLowerCase();
+                    String(withdrawal.status || "simulated").toLowerCase();
 
                 const cancelButton =
                     status === "simulated"
@@ -2302,41 +2367,25 @@ async function loadTestWithdrawalHistory() {
 
                 return `
                     <tr>
-                        <td>
-                            ${escapeHTML(formatDate(withdrawal.created_at))}
-                        </td>
+                        <td>${escapeHTML(formatDate(withdrawal.created_at))}</td>
 
                         <td>
-                            <strong>
-                                ${escapeHTML(withdrawal.full_name)}
-                            </strong>
+                            <strong>${escapeHTML(withdrawal.full_name)}</strong>
                             <br>
-                            <small>
-                                ${escapeHTML(withdrawal.member_id)}
-                            </small>
+                            <small>${escapeHTML(withdrawal.member_id)}</small>
                         </td>
 
-                        <td>
-                            ${escapeHTML(withdrawal.test_reference)}
-                        </td>
+                        <td>${escapeHTML(withdrawal.test_reference)}</td>
+
+                        <td>${escapeHTML(method)}</td>
 
                         <td>
-                            ${escapeHTML(method)}
+                            <strong>${escapeHTML(formatMoney(withdrawal.amount))}</strong>
                         </td>
 
-                        <td>
-                            <strong>
-                                ${escapeHTML(formatMoney(withdrawal.amount))}
-                            </strong>
-                        </td>
+                        <td>${escapeHTML(status.toUpperCase())}</td>
 
-                        <td>
-                            ${escapeHTML(status.toUpperCase())}
-                        </td>
-
-                        <td>
-                            ${cancelButton}
-                        </td>
+                        <td>${cancelButton}</td>
                     </tr>
                 `;
 
@@ -2344,10 +2393,7 @@ async function loadTestWithdrawalHistory() {
 
     } catch (error) {
 
-        console.error(
-            "Test withdrawal history error:",
-            error
-        );
+        console.error("Test withdrawal history error:", error);
 
         testWithdrawalHistoryBody.innerHTML = `
             <tr>
@@ -2359,8 +2405,7 @@ async function loadTestWithdrawalHistory() {
 
         showMessage(
             testWithdrawalHistoryMessage,
-            error.message ||
-            "Unable to load test withdrawal history.",
+            getErrorMessage(error, "Unable to load test withdrawal history."),
             "error"
         );
 
@@ -2373,7 +2418,7 @@ async function loadTestWithdrawalHistory() {
    20.1 CANCEL TEST WITHDRAWAL
 ========================================================= */
 
-testWithdrawalHistoryBody.addEventListener(
+testWithdrawalHistoryBody?.addEventListener(
     "click",
     async function (event) {
 
@@ -2383,7 +2428,7 @@ testWithdrawalHistoryBody.addEventListener(
 
         if (!button) return;
 
-        if (!currentTeller || !currentUser || tellerAccessLocked) {
+        if (!isActiveTellerSession()) {
             alert("Your teller session is unavailable. Please sign in again.");
             return;
         }
@@ -2414,14 +2459,10 @@ testWithdrawalHistoryBody.addEventListener(
 
             const { data, error } = await tellerSupabase.rpc(
                 "cancel_teller_test_withdrawal",
-                {
-                    p_test_reference: reference
-                }
+                { p_test_reference: reference }
             );
 
-            if (error) {
-                throw error;
-            }
+            if (error) throw error;
 
             if (!data || data.success !== true) {
 
@@ -2442,14 +2483,10 @@ testWithdrawalHistoryBody.addEventListener(
 
         } catch (error) {
 
-            console.error(
-                "Test withdrawal cancellation error:",
-                error
-            );
+            console.error("Test withdrawal cancellation error:", error);
 
             alert(
-                error.message ||
-                "Unable to cancel the test withdrawal."
+                getErrorMessage(error, "Unable to cancel the test withdrawal.")
             );
 
             button.disabled = false;
@@ -2465,7 +2502,7 @@ testWithdrawalHistoryBody.addEventListener(
    20.2 REFRESH TEST WITHDRAWAL HISTORY
 ========================================================= */
 
-refreshTestWithdrawalHistoryButton.addEventListener(
+refreshTestWithdrawalHistoryButton?.addEventListener(
     "click",
     loadTestWithdrawalHistory
 );
@@ -2491,11 +2528,7 @@ function formatSupportStatus(status) {
 
 function showTellerSupportMessage(message, type = "info") {
 
-    showMessage(
-        tellerSupportMessage,
-        message,
-        type
-    );
+    showMessage(tellerSupportMessage, message, type);
 
 }
 
@@ -2505,18 +2538,13 @@ function updateSupportReplyAvailability() {
     const isClosed =
         String(currentSupportTicket?.status || "").toLowerCase() === "closed";
 
-    tellerSupportReplyForm.classList.toggle(
-        "hidden",
-        isClosed
-    );
+    tellerSupportReplyForm?.classList.toggle("hidden", isClosed);
+    tellerSupportClosedNotice?.classList.toggle("hidden", !isClosed);
 
-    tellerSupportClosedNotice.classList.toggle(
-        "hidden",
-        !isClosed
-    );
-
-    tellerSupportReplyButton.disabled =
-        isClosed || supportReplyInProgress;
+    if (tellerSupportReplyButton) {
+        tellerSupportReplyButton.disabled =
+            isClosed || supportReplyInProgress;
+    }
 
 }
 
@@ -2527,7 +2555,9 @@ function updateSupportReplyAvailability() {
 
 async function loadTellerSupportTickets() {
 
-    if (!currentTeller || !currentUser || tellerAccessLocked) return;
+    if (!isActiveTellerSession()) return;
+
+    if (!tellerSupportTicketList) return;
 
     tellerSupportTicketList.innerHTML = `
         <p class="empty-state">
@@ -2541,14 +2571,10 @@ async function loadTellerSupportTickets() {
 
         const { data, error } = await tellerSupabase.rpc(
             "nexus_list_support_tickets",
-            {
-                p_limit: 100
-            }
+            { p_limit: 100 }
         );
 
-        if (error) {
-            throw error;
-        }
+        if (error) throw error;
 
         tellerSupportTickets = Array.isArray(data) ? data : [];
 
@@ -2556,10 +2582,7 @@ async function loadTellerSupportTickets() {
 
     } catch (error) {
 
-        console.error(
-            "Customer support ticket loading error:",
-            error
-        );
+        console.error("Customer support ticket loading error:", error);
 
         tellerSupportTicketList.innerHTML = `
             <p class="empty-state">
@@ -2568,7 +2591,7 @@ async function loadTellerSupportTickets() {
         `;
 
         showTellerSupportMessage(
-            error.message || "Unable to load customer reports.",
+            getErrorMessage(error, "Unable to load customer reports."),
             "error"
         );
 
@@ -2583,8 +2606,10 @@ async function loadTellerSupportTickets() {
 
 function renderTellerSupportTickets() {
 
+    if (!tellerSupportTicketList) return;
+
     const searchTerm =
-        (supportTicketSearch.value || "").trim().toLowerCase();
+        (supportTicketSearch?.value || "").trim().toLowerCase();
 
     const filteredTickets = tellerSupportTickets.filter(ticket => {
 
@@ -2618,8 +2643,7 @@ function renderTellerSupportTickets() {
     tellerSupportTicketList.innerHTML =
         filteredTickets.map(ticket => {
 
-            const status = String(ticket.status || "open")
-                .toLowerCase();
+            const status = String(ticket.status || "open").toLowerCase();
 
             const isSelected =
                 currentSupportTicket &&
@@ -2635,9 +2659,7 @@ function renderTellerSupportTickets() {
 
                     <div class="support-ticket-heading">
 
-                        <strong>
-                            ${escapeHTML(ticket.subject)}
-                        </strong>
+                        <strong>${escapeHTML(ticket.subject)}</strong>
 
                         <span class="support-status-badge status-${escapeHTML(status)}">
                             ${escapeHTML(formatSupportStatus(status))}
@@ -2650,9 +2672,7 @@ function renderTellerSupportTickets() {
                         · ${escapeHTML(ticket.member_id || "No Member ID")}
                     </p>
 
-                    <p>
-                        ${escapeHTML(ticket.category)}
-                    </p>
+                    <p>${escapeHTML(ticket.category)}</p>
 
                     <small>
                         Last activity:
@@ -2673,7 +2693,7 @@ function renderTellerSupportTickets() {
 
 async function openTellerSupportTicket(ticketId) {
 
-    if (!currentTeller || !currentUser || tellerAccessLocked) return;
+    if (!isActiveTellerSession()) return;
 
     const ticket = tellerSupportTickets.find(
         item => String(item.ticket_id) === String(ticketId)
@@ -2691,28 +2711,35 @@ async function openTellerSupportTicket(ticketId) {
 
     currentSupportTicket = ticket;
 
-    tellerSupportSubject.textContent =
-        ticket.subject || "Customer Report";
+    if (tellerSupportSubject) {
+        tellerSupportSubject.textContent = ticket.subject || "Customer Report";
+    }
 
-    tellerSupportCustomer.textContent =
-        ticket.customer_name || "Customer";
+    if (tellerSupportCustomer) {
+        tellerSupportCustomer.textContent = ticket.customer_name || "Customer";
+    }
 
-    tellerSupportCategory.textContent =
-        ticket.category || "—";
+    if (tellerSupportCategory) {
+        tellerSupportCategory.textContent = ticket.category || "—";
+    }
 
-    tellerSupportMemberId.textContent =
-        ticket.member_id || "—";
+    if (tellerSupportMemberId) {
+        tellerSupportMemberId.textContent = ticket.member_id || "—";
+    }
 
-    tellerSupportStatus.textContent =
-        formatSupportStatus(ticket.status);
+    if (tellerSupportStatus) {
+        tellerSupportStatus.textContent = formatSupportStatus(ticket.status);
+    }
 
-    tellerSupportDate.textContent =
-        formatDate(ticket.created_at);
+    if (tellerSupportDate) {
+        tellerSupportDate.textContent = formatDate(ticket.created_at);
+    }
 
-    tellerSupportStatusSelect.value =
-        ticket.status || "open";
+    if (tellerSupportStatusSelect) {
+        tellerSupportStatusSelect.value = ticket.status || "open";
+    }
 
-    tellerSupportConversation.classList.remove("hidden");
+    tellerSupportConversation?.classList.remove("hidden");
 
     updateSupportReplyAvailability();
 
@@ -2720,7 +2747,7 @@ async function openTellerSupportTicket(ticketId) {
 
     await loadTellerSupportMessages(ticket.ticket_id);
 
-    tellerSupportConversation.scrollIntoView({
+    tellerSupportConversation?.scrollIntoView({
         behavior: "smooth",
         block: "start"
     });
@@ -2736,8 +2763,8 @@ async function loadTellerSupportMessages(ticketId) {
 
     if (
         !ticketId ||
-        !currentTeller ||
-        tellerAccessLocked
+        !isActiveTellerSession() ||
+        !tellerSupportMessageList
     ) {
         return;
     }
@@ -2752,14 +2779,10 @@ async function loadTellerSupportMessages(ticketId) {
 
         const { data, error } = await tellerSupabase.rpc(
             "nexus_list_support_messages",
-            {
-                p_ticket_id: ticketId
-            }
+            { p_ticket_id: ticketId }
         );
 
-        if (error) {
-            throw error;
-        }
+        if (error) throw error;
 
         const messages = Array.isArray(data) ? data : [];
 
@@ -2798,17 +2821,13 @@ async function loadTellerSupportMessages(ticketId) {
                                 ${escapeHTML(message.sender_name || senderLabel)}
                             </strong>
 
-                            <span>
-                                ${escapeHTML(senderLabel)}
-                            </span>
+                            <span>${escapeHTML(senderLabel)}</span>
 
                         </div>
 
                         <p style="white-space: pre-wrap;">${escapeHTML(message.message)}</p>
 
-                        <small>
-                            ${escapeHTML(formatDate(message.created_at))}
-                        </small>
+                        <small>${escapeHTML(formatDate(message.created_at))}</small>
 
                     </div>
                 `;
@@ -2820,10 +2839,7 @@ async function loadTellerSupportMessages(ticketId) {
 
     } catch (error) {
 
-        console.error(
-            "Customer support messages error:",
-            error
-        );
+        console.error("Customer support messages error:", error);
 
         tellerSupportMessageList.innerHTML = `
             <p class="empty-state">
@@ -2832,7 +2848,7 @@ async function loadTellerSupportMessages(ticketId) {
         `;
 
         showTellerSupportMessage(
-            error.message || "Unable to load conversation messages.",
+            getErrorMessage(error, "Unable to load conversation messages."),
             "error"
         );
 
@@ -2845,15 +2861,13 @@ async function loadTellerSupportMessages(ticketId) {
    26. CLICK A REPORT TO OPEN IT
 ========================================================= */
 
-tellerSupportTicketList.addEventListener(
+tellerSupportTicketList?.addEventListener(
     "click",
     async function (event) {
 
-        if (!currentTeller || tellerAccessLocked) return;
+        if (!isActiveTellerSession()) return;
 
-        const ticketElement = event.target.closest(
-            "[data-ticket-id]"
-        );
+        const ticketElement = event.target.closest("[data-ticket-id]");
 
         if (!ticketElement) return;
 
@@ -2865,19 +2879,15 @@ tellerSupportTicketList.addEventListener(
 );
 
 
-tellerSupportTicketList.addEventListener(
+tellerSupportTicketList?.addEventListener(
     "keydown",
     async function (event) {
 
-        if (!currentTeller || tellerAccessLocked) return;
+        if (!isActiveTellerSession()) return;
 
-        if (event.key !== "Enter" && event.key !== " ") {
-            return;
-        }
+        if (event.key !== "Enter" && event.key !== " ") return;
 
-        const ticketElement = event.target.closest(
-            "[data-ticket-id]"
-        );
+        const ticketElement = event.target.closest("[data-ticket-id]");
 
         if (!ticketElement) return;
 
@@ -2895,7 +2905,7 @@ tellerSupportTicketList.addEventListener(
    27. SEARCH CUSTOMER REPORTS
 ========================================================= */
 
-supportTicketSearch.addEventListener(
+supportTicketSearch?.addEventListener(
     "input",
     renderTellerSupportTickets
 );
@@ -2905,7 +2915,7 @@ supportTicketSearch.addEventListener(
    28. REFRESH CUSTOMER REPORTS
 ========================================================= */
 
-refreshSupportTicketsButton.addEventListener(
+refreshSupportTicketsButton?.addEventListener(
     "click",
     loadTellerSupportTickets
 );
@@ -2915,13 +2925,13 @@ refreshSupportTicketsButton.addEventListener(
    29. RETURN TO REPORT INBOX
 ========================================================= */
 
-closeTellerSupportConversation.addEventListener(
+closeTellerSupportConversation?.addEventListener(
     "click",
     function () {
 
-        if (!currentTeller || tellerAccessLocked) return;
+        if (!isActiveTellerSession()) return;
 
-        tellerSupportConversation.classList.add("hidden");
+        tellerSupportConversation?.classList.add("hidden");
 
         currentSupportTicket = null;
 
@@ -2940,7 +2950,7 @@ closeTellerSupportConversation.addEventListener(
    30. REPLY TO CUSTOMER REPORT
 ========================================================= */
 
-tellerSupportReplyForm.addEventListener(
+tellerSupportReplyForm?.addEventListener(
     "submit",
     async function (event) {
 
@@ -2948,7 +2958,7 @@ tellerSupportReplyForm.addEventListener(
 
         hideMessage(tellerSupportMessage);
 
-        if (!currentTeller || !currentUser || tellerAccessLocked) {
+        if (!isActiveTellerSession()) {
 
             showTellerSupportMessage(
                 "Your teller session is unavailable. Please sign in again.",
@@ -2982,7 +2992,7 @@ tellerSupportReplyForm.addEventListener(
 
         if (supportReplyInProgress) return;
 
-        const message = tellerSupportReply.value.trim();
+        const message = tellerSupportReply?.value.trim() || "";
 
         if (!message) {
 
@@ -3006,8 +3016,10 @@ tellerSupportReplyForm.addEventListener(
 
         supportReplyInProgress = true;
 
-        tellerSupportReplyButton.disabled = true;
-        tellerSupportReplyButton.textContent = "Sending...";
+        if (tellerSupportReplyButton) {
+            tellerSupportReplyButton.disabled = true;
+            tellerSupportReplyButton.textContent = "Sending...";
+        }
 
         try {
 
@@ -3019,9 +3031,7 @@ tellerSupportReplyForm.addEventListener(
                 }
             );
 
-            if (error) {
-                throw error;
-            }
+            if (error) throw error;
 
             if (data && data.success === false) {
 
@@ -3031,7 +3041,9 @@ tellerSupportReplyForm.addEventListener(
 
             }
 
-            tellerSupportReply.value = "";
+            if (tellerSupportReply) {
+                tellerSupportReply.value = "";
+            }
 
             showTellerSupportMessage(
                 "Your reply has been sent successfully.",
@@ -3046,13 +3058,10 @@ tellerSupportReplyForm.addEventListener(
 
         } catch (error) {
 
-            console.error(
-                "Customer support reply error:",
-                error
-            );
+            console.error("Customer support reply error:", error);
 
             showTellerSupportMessage(
-                error.message || "Could not send your reply.",
+                getErrorMessage(error, "Could not send your reply."),
                 "error"
             );
 
@@ -3060,7 +3069,9 @@ tellerSupportReplyForm.addEventListener(
 
             supportReplyInProgress = false;
 
-            tellerSupportReplyButton.textContent = "Send Reply";
+            if (tellerSupportReplyButton) {
+                tellerSupportReplyButton.textContent = "Send Reply";
+            }
 
             updateSupportReplyAvailability();
 
@@ -3074,13 +3085,13 @@ tellerSupportReplyForm.addEventListener(
    31. UPDATE CUSTOMER REPORT STATUS
 ========================================================= */
 
-updateTellerSupportStatusButton.addEventListener(
+updateTellerSupportStatusButton?.addEventListener(
     "click",
     async function () {
 
         hideMessage(tellerSupportMessage);
 
-        if (!currentTeller || !currentUser || tellerAccessLocked) {
+        if (!isActiveTellerSession()) {
 
             showTellerSupportMessage(
                 "Your teller session is unavailable. Please sign in again.",
@@ -3102,7 +3113,7 @@ updateTellerSupportStatusButton.addEventListener(
 
         if (supportStatusInProgress) return;
 
-        const newStatus = tellerSupportStatusSelect.value;
+        const newStatus = tellerSupportStatusSelect?.value;
 
         const allowedStatuses = [
             "open",
@@ -3146,9 +3157,7 @@ updateTellerSupportStatusButton.addEventListener(
                 }
             );
 
-            if (error) {
-                throw error;
-            }
+            if (error) throw error;
 
             if (data && data.success === false) {
 
@@ -3160,10 +3169,14 @@ updateTellerSupportStatusButton.addEventListener(
 
             currentSupportTicket.status = newStatus;
 
-            tellerSupportStatus.textContent =
-                formatSupportStatus(newStatus);
+            if (tellerSupportStatus) {
+                tellerSupportStatus.textContent =
+                    formatSupportStatus(newStatus);
+            }
 
-            tellerSupportStatusSelect.value = newStatus;
+            if (tellerSupportStatusSelect) {
+                tellerSupportStatusSelect.value = newStatus;
+            }
 
             updateSupportReplyAvailability();
 
@@ -3176,13 +3189,10 @@ updateTellerSupportStatusButton.addEventListener(
 
         } catch (error) {
 
-            console.error(
-                "Customer support status update error:",
-                error
-            );
+            console.error("Customer support status update error:", error);
 
             showTellerSupportMessage(
-                error.message || "Could not update report status.",
+                getErrorMessage(error, "Could not update report status."),
                 "error"
             );
 
@@ -3205,11 +3215,11 @@ updateTellerSupportStatusButton.addEventListener(
 
 async function initializeTellerSupport() {
 
-    if (!currentTeller || !currentUser || tellerAccessLocked) return;
+    if (!isActiveTellerSession()) return;
 
     currentSupportTicket = null;
 
-    tellerSupportConversation.classList.add("hidden");
+    tellerSupportConversation?.classList.add("hidden");
 
     await loadTellerSupportTickets();
 
@@ -3217,7 +3227,41 @@ async function initializeTellerSupport() {
 
 
 /* =========================================================
-   33. AUTH SESSION MONITORING
+   33. TELLER MEMBER REGISTRATION AND MEMBER LIST
+========================================================= */
+
+/*
+   These two functions are intentionally not connected to
+   guessed RPC names.
+
+   Your supplied JavaScript contains the registration and
+   registered-member HTML references, but does not contain
+   the original registration RPC implementation or the
+   registered-members loading implementation.
+
+   Do not invent database function names for financial
+   member-registration operations.
+
+   The registration and registered-member features should
+   be reconnected after their actual RPC names and arguments
+   are confirmed.
+*/
+
+async function loadMyRegisteredMembers() {
+
+    if (!isActiveTellerSession()) return;
+
+    showMessage(
+        myRegisteredMembersMessage,
+        "The registered-members database function has not yet been connected.",
+        "info"
+    );
+
+}
+
+
+/* =========================================================
+   34. AUTH SESSION MONITORING
 ========================================================= */
 
 tellerSupabase.auth.onAuthStateChange((event) => {
@@ -3236,7 +3280,7 @@ tellerSupabase.auth.onAuthStateChange((event) => {
 
 
 /* =========================================================
-   34. INITIAL PAGE LOAD
+   35. INITIAL PAGE LOAD
 ========================================================= */
 
 async function startTellerPortal() {
@@ -3245,10 +3289,8 @@ async function startTellerPortal() {
         document.getElementById("currentYear");
 
     if (currentYearElement) {
-
         currentYearElement.textContent =
             new Date().getFullYear();
-
     }
 
     try {
@@ -3258,9 +3300,7 @@ async function startTellerPortal() {
         const { data, error } =
             await tellerSupabase.auth.getSession();
 
-        if (error) {
-            throw error;
-        }
+        if (error) throw error;
 
         if (data.session?.user) {
 
@@ -3279,10 +3319,7 @@ async function startTellerPortal() {
 
     } catch (error) {
 
-        console.error(
-            "Portal startup error:",
-            error
-        );
+        console.error("Portal startup error:", error);
 
         showLogin();
 
@@ -3293,7 +3330,7 @@ async function startTellerPortal() {
 
         showMessage(
             loginMessage,
-            error.message || "Could not connect to the secure service.",
+            getErrorMessage(error, "Could not connect to the secure service."),
             "error"
         );
 
