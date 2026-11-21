@@ -17,10 +17,163 @@
     <link rel="stylesheet" href="admin.css">
 
     <style>
-        [hidden] {
-            display: none !important;
+    [hidden] {
+        display: none !important;
+    }
+
+    /* =====================================================
+       ADMIN SIMULATED TEST WALLET
+    ====================================================== */
+
+    .test-wallet-section {
+        margin: 22px 0;
+        padding: 22px;
+        border: 1px solid #d8e3ed;
+        border-radius: 12px;
+        background: #f7fafc;
+    }
+
+    .test-wallet-heading {
+        margin-bottom: 18px;
+    }
+
+    .test-wallet-heading h3 {
+        margin: 0 0 7px;
+        color: #102b46;
+        font-size: 18px;
+    }
+
+    .test-wallet-heading p {
+        margin: 0;
+        color: #64748b;
+        font-size: 13px;
+        line-height: 1.6;
+    }
+
+    .test-wallet-warning {
+        margin-bottom: 18px;
+        padding: 12px 14px;
+        border: 1px solid #f2d28b;
+        border-radius: 8px;
+        background: #fff8e8;
+        color: #805b13;
+        font-size: 13px;
+        line-height: 1.6;
+    }
+
+    .test-wallet-balance-card {
+        margin-bottom: 20px;
+        padding: 20px;
+        border-radius: 10px;
+        background: #102b46;
+        color: #ffffff;
+    }
+
+    .test-wallet-balance-card span {
+        display: block;
+        margin-bottom: 8px;
+        color: #d5e2ef;
+        font-size: 13px;
+    }
+
+    .test-wallet-balance-card strong {
+        display: block;
+        font-size: 30px;
+        font-weight: 800;
+    }
+
+    .test-wallet-form {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+        align-items: end;
+    }
+
+    .test-wallet-form .form-group {
+        margin: 0;
+    }
+
+    .test-wallet-form label {
+        display: block;
+        margin-bottom: 7px;
+        color: #334155;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .test-wallet-form input {
+        box-sizing: border-box;
+        width: 100%;
+        min-height: 44px;
+        padding: 10px 12px;
+        border: 1px solid #cbd5e1;
+        border-radius: 7px;
+        background: #ffffff;
+        font: inherit;
+    }
+
+    .test-wallet-form button {
+        grid-column: 1 / -1;
+        min-height: 44px;
+        padding: 11px 18px;
+        border: none;
+        border-radius: 7px;
+        background: #087f5b;
+        color: #ffffff;
+        font-weight: 700;
+        cursor: pointer;
+    }
+
+    .test-wallet-form button:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+
+    .test-wallet-refresh {
+        margin-top: 12px;
+        padding: 9px 14px;
+        border: 1px solid #102b46;
+        border-radius: 7px;
+        background: #ffffff;
+        color: #102b46;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+    .test-wallet-message {
+        min-height: 20px;
+        margin-top: 12px;
+        font-size: 13px;
+        line-height: 1.5;
+    }
+
+    .test-wallet-ledger {
+        margin-top: 22px;
+    }
+
+    .test-wallet-ledger h4 {
+        margin-bottom: 12px;
+        color: #102b46;
+    }
+
+    @media (max-width: 600px) {
+        .test-wallet-section {
+            padding: 15px;
         }
-    </style>
+
+        .test-wallet-form {
+            grid-template-columns: 1fr;
+        }
+
+        .test-wallet-form button {
+            grid-column: auto;
+        }
+
+        .test-wallet-balance-card strong {
+            font-size: 25px;
+        }
+    }
+</style>
 </head>
 
 <body>
@@ -1842,147 +1995,283 @@
 
 
             <!-- =================================================
-                 MEMBER PROFILE MODAL
-            ================================================== -->
+     MEMBER PROFILE MODAL
+================================================== -->
 
-            <div
-                id="memberProfileModal"
-                class="member-profile-modal"
-                hidden
-                role="dialog"
-                aria-modal="true"
-                aria-labelledby="memberProfileTitle"
+<div
+    id="memberProfileModal"
+    class="member-profile-modal"
+    hidden
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="memberProfileTitle"
+>
+
+    <div class="member-profile-card">
+
+        <div class="member-profile-header">
+            <div>
+                <p>MEMBER ACCOUNT</p>
+                <h2 id="memberProfileTitle">Member Profile</h2>
+            </div>
+
+            <button
+                type="button"
+                id="closeMemberProfile"
+                class="member-profile-close"
+                aria-label="Close member profile"
             >
+                ×
+            </button>
+        </div>
 
-                <div class="member-profile-card">
+        <!-- PERSONAL INFORMATION -->
 
-                    <div class="member-profile-header">
-                        <div>
-                            <p>MEMBER ACCOUNT</p>
-                            <h2 id="memberProfileTitle">Member Profile</h2>
-                        </div>
+        <div class="member-profile-section">
+            <h3>Personal Information</h3>
 
-                        <button
-                            type="button"
-                            id="closeMemberProfile"
-                            class="member-profile-close"
-                            aria-label="Close member profile"
-                        >
-                            ×
-                        </button>
-                    </div>
+            <div class="member-profile-grid">
+                <div>
+                    <span>Member ID</span>
+                    <strong id="profileMemberId">—</strong>
+                </div>
 
-                    <div class="member-profile-section">
-                        <h3>Personal Information</h3>
+                <div>
+                    <span>Full Name</span>
+                    <strong id="profileMemberName">—</strong>
+                </div>
 
-                        <div class="member-profile-grid">
-                            <div>
-                                <span>Member ID</span>
-                                <strong id="profileMemberId">—</strong>
-                            </div>
-                            <div>
-                                <span>Full Name</span>
-                                <strong id="profileMemberName">—</strong>
-                            </div>
-                            <div>
-                                <span>Email Address</span>
-                                <strong id="profileMemberEmail">—</strong>
-                            </div>
-                            <div>
-                                <span>Phone Number</span>
-                                <strong id="profileMemberPhone">—</strong>
-                            </div>
-                            <div>
-                                <span>Registration Date</span>
-                                <strong id="profileMemberJoined">—</strong>
-                            </div>
-                            <div>
-                                <span>Account Status</span>
-                                <strong id="profileMemberStatus">—</strong>
-                            </div>
-                        </div>
-                    </div>
+                <div>
+                    <span>Email Address</span>
+                    <strong id="profileMemberEmail">—</strong>
+                </div>
 
-                    <div class="member-profile-section">
-                        <h3>Wallet Information</h3>
+                <div>
+                    <span>Phone Number</span>
+                    <strong id="profileMemberPhone">—</strong>
+                </div>
 
-                        <div class="member-wallet-grid">
-                            <div>
-                                <span>Current Balance</span>
-                                <strong id="profileWalletBalance">GH₵0.00</strong>
-                            </div>
-                            <div>
-                                <span>Total Deposits</span>
-                                <strong id="profileWalletDeposits">GH₵0.00</strong>
-                            </div>
-                            <div>
-                                <span>Total Withdrawals</span>
-                                <strong id="profileWalletWithdrawals">GH₵0.00</strong>
-                            </div>
-                        </div>
-                    </div>
+                <div>
+                    <span>Registration Date</span>
+                    <strong id="profileMemberJoined">—</strong>
+                </div>
 
-                    <div class="member-profile-section">
-                        <h3>Transaction History</h3>
+                <div>
+                    <span>Account Status</span>
+                    <strong id="profileMemberStatus">—</strong>
+                </div>
+            </div>
+        </div>
 
-                        <div class="table-container">
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th scope="col">Reference</th>
-                                        <th scope="col">Type</th>
-                                        <th scope="col">Amount</th>
-                                        <th scope="col">Status</th>
-                                        <th scope="col">Date</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="memberProfileTransactions">
-                                    <tr>
-                                        <td colspan="5" class="empty-table">
-                                            Select a member to view transactions.
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
+        <!-- REAL MEMBER WALLET -->
 
-                    <div class="member-profile-footer">
+        <div class="member-profile-section">
+            <h3>Wallet Information</h3>
 
-                        <div class="member-account-actions">
-                            <button
-                                type="button"
-                                id="suspendMemberButton"
-                                class="member-suspend-button"
-                                hidden
-                            >
-                                Suspend Account
-                            </button>
+            <div class="member-wallet-grid">
+                <div>
+                    <span>Current Balance</span>
+                    <strong id="profileWalletBalance">GH₵0.00</strong>
+                </div>
 
-                            <button
-                                type="button"
-                                id="activateMemberButton"
-                                class="member-activate-button"
-                                hidden
-                            >
-                                Activate Account
-                            </button>
-                        </div>
+                <div>
+                    <span>Total Deposits</span>
+                    <strong id="profileWalletDeposits">GH₵0.00</strong>
+                </div>
 
-                        <button
-                            type="button"
-                            id="closeMemberProfileFooter"
-                            class="panel-action"
-                        >
-                            Close Profile
-                        </button>
+                <div>
+                    <span>Total Withdrawals</span>
+                    <strong id="profileWalletWithdrawals">GH₵0.00</strong>
+                </div>
+            </div>
+        </div>
 
-                    </div>
+        <!-- =================================================
+             SIMULATED TEST WALLET
+             COMPLETELY SEPARATE FROM REAL MEMBER WALLET
+        ================================================== -->
 
+        <div class="test-wallet-section">
+
+            <div class="test-wallet-heading">
+                <h3>Simulated Test Wallet</h3>
+
+                <p>
+                    Administrator-controlled testing facility for
+                    simulated Teller withdrawals and refunds.
+                </p>
+            </div>
+
+            <div class="test-wallet-warning">
+                <strong>SIMULATION ONLY — NO REAL MONEY</strong><br>
+                This test wallet is separate from the member's actual
+                wallet. Funding this wallet does not deposit real money.
+                Simulated Teller withdrawals must not deduct the member's
+                real wallet balance or initiate Paystack payments.
+            </div>
+
+            <div class="test-wallet-balance-card">
+                <span>Available Simulated Test Balance</span>
+                <strong id="profileTestWalletBalance">GH₵0.00</strong>
+            </div>
+
+            <form id="testWalletFundingForm" class="test-wallet-form">
+
+                <div class="form-group">
+                    <label for="testWalletFundingAmount">
+                        Funding Amount (GH₵)
+                    </label>
+
+                    <input
+                        type="number"
+                        id="testWalletFundingAmount"
+                        name="amount"
+                        min="0.01"
+                        max="1000000"
+                        step="0.01"
+                        placeholder="Enter amount"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="testWalletFundingNote">
+                        Funding Note (Optional)
+                    </label>
+
+                    <input
+                        type="text"
+                        id="testWalletFundingNote"
+                        name="note"
+                        maxlength="500"
+                        placeholder="Reason for test funding"
+                    >
+                </div>
+
+                <button
+                    type="submit"
+                    id="fundTestWalletButton"
+                >
+                    Fund Simulated Test Wallet
+                </button>
+
+            </form>
+
+            <button
+                type="button"
+                id="refreshTestWalletButton"
+                class="test-wallet-refresh"
+            >
+                ↻ Refresh Test Wallet
+            </button>
+
+            <p
+                id="testWalletFundingMessage"
+                class="test-wallet-message"
+                role="status"
+                aria-live="polite"
+            ></p>
+
+            <!-- TEST WALLET TRANSACTION HISTORY -->
+
+            <div class="test-wallet-ledger">
+
+                <h4>Test Wallet Transaction History</h4>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th scope="col">Reference</th>
+                                <th scope="col">Transaction Type</th>
+                                <th scope="col">Amount</th>
+                                <th scope="col">Balance Before</th>
+                                <th scope="col">Balance After</th>
+                                <th scope="col">Date</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="memberTestWalletTransactions">
+                            <tr>
+                                <td colspan="6" class="empty-table">
+                                    Test wallet transactions will appear here.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
 
             </div>
 
+        </div>
+
+        <!-- REAL TRANSACTION HISTORY -->
+
+        <div class="member-profile-section">
+            <h3>Transaction History</h3>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th scope="col">Reference</th>
+                            <th scope="col">Type</th>
+                            <th scope="col">Amount</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Date</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="memberProfileTransactions">
+                        <tr>
+                            <td colspan="5" class="empty-table">
+                                Select a member to view transactions.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ACCOUNT ACTIONS -->
+
+        <div class="member-profile-footer">
+
+            <div class="member-account-actions">
+
+                <button
+                    type="button"
+                    id="suspendMemberButton"
+                    class="member-suspend-button"
+                    hidden
+                >
+                    Suspend Account
+                </button>
+
+                <button
+                    type="button"
+                    id="activateMemberButton"
+                    class="member-activate-button"
+                    hidden
+                >
+                    Activate Account
+                </button>
+
+            </div>
+
+            <button
+                type="button"
+                id="closeMemberProfileFooter"
+                class="panel-action"
+            >
+                Close Profile
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
 
             <!-- =================================================
                  ADMIN FOOTER
