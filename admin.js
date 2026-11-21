@@ -2447,6 +2447,11 @@ async function reverseNexusTransaction(
                p_deposit_id: cleanId
             }
          );
+
+         console.log("TELLER STATUS RPC RESPONSE:", {
+            data,
+            error
+         });
          
          if (error) throw error;
          
@@ -4545,6 +4550,11 @@ async function updateAdminTellerStatus(
             userId,
             requestedStatus: newStatus
         });
+
+       console.log(
+          "Verified teller database status:",
+          verifiedTeller
+       );
 
         const { data, error } =
             await nexusAdminSupabase.rpc(
