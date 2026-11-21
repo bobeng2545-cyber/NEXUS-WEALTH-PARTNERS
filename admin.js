@@ -85,6 +85,7 @@ const adminPageTitles = {
     transactions: "Transactions",
     trash: "Transaction Trash",
     savings: "Savings Management",
+    pension: "Pension Management",
     "profit-interest": "Profit & Interest",
     reports: "Reports",
     notifications: "Notifications",
@@ -543,6 +544,21 @@ function showAdminPage(pageName) {
             }
 
             break;
+
+          case "pension":
+
+    if (typeof loadAdminPensionDashboard === "function") {
+        Promise.resolve()
+            .then(() => loadAdminPensionDashboard())
+            .catch(error => {
+                console.error(
+                    "Failed to load pension management:",
+                    error
+                );
+            });
+    }
+
+    break;
 
 
         case "refunds":
@@ -7466,6 +7482,1382 @@ if (
    END OF SECTION 41
    ADMIN CUSTOMER SUPPORT
 ========================================================= */
+
+
+/* =========================================================
+   43. NEXUS TIER 3 PENSION ADMINISTRATION
+   SIMULATION ONLY
+========================================================= */
+
+
+/* =========================================================
+   43.1 PENSION MANAGEMENT STATE
+========================================================= */
+
+let adminPensionAccountsCache = [];
+let adminPensionRequestsCache = [];
+
+let adminPensionRequestOffset = 0;
+
+const ADMIN_PENSION_PAGE_SIZE = 50;
+
+let adminPensionRequestTotal = 0;
+
+let adminPensionSelectedHistoryRequestId = null;
+
+
+/* =========================================================
+   43.2 PENSION MESSAGE HELPERS
+========================================================= */
+
+function showAdminPensionMessage(message, type = "info") {
+
+    const element = document.getElementById(
+        "adminPensionRequestsMessage"
+    );
+
+    if (!element) return;
+
+    element.textContent = message;
+    element.dataset.type = type;
+}
+
+
+function showAdminPensionAccountsMessage(
+    message,
+    type = "info"
+) {
+
+    const element = document.getElementById(
+        "adminPensionAccountsMessage"
+    );
+
+    if (!element) return;
+
+    element.textContent = message;
+    element.dataset.type = type;
+}
+
+
+/* =========================================================
+   43.3 PENSION STATUS DISPLAY
+========================================================= */
+
+function createAdminPensionStatusCell(status) {
+
+    const normalized = String(status || "unknown")
+        .trim()
+        .toLowerCase();
+
+    const cell = document.createElement("td");
+
+    const badge = document.createElement("span");
+
+    badge.className =
+        "nexus-pension-status status-" +
+        normalized.replace(/[^a-z0-9_-]/g, "");
+
+    badge.textContent = normalized
+        .replace(/_/g, " ")
+        .toUpperCase();
+
+    cell.appendChild(badge);
+
+    return cell;
+}
+
+
+function getAdminPensionClassificationLabel(account) {
+
+    const sector = account?.member_sector || "Unverified";
+
+    const coverage =
+        account?.mandatory_scheme_status || "Unverified";
+
+    return (
+        String(sector).replace(/_/g, " ") +
+        " / " +
+        String(coverage).replace(/_/g, " ")
+    );
+}
+
+
+/* =========================================================
+   43.4 LOAD PENSION DASHBOARD
+========================================================= */
+
+async function loadAdminPensionDashboard() {
+
+    const accountsTable = document.getElementById(
+        "adminPensionAccountsTable"
+    );
+
+    const requestsTable = document.getElementById(
+        "adminPensionRequestsTable"
+    );
+
+    if (!accountsTable || !requestsTable) return;
+
+    showAdminPensionAccountsMessage(
+        "Loading pension accounts..."
+    );
+
+    showAdminPensionMessage(
+        "Loading contribution requests..."
+    );
+
+    await Promise.allSettled([
+        loadAdminPensionAccounts(),
+        loadAdminPensionRequests()
+    ]);
+}
+
+
+/* =========================================================
+   43.5 LOAD PENSION ACCOUNTS
+========================================================= */
+
+async function loadAdminPensionAccounts() {
+
+    const table = document.getElementById(
+        "adminPensionAccountsTable"
+    );
+
+    if (!table) return;
+
+    try {
+
+        /*
+           The account query uses verified column names.
+
+           Only the latest 200 records are loaded here.
+           This is a display limit, not a total account count.
+        */
+
+        const {
+            data: accounts,
+            error: accountError
+        } = await nexusAdminSupabase
+            .from("nexus_pension_accounts")
+            .select(
+                "id, user_id, account_number, scheme_code, currency, balance, status, member_sector, mandatory_scheme_status, created_at"
+            )
+            .order("created_at", {
+                ascending: false
+            })
+            .limit(200);
+
+        if (accountError) throw accountError;
+
+        adminPensionAccountsCache = accounts || [];
+
+        const accountIds = adminPensionAccountsCache.map(
+            account => account.id
+        );
+
+        const userIds = [
+            ...new Set(
+                adminPensionAccountsCache.map(
+                    account => account.user_id
+                )
+            )
+        ];
+
+        let profiles = [];
+        let subaccounts = [];
+
+        if (userIds.length > 0) {
+
+            const {
+                data,
+                error
+            } = await nexusAdminSupabase
+                .from("profiles")
+                .select(
+                    "id, full_name, member_id, email, phone"
+                )
+                .in("id", userIds);
+
+            if (error) throw error;
+
+            profiles = data || [];
+        }
+
+        if (accountIds.length > 0) {
+
+            const {
+                data,
+                error
+            } = await nexusAdminSupabase
+                .from("nexus_pension_subaccounts")
+                .select(
+                    "account_id, sub_account_type, balance, status"
+                )
+                .in("account_id", accountIds);
+
+            if (error) throw error;
+
+            subaccounts = data || [];
+        }
+
+        const profileMap = new Map(
+            profiles.map(profile => [
+                profile.id,
+                profile
+            ])
+        );
+
+        const subaccountMap = new Map();
+
+        subaccounts.forEach(subaccount => {
+
+            if (!subaccountMap.has(subaccount.account_id)) {
+                subaccountMap.set(
+                    subaccount.account_id,
+                    []
+                );
+            }
+
+            subaccountMap
+                .get(subaccount.account_id)
+                .push(subaccount);
+
+        });
+
+        table.replaceChildren();
+
+        let activeCount = 0;
+        let totalRecordedBalance = 0;
+
+        adminPensionAccountsCache.forEach(account => {
+
+            const profile =
+                profileMap.get(account.user_id) || {};
+
+            const accountSubaccounts =
+                subaccountMap.get(account.id) || [];
+
+            const balance = getAdminNumber(
+                account.balance
+            );
+
+            totalRecordedBalance += balance;
+
+            if (
+                normalizeAdminStatus(account.status) === "active"
+            ) {
+                activeCount++;
+            }
+
+            const row = document.createElement("tr");
+
+            row.appendChild(
+                createAdminTableCell(account.account_number)
+            );
+
+            row.appendChild(
+                createAdminTableCell(
+                    profile.full_name ||
+                    "Unknown Member"
+                )
+            );
+
+            row.appendChild(
+                createAdminTableCell(profile.member_id)
+            );
+
+            row.appendChild(
+                createAdminTableCell(
+                    account.member_sector || "Unverified"
+                )
+            );
+
+            row.appendChild(
+                createAdminTableCell(
+                    account.mandatory_scheme_status ||
+                    "Unverified"
+                )
+            );
+
+            const subaccountCell =
+                document.createElement("td");
+
+            if (accountSubaccounts.length === 0) {
+
+                subaccountCell.textContent =
+                    "No subaccounts";
+
+            } else {
+
+                subaccountCell.textContent =
+                    accountSubaccounts.map(item => {
+
+                        const type = String(
+                            item.sub_account_type || ""
+                        ).replace(/_/g, " ");
+
+                        return (
+                            type +
+                            ": " +
+                            formatNexusAdminMoney(item.balance)
+                        );
+
+                    }).join(" | ");
+
+            }
+
+            row.appendChild(subaccountCell);
+
+            row.appendChild(
+                createAdminTableCell(
+                    formatNexusAdminMoney(balance)
+                )
+            );
+
+            row.appendChild(
+                createAdminPensionStatusCell(
+                    account.status
+                )
+            );
+
+            row.appendChild(
+                createAdminTableCell(
+                    formatAdminDate(account.created_at)
+                )
+            );
+
+            table.appendChild(row);
+
+        });
+
+        if (adminPensionAccountsCache.length === 0) {
+
+            showAdminTableMessage(
+                "adminPensionAccountsTable",
+                9,
+                "No pension accounts have been created."
+            );
+
+        }
+
+        const accountCountElement =
+            document.getElementById(
+                "adminPensionAccountCount"
+            );
+
+        const activeElement =
+            document.getElementById(
+                "adminPensionActiveAccounts"
+            );
+
+        const balanceElement =
+            document.getElementById(
+                "adminPensionRecordedBalance"
+            );
+
+        if (accountCountElement) {
+            accountCountElement.textContent =
+                adminPensionAccountsCache.length;
+        }
+
+        if (activeElement) {
+            activeElement.textContent = activeCount;
+        }
+
+        if (balanceElement) {
+            balanceElement.textContent =
+                formatNexusAdminMoney(
+                    totalRecordedBalance
+                );
+        }
+
+        showAdminPensionAccountsMessage(
+            "Showing " +
+            adminPensionAccountsCache.length +
+            " latest pension account records.",
+            "success"
+        );
+
+    } catch (error) {
+
+        console.error(
+            "Pension account loading error:",
+            error
+        );
+
+        showAdminTableMessage(
+            "adminPensionAccountsTable",
+            9,
+            "Unable to load pension accounts: " +
+            error.message
+        );
+
+        showAdminPensionAccountsMessage(
+            "Pension account loading failed.",
+            "error"
+        );
+    }
+}
+
+
+/* =========================================================
+   43.6 LOAD CONTRIBUTION REQUESTS
+========================================================= */
+
+async function loadAdminPensionRequests() {
+
+    const table = document.getElementById(
+        "adminPensionRequestsTable"
+    );
+
+    if (!table) return;
+
+    showAdminTableMessage(
+        "adminPensionRequestsTable",
+        9,
+        "Loading contribution requests..."
+    );
+
+    const status = document.getElementById(
+        "adminPensionRequestStatus"
+    )?.value || null;
+
+    const search = document.getElementById(
+        "adminPensionRequestSearch"
+    )?.value.trim() || null;
+
+    try {
+
+        const {
+            data,
+            error
+        } = await nexusAdminSupabase.rpc(
+            "admin_list_nexus_pension_contribution_requests",
+            {
+                p_status: status,
+                p_search: search,
+                p_limit: ADMIN_PENSION_PAGE_SIZE,
+                p_offset: adminPensionRequestOffset
+            }
+        );
+
+        if (error) throw error;
+
+        adminPensionRequestsCache =
+            Array.isArray(data) ? data : [];
+
+        adminPensionRequestTotal =
+            adminPensionRequestsCache.length > 0
+                ? Number(
+                    adminPensionRequestsCache[0].total_count
+                ) || 0
+                : 0;
+
+        renderAdminPensionRequests();
+
+        updateAdminPensionPagination();
+
+        const requestCountElement =
+            document.getElementById(
+                "adminPensionRequestCount"
+            );
+
+        if (requestCountElement) {
+            requestCountElement.textContent =
+                adminPensionRequestTotal;
+        }
+
+        const badge = document.getElementById(
+            "pensionRequestBadge"
+        );
+
+        const pendingCount =
+            adminPensionRequestsCache.filter(request =>
+                ["submitted", "under_review"].includes(
+                    normalizeAdminStatus(
+                        request.request_status
+                    )
+                )
+            ).length;
+
+        if (badge) {
+
+            badge.textContent = pendingCount;
+
+            badge.hidden = pendingCount === 0;
+        }
+
+        showAdminPensionMessage(
+            adminPensionRequestTotal +
+            " matching contribution request(s) found.",
+            "success"
+        );
+
+    } catch (error) {
+
+        console.error(
+            "Pension contribution request loading error:",
+            error
+        );
+
+        showAdminTableMessage(
+            "adminPensionRequestsTable",
+            9,
+            "Unable to load contribution requests: " +
+            error.message
+        );
+
+        showAdminPensionMessage(
+            error.message ||
+            "Unable to load contribution requests.",
+            "error"
+        );
+
+    }
+}
+
+
+/* =========================================================
+   43.7 RENDER CONTRIBUTION REQUESTS
+========================================================= */
+
+function renderAdminPensionRequests() {
+
+    const table = document.getElementById(
+        "adminPensionRequestsTable"
+    );
+
+    if (!table) return;
+
+    table.replaceChildren();
+
+    if (adminPensionRequestsCache.length === 0) {
+
+        showAdminTableMessage(
+            "adminPensionRequestsTable",
+            9,
+            "No contribution requests match your search."
+        );
+
+        return;
+    }
+
+    adminPensionRequestsCache.forEach(request => {
+
+        const row = document.createElement("tr");
+
+        row.appendChild(
+            createAdminTableCell(
+                request.request_reference
+            )
+        );
+
+        row.appendChild(
+            createAdminTableCell(
+                request.member_name
+            )
+        );
+
+        row.appendChild(
+            createAdminTableCell(
+                request.member_id
+            )
+        );
+
+        row.appendChild(
+            createAdminTableCell(
+                getAdminPensionClassificationLabel({
+                    member_sector: request.member_sector,
+                    mandatory_scheme_status:
+                        request.mandatory_scheme_status
+                })
+            )
+        );
+
+        row.appendChild(
+            createAdminTableCell(
+                formatNexusAdminMoney(request.amount)
+            )
+        );
+
+        row.appendChild(
+            createAdminTableCell(
+                request.member_note || "—"
+            )
+        );
+
+        row.appendChild(
+            createAdminPensionStatusCell(
+                request.request_status
+            )
+        );
+
+        row.appendChild(
+            createAdminTableCell(
+                formatAdminDateTime(request.created_at)
+            )
+        );
+
+        const actionsCell =
+            document.createElement("td");
+
+        const actionGroup =
+            document.createElement("div");
+
+        actionGroup.className =
+            "nexus-pension-action-group";
+
+        const currentStatus =
+            normalizeAdminStatus(
+                request.request_status
+            );
+
+        const canReview = [
+            "submitted",
+            "under_review"
+        ].includes(currentStatus);
+
+        if (canReview) {
+
+            const acceptButton =
+                document.createElement("button");
+
+            acceptButton.type = "button";
+            acceptButton.className =
+                "nexus-pension-accept";
+
+            acceptButton.textContent =
+                "Accept for Future Processing";
+
+            acceptButton.addEventListener(
+                "click",
+                () => reviewAdminPensionRequest(
+                    request.request_id,
+                    "accept",
+                    acceptButton
+                )
+            );
+
+            actionGroup.appendChild(acceptButton);
+
+
+            const rejectButton =
+                document.createElement("button");
+
+            rejectButton.type = "button";
+            rejectButton.className =
+                "nexus-pension-reject";
+
+            rejectButton.textContent = "Reject";
+
+            rejectButton.addEventListener(
+                "click",
+                () => reviewAdminPensionRequest(
+                    request.request_id,
+                    "reject",
+                    rejectButton
+                )
+            );
+
+            actionGroup.appendChild(rejectButton);
+        }
+
+        const historyButton =
+            document.createElement("button");
+
+        historyButton.type = "button";
+        historyButton.className =
+            "nexus-pension-history";
+
+        historyButton.textContent =
+            "View History";
+
+        historyButton.addEventListener(
+            "click",
+            () => loadAdminPensionRequestHistory(
+                request.request_id
+            )
+        );
+
+        actionGroup.appendChild(historyButton);
+
+        actionsCell.appendChild(actionGroup);
+
+        row.appendChild(actionsCell);
+
+        table.appendChild(row);
+
+    });
+}
+
+
+/* =========================================================
+   43.8 REQUEST PAGINATION
+========================================================= */
+
+function updateAdminPensionPagination() {
+
+    const previousButton =
+        document.getElementById(
+            "adminPensionPreviousPage"
+        );
+
+    const nextButton =
+        document.getElementById(
+            "adminPensionNextPage"
+        );
+
+    const information =
+        document.getElementById(
+            "adminPensionPaginationInfo"
+        );
+
+    const currentPage =
+        Math.floor(
+            adminPensionRequestOffset /
+            ADMIN_PENSION_PAGE_SIZE
+        ) + 1;
+
+    const totalPages = Math.max(
+        1,
+        Math.ceil(
+            adminPensionRequestTotal /
+            ADMIN_PENSION_PAGE_SIZE
+        )
+    );
+
+    if (information) {
+
+        information.textContent =
+            "Page " +
+            currentPage +
+            " of " +
+            totalPages +
+            " — " +
+            adminPensionRequestTotal +
+            " matching requests";
+    }
+
+    if (previousButton) {
+
+        previousButton.disabled =
+            adminPensionRequestOffset <= 0;
+    }
+
+    if (nextButton) {
+
+        nextButton.disabled =
+            adminPensionRequestOffset +
+            ADMIN_PENSION_PAGE_SIZE >=
+            adminPensionRequestTotal;
+    }
+}
+
+
+/* =========================================================
+   43.9 REVIEW CONTRIBUTION REQUEST
+========================================================= */
+
+async function reviewAdminPensionRequest(
+    requestId,
+    decision,
+    button
+) {
+
+    if (!requestId) {
+
+        alert("Contribution request ID is missing.");
+
+        return;
+    }
+
+    if (!["accept", "reject"].includes(decision)) {
+
+        alert("Invalid pension review decision.");
+
+        return;
+    }
+
+    const request =
+        adminPensionRequestsCache.find(
+            item => item.request_id === requestId
+        );
+
+    if (!request) {
+
+        alert("Contribution request could not be found.");
+
+        return;
+    }
+
+    const administratorNote =
+        document.getElementById(
+            "adminPensionReviewNote"
+        )?.value.trim() || null;
+
+    const actionDescription =
+        decision === "accept"
+            ? "accept this request for future processing"
+            : "reject this request";
+
+    const confirmed = window.confirm(
+        "Are you sure you want to " +
+        actionDescription +
+        "?\n\n" +
+        "Request: " +
+        request.request_reference +
+        "\nAmount: " +
+        formatNexusAdminMoney(request.amount) +
+        "\n\n" +
+        "IMPORTANT: This decision does not receive money, " +
+        "credit a pension balance or post a financial ledger entry."
+    );
+
+    if (!confirmed) return;
+
+    const originalText =
+        button?.textContent || "Review";
+
+    if (button) {
+
+        button.disabled = true;
+
+        button.textContent = "Processing...";
+    }
+
+    showAdminPensionMessage(
+        "Recording the administrator's decision..."
+    );
+
+    try {
+
+        const {
+            data,
+            error
+        } = await nexusAdminSupabase.rpc(
+            "admin_review_nexus_pension_contribution_request",
+            {
+                p_request_id: requestId,
+                p_decision: decision,
+                p_administrator_note: administratorNote
+            }
+        );
+
+        if (error) throw error;
+
+        if (!data || data.success !== true) {
+
+            throw new Error(
+                data?.message ||
+                "The pension request review was unsuccessful."
+            );
+        }
+
+        if (
+            data.payment_received !== false ||
+            data.pension_balance_credited !== false
+        ) {
+
+            throw new Error(
+                "Unexpected financial response. Stop and verify the database result."
+            );
+        }
+
+        alert(
+            data.message ||
+            "Pension contribution request reviewed successfully."
+        );
+
+        const noteInput = document.getElementById(
+            "adminPensionReviewNote"
+        );
+
+        if (noteInput) {
+            noteInput.value = "";
+        }
+
+        await loadAdminPensionRequests();
+
+        await loadAdminPensionRequestHistory(requestId);
+
+    } catch (error) {
+
+        console.error(
+            "Pension contribution review error:",
+            error
+        );
+
+        alert(
+            "Unable to review pension request: " +
+            error.message
+        );
+
+        showAdminPensionMessage(
+            error.message ||
+            "The pension request could not be reviewed.",
+            "error"
+        );
+
+    } finally {
+
+        if (button) {
+
+            button.disabled = false;
+
+            button.textContent = originalText;
+        }
+    }
+}
+
+
+/* =========================================================
+   43.10 LOAD CONTRIBUTION REQUEST HISTORY
+========================================================= */
+
+async function loadAdminPensionRequestHistory(requestId) {
+
+    if (!requestId) return;
+
+    const panel = document.getElementById(
+        "adminPensionHistoryPanel"
+    );
+
+    const table = document.getElementById(
+        "adminPensionHistoryTable"
+    );
+
+    if (!panel || !table) return;
+
+    adminPensionSelectedHistoryRequestId =
+        requestId;
+
+    panel.hidden = false;
+
+    showAdminTableMessage(
+        "adminPensionHistoryTable",
+        5,
+        "Loading request history..."
+    );
+
+    panel.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+    });
+
+    try {
+
+        const {
+            data,
+            error
+        } = await nexusAdminSupabase.rpc(
+            "admin_get_nexus_pension_contribution_request_history",
+            {
+                p_request_id: requestId
+            }
+        );
+
+        if (error) throw error;
+
+        const history =
+            Array.isArray(data) ? data : [];
+
+        const firstRecord =
+            history.length > 0
+                ? history[0]
+                : null;
+
+        const referenceElement =
+            document.getElementById(
+                "adminPensionHistoryReferenceValue"
+            );
+
+        const amountElement =
+            document.getElementById(
+                "adminPensionHistoryAmount"
+            );
+
+        const statusElement =
+            document.getElementById(
+                "adminPensionHistoryStatus"
+            );
+
+        const headingElement =
+            document.getElementById(
+                "adminPensionHistoryReference"
+            );
+
+        if (referenceElement) {
+
+            referenceElement.textContent =
+                firstRecord?.request_reference || "—";
+        }
+
+        if (headingElement) {
+
+            headingElement.textContent =
+                firstRecord?.request_reference
+                    ? "History for " +
+                      firstRecord.request_reference
+                    : "Selected contribution request";
+        }
+
+        if (amountElement) {
+
+            amountElement.textContent =
+                firstRecord
+                    ? formatNexusAdminMoney(
+                        firstRecord.request_amount
+                    )
+                    : "—";
+        }
+
+        if (statusElement) {
+
+            statusElement.textContent =
+                firstRecord?.request_status || "—";
+        }
+
+        table.replaceChildren();
+
+        const historyEntries =
+            history.filter(item => item.audit_id);
+
+        if (historyEntries.length === 0) {
+
+            showAdminTableMessage(
+                "adminPensionHistoryTable",
+                5,
+                "No audit history entries were found for this request."
+            );
+
+            return;
+        }
+
+        historyEntries.forEach(entry => {
+
+            const row = document.createElement("tr");
+
+            row.appendChild(
+                createAdminTableCell(
+                    formatAdminDateTime(
+                        entry.audit_created_at
+                    )
+                )
+            );
+
+            row.appendChild(
+                createAdminTableCell(
+                    entry.audit_action
+                )
+            );
+
+            row.appendChild(
+                createAdminTableCell(
+                    entry.actor_role
+                )
+            );
+
+            row.appendChild(
+                createAdminTableCell(
+                    entry.description
+                )
+            );
+
+            const detailsCell =
+                document.createElement("td");
+
+            const details = document.createElement("pre");
+
+            details.textContent =
+                entry.details
+                    ? JSON.stringify(
+                        entry.details,
+                        null,
+                        2
+                    )
+                    : "—";
+
+            detailsCell.appendChild(details);
+
+            row.appendChild(detailsCell);
+
+            table.appendChild(row);
+
+        });
+
+    } catch (error) {
+
+        console.error(
+            "Pension request history error:",
+            error
+        );
+
+        showAdminTableMessage(
+            "adminPensionHistoryTable",
+            5,
+            "Unable to load request history: " +
+            error.message
+        );
+    }
+}
+
+
+/* =========================================================
+   43.11 PENSION EVENT LISTENERS
+========================================================= */
+
+// Refresh pension records
+
+const refreshAdminPensionButton =
+    document.getElementById(
+        "refreshAdminPensionButton"
+    );
+
+if (
+    refreshAdminPensionButton &&
+    refreshAdminPensionButton.dataset.pensionBound !== "true"
+) {
+
+    refreshAdminPensionButton.dataset.pensionBound =
+        "true";
+
+    refreshAdminPensionButton.addEventListener(
+        "click",
+        async function() {
+
+            refreshAdminPensionButton.disabled = true;
+
+            const originalText =
+                refreshAdminPensionButton.textContent;
+
+            refreshAdminPensionButton.textContent =
+                "Refreshing...";
+
+            try {
+
+                await loadAdminPensionDashboard();
+
+            } finally {
+
+                refreshAdminPensionButton.disabled = false;
+
+                refreshAdminPensionButton.textContent =
+                    originalText;
+            }
+        }
+    );
+}
+
+
+// Search contribution requests
+
+const adminPensionSearchForm =
+    document.getElementById(
+        "adminPensionSearchForm"
+    );
+
+if (
+    adminPensionSearchForm &&
+    adminPensionSearchForm.dataset.pensionBound !== "true"
+) {
+
+    adminPensionSearchForm.dataset.pensionBound =
+        "true";
+
+    adminPensionSearchForm.addEventListener(
+        "submit",
+        async function(event) {
+
+            event.preventDefault();
+
+            adminPensionRequestOffset = 0;
+
+            await loadAdminPensionRequests();
+        }
+    );
+}
+
+
+// Clear search
+
+const clearAdminPensionSearch =
+    document.getElementById(
+        "clearAdminPensionSearch"
+    );
+
+if (
+    clearAdminPensionSearch &&
+    clearAdminPensionSearch.dataset.pensionBound !== "true"
+) {
+
+    clearAdminPensionSearch.dataset.pensionBound =
+        "true";
+
+    clearAdminPensionSearch.addEventListener(
+        "click",
+        async function() {
+
+            const searchInput =
+                document.getElementById(
+                    "adminPensionRequestSearch"
+                );
+
+            const statusInput =
+                document.getElementById(
+                    "adminPensionRequestStatus"
+                );
+
+            if (searchInput) {
+                searchInput.value = "";
+            }
+
+            if (statusInput) {
+                statusInput.value = "";
+            }
+
+            adminPensionRequestOffset = 0;
+
+            await loadAdminPensionRequests();
+        }
+    );
+}
+
+
+// Status filter
+
+const adminPensionRequestStatus =
+    document.getElementById(
+        "adminPensionRequestStatus"
+    );
+
+if (
+    adminPensionRequestStatus &&
+    adminPensionRequestStatus.dataset.pensionBound !== "true"
+) {
+
+    adminPensionRequestStatus.dataset.pensionBound =
+        "true";
+
+    adminPensionRequestStatus.addEventListener(
+        "change",
+        async function() {
+
+            adminPensionRequestOffset = 0;
+
+            await loadAdminPensionRequests();
+        }
+    );
+}
+
+
+// Previous page
+
+const adminPensionPreviousPage =
+    document.getElementById(
+        "adminPensionPreviousPage"
+    );
+
+if (
+    adminPensionPreviousPage &&
+    adminPensionPreviousPage.dataset.pensionBound !== "true"
+) {
+
+    adminPensionPreviousPage.dataset.pensionBound =
+        "true";
+
+    adminPensionPreviousPage.addEventListener(
+        "click",
+        async function() {
+
+            if (adminPensionRequestOffset <= 0) return;
+
+            adminPensionRequestOffset =
+                Math.max(
+                    0,
+                    adminPensionRequestOffset -
+                    ADMIN_PENSION_PAGE_SIZE
+                );
+
+            await loadAdminPensionRequests();
+        }
+    );
+}
+
+
+// Next page
+
+const adminPensionNextPage =
+    document.getElementById(
+        "adminPensionNextPage"
+    );
+
+if (
+    adminPensionNextPage &&
+    adminPensionNextPage.dataset.pensionBound !== "true"
+) {
+
+    adminPensionNextPage.dataset.pensionBound =
+        "true";
+
+    adminPensionNextPage.addEventListener(
+        "click",
+        async function() {
+
+            if (
+                adminPensionRequestOffset +
+                ADMIN_PENSION_PAGE_SIZE >=
+                adminPensionRequestTotal
+            ) {
+                return;
+            }
+
+            adminPensionRequestOffset +=
+                ADMIN_PENSION_PAGE_SIZE;
+
+            await loadAdminPensionRequests();
+        }
+    );
+}
+
+
+// Close history panel
+
+const closeAdminPensionHistory =
+    document.getElementById(
+        "closeAdminPensionHistory"
+    );
+
+if (
+    closeAdminPensionHistory &&
+    closeAdminPensionHistory.dataset.pensionBound !== "true"
+) {
+
+    closeAdminPensionHistory.dataset.pensionBound =
+        "true";
+
+    closeAdminPensionHistory.addEventListener(
+        "click",
+        function() {
+
+            const panel = document.getElementById(
+                "adminPensionHistoryPanel"
+            );
+
+            if (panel) {
+                panel.hidden = true;
+            }
+
+            adminPensionSelectedHistoryRequestId = null;
+        }
+    );
+}
+
+
+/* =========================================================
+   END OF SECTION 43
+   NEXUS TIER 3 PENSION ADMINISTRATION
+========================================================= */
+
 
 /* =========================================================
    40. START ADMIN DASHBOARD
