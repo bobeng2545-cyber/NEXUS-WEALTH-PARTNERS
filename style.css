@@ -5071,3 +5071,168 @@ body > #notificationMenu.notification-open {
     }
 
 }
+
+
+/* =========================================================
+   NEXUS WEALTH PARTNERS
+   PROFESSIONAL PENSION PAGE STYLING
+========================================================= */
+
+/* Main Pension contribution panel */
+#memberPension .pension-contribution-panel {
+    background: #ffffff;
+    border: 1px solid #e3eaf1;
+    border-radius: 16px;
+    padding: 28px;
+    margin-top: 24px;
+    box-shadow: 0 6px 22px rgba(16, 43, 70, 0.06);
+}
+
+#memberPension .pension-contribution-panel > h3 {
+    color: #102b46;
+    font-size: 21px;
+    font-weight: 750;
+    margin: 0 0 22px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #edf1f5;
+    letter-spacing: -0.3px;
+}
+
+/* Development / Simulation Only notice */
+#memberPension .pension-notice {
+    position: relative;
+    background: linear-gradient(135deg, #fff9e9, #fffdf6);
+    border: 1px solid #f0d99c;
+    border-left: 5px solid #d69b20;
+    border-radius: 12px;
+    padding: 22px 24px;
+    margin: 24px 0;
+    box-shadow: 0 4px 14px rgba(140, 100, 20, 0.05);
+}
+
+#memberPension .pension-notice h4 {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    color: #946200;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    margin: 0 0 12px;
+    text-transform: uppercase;
+}
+
+#memberPension .pension-notice h4::before {
+    content: "!";
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 23px;
+    height: 23px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: #f3d78e;
+    color: #704900;
+    font-size: 14px;
+    font-weight: 900;
+}
+
+#memberPension .pension-notice p {
+    color: #66552f;
+    font-size: 14px;
+    line-height: 1.75;
+    margin: 0;
+}
+
+/* Important Pension Information */
+#memberPension .pension-notice h3 {
+    color: #102b46;
+    font-size: 17px;
+    font-weight: 750;
+    margin: 22px 0 12px;
+    padding-top: 18px;
+    border-top: 1px solid #efdfb8;
+}
+
+#memberPension .pension-notice ul {
+    margin: 12px 0 0;
+    padding-left: 21px;
+}
+
+#memberPension .pension-notice li {
+    color: #5b6470;
+    font-size: 13.5px;
+    line-height: 1.8;
+    padding-left: 4px;
+    margin-bottom: 7px;
+}
+
+#memberPension .pension-notice li::marker {
+    color: #c18a1c;
+}
+
+/* Contribution form fields */
+#memberPension .pension-contribution-panel input,
+#memberPension .pension-contribution-panel select,
+#memberPension .pension-contribution-panel textarea {
+    width: 100%;
+    border: 1px solid #dce4ec;
+    border-radius: 9px;
+    padding: 13px 14px;
+    background: #fbfcfe;
+    color: #243447;
+    font-size: 14px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+#memberPension .pension-contribution-panel input:focus,
+#memberPension .pension-contribution-panel select:focus,
+#memberPension .pension-contribution-panel textarea:focus {
+    outline: none;
+    border-color: #12a879;
+    box-shadow: 0 0 0 3px rgba(18, 168, 121, 0.12);
+    background: #ffffff;
+}
+
+/* Submit button */
+#memberPension .pension-contribution-panel button {
+    border: none;
+    border-radius: 9px;
+    padding: 13px 22px;
+    background: #102b46;
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+#memberPension .pension-contribution-panel button:hover {
+    background: #12a879;
+    transform: translateY(-1px);
+}
+
+/* Mobile responsiveness */
+@media (max-width: 600px) {
+    #memberPension .pension-contribution-panel {
+        padding: 18px;
+        border-radius: 12px;
+    }
+
+    #memberPension .pension-contribution-panel > h3 {
+        font-size: 18px;
+    }
+
+    #memberPension .pension-notice {
+        padding: 17px;
+    }
+
+    #memberPension .pension-notice h3 {
+        font-size: 16px;
+    }
+
+    #memberPension .pension-notice p,
+    #memberPension .pension-notice li {
+        font-size: 13px;
+    }
+}
