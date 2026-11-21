@@ -4478,7 +4478,6 @@ if (createTellerForm) {
 
 
 
-
 /* =========================================================
    37. UPDATE TELLER ACCOUNT STATUS
    OPTIONAL REASON + DATABASE AUDIT LOG
@@ -4551,11 +4550,6 @@ async function updateAdminTellerStatus(
             requestedStatus: newStatus
         });
 
-       console.log(
-          "Verified teller database status:",
-          verifiedTeller
-       );
-
         const { data, error } =
             await nexusAdminSupabase.rpc(
                 "admin_update_nexus_teller_status",
@@ -4565,6 +4559,11 @@ async function updateAdminTellerStatus(
                     p_reason: reason || null
                 }
             );
+
+        console.log("TELLER STATUS RPC RESPONSE:", {
+            data,
+            error
+        });
 
         if (error) throw error;
 
@@ -4576,12 +4575,16 @@ async function updateAdminTellerStatus(
         }
 
         // Verify the actual database status.
-        const { data: verifiedTeller, error: verifyError } =
-            await nexusAdminSupabase
-                .from("nexus_tellers")
-                .select("user_id,teller_code,full_name,status,updated_at")
-                .eq("user_id", userId)
-                .maybeSingle();
+        const {
+            data: verifiedTeller,
+            error: verifyError
+        } = await nexusAdminSupabase
+            .from("nexus_tellers")
+            .select(
+                "user_id,teller_code,full_name,status,updated_at"
+            )
+            .eq("user_id", userId)
+            .maybeSingle();
 
         if (verifyError) throw verifyError;
 
@@ -4635,6 +4638,9 @@ async function updateAdminTellerStatus(
 
     }
 }
+
+
+
 
 
 
