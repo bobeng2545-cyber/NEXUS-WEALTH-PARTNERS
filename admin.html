@@ -173,6 +173,175 @@
             font-size: 25px;
         }
     }
+
+        
+/* =====================================================
+   NEXUS PENSION ADMINISTRATION
+===================================================== */
+
+.nexus-pension-warning {
+    margin: 20px 0;
+    padding: 17px 19px;
+    border: 1px solid #f0cf83;
+    border-left: 5px solid #d69b26;
+    border-radius: 9px;
+    background: #fff8e8;
+    color: #795719;
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+.nexus-pension-warning strong {
+    display: block;
+    margin-bottom: 7px;
+    font-size: 14px;
+}
+
+.nexus-pension-warning p {
+    margin: 5px 0;
+}
+
+.nexus-pension-review-note {
+    margin: 18px 0;
+}
+
+.nexus-pension-review-note label {
+    display: block;
+    margin-bottom: 8px;
+    color: #334155;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.nexus-pension-review-note textarea {
+    box-sizing: border-box;
+    width: 100%;
+    min-height: 85px;
+    padding: 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font: inherit;
+    resize: vertical;
+}
+
+.nexus-pension-review-note small {
+    display: block;
+    margin-top: 6px;
+    color: #64748b;
+    font-size: 12px;
+}
+
+.nexus-pension-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 18px;
+    flex-wrap: wrap;
+}
+
+.nexus-pension-pagination span {
+    color: #475569;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.nexus-pension-action-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+    min-width: 180px;
+}
+
+.nexus-pension-action-group button {
+    padding: 7px 10px;
+    border: 0;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.nexus-pension-accept {
+    background: #087f5b;
+    color: #fff;
+}
+
+.nexus-pension-reject {
+    background: #b42318;
+    color: #fff;
+}
+
+.nexus-pension-history {
+    background: #e8eef5;
+    color: #102b46;
+}
+
+.nexus-pension-action-group button:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+.nexus-pension-status {
+    display: inline-block;
+    padding: 5px 8px;
+    border-radius: 5px;
+    background: #edf2f7;
+    color: #334155;
+    font-size: 11px;
+    font-weight: 700;
+    overflow-wrap: anywhere;
+}
+
+.nexus-pension-status.status-active,
+.nexus-pension-status.status-accepted_for_future_processing {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.nexus-pension-status.status-rejected,
+.nexus-pension-status.status-suspended,
+.nexus-pension-status.status-closed {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.nexus-pension-status.status-submitted,
+.nexus-pension-status.status-pending,
+.nexus-pension-status.status-under_review {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+#adminPensionHistoryPanel pre {
+    max-width: 320px;
+    max-height: 160px;
+    overflow: auto;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    font-size: 11px;
+}
+
+@media (max-width: 600px) {
+    .nexus-pension-warning {
+        padding: 13px;
+    }
+
+    .nexus-pension-pagination {
+        align-items: stretch;
+    }
+
+    .nexus-pension-pagination button {
+        flex: 1;
+    }
+
+    .nexus-pension-pagination span {
+        width: 100%;
+        text-align: center;
+        order: -1;
+    }
+}
+  
 </style>
 </head>
 
@@ -338,6 +507,12 @@
                 <button type="button" class="admin-nav-link" data-page="savings">
                     <span aria-hidden="true">◈</span>
                     <span>Savings Management</span>
+                </button>
+
+                <button type="button" class="admin-nav-link" data-page="pension">
+                    <span aria-hidden="true">♙</span>
+                    <span>Pension Management</span>
+                    <span id="pensionRequestBadge" class="nav-badge" hidden>0</span>
                 </button>
 
                 <button type="button" class="admin-nav-link" data-page="profit-interest">
@@ -1418,6 +1593,423 @@
                 </div>
 
             </section>
+
+
+            
+<!-- =================================================
+     NEXUS TIER 3 PENSION MANAGEMENT
+     SIMULATION ONLY
+================================================== -->
+
+<section
+    id="page-pension"
+    class="admin-page"
+    aria-labelledby="pensionHeading"
+>
+
+    <div class="page-intro">
+        <div>
+            <h2 id="pensionHeading">Pension Management</h2>
+            <p>
+                Manage member pension accounts, classifications
+                and simulated contribution requests.
+            </p>
+        </div>
+
+        <button
+            type="button"
+            class="panel-action"
+            id="refreshAdminPensionButton"
+        >
+            ↻ Refresh Pension Records
+        </button>
+    </div>
+
+    <!-- SIMULATION WARNING -->
+
+    <div class="nexus-pension-warning">
+        <strong>SIMULATION ONLY — NO REAL MONEY</strong>
+
+        <p>
+            The NEXUS Tier 3 pension system is currently under development.
+            No real pension contributions, investment transactions,
+            withdrawals or benefit payments are being processed.
+        </p>
+
+        <p>
+            Accepting a contribution request only marks it as
+            accepted for future processing. It does not confirm payment,
+            credit a pension balance or create a financial ledger entry.
+        </p>
+    </div>
+
+    <!-- PENSION ACCOUNT STATISTICS -->
+
+    <div class="statistics-grid">
+
+        <article class="stat-card">
+            <div class="stat-icon members-icon" aria-hidden="true">♙</div>
+            <p>Pension Accounts</p>
+            <h3 id="adminPensionAccountCount">0</h3>
+            <span>Accounts in the latest 200 records</span>
+        </article>
+
+        <article class="stat-card">
+            <div class="stat-icon deposits-icon" aria-hidden="true">✓</div>
+            <p>Active Accounts</p>
+            <h3 id="adminPensionActiveAccounts">0</h3>
+            <span>Active pension accounts</span>
+        </article>
+
+        <article class="stat-card">
+            <div class="stat-icon wallet-icon" aria-hidden="true">₵</div>
+            <p>Recorded Pension Balances</p>
+            <h3 id="adminPensionRecordedBalance">GH₵0.00</h3>
+            <span>Database-recorded simulation balances</span>
+        </article>
+
+        <article class="stat-card">
+            <div class="stat-icon withdrawals-icon" aria-hidden="true">◷</div>
+            <p>Contribution Requests</p>
+            <h3 id="adminPensionRequestCount">0</h3>
+            <span>Matching the selected request filter</span>
+        </article>
+
+    </div>
+
+    <!-- PENSION ACCOUNTS -->
+
+    <div class="admin-panel">
+
+        <div class="panel-heading">
+            <div>
+                <h3>Member Pension Accounts</h3>
+                <p>
+                    Review pension account numbers, member classifications
+                    and separate pension subaccounts.
+                </p>
+            </div>
+        </div>
+
+        <p
+            id="adminPensionAccountsMessage"
+            class="member-search-results"
+            role="status"
+            aria-live="polite"
+        >
+            Pension accounts will appear here.
+        </p>
+
+        <div class="table-container">
+
+            <table>
+                <thead>
+                    <tr>
+                        <th scope="col">Account Number</th>
+                        <th scope="col">Member</th>
+                        <th scope="col">Member ID</th>
+                        <th scope="col">Sector</th>
+                        <th scope="col">Mandatory Scheme Status</th>
+                        <th scope="col">Subaccounts</th>
+                        <th scope="col">Recorded Balance</th>
+                        <th scope="col">Account Status</th>
+                        <th scope="col">Date Created</th>
+                    </tr>
+                </thead>
+
+                <tbody id="adminPensionAccountsTable">
+                    <tr>
+                        <td colspan="9" class="empty-table">
+                            Pension accounts will appear here.
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
+
+    </div>
+
+    <!-- CONTRIBUTION REQUEST MANAGEMENT -->
+
+    <div class="admin-panel">
+
+        <div class="panel-heading">
+            <div>
+                <h3>Pension Contribution Requests</h3>
+                <p>
+                    Review submitted requests and record administrative decisions.
+                </p>
+            </div>
+        </div>
+
+        <!-- REQUEST SEARCH AND FILTER -->
+
+        <form id="adminPensionSearchForm">
+
+            <div class="date-filter-controls">
+
+                <div class="date-filter-field">
+                    <label for="adminPensionRequestSearch">
+                        Search Requests
+                    </label>
+
+                    <input
+                        type="search"
+                        id="adminPensionRequestSearch"
+                        placeholder="Member name, ID, email or request reference..."
+                        autocomplete="off"
+                    >
+                </div>
+
+                <div class="date-filter-field">
+                    <label for="adminPensionRequestStatus">
+                        Request Status
+                    </label>
+
+                    <select id="adminPensionRequestStatus">
+                        <option value="">All Statuses</option>
+                        <option value="submitted">Submitted</option>
+                        <option value="under_review">Under Review</option>
+                        <option value="accepted_for_future_processing">
+                            Accepted for Future Processing
+                        </option>
+                        <option value="rejected">Rejected</option>
+                        <option value="cancelled">Cancelled</option>
+                    </select>
+                </div>
+
+            </div>
+
+            <div class="date-filter-actions">
+
+                <button type="submit" id="searchAdminPensionRequests">
+                    Search Requests
+                </button>
+
+                <button
+                    type="button"
+                    class="panel-action"
+                    id="clearAdminPensionSearch"
+                >
+                    Clear Search
+                </button>
+
+            </div>
+
+        </form>
+
+        <p
+            id="adminPensionRequestsMessage"
+            class="member-search-results"
+            role="status"
+            aria-live="polite"
+        >
+            Contribution requests will appear here.
+        </p>
+
+        <!-- ADMINISTRATOR REVIEW NOTE -->
+
+        <div class="nexus-pension-review-note">
+
+            <label for="adminPensionReviewNote">
+                Administrator Review Note (Optional)
+            </label>
+
+            <textarea
+                id="adminPensionReviewNote"
+                rows="3"
+                maxlength="1000"
+                placeholder="Enter an optional explanation for your decision..."
+            ></textarea>
+
+            <small>
+                This note will be recorded with your administrative decision.
+            </small>
+
+        </div>
+
+        <!-- REQUEST TABLE -->
+
+        <div class="table-container">
+
+            <table>
+                <thead>
+                    <tr>
+                        <th scope="col">Request Reference</th>
+                        <th scope="col">Member</th>
+                        <th scope="col">Member ID</th>
+                        <th scope="col">Classification</th>
+                        <th scope="col">Amount</th>
+                        <th scope="col">Member Note</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Date Submitted</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody id="adminPensionRequestsTable">
+                    <tr>
+                        <td colspan="9" class="empty-table">
+                            Contribution requests will appear here.
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
+
+        <!-- PAGINATION -->
+
+        <div class="nexus-pension-pagination">
+
+            <button
+                type="button"
+                id="adminPensionPreviousPage"
+                class="panel-action"
+                disabled
+            >
+                ← Previous
+            </button>
+
+            <span id="adminPensionPaginationInfo">
+                Page 1
+            </span>
+
+            <button
+                type="button"
+                id="adminPensionNextPage"
+                class="panel-action"
+                disabled
+            >
+                Next →
+            </button>
+
+        </div>
+
+    </div>
+
+    <!-- REQUEST HISTORY -->
+
+    <div
+        class="admin-panel"
+        id="adminPensionHistoryPanel"
+        hidden
+    >
+
+        <div class="panel-heading">
+
+            <div>
+                <h3>Contribution Request History</h3>
+                <p id="adminPensionHistoryReference">
+                    Selected request history
+                </p>
+            </div>
+
+            <button
+                type="button"
+                class="panel-action"
+                id="closeAdminPensionHistory"
+            >
+                Close History
+            </button>
+
+        </div>
+
+        <div class="platform-information">
+
+            <div>
+                <span>Request Amount</span>
+                <strong id="adminPensionHistoryAmount">—</strong>
+            </div>
+
+            <div>
+                <span>Current Status</span>
+                <strong id="adminPensionHistoryStatus">—</strong>
+            </div>
+
+            <div>
+                <span>Request Reference</span>
+                <strong id="adminPensionHistoryReferenceValue">—</strong>
+            </div>
+
+        </div>
+
+        <div class="table-container">
+
+            <table>
+                <thead>
+                    <tr>
+                        <th scope="col">Date &amp; Time</th>
+                        <th scope="col">Action</th>
+                        <th scope="col">Actor Role</th>
+                        <th scope="col">Description</th>
+                        <th scope="col">Audit Details</th>
+                    </tr>
+                </thead>
+
+                <tbody id="adminPensionHistoryTable">
+                    <tr>
+                        <td colspan="5" class="empty-table">
+                            Select a request to view its history.
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
+
+    </div>
+
+    <!-- PENSION OPERATIONAL NOTICE -->
+
+    <div class="admin-panel">
+
+        <div class="panel-heading">
+            <div>
+                <h3>Pension Operational Status</h3>
+                <p>Important restrictions currently governing the pension system.</p>
+            </div>
+        </div>
+
+        <div class="platform-information">
+
+            <div>
+                <span>Pension model</span>
+                <strong>Tier 3</strong>
+            </div>
+
+            <div>
+                <span>System mode</span>
+                <strong>Simulation Only</strong>
+            </div>
+
+            <div>
+                <span>Real-money contributions</span>
+                <strong>Disabled</strong>
+            </div>
+
+            <div>
+                <span>Provider payments</span>
+                <strong>Disabled</strong>
+            </div>
+
+            <div>
+                <span>Pension withdrawals</span>
+                <strong>Disabled</strong>
+            </div>
+
+            <div>
+                <span>Approved allocation rules</span>
+                <strong>Not yet configured</strong>
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
 
 
             <!-- =================================================
