@@ -5342,3 +5342,560 @@ body > #notificationMenu.notification-open {
         line-height: 1.7;
     }
 }
+
+
+/* =====================================================
+   NEXUS WEALTH PARTNERS
+   PROFESSIONAL BANKING DASHBOARD INTERFACE
+===================================================== */
+
+:root {
+    --nexus-primary: #087443;
+    --nexus-primary-dark: #075b36;
+    --nexus-primary-light: #eaf5ef;
+
+    --nexus-navy: #142d45;
+    --nexus-navy-light: #203f5b;
+
+    --nexus-background: #f4f7f9;
+    --nexus-surface: #ffffff;
+
+    --nexus-text: #243447;
+    --nexus-muted: #718096;
+
+    --nexus-border: #e4eaf0;
+
+    --nexus-radius: 15px;
+    --nexus-shadow: 0 5px 20px rgba(20, 45, 69, 0.055);
+}
+
+/* MAIN ACCOUNT BACKGROUND */
+
+body.account-page {
+    background: var(--nexus-background);
+    color: var(--nexus-text);
+    font-family: "Inter", "Segoe UI", Arial, sans-serif;
+}
+
+/* PUBLIC HEADER */
+
+.account-page .public-header {
+    background: #ffffff;
+    border-bottom: 1px solid var(--nexus-border);
+    box-shadow: 0 2px 12px rgba(20, 45, 69, 0.045);
+}
+
+.account-page .brand-symbol {
+    background: var(--nexus-primary);
+    color: #ffffff;
+    border-radius: 10px;
+}
+
+.account-page .brand-text strong {
+    color: var(--nexus-navy);
+    letter-spacing: 1.2px;
+}
+
+.account-page .brand-text small {
+    color: var(--nexus-muted);
+    letter-spacing: 1.5px;
+}
+
+/* DASHBOARD HEADING */
+
+.account-page .dashboard-heading {
+    background: transparent;
+}
+
+.account-page .dashboard-welcome h2 {
+    color: var(--nexus-navy);
+    font-weight: 750;
+    letter-spacing: -0.5px;
+}
+
+.account-page .dashboard-welcome p {
+    color: var(--nexus-muted);
+}
+
+/* DASHBOARD CARDS */
+
+.account-page .dashboard-card {
+    background: var(--nexus-surface);
+    border: 1px solid var(--nexus-border);
+    border-radius: var(--nexus-radius);
+    box-shadow: var(--nexus-shadow);
+    padding: 23px;
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.account-page .dashboard-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 9px 25px rgba(20, 45, 69, 0.09);
+    border-color: #cbded3;
+}
+
+.account-page .dashboard-card p {
+    color: var(--nexus-muted);
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.account-page .dashboard-card h3 {
+    color: var(--nexus-navy);
+    font-size: 25px;
+    font-weight: 750;
+    letter-spacing: -0.5px;
+}
+
+.account-page .dashboard-card small {
+    color: var(--nexus-muted);
+    line-height: 1.6;
+}
+
+.account-page .card-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 43px;
+    height: 43px;
+    margin-bottom: 12px;
+    background: var(--nexus-primary-light);
+    border-radius: 12px;
+    font-size: 20px;
+}
+
+/* SECTION EYEBROWS */
+
+.account-page .bank-section-eyebrow {
+    display: block;
+    margin-bottom: 7px;
+    color: var(--nexus-primary);
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+}
+
+/* FINANCIAL ACCOUNTS */
+
+.account-page .nexus-financial-accounts {
+    padding: 25px;
+    background: #ffffff;
+    border: 1px solid var(--nexus-border);
+    border-radius: var(--nexus-radius);
+    box-shadow: var(--nexus-shadow);
+}
+
+.account-page .financial-accounts-heading h3 {
+    color: var(--nexus-navy);
+    font-size: 20px;
+    font-weight: 750;
+}
+
+.account-page .financial-accounts-heading p {
+    color: var(--nexus-muted);
+    font-size: 13px;
+}
+
+.account-page .financial-accounts-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+    margin-top: 20px;
+}
+
+.account-page .financial-account-card {
+    display: flex;
+    align-items: center;
+    gap: 17px;
+    min-width: 0;
+    padding: 22px;
+    background: #ffffff;
+    border: 1px solid var(--nexus-border);
+    border-radius: 13px;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.account-page .financial-account-card:hover {
+    border-color: var(--nexus-primary);
+    background: #fbfefc;
+    transform: translateY(-2px);
+    box-shadow: var(--nexus-shadow);
+}
+
+.account-page .financial-account-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 50px;
+    width: 50px;
+    height: 50px;
+    background: var(--nexus-primary-light);
+    border-radius: 13px;
+    font-size: 23px;
+}
+
+.account-page .financial-account-details {
+    flex: 1;
+    min-width: 0;
+}
+
+.account-page .financial-account-details h3 {
+    margin: 0 0 5px;
+    color: var(--nexus-navy);
+    font-size: 16px;
+    font-weight: 750;
+}
+
+.account-page .financial-account-details p {
+    margin: 0 0 9px;
+    color: var(--nexus-muted);
+    font-size: 12px;
+}
+
+.account-page .financial-account-details strong {
+    color: var(--nexus-primary);
+    font-size: 19px;
+    font-weight: 800;
+}
+
+.account-page .financial-account-link {
+    color: var(--nexus-primary);
+    font-size: 12px;
+    font-weight: 750;
+    white-space: nowrap;
+}
+
+.account-page .financial-accounts-note {
+    margin-top: 17px;
+    color: var(--nexus-muted);
+    font-size: 12px;
+    line-height: 1.7;
+}
+
+/* WALLET PANEL */
+
+.account-page .nexus-wallet-panel {
+    padding: 25px;
+    background: #ffffff;
+    border: 1px solid var(--nexus-border);
+    border-radius: var(--nexus-radius);
+    box-shadow: var(--nexus-shadow);
+}
+
+.account-page .bank-panel-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    margin-bottom: 22px;
+}
+
+.account-page .bank-panel-heading h3 {
+    margin: 0 0 6px;
+    color: var(--nexus-navy);
+    font-size: 20px;
+    font-weight: 750;
+}
+
+.account-page .bank-panel-heading p {
+    margin: 0;
+    color: var(--nexus-muted);
+    font-size: 13px;
+}
+
+.account-page .bank-panel-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 46px;
+    height: 46px;
+    flex: 0 0 46px;
+    background: var(--nexus-primary-light);
+    border-radius: 13px;
+    font-size: 21px;
+}
+
+.account-page .nexus-wallet-cards {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.account-page .nexus-wallet-card {
+    min-width: 0;
+    margin: 0;
+}
+
+/* WALLET ACTION BUTTONS */
+
+.account-page .wallet-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 23px;
+}
+
+.account-page .wallet-actions a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 0 20px;
+    background: var(--nexus-primary);
+    border: 1px solid var(--nexus-primary);
+    border-radius: 9px;
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: background 0.2s ease;
+}
+
+.account-page .wallet-actions a:hover {
+    background: var(--nexus-primary-dark);
+}
+
+/* GENERAL DASHBOARD PANELS */
+
+.account-page .dashboard-panel {
+    background: #ffffff;
+    border: 1px solid var(--nexus-border);
+    border-radius: var(--nexus-radius);
+    box-shadow: var(--nexus-shadow);
+}
+
+.account-page .dashboard-panel > h3,
+.account-page .dashboard-panel .desktop-page-heading {
+    color: var(--nexus-navy);
+    font-weight: 750;
+}
+
+.account-page .dashboard-panel > p {
+    color: var(--nexus-muted);
+    line-height: 1.7;
+}
+
+/* FORM INPUTS */
+
+.account-page input,
+.account-page select,
+.account-page textarea {
+    border: 1px solid #dce4eb;
+    border-radius: 9px;
+    background: #ffffff;
+    color: var(--nexus-text);
+    font-family: inherit;
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.account-page input:focus,
+.account-page select:focus,
+.account-page textarea:focus {
+    outline: none;
+    border-color: var(--nexus-primary);
+    box-shadow: 0 0 0 3px rgba(8, 116, 67, 0.10);
+}
+
+.account-page label {
+    color: var(--nexus-navy);
+    font-size: 13px;
+    font-weight: 650;
+}
+
+/* PRIMARY BUTTONS */
+
+.account-page button[type="submit"],
+.account-page .support-create-card button {
+    border-radius: 9px;
+    font-weight: 700;
+    transition:
+        background 0.2s ease,
+        transform 0.2s ease;
+}
+
+.account-page button[type="submit"]:hover {
+    transform: translateY(-1px);
+}
+
+/* TABLES */
+
+.account-page .table-container {
+    overflow-x: auto;
+    border: 1px solid var(--nexus-border);
+    border-radius: 11px;
+    background: #ffffff;
+}
+
+.account-page table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.account-page table thead {
+    background: #f3f7f5;
+}
+
+.account-page table th {
+    padding: 15px 14px;
+    color: var(--nexus-navy);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.45px;
+    text-align: left;
+    white-space: nowrap;
+    border-bottom: 1px solid var(--nexus-border);
+}
+
+.account-page table td {
+    padding: 14px;
+    color: var(--nexus-text);
+    font-size: 12px;
+    border-bottom: 1px solid #edf1f4;
+}
+
+.account-page table tbody tr:hover {
+    background: #f8fbf9;
+}
+
+.account-page table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* PENSION SUMMARY */
+
+.account-page .pension-summary-card {
+    background: linear-gradient(
+        135deg,
+        #0a7044,
+        #075333
+    );
+    border-radius: 15px;
+    color: #ffffff;
+    box-shadow: 0 8px 22px rgba(8, 116, 67, 0.17);
+}
+
+.account-page .pension-summary-card strong,
+.account-page .pension-summary-card span,
+.account-page .pension-summary-card small {
+    color: #ffffff;
+}
+
+/* PENSION NOTICE SPACING */
+
+.account-page .nexus-pension-notice {
+    margin: 18px 0;
+}
+
+.account-page .nexus-pension-notice__title {
+    font-weight: 750;
+}
+
+/* ACCOUNT INFORMATION */
+
+.account-page .information-item {
+    padding: 13px 0;
+    border-bottom: 1px solid #edf1f4;
+}
+
+.account-page .information-item:last-child {
+    border-bottom: none;
+}
+
+.account-page .information-item span {
+    color: var(--nexus-muted);
+    font-size: 12px;
+}
+
+.account-page .information-item strong {
+    color: var(--nexus-navy);
+    font-size: 13px;
+}
+
+/* MEMBER NAVIGATION */
+
+.account-page .member-navigation {
+    background: #ffffff;
+    border-top: 1px solid var(--nexus-border);
+    box-shadow: 0 -4px 15px rgba(20, 45, 69, 0.035);
+}
+
+.account-page .member-navigation a {
+    transition: color 0.2s ease;
+}
+
+.account-page .member-navigation a.active {
+    color: var(--nexus-primary);
+}
+
+/* RESPONSIVE DESIGN */
+
+@media (max-width: 700px) {
+
+    .account-page .nexus-financial-accounts,
+    .account-page .nexus-wallet-panel {
+        padding: 17px;
+        border-radius: 12px;
+    }
+
+    .account-page .nexus-wallet-cards {
+        grid-template-columns: 1fr;
+        gap: 13px;
+    }
+
+    .account-page .dashboard-card {
+        padding: 18px;
+    }
+
+    .account-page .dashboard-card h3 {
+        font-size: 22px;
+    }
+
+    .account-page .financial-account-card {
+        padding: 16px;
+        gap: 12px;
+    }
+
+    .account-page .financial-account-icon {
+        flex-basis: 43px;
+        width: 43px;
+        height: 43px;
+        font-size: 20px;
+    }
+
+    .account-page .financial-account-link {
+        font-size: 11px;
+    }
+
+    .account-page .wallet-actions {
+        display: grid;
+        grid-template-columns: 1fr;
+    }
+
+    .account-page .wallet-actions a {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .account-page .bank-panel-heading h3 {
+        font-size: 18px;
+    }
+}
+
+@media (max-width: 380px) {
+
+    .account-page .financial-account-card {
+        flex-wrap: wrap;
+    }
+
+    .account-page .financial-account-link {
+        width: 100%;
+        padding-left: 55px;
+    }
+
+}
