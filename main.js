@@ -2229,6 +2229,7 @@ async function loadMemberPension(user) {
 
 
 
+
 /* =========================================
    16B. OPEN MEMBER PENSION ACCOUNT
    SIMULATION ONLY
@@ -2278,7 +2279,6 @@ if (openPensionAccountButton) {
                 }
 
                 if (!authData?.user) {
-
                     throw new Error(
                         "Your session has expired. Please log in again."
                     );
@@ -2298,11 +2298,7 @@ if (openPensionAccountButton) {
                     throw error;
                 }
 
-                if (
-                    !data ||
-                    data.success !== true
-                ) {
-
+                if (!data || data.success !== true) {
                     throw new Error(
                         data?.message ||
                         "Your Pension account could not be opened."
@@ -2318,7 +2314,6 @@ if (openPensionAccountButton) {
                 /* DISPLAY RESULT */
 
                 if (pensionAccountOpeningMessage) {
-
                     pensionAccountOpeningMessage.textContent =
                         data.message ||
                         "Your Pension account has been opened and is awaiting administrator activation.";
@@ -2329,7 +2324,6 @@ if (openPensionAccountButton) {
                     "Your Pension account has been opened successfully."
                 );
 
-
             } catch (error) {
 
                 console.error(
@@ -2338,7 +2332,6 @@ if (openPensionAccountButton) {
                 );
 
                 if (pensionAccountOpeningMessage) {
-
                     pensionAccountOpeningMessage.textContent =
                         error.message ||
                         "Unable to open your Pension account.";
@@ -2349,39 +2342,41 @@ if (openPensionAccountButton) {
                     "Unable to open your Pension account. Please try again."
                 );
 
+            } finally {
 
-            finally {
+                if (openPensionAccountButton) {
 
-    const openingPanel =
-        getElement("pensionAccountOpeningPanel");
+                    const accountNumber =
+                        getElement("pensionAccountNumber")
+                            ?.textContent?.trim();
 
-    const accountNumber =
-        getElement("pensionAccountNumber")?.textContent?.trim();
+                    const accountExists =
+                        Boolean(
+                            accountNumber &&
+                            accountNumber !== "Not yet created" &&
+                            accountNumber !== "Not yet assigned"
+                        );
 
-    const accountExists =
-        Boolean(
-            accountNumber &&
-            accountNumber !== "Not yet created" &&
-            accountNumber !== "Not yet assigned"
-        );
+                    if (accountExists) {
 
-    if (accountExists) {
+                        openPensionAccountButton.disabled = true;
 
-        openPensionAccountButton.disabled = true;
+                        if (pensionAccountOpeningPanel) {
+                            pensionAccountOpeningPanel.hidden = true;
+                        }
 
-        if (openingPanel) {
-            openingPanel.hidden = true;
+                    } else {
+
+                        openPensionAccountButton.disabled = false;
+
+                    }
+
+                    openPensionAccountButton.textContent =
+                        "Open Pension Account";
+                }
+            }
         }
-
-    } else {
-
-        openPensionAccountButton.disabled = false;
-
-    }
-
-    openPensionAccountButton.textContent =
-        "Open Pension Account";
-
+    );
 }
 
    
