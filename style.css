@@ -5236,3 +5236,109 @@ body > #notificationMenu.notification-open {
         font-size: 13px;
     }
 }
+
+
+/* =========================================
+   NEXUS PENSION NOTICE COMPONENTS
+========================================= */
+
+.nexus-pension-notice {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    width: 100%;
+    padding: 19px 21px;
+    margin: 16px 0;
+    border: 1px solid transparent;
+    border-radius: 13px;
+    box-sizing: border-box;
+    font-family: inherit;
+}
+
+.nexus-pension-notice__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 40px;
+    width: 40px;
+    height: 40px;
+    border-radius: 11px;
+    font-size: 19px;
+    font-weight: 700;
+}
+
+.nexus-pension-notice__content {
+    flex: 1;
+    min-width: 0;
+}
+
+.nexus-pension-notice__title {
+    margin: 0 0 7px;
+    font-size: 15px;
+    font-weight: 750;
+    line-height: 1.4;
+    letter-spacing: 0.1px;
+}
+
+.nexus-pension-notice__text {
+    margin: 0;
+    font-size: 13.5px;
+    line-height: 1.75;
+    font-weight: 450;
+}
+
+.nexus-pension-notice__text + .nexus-pension-notice__text {
+    margin-top: 8px;
+}
+
+/* ACCOUNT ACTIVATION NOTICE */
+
+.nexus-pension-notice--warning {
+    background: #fff9eb;
+    border-color: #f2dfb4;
+    color: #79520c;
+}
+
+.nexus-pension-notice--warning .nexus-pension-notice__icon {
+    background: #ffedc2;
+    color: #a66a00;
+}
+
+/* SIMULATION INFORMATION NOTICE */
+
+.nexus-pension-notice--simulation {
+    background: #eff6ff;
+    border-color: #cbdff7;
+    color: #174574;
+}
+
+.nexus-pension-notice--simulation .nexus-pension-notice__icon {
+    background: #dcecff;
+    color: #1e5fa5;
+}
+
+/* MOBILE RESPONSIVENESS */
+
+@media (max-width: 600px) {
+    .nexus-pension-notice {
+        gap: 11px;
+        padding: 15px;
+        border-radius: 11px;
+    }
+
+    .nexus-pension-notice__icon {
+        flex-basis: 34px;
+        width: 34px;
+        height: 34px;
+        font-size: 16px;
+    }
+
+    .nexus-pension-notice__title {
+        font-size: 14px;
+    }
+
+    .nexus-pension-notice__text {
+        font-size: 12.5px;
+        line-height: 1.7;
+    }
+}
