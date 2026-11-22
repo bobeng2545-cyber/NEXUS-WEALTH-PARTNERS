@@ -6,7 +6,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <meta name="description" content="Nexus Wealth Partners - Manage your wallet and separate pension account.">
+    <meta
+        name="description"
+        content="Nexus Wealth Partners - Manage your wallet, Savings and separate Pension account."
+    >
+
     <meta name="theme-color" content="#087443">
 
     <title>Member Account | Nexus Wealth Partners</title>
@@ -25,6 +29,7 @@
         <div class="brand-area">
             <a href="index.html" class="brand-logo">
                 <span class="brand-symbol">N</span>
+
                 <span class="brand-text">
                     <strong>NEXUS</strong>
                     <small>WEALTH PARTNERS</small>
@@ -60,6 +65,7 @@
         <section id="register" class="auth-screen">
 
             <div class="auth-card-header">
+
                 <div class="auth-brand-icon">N</div>
 
                 <span class="auth-welcome-label">
@@ -69,11 +75,13 @@
                 <h2>Create Your Account</h2>
 
                 <p>Start building better financial habits today.</p>
+
             </div>
 
             <form id="registrationForm">
 
                 <label for="registerName">Full Name</label>
+
                 <input
                     type="text"
                     id="registerName"
@@ -84,6 +92,7 @@
                 >
 
                 <label for="registerEmail">Email Address</label>
+
                 <input
                     type="email"
                     id="registerEmail"
@@ -94,6 +103,7 @@
                 >
 
                 <label for="registerPhone">Phone Number</label>
+
                 <input
                     type="tel"
                     id="registerPhone"
@@ -104,6 +114,7 @@
                 >
 
                 <label for="registerPassword">Password</label>
+
                 <input
                     type="password"
                     id="registerPassword"
@@ -114,6 +125,7 @@
                 >
 
                 <label for="confirmPassword">Confirm Password</label>
+
                 <input
                     type="password"
                     id="confirmPassword"
@@ -123,7 +135,9 @@
                     required
                 >
 
-                <button type="submit">Create Account</button>
+                <button type="submit">
+                    Create Account
+                </button>
 
                 <p class="auth-switch-text">
                     Already have an account?
@@ -150,6 +164,7 @@
         <section id="login" class="auth-screen">
 
             <div class="auth-card-header">
+
                 <div class="auth-brand-icon">N</div>
 
                 <span class="auth-welcome-label">
@@ -159,11 +174,13 @@
                 <h2>Welcome Back</h2>
 
                 <p>Sign in to access your financial dashboard.</p>
+
             </div>
 
             <form id="loginForm">
 
                 <label for="loginEmail">Email Address</label>
+
                 <input
                     type="email"
                     id="loginEmail"
@@ -174,6 +191,7 @@
                 >
 
                 <label for="loginPassword">Password</label>
+
                 <input
                     type="password"
                     id="loginPassword"
@@ -187,7 +205,9 @@
                     <a href="#forgotPassword">Forgot Password?</a>
                 </p>
 
-                <button type="submit">Login to Your Account</button>
+                <button type="submit">
+                    Login to Your Account
+                </button>
 
                 <p class="auth-switch-text">
                     Don't have an account?
@@ -214,6 +234,7 @@
         <section id="forgotPassword" class="auth-screen">
 
             <div class="auth-card-header">
+
                 <div class="auth-brand-icon">N</div>
 
                 <span class="auth-welcome-label">
@@ -226,11 +247,14 @@
                     Enter the email address associated with your account
                     to request a password reset.
                 </p>
+
             </div>
 
             <form id="forgotPasswordForm">
 
-                <label for="resetEmail">Registered Email Address</label>
+                <label for="resetEmail">
+                    Registered Email Address
+                </label>
 
                 <input
                     type="email"
@@ -241,7 +265,9 @@
                     required
                 >
 
-                <button type="submit">Request Password Reset</button>
+                <button type="submit">
+                    Request Password Reset
+                </button>
 
                 <p class="auth-switch-text">
                     Remembered your password?
@@ -276,6 +302,7 @@
                 class="mobile-screen-header mobile-inner-header"
                 id="mobileScreenHeader"
             >
+
                 <button
                     type="button"
                     id="mobileBackButton"
@@ -285,6 +312,7 @@
                 </button>
 
                 <h2 id="mobileScreenTitle">Transactions</h2>
+
             </div>
 
 
@@ -293,6 +321,7 @@
             <div class="dashboard-heading home-dashboard-content">
 
                 <div class="dashboard-welcome">
+
                     <h2>
                         Welcome back,
                         <span id="memberFirstName">Member</span> 👋
@@ -304,6 +333,7 @@
                         Member ID:
                         <span id="memberId">NWP001</span>
                     </p>
+
                 </div>
 
                 <div class="dashboard-account-actions">
@@ -318,6 +348,7 @@
                             aria-expanded="false"
                             aria-controls="notificationMenu"
                         >
+
                             <span class="notification-bell-icon">🔔</span>
 
                             <span
@@ -325,6 +356,7 @@
                                 class="notification-count"
                                 hidden
                             >0</span>
+
                         </button>
 
                         <div
@@ -332,7 +364,9 @@
                             class="notification-menu"
                             hidden
                         >
+
                             <div class="notification-menu-header">
+
                                 <h3>Notifications</h3>
 
                                 <button
@@ -341,17 +375,21 @@
                                 >
                                     Mark all as read
                                 </button>
+
                             </div>
 
                             <div
                                 id="notificationList"
                                 class="notification-list"
                             >
+
                                 <div class="empty-notifications">
                                     <span>🔔</span>
                                     <p>No notifications yet.</p>
                                 </div>
+
                             </div>
+
                         </div>
 
                     </div>
@@ -362,8 +400,10 @@
                         class="member-logout-button"
                         aria-label="Log out of your member account"
                     >
+
                         <span class="logout-icon" aria-hidden="true">↪</span>
                         <span>Logout</span>
+
                     </button>
 
                 </div>
@@ -376,24 +416,39 @@
             <div class="dashboard-cards home-dashboard-content">
 
                 <article class="dashboard-card balance-card">
+
                     <span class="card-icon">👛</span>
+
                     <p>My Wallet Balance</p>
+
                     <h3 id="walletBalance">GHS 0.00</h3>
+
                     <small>Your current wallet balance</small>
+
                 </article>
 
                 <article class="dashboard-card">
+
                     <span class="card-icon">📥</span>
+
                     <p>Total Deposits</p>
+
                     <h3 id="walletTotalDeposits">GHS 0.00</h3>
+
                     <small>Your confirmed deposits</small>
+
                 </article>
 
                 <article class="dashboard-card">
+
                     <span class="card-icon">📤</span>
+
                     <p>Total Withdrawals</p>
+
                     <h3 id="walletTotalWithdrawals">GHS 0.00</h3>
+
                     <small>Your completed withdrawals</small>
+
                 </article>
 
             </div>
@@ -404,10 +459,12 @@
             <section class="nexus-financial-accounts home-dashboard-content">
 
                 <div class="financial-accounts-heading">
+
                     <div>
                         <h3>My Financial Account</h3>
                         <p>Manage and monitor your separate pension account.</p>
                     </div>
+
                 </div>
 
                 <div class="financial-accounts-grid">
@@ -417,20 +474,25 @@
                         class="financial-account-card pension-account-card"
                         data-screen="pension"
                     >
+
                         <div class="financial-account-icon">🏛️</div>
 
                         <div class="financial-account-details">
+
                             <h3>Pension</h3>
+
                             <p>Your separate pension account</p>
 
                             <strong id="dashboardPensionBalance">
                                 GH₵0.00
                             </strong>
+
                         </div>
 
                         <span class="financial-account-link">
                             View Pension →
                         </span>
+
                     </a>
 
                 </div>
@@ -450,6 +512,7 @@
                 class="member-navigation"
                 aria-label="Member Dashboard Navigation"
             >
+
                 <a
                     href="#memberDashboard"
                     data-screen="home"
@@ -490,6 +553,7 @@
                     <span>👤</span>
                     <small>Profile</small>
                 </a>
+
             </nav>
 
 
@@ -499,25 +563,39 @@
                 id="myWallet"
                 class="dashboard-panel home-dashboard-content"
             >
+
                 <h3>My Wallet</h3>
+
                 <p>Manage and monitor your wallet.</p>
 
                 <div class="dashboard-cards">
 
                     <article class="dashboard-card balance-card">
+
                         <span class="card-icon">💵</span>
+
                         <p>Available Balance</p>
+
                         <h3 id="walletAvailableBalance">GHS 0.00</h3>
-                        <small>Funds currently available for withdrawal</small>
+
+                        <small>
+                            Funds currently available for withdrawal
+                        </small>
+
                     </article>
 
                     <article class="dashboard-card pending-wallet-card">
+
                         <span class="card-icon">⏳</span>
+
                         <p>Pending Withdrawals</p>
+
                         <h3 id="walletPendingWithdrawals">GHS 0.00</h3>
+
                         <small>
                             Money reserved for pending and processing requests
                         </small>
+
                     </article>
 
                 </div>
@@ -526,6 +604,7 @@
                     <a href="#depositFunds">➕ Deposit Money</a>
                     <a href="#withdrawFunds">📤 Withdraw Money</a>
                 </div>
+
             </section>
 
 
@@ -535,6 +614,7 @@
                 id="depositFunds"
                 class="dashboard-panel home-dashboard-content"
             >
+
                 <h3>Deposit Money</h3>
 
                 <p>
@@ -543,8 +623,11 @@
                 </p>
 
                 <div class="available-balance-card">
+
                     <span>Current Savings Wallet Balance</span>
+
                     <h2 id="depositCurrentBalance">GHS 0.00</h2>
+
                 </div>
 
                 <form id="depositForm">
@@ -558,6 +641,7 @@
                         name="destination"
                         required
                     >
+
                         <option value="">
                             Select where you want to deposit
                         </option>
@@ -569,6 +653,7 @@
                         <option value="pension">
                             Pension Account
                         </option>
+
                     </select>
 
                     <p
@@ -593,6 +678,7 @@
                         required
                     >
 
+
                     <!-- SAVINGS PAYMENT DETAILS -->
 
                     <div id="depositPaymentDetails" hidden>
@@ -602,10 +688,21 @@
                         </label>
 
                         <select id="depositMethod" name="method">
+
                             <option value="">Select Deposit Method</option>
-                            <option value="mtn_momo">MTN Mobile Money</option>
-                            <option value="telecel_cash">Telecel Cash</option>
-                            <option value="at_money">AT Money</option>
+
+                            <option value="mtn_momo">
+                                MTN Mobile Money
+                            </option>
+
+                            <option value="telecel_cash">
+                                Telecel Cash
+                            </option>
+
+                            <option value="at_money">
+                                AT Money
+                            </option>
+
                         </select>
 
                         <label for="depositPhone">
@@ -690,6 +787,7 @@
                     selections are simulation-only requests and do not
                     collect money.
                 </p>
+
             </section>
 
 
@@ -700,19 +798,23 @@
                 <section class="dashboard-panel savings-overview-panel">
 
                     <div class="panel-heading">
+
                         <div>
                             <h3>Savings Overview</h3>
                             <p>Monitor your savings progress.</p>
                         </div>
+
                     </div>
 
                     <div class="savings-overview-content">
 
                         <div class="savings-progress-circle">
+
                             <div class="progress-inner">
                                 <strong id="savingsProgress">0%</strong>
                                 <small>Target achieved</small>
                             </div>
+
                         </div>
 
                         <div class="savings-target-details">
@@ -738,13 +840,16 @@
                             </div>
 
                         </div>
+
                     </div>
+
                 </section>
 
 
                 <section class="dashboard-panel account-information">
 
                     <h3>Account Information</h3>
+
                     <p>Keep track of your savings account.</p>
 
                     <div class="information-item">
@@ -775,6 +880,7 @@
                 id="withdrawFunds"
                 class="dashboard-panel home-dashboard-content"
             >
+
                 <h3>Withdraw from My Wallet</h3>
 
                 <p>
@@ -782,8 +888,11 @@
                 </p>
 
                 <div class="available-balance-card">
+
                     <span>Available Wallet Balance</span>
+
                     <h2 id="availableBalance">GHS 0.00</h2>
+
                 </div>
 
                 <form id="withdrawalForm">
@@ -806,12 +915,30 @@
                         Withdrawal Method
                     </label>
 
-                    <select id="withdrawMethod" name="method" required>
+                    <select
+                        id="withdrawMethod"
+                        name="method"
+                        required
+                    >
+
                         <option value="">Select Withdrawal Method</option>
-                        <option value="mtn_momo">MTN Mobile Money</option>
-                        <option value="telecel_cash">Telecel Cash</option>
-                        <option value="at_money">AT Money</option>
-                        <option value="bank">Bank Account</option>
+
+                        <option value="mtn_momo">
+                            MTN Mobile Money
+                        </option>
+
+                        <option value="telecel_cash">
+                            Telecel Cash
+                        </option>
+
+                        <option value="at_money">
+                            AT Money
+                        </option>
+
+                        <option value="bank">
+                            Bank Account
+                        </option>
+
                     </select>
 
                     <label for="withdrawAccountName">
@@ -839,7 +966,9 @@
                         required
                     >
 
-                    <label for="withdrawNote">Note (Optional)</label>
+                    <label for="withdrawNote">
+                        Note (Optional)
+                    </label>
 
                     <textarea
                         id="withdrawNote"
@@ -854,6 +983,7 @@
                 </form>
 
                 <div class="withdrawal-rules">
+
                     <h3>Withdrawal Rules</h3>
 
                     <ul>
@@ -862,13 +992,18 @@
                         <li>Ensure the recipient's name and account number are correct.</li>
                         <li>All transactions must be recorded.</li>
                     </ul>
+
                 </div>
+
             </section>
 
 
             <!-- PENDING WITHDRAWALS -->
 
-            <section id="pendingWithdrawals" class="dashboard-panel">
+            <section
+                id="pendingWithdrawals"
+                class="dashboard-panel"
+            >
 
                 <h3>Pending Withdrawals</h3>
 
@@ -878,12 +1013,19 @@
                 </p>
 
                 <div class="pending-withdrawal-summary">
+
                     <span>Total Reserved</span>
-                    <strong id="pendingWithdrawalTotal">GHS 0.00</strong>
+
+                    <strong id="pendingWithdrawalTotal">
+                        GHS 0.00
+                    </strong>
+
                 </div>
 
                 <div class="table-container">
+
                     <table>
+
                         <thead>
                             <tr>
                                 <th>Amount</th>
@@ -894,11 +1036,17 @@
                         </thead>
 
                         <tbody id="pendingWithdrawalList">
+
                             <tr>
-                                <td colspan="4">No pending withdrawals.</td>
+                                <td colspan="4">
+                                    No pending withdrawals.
+                                </td>
                             </tr>
+
                         </tbody>
+
                     </table>
+
                 </div>
 
             </section>
@@ -906,9 +1054,13 @@
 
             <!-- TRANSACTION HISTORY -->
 
-            <section id="memberTransactions" class="dashboard-panel">
+            <section
+                id="memberTransactions"
+                class="dashboard-panel"
+            >
 
                 <div class="mobile-page-heading">
+
                     <button
                         type="button"
                         class="mobile-back-button"
@@ -919,9 +1071,12 @@
                     </button>
 
                     <h2>Transactions</h2>
+
                 </div>
 
-                <h3 class="desktop-page-heading">My Transactions</h3>
+                <h3 class="desktop-page-heading">
+                    My Transactions
+                </h3>
 
                 <p>
                     View, filter and download your transaction statements.
@@ -931,62 +1086,90 @@
                     class="transaction-filters"
                     id="transactionFilters"
                 >
-                    <button type="button" class="active" data-filter="all">
+
+                    <button
+                        type="button"
+                        class="active"
+                        data-filter="all"
+                    >
                         All
                     </button>
 
-                    <button type="button" data-filter="deposit">
+                    <button
+                        type="button"
+                        data-filter="deposit"
+                    >
                         Deposits
                     </button>
 
-                    <button type="button" data-filter="withdrawal">
+                    <button
+                        type="button"
+                        data-filter="withdrawal"
+                    >
                         Withdrawals
                     </button>
+
                 </div>
 
                 <div class="statement-filters">
 
                     <div class="statement-filter-group">
-                        <label for="statementDatePreset">Date period</label>
+
+                        <label for="statementDatePreset">
+                            Date period
+                        </label>
 
                         <select id="statementDatePreset">
+
                             <option value="all">All dates</option>
                             <option value="today">Today</option>
                             <option value="yesterday">Yesterday</option>
                             <option value="last7">Last 7 days</option>
                             <option value="last30">Last 30 days</option>
                             <option value="custom">Custom date range</option>
+
                         </select>
+
                     </div>
 
                     <div id="customStatementDates" hidden>
 
                         <div class="statement-filter-group">
-                            <label for="statementStartDate">Start date</label>
+
+                            <label for="statementStartDate">
+                                Start date
+                            </label>
 
                             <input
                                 type="date"
                                 id="statementStartDate"
                             >
+
                         </div>
 
                         <div class="statement-filter-group">
-                            <label for="statementEndDate">End date</label>
+
+                            <label for="statementEndDate">
+                                End date
+                            </label>
 
                             <input
                                 type="date"
                                 id="statementEndDate"
                             >
+
                         </div>
 
                     </div>
 
                     <div class="statement-filter-group">
+
                         <label for="statementStatus">
                             Transaction status
                         </label>
 
                         <select id="statementStatus">
+
                             <option value="all">All statuses</option>
                             <option value="pending">Pending</option>
                             <option value="processing">Processing</option>
@@ -995,10 +1178,13 @@
                             <option value="failed">Failed</option>
                             <option value="rejected">Rejected</option>
                             <option value="reversed">Reversed</option>
+
                         </select>
+
                     </div>
 
                     <div class="statement-filter-group">
+
                         <label for="statementReferenceSearch">
                             Search reference
                         </label>
@@ -1008,16 +1194,25 @@
                             id="statementReferenceSearch"
                             placeholder="Enter transaction reference"
                         >
+
                     </div>
 
                     <div class="statement-filter-actions">
-                        <button type="button" id="applyStatementFilters">
+
+                        <button
+                            type="button"
+                            id="applyStatementFilters"
+                        >
                             Apply Filters
                         </button>
 
-                        <button type="button" id="resetStatementFilters">
+                        <button
+                            type="button"
+                            id="resetStatementFilters"
+                        >
                             Reset Filters
                         </button>
+
                     </div>
 
                 </div>
@@ -1042,19 +1237,32 @@
                 </div>
 
                 <div class="statement-export-actions">
-                    <button type="button" id="downloadStatementPDF">
+
+                    <button
+                        type="button"
+                        id="downloadStatementPDF"
+                    >
                         Download PDF
                     </button>
 
-                    <button type="button" id="downloadStatementExcel">
+                    <button
+                        type="button"
+                        id="downloadStatementExcel"
+                    >
                         Download Excel
                     </button>
+
                 </div>
 
-                <p id="statementFilterMessage" aria-live="polite"></p>
+                <p
+                    id="statementFilterMessage"
+                    aria-live="polite"
+                ></p>
 
                 <div class="table-container">
+
                     <table>
+
                         <thead>
                             <tr>
                                 <th>Transaction</th>
@@ -1067,11 +1275,17 @@
                         </thead>
 
                         <tbody id="transactionList">
+
                             <tr>
-                                <td colspan="6">No transactions available.</td>
+                                <td colspan="6">
+                                    No transactions available.
+                                </td>
                             </tr>
+
                         </tbody>
+
                     </table>
+
                 </div>
 
             </section>
@@ -1079,9 +1293,13 @@
 
             <!-- MONTHLY SAVINGS -->
 
-            <section id="memberSavings" class="dashboard-panel">
+            <section
+                id="memberSavings"
+                class="dashboard-panel"
+            >
 
                 <div class="mobile-page-heading">
+
                     <button
                         type="button"
                         class="mobile-back-button"
@@ -1092,6 +1310,7 @@
                     </button>
 
                     <h2>My Savings</h2>
+
                 </div>
 
                 <h3 class="desktop-page-heading">
@@ -1101,7 +1320,9 @@
                 <p>Track your savings month by month.</p>
 
                 <div class="table-container">
+
                     <table>
+
                         <thead>
                             <tr>
                                 <th>Month</th>
@@ -1110,11 +1331,17 @@
                         </thead>
 
                         <tbody id="monthlySavingsList">
+
                             <tr>
-                                <td colspan="2">No savings records available.</td>
+                                <td colspan="2">
+                                    No savings records available.
+                                </td>
                             </tr>
+
                         </tbody>
+
                     </table>
+
                 </div>
 
             </section>
@@ -1130,6 +1357,7 @@
             >
 
                 <div class="mobile-page-heading">
+
                     <button
                         type="button"
                         class="mobile-back-button"
@@ -1140,6 +1368,7 @@
                     </button>
 
                     <h2>My Pension</h2>
+
                 </div>
 
                 <div class="pension-page-heading">
@@ -1147,6 +1376,7 @@
                     <div class="pension-heading-icon">🏛️</div>
 
                     <div>
+
                         <h3 class="desktop-page-heading">
                             My Pension Account
                         </h3>
@@ -1155,35 +1385,47 @@
                             View your separate pension account and
                             contribution request records.
                         </p>
+
                     </div>
 
                 </div>
 
 
-                <!-- OPEN PENSION ACCOUNT -->
+                <!-- =================================
+                     CREATE PENSION ACCOUNT
+                ================================== -->
 
                 <div
                     id="pensionAccountOpeningPanel"
                     class="dashboard-panel pension-information-card"
                 >
 
-                    <h3>Open Your Pension Account</h3>
+                    <h3>Create Your Pension Account</h3>
 
                     <p>
-                        Open your NEXUS Pension account to begin the
-                        administrator verification process.
+                        You can create your NEXUS Pension account using
+                        your existing NEXUS member account. You do not
+                        need to register or create another login.
                     </p>
 
                     <p>
-                        Your account will initially have a zero balance
-                        and a pending status. No payment is required.
+                        Your Pension account will be linked to your
+                        existing member identity. After creation, it
+                        will have a zero balance and a pending status
+                        while an administrator reviews your application.
+                    </p>
+
+                    <p>
+                        Creating this account does not initiate a payment,
+                        deduct money from your Savings wallet or move
+                        any funds.
                     </p>
 
                     <button
                         type="button"
                         id="openPensionAccountButton"
                     >
-                        Open Pension Account
+                        Create Pension Account
                     </button>
 
                     <p
@@ -1195,114 +1437,167 @@
                 </div>
 
 
-                <!-- PENSION BALANCE -->
+                <!-- =================================
+                     EXISTING PENSION ACCOUNT CONTENT
 
-                <div class="pension-summary-card">
-                    <span>Total Pension Account Balance</span>
+                     This wrapper is controlled by main.js.
+                     It should remain hidden until the signed-in
+                     member's Pension account has been confirmed.
+                ================================== -->
 
-                    <strong id="memberPensionBalance">
-                        GH₵0.00
-                    </strong>
-
-                    <small>
-                        This balance is separate from your Savings wallet.
-                    </small>
-                </div>
+                <div id="pensionAccountContent" hidden>
 
 
-                <!-- PENSION ACCOUNT DETAILS -->
+                    <!-- PENSION BALANCE -->
 
-                <div class="dashboard-content-grid">
+                    <div class="pension-summary-card">
 
-                    <div class="dashboard-panel pension-information-card">
+                        <span>Total Pension Account Balance</span>
 
-                        <h3>Pension Account Information</h3>
+                        <strong id="memberPensionBalance">
+                            GH₵0.00
+                        </strong>
 
-                        <div class="information-item">
-                            <span>Account Type</span>
-                            <strong>Separate Pension Account</strong>
+                        <small>
+                            This balance is separate from your Savings wallet.
+                        </small>
+
+                    </div>
+
+
+                    <!-- PENSION ACCOUNT DETAILS -->
+
+                    <div class="dashboard-content-grid">
+
+                        <div class="dashboard-panel pension-information-card">
+
+                            <h3>Pension Account Information</h3>
+
+                            <div class="information-item">
+                                <span>Account Type</span>
+                                <strong>Separate Pension Account</strong>
+                            </div>
+
+                            <div class="information-item">
+                                <span>Account Number</span>
+                                <strong id="pensionAccountNumber">
+                                    Not yet created
+                                </strong>
+                            </div>
+
+                            <div class="information-item">
+                                <span>Account Status</span>
+                                <strong id="pensionAccountStatus">
+                                    Not yet created
+                                </strong>
+                            </div>
+
+                            <div class="information-item">
+                                <span>Member Sector</span>
+                                <strong id="pensionMemberSector">
+                                    Not verified
+                                </strong>
+                            </div>
+
+                            <div class="information-item">
+                                <span>Scheme Classification</span>
+                                <strong id="pensionClassification">
+                                    Not verified
+                                </strong>
+                            </div>
+
+                            <div class="information-item">
+                                <span>Pension Subaccounts</span>
+                                <strong id="pensionSubaccountSummary">
+                                    Not available
+                                </strong>
+                            </div>
+
                         </div>
 
-                        <div class="information-item">
-                            <span>Account Number</span>
-                            <strong id="pensionAccountNumber">
-                                Not yet created
-                            </strong>
-                        </div>
 
-                        <div class="information-item">
-                            <span>Account Status</span>
-                            <strong id="pensionAccountStatus">
-                                Not yet created
-                            </strong>
-                        </div>
+                        <div class="dashboard-panel pension-information-card">
 
-                        <div class="information-item">
-                            <span>Member Sector</span>
-                            <strong id="pensionMemberSector">
-                                Not verified
-                            </strong>
-                        </div>
+                            <h3>Contribution Request Summary</h3>
 
-                        <div class="information-item">
-                            <span>Scheme Classification</span>
-                            <strong id="pensionClassification">
-                                Not verified
-                            </strong>
-                        </div>
+                            <div class="information-item">
+                                <span>Confirmed Contributions</span>
+                                <strong id="pensionTotalContributions">
+                                    Not enabled
+                                </strong>
+                            </div>
 
-                        <div class="information-item">
-                            <span>Pension Subaccounts</span>
-                            <strong id="pensionSubaccountSummary">
-                                Not available
-                            </strong>
+                            <div class="information-item">
+                                <span>Last Request</span>
+                                <strong id="pensionLastContribution">
+                                    Not available
+                                </strong>
+                            </div>
+
+                            <div class="information-item">
+                                <span>Contribution Requests</span>
+                                <strong id="pensionContributionCount">0</strong>
+                            </div>
+
                         </div>
 
                     </div>
 
 
-                    <div class="dashboard-panel pension-information-card">
+                    <!-- PENSION CONTRIBUTION INFORMATION -->
 
-                        <h3>Contribution Request Summary</h3>
+                    <div class="dashboard-panel pension-contribution-panel">
 
-                        <div class="information-item">
-                            <span>Confirmed Contributions</span>
-                            <strong id="pensionTotalContributions">
-                                Not enabled
-                            </strong>
-                        </div>
+                        <h3>Make a Pension Contribution Request</h3>
 
-                        <div class="information-item">
-                            <span>Last Request</span>
-                            <strong id="pensionLastContribution">
-                                Not available
-                            </strong>
-                        </div>
+                        <p>
+                            To submit a request, go to Deposit Money on
+                            your dashboard and select Pension Account
+                            as your destination.
+                        </p>
 
-                        <div class="information-item">
-                            <span>Contribution Requests</span>
-                            <strong id="pensionContributionCount">0</strong>
+                        <div
+                            class="nexus-pension-notice nexus-pension-notice--simulation"
+                            role="note"
+                        >
+
+                            <div
+                                class="nexus-pension-notice__icon"
+                                aria-hidden="true"
+                            >
+                                &#9432;
+                            </div>
+
+                            <div class="nexus-pension-notice__content">
+
+                                <h4 class="nexus-pension-notice__title">
+                                    Pension Simulation Only
+                                </h4>
+
+                                <p class="nexus-pension-notice__text">
+                                    This submits a pension contribution
+                                    request for administrator review.
+                                    It does not initiate a payment or
+                                    transfer money.
+                                </p>
+
+                                <p class="nexus-pension-notice__text">
+                                    <strong>Important:</strong> No wallet
+                                    deduction, pension balance credit or
+                                    pension ledger transaction will occur.
+                                </p>
+
+                            </div>
+
                         </div>
 
                     </div>
 
-                </div>
 
-
-                <!-- PENSION CONTRIBUTION INFORMATION -->
-
-                <div class="dashboard-panel pension-contribution-panel">
-
-                    <h3>Make a Pension Contribution Request</h3>
-
-                    <p>
-                        To submit a request, go to Deposit Money on your
-                        dashboard and select Pension Account as your
-                        destination.
-                    </p>
+                    <!-- PENSION INFORMATION NOTICE -->
 
                     <div
-                        class="nexus-pension-notice nexus-pension-notice--simulation"
+                        class="nexus-pension-notice nexus-pension-notice--warning"
                         role="note"
                     >
 
@@ -1310,199 +1605,176 @@
                             class="nexus-pension-notice__icon"
                             aria-hidden="true"
                         >
-                            &#9432;
+                            !
                         </div>
 
                         <div class="nexus-pension-notice__content">
 
                             <h4 class="nexus-pension-notice__title">
-                                Pension Simulation Only
+                                Important Pension Information
                             </h4>
 
                             <p class="nexus-pension-notice__text">
-                                This submits a pension contribution request
-                                for administrator review. It does not
-                                initiate a payment or transfer money.
+                                NEXUS Pension is maintained separately
+                                from ordinary Savings accounts and
+                                wallet transactions.
                             </p>
 
                             <p class="nexus-pension-notice__text">
-                                <strong>Important:</strong> No wallet
-                                deduction, pension balance credit or
-                                pension ledger transaction will occur.
+                                Real-money pension operations will remain
+                                disabled until the required licensed trustee,
+                                approved scheme arrangements and applicable
+                                controls are established.
+                            </p>
+
+                            <p class="nexus-pension-notice__text">
+                                Pension withdrawals, investment activity
+                                and payment processing are not currently
+                                available as real-money services.
                             </p>
 
                         </div>
 
                     </div>
 
-                </div>
 
+                    <!-- =====================================
+                         PENSION CONTRIBUTION REQUEST HISTORY
+                    ====================================== -->
 
-                <!-- PENSION INFORMATION NOTICE -->
-
-                <div
-                    class="nexus-pension-notice nexus-pension-notice--warning"
-                    role="note"
-                >
-
-                    <div
-                        class="nexus-pension-notice__icon"
-                        aria-hidden="true"
-                    >
-                        !
-                    </div>
-
-                    <div class="nexus-pension-notice__content">
-
-                        <h4 class="nexus-pension-notice__title">
-                            Important Pension Information
-                        </h4>
-
-                        <p class="nexus-pension-notice__text">
-                            NEXUS Pension is maintained separately from
-                            ordinary Savings accounts and wallet transactions.
-                        </p>
-
-                        <p class="nexus-pension-notice__text">
-                            Real-money pension operations will remain disabled
-                            until the required licensed trustee, approved
-                            scheme arrangements and applicable controls
-                            are established.
-                        </p>
-
-                        <p class="nexus-pension-notice__text">
-                            Pension withdrawals, investment activity and
-                            payment processing are not currently available.
-                        </p>
-
-                    </div>
-
-                </div>
-
-
-                <!-- =====================================
-                     PROFESSIONAL PENSION REQUEST HISTORY
-                ====================================== -->
-
-                <section
-                    class="dashboard-panel pension-history-panel"
-                    aria-labelledby="pensionHistoryHeading"
-                >
-
-                    <div class="nwp-pension-history-heading">
-
-                        <div class="nwp-pension-history-title-area">
-
-                            <span class="nwp-pension-eyebrow">
-                                ACCOUNT ACTIVITY
-                            </span>
-
-                            <h3 id="pensionHistoryHeading">
-                                Pension Contribution Request History
-                            </h3>
-
-                            <p>
-                                Review the contribution requests submitted
-                                to the NEXUS Pension administration team.
-                            </p>
-
-                        </div>
-
-                        <div
-                            class="nwp-pension-history-icon"
-                            aria-hidden="true"
-                        >
-                            &#128203;
-                        </div>
-
-                    </div>
-
-
-                    <div class="nwp-pension-history-summary">
-
-                        <div class="nwp-pension-history-summary-item">
-                            <span>Total Requests</span>
-
-                            <strong id="pensionHistoryTotal">0</strong>
-                        </div>
-
-                        <div class="nwp-pension-history-summary-item">
-                            <span>Account</span>
-
-                            <strong>NEXUS Pension</strong>
-                        </div>
-
-                        <div class="nwp-pension-history-summary-item">
-                            <span>Processing Mode</span>
-
-                            <strong>Simulation Only</strong>
-                        </div>
-
-                    </div>
-
-
-                    <!--
-                        IMPORTANT:
-                        This is a DIV container, not a TABLE TBODY.
-                        The member main.js history renderer creates
-                        individual request cards inside this element.
-                    -->
-
-                    <div
-                        id="pensionContributionList"
-                        class="nwp-pension-request-list"
-                        aria-live="polite"
-                        aria-relevant="additions text"
+                    <section
+                        class="dashboard-panel pension-history-panel"
+                        aria-labelledby="pensionHistoryHeading"
                     >
 
-                        <div class="nwp-pension-history-empty">
+                        <div class="nwp-pension-history-heading">
+
+                            <div class="nwp-pension-history-title-area">
+
+                                <span class="nwp-pension-eyebrow">
+                                    ACCOUNT ACTIVITY
+                                </span>
+
+                                <h3 id="pensionHistoryHeading">
+                                    Pension Contribution Request History
+                                </h3>
+
+                                <p>
+                                    Review the contribution requests
+                                    submitted to the NEXUS Pension
+                                    administration team.
+                                </p>
+
+                            </div>
 
                             <div
-                                class="nwp-pension-history-empty-icon"
+                                class="nwp-pension-history-icon"
                                 aria-hidden="true"
                             >
                                 &#128203;
                             </div>
 
-                            <h4>No contribution requests yet</h4>
+                        </div>
+
+
+                        <div class="nwp-pension-history-summary">
+
+                            <div class="nwp-pension-history-summary-item">
+
+                                <span>Total Requests</span>
+
+                                <strong id="pensionHistoryTotal">0</strong>
+
+                            </div>
+
+                            <div class="nwp-pension-history-summary-item">
+
+                                <span>Account</span>
+
+                                <strong>NEXUS Pension</strong>
+
+                            </div>
+
+                            <div class="nwp-pension-history-summary-item">
+
+                                <span>Processing Mode</span>
+
+                                <strong>Simulation Only</strong>
+
+                            </div>
+
+                        </div>
+
+
+                        <!--
+                            IMPORTANT:
+                            This is a DIV container, not a TABLE TBODY.
+                            The member main.js history renderer creates
+                            individual request cards inside this element.
+                        -->
+
+                        <div
+                            id="pensionContributionList"
+                            class="nwp-pension-request-list"
+                            aria-live="polite"
+                            aria-relevant="additions text"
+                        >
+
+                            <div class="nwp-pension-history-empty">
+
+                                <div
+                                    class="nwp-pension-history-empty-icon"
+                                    aria-hidden="true"
+                                >
+                                    &#128203;
+                                </div>
+
+                                <h4>No contribution requests yet</h4>
+
+                                <p>
+                                    Your submitted Pension contribution
+                                    requests will appear here.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="nwp-pension-history-footer">
+
+                            <span
+                                class="nwp-pension-history-footer-icon"
+                                aria-hidden="true"
+                            >
+                                &#9432;
+                            </span>
 
                             <p>
-                                Your submitted Pension contribution requests
-                                will appear here.
+                                Request approval does not mean that a
+                                payment has been received. No wallet
+                                deduction or Pension balance credit
+                                occurs in this simulation.
                             </p>
 
                         </div>
 
-                    </div>
+                    </section>
 
-
-                    <div class="nwp-pension-history-footer">
-
-                        <span
-                            class="nwp-pension-history-footer-icon"
-                            aria-hidden="true"
-                        >
-                            &#9432;
-                        </span>
-
-                        <p>
-                            Request approval does not mean that a payment
-                            has been received. No wallet deduction or Pension
-                            balance credit occurs in this simulation.
-                        </p>
-
-                    </div>
-
-                </section>
+                </div>
 
             </section>
 
 
             <!-- MEMBER PROFILE -->
 
-            <section id="memberProfile" class="dashboard-panel">
+            <section
+                id="memberProfile"
+                class="dashboard-panel"
+            >
 
                 <div class="mobile-page-heading">
+
                     <button
                         type="button"
                         class="mobile-back-button"
@@ -1513,6 +1785,7 @@
                     </button>
 
                     <h2>My Profile</h2>
+
                 </div>
 
                 <h3 class="desktop-page-heading">My Profile</h3>
@@ -1548,9 +1821,13 @@
 
             <!-- CUSTOMER SUPPORT -->
 
-            <section id="memberSupport" class="dashboard-panel">
+            <section
+                id="memberSupport"
+                class="dashboard-panel"
+            >
 
                 <div class="mobile-page-heading">
+
                     <button
                         type="button"
                         class="mobile-back-button"
@@ -1561,6 +1838,7 @@
                     </button>
 
                     <h2>Customer Support</h2>
+
                 </div>
 
                 <div class="support-page-intro">
@@ -1609,6 +1887,7 @@
                             name="category"
                             required
                         >
+
                             <option value="">Select a category</option>
                             <option value="Account">Account</option>
                             <option value="Deposits">Deposits</option>
@@ -1617,6 +1896,7 @@
                             <option value="Transactions">Transactions</option>
                             <option value="Technical Issue">Technical Issue</option>
                             <option value="Other">Other</option>
+
                         </select>
 
                         <label for="supportMessage">
@@ -1651,12 +1931,14 @@
                     <div class="support-section-heading">
 
                         <div>
+
                             <h3>My Reports</h3>
 
                             <p>
                                 View the reports you have submitted
                                 and check their progress.
                             </p>
+
                         </div>
 
                         <button
@@ -1689,6 +1971,7 @@
                     <div class="support-conversation-heading">
 
                         <div>
+
                             <h3 id="supportConversationSubject">
                                 Report Conversation
                             </h3>
@@ -1696,6 +1979,7 @@
                             <p id="supportConversationStatus">
                                 Status
                             </p>
+
                         </div>
 
                         <button
@@ -1740,8 +2024,8 @@
                     </form>
 
                     <p id="supportReplyClosedNotice" hidden>
-                        This report is closed. You cannot send another reply
-                        unless the support team reopens it.
+                        This report is closed. You cannot send another
+                        reply unless the support team reopens it.
                     </p>
 
                 </div>
