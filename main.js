@@ -1367,19 +1367,45 @@ async function loadMemberWallet(user) {
 
 
 
-/* =========================================
+
+/* =====================================================
    16A. NEXUS MEMBER PENSION
-   SEPARATE FROM SAVINGS
+   ACCOUNT DETAILS + SUBACCOUNTS + REQUEST HISTORY
+
    SIMULATION ONLY
+
+   No real pension payments.
+   No wallet deductions.
+   No pension balance credits.
+   No ledger postings.
+===================================================== */
+
+
+/* =========================================
+   PENSION REQUEST STATE
 ========================================= */
 
 let memberPensionRequestEnabled = false;
 
+
+/* =========================================
+   LOAD MEMBER PENSION INFORMATION
+========================================= */
+
 async function loadMemberPension(user) {
 
     if (!user?.id) {
-        throw new Error("Member authentication is required.");
+
+        throw new Error(
+            "Member authentication is required."
+        );
+
     }
+
+
+    /* =====================================
+       GET DASHBOARD ELEMENTS
+    ===================================== */
 
     const balanceElement =
         getElement("memberPensionBalance");
@@ -1422,8 +1448,80 @@ async function loadMemberPension(user) {
             'option[value="pension"]'
         );
 
+    const openingPanel =
+        getElement("pensionAccountOpeningPanel");
 
-    /* LOAD THE MEMBER'S OWN PENSION ACCOUNT */
+    const openingButton =
+        getElement("openPensionAccountButton");
+
+
+    /* =====================================
+       INITIAL DISPLAY
+    ===================================== */
+
+    if (balanceElement) {
+        balanceElement.textContent =
+            formatMoney(0);
+    }
+
+    if (dashboardBalance) {
+        dashboardBalance.textContent =
+            formatMoney(0);
+    }
+
+    if (accountNumberElement) {
+        accountNumberElement.textContent =
+            "Loading...";
+    }
+
+    if (accountStatusElement) {
+        accountStatusElement.textContent =
+            "Loading...";
+    }
+
+    if (sectorElement) {
+        sectorElement.textContent =
+            "Not verified";
+    }
+
+    if (classificationElement) {
+        classificationElement.textContent =
+            "Pending verification";
+    }
+
+    if (subaccountElement) {
+        subaccountElement.replaceChildren();
+
+        subaccountElement.textContent =
+            "Loading Pension subaccounts...";
+    }
+
+    if (contributionTotalElement) {
+        contributionTotalElement.textContent =
+            "Not enabled";
+    }
+
+    if (lastContributionElement) {
+        lastContributionElement.textContent =
+            "No payment received";
+    }
+
+    if (contributionCountElement) {
+        contributionCountElement.textContent =
+            "0";
+    }
+
+    if (contributionList) {
+        contributionList.replaceChildren();
+
+        contributionList.textContent =
+            "Loading Pension requests...";
+    }
+
+
+    /* =====================================
+       LOAD PENSION ACCOUNT
+    ===================================== */
 
     const {
         data: account,
@@ -1443,10 +1541,22 @@ async function loadMemberPension(user) {
         .eq("user_id", user.id)
         .maybeSingle();
 
+
     if (accountError) {
+
+        console.error(
+            "Pension account loading error:",
+            accountError
+        );
+
         throw accountError;
+
     }
 
+
+    /* =====================================
+       LOAD PENSION SUBACCOUNTS
+    ===================================== */
 
     let subaccounts = [];
 
@@ -1458,14 +1568,33 @@ async function loadMemberPension(user) {
         } = await nexusSupabase
             .from("nexus_pension_subaccounts")
             .select(`
+                id,
+                account_id,
+                user_id,
                 sub_account_type,
+                currency,
                 balance,
                 status
             `)
-            .eq("account_id", account.id);
+            .eq("account_id", account.id)
+            .eq("user_id", user.id)
+            .order(
+                "sub_account_type",
+                {
+                    ascending: true
+                }
+            );
+
 
         if (error) {
+
+            console.error(
+                "Pension subaccount loading error:",
+                error
+            );
+
             throw error;
+
         }
 
         subaccounts = data || [];
@@ -1473,7 +1602,12 @@ async function loadMemberPension(user) {
     }
 
 
-    /* LOAD ONLY THIS MEMBER'S REQUESTS */
+    /* =====================================
+       LOAD PENSION CONTRIBUTION REQUESTS
+
+       These are requests only.
+       They are not confirmed payments.
+    ===================================== */
 
     const {
         data: requests,
@@ -1490,64 +1624,242 @@ async function loadMemberPension(user) {
             member_note
         `)
         .eq("member_user_id", user.id)
-        .order("created_at", { ascending: false })
+        .order(
+            "created_at",
+            {
+                ascending: false
+            }
+        )
         .limit(100);
 
+
     if (requestError) {
+
+        console.error(
+            "Pension contribution request loading error:",
+            requestError
+        );
+
         throw requestError;
+
     }
 
-    const pensionRequests = requests || [];
+
+    const pensionRequests =
+        requests || [];
 
 
-    /* VERIFY WHETHER THE MEMBER CAN SUBMIT A REQUEST */
+    /* =====================================
+       VERIFY ACCOUNT CLASSIFICATION
+    ===================================== */
+
+    const accountStatus =
+        String(
+            account?.status || ""
+        ).trim().toLowerCase();
+
+    const memberSector =
+        String(
+            account?.member_sector || ""
+        ).trim().toLowerCase();
+
+    const mandatoryStatus =
+        String(
+            account?.mandatory_scheme_status || ""
+        ).trim().toLowerCase();
+
+
+    const classificationVerified =
+        Boolean(
+            account?.classification_verified_at
+        );
+
+
+    /* =====================================
+       DETERMINE REQUIRED SUBACCOUNTS
+    ===================================== */
+
+    let expectedSubaccountTypes = [];
+
+    if (memberSector === "formal") {
+
+        expectedSubaccountTypes = [
+            "retirement"
+        ];
+
+    } else if (memberSector === "informal") {
+
+        expectedSubaccountTypes = [
+            "retirement",
+            "personal_savings"
+        ];
+
+    }
+
+
+    /* =====================================
+       VERIFY SUBACCOUNT RECORDS
+    ===================================== */
+
+    const validSubaccounts =
+        subaccounts.filter(subaccount => {
+
+            const balance =
+                Number(subaccount.balance);
+
+            return (
+
+                subaccount.account_id === account?.id &&
+
+                subaccount.user_id === user.id &&
+
+                String(subaccount.currency)
+                    .toUpperCase() === "GHS" &&
+
+                String(subaccount.status)
+                    .toLowerCase() === "active" &&
+
+                Number.isFinite(balance) &&
+
+                balance >= 0
+
+            );
+
+        });
+
+
+    const activeSubaccountTypes =
+        validSubaccounts.map(subaccount =>
+
+            String(
+                subaccount.sub_account_type
+            ).toLowerCase()
+
+        );
+
+
+    const hasExactExpectedSubaccounts =
+        expectedSubaccountTypes.length > 0 &&
+
+        validSubaccounts.length ===
+            expectedSubaccountTypes.length &&
+
+        expectedSubaccountTypes.every(type =>
+
+            activeSubaccountTypes.includes(type)
+
+        );
+
+
+    /* =====================================
+       FINAL PENSION CONTRIBUTION READINESS
+
+       IMPORTANT:
+       The backend requires OPERATIONAL status.
+       ACTIVE alone is not sufficient.
+    ===================================== */
 
     const pensionReady = Boolean(
+
         account &&
-        String(account.status).toLowerCase() === "active" &&
-        account.classification_verified_at &&
+
+        accountStatus === "operational" &&
+
+        classificationVerified &&
+
         ["formal", "informal"].includes(
-            String(account.member_sector || "").toLowerCase()
+            memberSector
         ) &&
+
         ["covered", "not_covered"].includes(
-            String(account.mandatory_scheme_status || "").toLowerCase()
-        )
+            mandatoryStatus
+        ) &&
+
+        hasExactExpectedSubaccounts
+
     );
 
-    /* PENSION DESTINATION MUST ALWAYS BE SELECTABLE */
-   
-   memberPensionRequestEnabled = pensionReady;
-   
-   if (pensionOption) {
-      pensionOption.disabled = false;
-   }
-   
-   /* DO NOT RESET THE MEMBER'S PENSION SELECTION */
-   
-   if (typeof updateDepositDestinationUI === "function") {
-      updateDepositDestinationUI();
-   }
+
+    /* =====================================
+       UPDATE GLOBAL REQUEST PERMISSION
+    ===================================== */
+
+    memberPensionRequestEnabled =
+        pensionReady;
 
 
-    /* DISPLAY PENSION BALANCE */
+    /* =====================================
+       PENSION ACCOUNT OPENING PANEL
 
-    const pensionBalance = Number(account?.balance) || 0;
+       Show only when no account exists.
+    ===================================== */
+
+    if (openingPanel) {
+
+        openingPanel.hidden =
+            Boolean(account);
+
+    }
+
+    if (openingButton) {
+
+        openingButton.disabled =
+            Boolean(account);
+
+    }
+
+
+    /* =====================================
+       KEEP PENSION DESTINATION AVAILABLE
+       FOR STATUS INFORMATION
+    ===================================== */
+
+    if (pensionOption) {
+
+        pensionOption.disabled = false;
+
+    }
+
+
+    /* =====================================
+       DISPLAY ACCOUNT INFORMATION
+    ===================================== */
+
+    const pensionBalance =
+        Number(account?.balance ?? 0);
+
+
+    if (
+        !Number.isFinite(pensionBalance) ||
+        pensionBalance < 0
+    ) {
+
+        throw new Error(
+            "The Pension account balance is invalid."
+        );
+
+    }
+
 
     if (balanceElement) {
-        balanceElement.textContent = formatMoney(pensionBalance);
+
+        balanceElement.textContent =
+            formatMoney(pensionBalance);
+
     }
 
     if (dashboardBalance) {
-        dashboardBalance.textContent = formatMoney(pensionBalance);
+
+        dashboardBalance.textContent =
+            formatMoney(pensionBalance);
+
     }
-
-
-    /* DISPLAY ACCOUNT INFORMATION */
 
     if (accountNumberElement) {
 
         accountNumberElement.textContent =
-            account?.account_number || "Not yet assigned";
+            account?.account_number ||
+            "Not yet created";
 
     }
 
@@ -1556,156 +1868,149 @@ async function loadMemberPension(user) {
         accountStatusElement.textContent =
             account
                 ? String(account.status || "Unknown")
-                    .replaceAll("_", " ")
                     .toUpperCase()
                 : "Not yet created";
 
     }
 
+
+    /* =====================================
+       DISPLAY MEMBER CLASSIFICATION
+    ===================================== */
+
+    const sectorLabel = {
+
+        formal: "Formal sector",
+
+        informal: "Informal sector"
+
+    };
+
+
+    const mandatoryLabel = {
+
+        covered: "Covered",
+
+        not_covered: "Not covered",
+
+        unverified: "Unverified"
+
+    };
+
+
     if (sectorElement) {
 
         sectorElement.textContent =
-            account?.member_sector
-                ? account.member_sector.toUpperCase()
-                : "Not verified";
+            account
+                ? (
+                    sectorLabel[memberSector] ||
+                    "Not yet classified"
+                )
+                : "Not yet classified";
 
     }
+
 
     if (classificationElement) {
 
-        classificationElement.textContent =
-            account?.mandatory_scheme_status
-                ? account.mandatory_scheme_status
-                    .replaceAll("_", " ")
-                    .toUpperCase()
-                : "Not verified";
+        if (!account) {
 
-    }
+            classificationElement.textContent =
+                "Pension account not yet opened";
 
+        } else if (!classificationVerified) {
 
-    /* DISPLAY SUBACCOUNTS */
-
-    if (subaccountElement) {
-
-        if (subaccounts.length === 0) {
-
-            subaccountElement.textContent =
-                "No subaccounts configured";
+            classificationElement.textContent =
+                "Pending administrator verification";
 
         } else {
 
-            subaccountElement.textContent =
-                subaccounts.map(item => {
-
-                    const type = String(
-                        item.sub_account_type || ""
-                    ).replaceAll("_", " ");
-
-                    return (
-                        type +
-                        " (" +
-                        String(item.status || "unknown") +
-                        ")"
-                    );
-
-                }).join(", ");
+            classificationElement.textContent =
+                (
+                    sectorLabel[memberSector] ||
+                    "Unknown sector"
+                ) +
+                " — Mandatory scheme: " +
+                (
+                    mandatoryLabel[mandatoryStatus] ||
+                    "Unverified"
+                );
 
         }
 
     }
 
 
-    /* REAL CONTRIBUTIONS REMAIN DISABLED */
+    /* =====================================
+       DISPLAY SUBACCOUNT INFORMATION
+    ===================================== */
 
-    if (contributionTotalElement) {
-        contributionTotalElement.textContent = "Not enabled";
-    }
+    if (subaccountElement) {
 
-    if (lastContributionElement) {
-        lastContributionElement.textContent = "No payment received";
-    }
+        subaccountElement.replaceChildren();
 
-    if (contributionCountElement) {
+        if (!account) {
 
-        contributionCountElement.textContent =
-            String(pensionRequests.length);
+            subaccountElement.textContent =
+                "Open a Pension account to view your subaccounts.";
 
-    }
+        } else if (subaccounts.length === 0) {
 
-
-    /* DISPLAY CONTRIBUTION REQUEST HISTORY */
-
-    if (contributionList) {
-
-        contributionList.replaceChildren();
-
-        if (pensionRequests.length === 0) {
-
-            const row = document.createElement("tr");
-            const cell = document.createElement("td");
-
-            cell.colSpan = 5;
-
-            cell.textContent =
-                "No pension contribution requests available.";
-
-            row.appendChild(cell);
-            contributionList.appendChild(row);
+            subaccountElement.textContent =
+                "No Pension subaccounts have been configured yet.";
 
         } else {
 
-            const statusLabels = {
+            subaccounts.forEach(subaccount => {
 
-                submitted: "Submitted",
+                const item =
+                    document.createElement("div");
 
-                under_review: "Under Review",
+                item.className =
+                    "pension-subaccount-item";
 
-                accepted_for_future_processing:
-                    "Accepted for Future Processing — No Payment Received",
 
-                rejected: "Rejected",
+                const name =
+                    document.createElement("strong");
 
-                cancelled: "Cancelled"
+                name.textContent = {
 
-            };
+                    retirement: "Retirement",
 
-            pensionRequests.forEach(request => {
+                    personal_savings: "Personal Savings"
 
-                const row = document.createElement("tr");
+                }[
+                    String(
+                        subaccount.sub_account_type
+                    ).toLowerCase()
+                ] || subaccount.sub_account_type;
 
-                const dateCell = document.createElement("td");
-                const destinationCell = document.createElement("td");
-                const referenceCell = document.createElement("td");
-                const amountCell = document.createElement("td");
-                const statusCell = document.createElement("td");
 
-                dateCell.textContent = request.created_at
-                    ? new Date(request.created_at).toLocaleString("en-GH")
-                    : "Date unavailable";
+                const details =
+                    document.createElement("p");
 
-                destinationCell.textContent =
-                    "NEXUS Pension";
+                details.textContent =
+                    formatMoney(
+                        Number(subaccount.balance) || 0
+                    );
 
-                referenceCell.textContent =
-                    request.request_reference || "—";
 
-                amountCell.textContent =
-                    formatMoney(request.amount);
+                const status =
+                    document.createElement("small");
 
-                statusCell.textContent =
-                    statusLabels[request.status] ||
-                    String(request.status || "Unknown")
-                        .replaceAll("_", " ");
+                status.textContent =
+                    String(
+                        subaccount.status || "Unknown"
+                    ).toUpperCase();
 
-                row.append(
-                    dateCell,
-                    destinationCell,
-                    referenceCell,
-                    amountCell,
-                    statusCell
+
+                item.append(
+                    name,
+                    details,
+                    status
                 );
 
-                contributionList.appendChild(row);
+                subaccountElement.appendChild(item);
 
             });
 
@@ -1714,15 +2019,352 @@ async function loadMemberPension(user) {
     }
 
 
+    /* =====================================
+       CONTRIBUTION SUMMARY
+
+       Requests are not actual contributions.
+       No payment has been received or credited.
+    ===================================== */
+
+    if (contributionTotalElement) {
+
+        contributionTotalElement.textContent =
+            "Not enabled";
+
+    }
+
+    if (lastContributionElement) {
+
+        lastContributionElement.textContent =
+            "No payment received";
+
+    }
+
+    if (contributionCountElement) {
+
+        contributionCountElement.textContent =
+            pensionRequests.length.toLocaleString(
+                "en-GH"
+            );
+
+    }
+
+
+    /* =====================================
+       DISPLAY CONTRIBUTION REQUEST HISTORY
+    ===================================== */
+
+    if (contributionList) {
+
+        contributionList.replaceChildren();
+
+        if (pensionRequests.length === 0) {
+
+            const emptyMessage =
+                document.createElement("p");
+
+            emptyMessage.textContent =
+                account
+                    ? "You have not submitted any Pension contribution requests."
+                    : "No Pension contribution requests are available because you have not opened a Pension account.";
+
+            contributionList.appendChild(
+                emptyMessage
+            );
+
+        } else {
+
+            pensionRequests.forEach(request => {
+
+                const card =
+                    document.createElement("article");
+
+                card.className =
+                    "pension-contribution-request";
+
+
+                /* REQUEST REFERENCE */
+
+                const reference =
+                    document.createElement("strong");
+
+                reference.textContent =
+                    "Reference: " +
+                    (
+                        request.request_reference ||
+                        request.id
+                    );
+
+
+                /* REQUEST AMOUNT */
+
+                const amount =
+                    document.createElement("p");
+
+                amount.textContent =
+                    "Requested amount: " +
+                    formatMoney(
+                        Number(request.amount) || 0
+                    );
+
+
+                /* REQUEST STATUS */
+
+                const status =
+                    document.createElement("p");
+
+                const cleanStatus =
+                    String(
+                        request.status || "pending"
+                    ).toLowerCase();
+
+                status.textContent =
+                    "Request status: " +
+                    cleanStatus.toUpperCase();
+
+                status.className =
+                    "pension-request-status status-" +
+                    cleanStatus.replace(
+                        /[^a-z0-9_-]/g,
+                        ""
+                    );
+
+
+                /* REQUEST DATE */
+
+                const date =
+                    document.createElement("small");
+
+                const createdAt =
+                    new Date(request.created_at);
+
+                date.textContent =
+                    Number.isNaN(createdAt.getTime())
+                        ? "Date unavailable"
+                        : createdAt.toLocaleString(
+                            "en-GH",
+                            {
+                                dateStyle: "medium",
+                                timeStyle: "short"
+                            }
+                        );
+
+
+                /* MEMBER NOTE */
+
+                card.append(
+                    reference,
+                    amount,
+                    status,
+                    date
+                );
+
+
+                if (request.member_note) {
+
+                    const note =
+                        document.createElement("p");
+
+                    note.textContent =
+                        "Your note: " +
+                        request.member_note;
+
+                    card.appendChild(note);
+
+                }
+
+
+                /* SIMULATION NOTICE */
+
+                const notice =
+                    document.createElement("small");
+
+                notice.textContent =
+                    "Simulation request only — no payment received and no Pension balance credited.";
+
+                card.appendChild(notice);
+
+
+                contributionList.appendChild(card);
+
+            });
+
+        }
+
+    }
+
+
+    /* =====================================
+       UPDATE DEPOSIT DESTINATION DISPLAY
+    ===================================== */
+
+    if (
+        typeof updateDepositDestinationUI ===
+        "function"
+    ) {
+
+        updateDepositDestinationUI();
+
+    }
+
+
+    /* =====================================
+       RETURN LOADED PENSION INFORMATION
+    ===================================== */
+
     return {
+
         account,
+
         subaccounts,
+
         requests: pensionRequests,
+
         request_enabled: pensionReady
+
     };
 
 }
 
+
+
+
+/* =========================================
+   16B. OPEN MEMBER PENSION ACCOUNT
+   SIMULATION ONLY
+========================================= */
+
+const openPensionAccountButton =
+    getElement("openPensionAccountButton");
+
+const pensionAccountOpeningPanel =
+    getElement("pensionAccountOpeningPanel");
+
+const pensionAccountOpeningMessage =
+    getElement("pensionAccountOpeningMessage");
+
+
+if (openPensionAccountButton) {
+
+    openPensionAccountButton.addEventListener(
+        "click",
+        async function() {
+
+            if (openPensionAccountButton.disabled) {
+                return;
+            }
+
+            openPensionAccountButton.disabled = true;
+
+            openPensionAccountButton.textContent =
+                "Opening Pension Account...";
+
+            if (pensionAccountOpeningMessage) {
+                pensionAccountOpeningMessage.textContent =
+                    "Please wait while your account is being opened.";
+            }
+
+            try {
+
+                /* AUTHENTICATION */
+
+                const {
+                    data: authData,
+                    error: authError
+                } = await nexusSupabase.auth.getUser();
+
+                if (authError) {
+                    throw authError;
+                }
+
+                if (!authData?.user) {
+
+                    throw new Error(
+                        "Your session has expired. Please log in again."
+                    );
+                }
+
+
+                /* OPEN ACCOUNT THROUGH DATABASE FUNCTION */
+
+                const {
+                    data,
+                    error
+                } = await nexusSupabase.rpc(
+                    "open_nexus_pension_account"
+                );
+
+                if (error) {
+                    throw error;
+                }
+
+                if (
+                    !data ||
+                    data.success !== true
+                ) {
+
+                    throw new Error(
+                        data?.message ||
+                        "Your Pension account could not be opened."
+                    );
+                }
+
+
+                /* REFRESH PENSION DASHBOARD */
+
+                await loadMemberPension(authData.user);
+
+
+                /* DISPLAY RESULT */
+
+                if (pensionAccountOpeningMessage) {
+
+                    pensionAccountOpeningMessage.textContent =
+                        data.message ||
+                        "Your Pension account has been opened and is awaiting administrator activation.";
+                }
+
+                showMessage(
+                    data.message ||
+                    "Your Pension account has been opened successfully."
+                );
+
+
+            } catch (error) {
+
+                console.error(
+                    "Pension account opening error:",
+                    error
+                );
+
+                if (pensionAccountOpeningMessage) {
+
+                    pensionAccountOpeningMessage.textContent =
+                        error.message ||
+                        "Unable to open your Pension account.";
+                }
+
+                showMessage(
+                    error.message ||
+                    "Unable to open your Pension account. Please try again."
+                );
+
+
+            } finally {
+
+                openPensionAccountButton.disabled = false;
+
+                openPensionAccountButton.textContent =
+                    "Open Pension Account";
+
+            }
+
+        }
+    );
+}
+
+   
+   
 
 
 
@@ -3073,6 +3715,7 @@ const depositDestinationNotice = getElement("depositDestinationNotice");
 const depositSubmitButton = getElement("depositSubmitButton");
 
 
+
 /* =========================================
    27A. DESTINATION DISPLAY
 ========================================= */
@@ -3082,24 +3725,41 @@ function updateDepositDestinationUI() {
     const destination = depositDestination?.value || "";
 
     if (depositPaymentDetails) {
-        depositPaymentDetails.hidden = destination !== "savings";
+        depositPaymentDetails.hidden =
+            destination !== "savings";
     }
 
     if (depositPensionDetails) {
-        depositPensionDetails.hidden = destination !== "pension";
+        depositPensionDetails.hidden =
+            destination !== "pension";
     }
 
     if (depositDestinationNotice) {
 
         if (destination === "savings") {
+
             depositDestinationNotice.textContent =
                 "Savings deposits are processed through Paystack.";
+
         } else if (destination === "pension") {
-            depositDestinationNotice.textContent =
-                "Pension contribution requests are submitted for administrator review. No payment will be collected.";
+
+            if (!memberPensionRequestEnabled) {
+
+                depositDestinationNotice.textContent =
+                    "Pension contribution requests are currently unavailable. Open a Pension account and wait for administrator activation and classification before submitting a request. No payment will be collected.";
+
+            } else {
+
+                depositDestinationNotice.textContent =
+                    "Pension contribution requests are submitted for administrator review. No payment will be collected, no wallet will be debited and your Pension balance will not be credited.";
+
+            }
+
         } else {
+
             depositDestinationNotice.textContent =
                 "Select a destination to continue.";
+
         }
     }
 
@@ -3111,9 +3771,15 @@ function updateDepositDestinationUI() {
                 : destination === "savings"
                     ? "Continue to Deposit"
                     : "Continue";
+
+        depositSubmitButton.disabled =
+            destination === "pension" &&
+            !memberPensionRequestEnabled;
     }
 }
 
+
+/* DESTINATION CHANGE */
 
 if (depositDestination) {
 
@@ -3126,130 +3792,58 @@ if (depositDestination) {
 }
 
 
+
+
 /* =========================================
    27B. FORM SUBMISSION
+   SAVINGS PAYSTACK + PENSION SIMULATION
 ========================================= */
 
 if (depositForm) {
 
-    depositForm.addEventListener("submit", async function(event) {
+    depositForm.addEventListener(
+        "submit",
+        async function(event) {
 
-        event.preventDefault();
+            event.preventDefault();
 
-        const destination =
-            depositDestination?.value;
+            const destination =
+                depositDestination?.value;
 
-        const amount = Number(
-            getElement("depositAmount")?.value
-        );
-
-        const submitButton = depositSubmitButton ||
-            depositForm.querySelector('button[type="submit"]');
-
-
-        /* =====================================
-           COMMON VALIDATION
-        ===================================== */
-
-        if (!["savings", "pension"].includes(destination)) {
-
-            showMessage(
-                "Please select a valid deposit destination."
+            const amount = Number(
+                getElement("depositAmount")?.value
             );
 
-            return;
-        }
-
-        if (
-            !Number.isFinite(amount) ||
-            amount < 1 ||
-            amount > 100000
-        ) {
-
-            showMessage(
-                "Enter an amount between GHS 1 and GHS 100,000."
-            );
-
-            return;
-        }
-
-
-        /* =====================================
-           AUTHENTICATION
-        ===================================== */
-
-        if (submitButton) {
-            submitButton.disabled = true;
-        }
-
-        try {
-
-            const { data: authData, error: authError } =
-                await nexusSupabase.auth.getUser();
-
-            if (authError) throw authError;
-
-            if (!authData.user) {
-
-                throw new Error(
-                    "Your session has expired. Please log in again."
+            const submitButton =
+                depositSubmitButton ||
+                depositForm.querySelector(
+                    'button[type="submit"]'
                 );
-            }
 
 
             /* =====================================
-               PENSION CONTRIBUTION REQUEST
-               SIMULATION ONLY
+               COMMON VALIDATION
             ===================================== */
 
-            if (destination === "pension") {
-
-                if (submitButton) {
-                    submitButton.textContent =
-                        "Submitting Pension Request...";
-                }
-
-                const pensionNote =
-                    getElement("depositPensionNote")
-                        ?.value.trim() || null;
-
-                const { data, error } =
-                    await nexusSupabase.rpc(
-                        "submit_nexus_pension_contribution_request",
-                        {
-                            p_amount: amount,
-                            p_member_note: pensionNote
-                        }
-                    );
-
-                if (error) {
-                    throw error;
-                }
-
-                if (!data || data.success !== true) {
-
-                    throw new Error(
-                        data?.message ||
-                        "Your Pension request could not be confirmed."
-                    );
-                }
-
-                depositForm.reset();
-
-                updateDepositDestinationUI();
-
-                if (typeof loadMemberPension === "function") {
-                    const { data: refreshedAuth } =
-                        await nexusSupabase.auth.getUser();
-
-                    if (refreshedAuth?.user) {
-                        await loadMemberPension(refreshedAuth.user);
-                    }
-                }
+            if (
+                !["savings", "pension"].includes(destination)
+            ) {
 
                 showMessage(
-                    data.message ||
-                    "Your Pension contribution request has been submitted for administrator review. No payment was collected, no wallet was debited and your Pension balance was not credited."
+                    "Please select a valid deposit destination."
+                );
+
+                return;
+            }
+
+            if (
+                !Number.isFinite(amount) ||
+                amount < 1 ||
+                amount > 100000
+            ) {
+
+                showMessage(
+                    "Enter an amount between GHS 1 and GHS 100,000."
                 );
 
                 return;
@@ -3257,45 +3851,159 @@ if (depositForm) {
 
 
             /* =====================================
-               SAVINGS DEPOSIT
-               ORIGINAL PAYSTACK PROCESS
+               AUTHENTICATION
             ===================================== */
 
-            const selectedMethod =
-                getElement("depositMethod")?.value;
-
-            const phone =
-                getElement("depositPhone")?.value.trim();
-
-            const methodMap = {
-                mtn_momo: "mtn",
-                telecel_cash: "telecel",
-                at_money: "at"
-            };
-
-            const method = methodMap[selectedMethod];
-
-            if (!method) {
-
-                throw new Error(
-                    "Please select a valid Savings deposit method."
-                );
-            }
-
-            if (!/^0\d{9}$/.test(phone)) {
-
-                throw new Error(
-                    "Enter a valid 10-digit Ghana mobile money number."
-                );
-            }
-
             if (submitButton) {
-                submitButton.textContent =
-                    "Connecting to Paystack...";
+                submitButton.disabled = true;
             }
 
-            const { data, error } =
-                await nexusSupabase.functions.invoke(
+            try {
+
+                const {
+                    data: authData,
+                    error: authError
+                } = await nexusSupabase.auth.getUser();
+
+                if (authError) {
+                    throw authError;
+                }
+
+                if (!authData?.user) {
+
+                    throw new Error(
+                        "Your session has expired. Please log in again."
+                    );
+                }
+
+
+                /* =====================================
+                   PENSION CONTRIBUTION REQUEST
+                   SIMULATION ONLY
+                ===================================== */
+
+                if (destination === "pension") {
+
+                    if (!memberPensionRequestEnabled) {
+
+                        throw new Error(
+                            "Your Pension account is not yet operational. Open your Pension account and wait for administrator activation and classification before submitting a contribution request. No payment has been collected."
+                        );
+                    }
+
+                    if (submitButton) {
+
+                        submitButton.textContent =
+                            "Submitting Pension Request...";
+                    }
+
+                    const pensionNote =
+                        getElement("depositPensionNote")
+                            ?.value.trim() || null;
+
+
+                    const {
+                        data,
+                        error
+                    } = await nexusSupabase.rpc(
+                        "submit_nexus_pension_contribution_request",
+                        {
+                            p_amount: amount,
+                            p_member_note: pensionNote
+                        }
+                    );
+
+                    if (error) {
+                        throw error;
+                    }
+
+                    if (
+                        !data ||
+                        data.success !== true
+                    ) {
+
+                        throw new Error(
+                            data?.message ||
+                            "Your Pension request could not be confirmed."
+                        );
+                    }
+
+
+                    /* REFRESH PENSION INFORMATION */
+
+                    depositForm.reset();
+
+                    updateDepositDestinationUI();
+
+                    if (
+                        typeof loadMemberPension === "function"
+                    ) {
+
+                        await loadMemberPension(
+                            authData.user
+                        );
+                    }
+
+
+                    showMessage(
+                        data.message ||
+                        "Your Pension contribution request has been submitted for administrator review. No payment was collected, no wallet was debited and your Pension balance was not credited."
+                    );
+
+                    return;
+                }
+
+
+                /* =====================================
+                   SAVINGS DEPOSIT
+                   ORIGINAL PAYSTACK PROCESS
+                ===================================== */
+
+                const selectedMethod =
+                    getElement("depositMethod")?.value;
+
+                const phone =
+                    getElement("depositPhone")?.value.trim();
+
+                const methodMap = {
+
+                    mtn_momo: "mtn",
+
+                    telecel_cash: "telecel",
+
+                    at_money: "at"
+
+                };
+
+                const method =
+                    methodMap[selectedMethod];
+
+
+                if (!method) {
+
+                    throw new Error(
+                        "Please select a valid Savings deposit method."
+                    );
+                }
+
+                if (!/^0\d{9}$/.test(phone)) {
+
+                    throw new Error(
+                        "Enter a valid 10-digit Ghana mobile money number."
+                    );
+                }
+
+                if (submitButton) {
+
+                    submitButton.textContent =
+                        "Connecting to Paystack...";
+                }
+
+
+                const {
+                    data,
+                    error
+                } = await nexusSupabase.functions.invoke(
                     "nexus-deposit",
                     {
                         body: {
@@ -3306,57 +4014,65 @@ if (depositForm) {
                     }
                 );
 
-            if (error) {
-                throw new Error(
+
+                if (error) {
+
+                    throw new Error(
+                        error.message ||
+                        "Unable to initialize your Savings deposit."
+                    );
+                }
+
+                if (
+                    !data ||
+                    data.success !== true ||
+                    !data.authorization_url
+                ) {
+
+                    throw new Error(
+                        data?.message ||
+                        "Paystack did not return a payment link."
+                    );
+                }
+
+
+                console.log(
+                    "Savings deposit initialized:",
+                    data.reference
+                );
+
+
+                window.location.assign(
+                    data.authorization_url
+                );
+
+
+            } catch (error) {
+
+                console.error(
+                    "Deposit or Pension request error:",
+                    error
+                );
+
+                showMessage(
                     error.message ||
-                    "Unable to initialize your Savings deposit."
+                    "Unable to complete your request. Please try again."
                 );
+
+            } finally {
+
+                if (submitButton) {
+
+                    submitButton.disabled = false;
+
+                    updateDepositDestinationUI();
+                }
             }
 
-            if (
-                !data ||
-                data.success !== true ||
-                !data.authorization_url
-            ) {
-
-                throw new Error(
-                    data?.message ||
-                    "Paystack did not return a payment link."
-                );
-            }
-
-            console.log(
-                "Savings deposit initialized:",
-                data.reference
-            );
-
-            window.location.assign(data.authorization_url);
-
-
-        } catch (error) {
-
-            console.error(
-                "Deposit or Pension request error:",
-                error
-            );
-
-            showMessage(
-                error.message ||
-                "Unable to complete your request. Please try again."
-            );
-
-        } finally {
-
-            if (submitButton) {
-
-                submitButton.disabled = false;
-
-                updateDepositDestinationUI();
-            }
         }
-
-    });
+    );
 }
+
 
 
 
