@@ -1596,6 +1596,7 @@
 
 
             
+
 <!-- =================================================
      NEXUS TIER 3 PENSION MANAGEMENT
      SIMULATION ONLY
@@ -1611,8 +1612,8 @@
         <div>
             <h2 id="pensionHeading">Pension Management</h2>
             <p>
-                Manage member pension accounts, classifications
-                and simulated contribution requests.
+                Manage member pension accounts, classifications,
+                account lifecycle and simulated contribution requests.
             </p>
         </div>
 
@@ -1641,6 +1642,11 @@
             accepted for future processing. It does not confirm payment,
             credit a pension balance or create a financial ledger entry.
         </p>
+
+        <p>
+            Account lifecycle actions do not collect, deduct, transfer
+            or credit money.
+        </p>
     </div>
 
     <!-- PENSION ACCOUNT STATISTICS -->
@@ -1656,9 +1662,9 @@
 
         <article class="stat-card">
             <div class="stat-icon deposits-icon" aria-hidden="true">✓</div>
-            <p>Active Accounts</p>
+            <p>Operational Accounts</p>
             <h3 id="adminPensionActiveAccounts">0</h3>
-            <span>Active pension accounts</span>
+            <span>Configured accounts ready for the simulation workflow</span>
         </article>
 
         <article class="stat-card">
@@ -1677,7 +1683,7 @@
 
     </div>
 
-    <!-- PENSION ACCOUNTS -->
+    <!-- MEMBER PENSION ACCOUNTS -->
 
     <div class="admin-panel">
 
@@ -1685,8 +1691,8 @@
             <div>
                 <h3>Member Pension Accounts</h3>
                 <p>
-                    Review pension account numbers, member classifications
-                    and separate pension subaccounts.
+                    Review account numbers, member classifications,
+                    subaccounts, balances and account status.
                 </p>
             </div>
         </div>
@@ -1714,12 +1720,13 @@
                         <th scope="col">Recorded Balance</th>
                         <th scope="col">Account Status</th>
                         <th scope="col">Date Created</th>
+                        <th scope="col">Actions</th>
                     </tr>
                 </thead>
 
                 <tbody id="adminPensionAccountsTable">
                     <tr>
-                        <td colspan="9" class="empty-table">
+                        <td colspan="10" class="empty-table">
                             Pension accounts will appear here.
                         </td>
                     </tr>
@@ -1727,6 +1734,170 @@
             </table>
 
         </div>
+
+    </div>
+
+    <!-- ACCOUNT LIFECYCLE ACTION PANEL -->
+
+    <div
+        class="admin-panel"
+        id="adminPensionAccountActionPanel"
+        hidden
+    >
+
+        <div class="panel-heading">
+            <div>
+                <h3 id="adminPensionAccountActionTitle">
+                    Pension Account Administration
+                </h3>
+
+                <p id="adminPensionAccountActionDescription">
+                    Review the selected account before performing an action.
+                </p>
+            </div>
+
+            <button
+                type="button"
+                class="panel-action"
+                id="closeAdminPensionAccountAction"
+            >
+                Close
+            </button>
+        </div>
+
+        <div class="nexus-pension-warning">
+            <strong>ACCOUNT LIFECYCLE CONTROL</strong>
+            <p>
+                These actions change account status or configuration only.
+                They must never modify the account balance or subaccount balances.
+            </p>
+        </div>
+
+        <form id="adminPensionAccountActionForm">
+
+            <input
+                type="hidden"
+                id="adminPensionSelectedAccountId"
+            >
+
+            <input
+                type="hidden"
+                id="adminPensionSelectedAction"
+            >
+
+            <div class="platform-information">
+
+                <div>
+                    <span>Selected Account</span>
+                    <strong id="adminPensionSelectedAccountNumber">—</strong>
+                </div>
+
+                <div>
+                    <span>Current Status</span>
+                    <strong id="adminPensionSelectedAccountStatus">—</strong>
+                </div>
+
+                <div>
+                    <span>Member</span>
+                    <strong id="adminPensionSelectedMember">—</strong>
+                </div>
+
+            </div>
+
+            <!-- CLASSIFICATION CONFIGURATION -->
+
+            <div id="adminPensionClassificationFields" hidden>
+
+                <h4>Member Classification</h4>
+
+                <div class="date-filter-controls">
+
+                    <div class="date-filter-field">
+                        <label for="adminPensionMemberSector">
+                            Employment Sector
+                        </label>
+
+                        <select id="adminPensionMemberSector">
+                            <option value="">Select sector</option>
+                            <option value="formal">Formal Sector</option>
+                            <option value="informal">Informal Sector</option>
+                        </select>
+                    </div>
+
+                    <div class="date-filter-field">
+                        <label for="adminPensionMandatoryScheme">
+                            Mandatory Scheme Status
+                        </label>
+
+                        <select id="adminPensionMandatoryScheme">
+                            <option value="">Select status</option>
+                            <option value="covered">Covered</option>
+                            <option value="not_covered">Not Covered</option>
+                        </select>
+                    </div>
+
+                </div>
+
+                <div class="nexus-pension-warning">
+                    <strong>SUBACCOUNT CONFIGURATION RULES</strong>
+                    <p>
+                        Formal sector members must have a Retirement subaccount.
+                    </p>
+                    <p>
+                        Informal sector members must have Retirement and
+                        Personal Savings subaccounts.
+                    </p>
+                    <p>
+                        Subaccounts are created with zero balances.
+                    </p>
+                </div>
+
+            </div>
+
+            <!-- OPTIONAL ADMINISTRATOR NOTE -->
+
+            <div class="nexus-pension-review-note">
+
+                <label for="adminPensionAccountActionNote">
+                    Administrator Note (Optional)
+                </label>
+
+                <textarea
+                    id="adminPensionAccountActionNote"
+                    rows="3"
+                    maxlength="1000"
+                    placeholder="Enter an optional explanation for this account action..."
+                ></textarea>
+
+            </div>
+
+            <div class="date-filter-actions">
+
+                <button
+                    type="submit"
+                    id="adminPensionAccountActionSubmit"
+                >
+                    Confirm Account Action
+                </button>
+
+                <button
+                    type="button"
+                    class="panel-action"
+                    id="cancelAdminPensionAccountAction"
+                >
+                    Cancel
+                </button>
+
+            </div>
+
+            <p
+                id="adminPensionAccountActionMessage"
+                class="member-search-results"
+                role="status"
+                aria-live="polite"
+            ></p>
+
+        </form>
 
     </div>
 
@@ -1889,7 +2060,7 @@
 
     </div>
 
-    <!-- REQUEST HISTORY -->
+    <!-- CONTRIBUTION REQUEST HISTORY -->
 
     <div
         class="admin-panel"
@@ -1968,7 +2139,9 @@
         <div class="panel-heading">
             <div>
                 <h3>Pension Operational Status</h3>
-                <p>Important restrictions currently governing the pension system.</p>
+                <p>
+                    Important restrictions currently governing the pension system.
+                </p>
             </div>
         </div>
 
@@ -2009,6 +2182,7 @@
     </div>
 
 </section>
+
 
 
 
