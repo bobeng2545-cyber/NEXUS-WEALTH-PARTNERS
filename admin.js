@@ -7484,6 +7484,7 @@ if (
 ========================================================= */
 
 
+
 /* =========================================================
    43. NEXUS TIER 3 PENSION ADMINISTRATION
    SIMULATION ONLY
@@ -7504,6 +7505,7 @@ const ADMIN_PENSION_PAGE_SIZE = 50;
 let adminPensionRequestTotal = 0;
 
 let adminPensionSelectedHistoryRequestId = null;
+let adminPensionSelectedAccount = null;
 
 
 /* =========================================================
@@ -7530,6 +7532,22 @@ function showAdminPensionAccountsMessage(
 
     const element = document.getElementById(
         "adminPensionAccountsMessage"
+    );
+
+    if (!element) return;
+
+    element.textContent = message;
+    element.dataset.type = type;
+}
+
+
+function showAdminPensionAccountActionMessage(
+    message,
+    type = "info"
+) {
+
+    const element = document.getElementById(
+        "adminPensionAccountActionMessage"
     );
 
     if (!element) return;
@@ -7583,7 +7601,646 @@ function getAdminPensionClassificationLabel(account) {
 
 
 /* =========================================================
-   43.4 LOAD PENSION DASHBOARD
+   43.4 PENSION ACCOUNT ACTION UTILITIES
+========================================================= */
+
+function getAdminPensionAccountById(accountId) {
+
+    return adminPensionAccountsCache.find(
+        account => String(account.id) === String(accountId)
+    ) || null;
+}
+
+
+function closeAdminPensionAccountActionPanel() {
+
+    const panel = document.getElementById(
+        "adminPensionAccountActionPanel"
+    );
+
+    const form = document.getElementById(
+        "adminPensionAccountActionForm"
+    );
+
+    if (form) {
+        form.reset();
+    }
+
+    if (panel) {
+        panel.hidden = true;
+    }
+
+    adminPensionSelectedAccount = null;
+
+    showAdminPensionAccountActionMessage("");
+}
+
+
+function updateAdminPensionClassificationFields() {
+
+    const sectorInput = document.getElementById(
+        "adminPensionMemberSector"
+    );
+
+    const mandatoryInput = document.getElementById(
+        "adminPensionMandatoryScheme"
+    );
+
+    if (!sectorInput || !mandatoryInput) return;
+
+    if (sectorInput.value === "informal") {
+
+        mandatoryInput.value = "not_covered";
+
+        mandatoryInput.disabled = true;
+
+    } else {
+
+        mandatoryInput.disabled = false;
+
+    }
+}
+
+
+function getAdminPensionAccountActionDetails(account, action) {
+
+    const details = {
+        activate: {
+            title: "Activate Pension Account",
+            description:
+                "This moves the pending pension account to active status. It does not configure subaccounts or enable contributions."
+        },
+
+        configure: {
+            title: "Verify Classification and Configure Subaccounts",
+            description:
+                "Verify the member's sector and mandatory scheme coverage. The database will create the required zero-balance subaccounts and move the account to operational status."
+        },
+
+        suspend: {
+            title: "Suspend Pension Account",
+            description:
+                "This suspends the operational account and its active subaccounts. Existing balances will not be changed."
+        },
+
+        reactivate: {
+            title: "Reactivate Pension Account",
+            description:
+                "This restores the suspended account and only the subaccounts that were active before suspension. Existing balances will not be changed."
+        },
+
+        close: {
+            title: "Close Pension Account",
+            description:
+                "This permanently closes an eligible account. The database will reject closure unless the main account and every subaccount have exactly zero balances. No balance will be withdrawn, transferred or cleared."
+        }
+    };
+
+    return details[action] || {
+        title: "Pension Account Action",
+        description: "Select a valid account action."
+    };
+}
+
+
+/* =========================================================
+   43.5 OPEN PENSION ACCOUNT ACTION PANEL
+========================================================= */
+
+function openAdminPensionAccountActionPanel(accountId, action) {
+
+    const account = getAdminPensionAccountById(accountId);
+
+    if (!account) {
+
+        alert("The selected pension account could not be found.");
+
+        return;
+    }
+
+    const allowedActions = [
+        "activate",
+        "configure",
+        "suspend",
+        "reactivate",
+        "close"
+    ];
+
+    if (!allowedActions.includes(action)) {
+
+        alert("Invalid pension account action.");
+
+        return;
+    }
+
+    const status = normalizeAdminStatus(account.status);
+
+    const actionAllowed =
+        (
+            action === "activate" &&
+            status === "pending"
+        ) ||
+        (
+            action === "configure" &&
+            status === "active"
+        ) ||
+        (
+            action === "suspend" &&
+            status === "operational"
+        ) ||
+        (
+            action === "reactivate" &&
+            status === "suspended"
+        ) ||
+        (
+            action === "close" &&
+            ["operational", "suspended"].includes(status)
+        );
+
+    if (!actionAllowed) {
+
+        alert(
+            "This action is not available for the account's current status."
+        );
+
+        return;
+    }
+
+    const panel = document.getElementById(
+        "adminPensionAccountActionPanel"
+    );
+
+    const form = document.getElementById(
+        "adminPensionAccountActionForm"
+    );
+
+    const title = document.getElementById(
+        "adminPensionAccountActionTitle"
+    );
+
+    const description = document.getElementById(
+        "adminPensionAccountActionDescription"
+    );
+
+    const accountIdInput = document.getElementById(
+        "adminPensionSelectedAccountId"
+    );
+
+    const actionInput = document.getElementById(
+        "adminPensionSelectedAction"
+    );
+
+    const accountNumberElement = document.getElementById(
+        "adminPensionSelectedAccountNumber"
+    );
+
+    const accountStatusElement = document.getElementById(
+        "adminPensionSelectedAccountStatus"
+    );
+
+    const memberElement = document.getElementById(
+        "adminPensionSelectedMember"
+    );
+
+    const classificationFields = document.getElementById(
+        "adminPensionClassificationFields"
+    );
+
+    const sectorInput = document.getElementById(
+        "adminPensionMemberSector"
+    );
+
+    const mandatoryInput = document.getElementById(
+        "adminPensionMandatoryScheme"
+    );
+
+    const submitButton = document.getElementById(
+        "adminPensionAccountActionSubmit"
+    );
+
+    if (
+        !panel ||
+        !form ||
+        !title ||
+        !description ||
+        !accountIdInput ||
+        !actionInput ||
+        !classificationFields ||
+        !submitButton
+    ) {
+
+        showAdminPensionAccountsMessage(
+            "The pension account action interface is incomplete. Check the Pension Management HTML section.",
+            "error"
+        );
+
+        return;
+    }
+
+    const actionDetails =
+        getAdminPensionAccountActionDetails(account, action);
+
+    adminPensionSelectedAccount = account;
+
+    form.reset();
+
+    accountIdInput.value = account.id;
+    actionInput.value = action;
+
+    title.textContent = actionDetails.title;
+
+    description.textContent =
+        actionDetails.description;
+
+    if (accountNumberElement) {
+
+        accountNumberElement.textContent =
+            account.account_number || "—";
+    }
+
+    if (accountStatusElement) {
+
+        accountStatusElement.textContent =
+            String(account.status || "unknown")
+                .replace(/_/g, " ")
+                .toUpperCase();
+    }
+
+    if (memberElement) {
+
+        memberElement.textContent =
+            account._member_name || "Unknown Member";
+    }
+
+    classificationFields.hidden =
+        action !== "configure";
+
+    if (action === "configure") {
+
+        if (sectorInput) {
+
+            sectorInput.value =
+                account.member_sector || "";
+        }
+
+        if (mandatoryInput) {
+
+            mandatoryInput.value =
+                account.mandatory_scheme_status || "";
+        }
+
+        updateAdminPensionClassificationFields();
+    }
+
+    submitButton.textContent =
+        action === "activate"
+            ? "Activate Account"
+            : action === "configure"
+                ? "Verify and Configure"
+                : action === "suspend"
+                    ? "Suspend Account"
+                    : action === "reactivate"
+                        ? "Reactivate Account"
+                        : "Close Account";
+
+    submitButton.disabled = false;
+
+    showAdminPensionAccountActionMessage("");
+
+    panel.hidden = false;
+
+    panel.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+    });
+}
+
+
+/* =========================================================
+   43.6 EXECUTE PENSION ACCOUNT ACTION
+========================================================= */
+
+async function executeAdminPensionAccountAction() {
+
+    const accountIdInput = document.getElementById(
+        "adminPensionSelectedAccountId"
+    );
+
+    const actionInput = document.getElementById(
+        "adminPensionSelectedAction"
+    );
+
+    const noteInput = document.getElementById(
+        "adminPensionAccountActionNote"
+    );
+
+    const submitButton = document.getElementById(
+        "adminPensionAccountActionSubmit"
+    );
+
+    const accountId = accountIdInput?.value;
+
+    const action = actionInput?.value;
+
+    const note = noteInput?.value.trim() || null;
+
+    if (!accountId || !action) {
+
+        showAdminPensionAccountActionMessage(
+            "The selected account or action is missing.",
+            "error"
+        );
+
+        return;
+    }
+
+    if (note && note.length > 500) {
+
+        showAdminPensionAccountActionMessage(
+            "The administrator note cannot exceed 500 characters.",
+            "error"
+        );
+
+        return;
+    }
+
+    const account = getAdminPensionAccountById(accountId);
+
+    if (!account) {
+
+        showAdminPensionAccountActionMessage(
+            "The selected pension account is no longer available. Refresh the account list.",
+            "error"
+        );
+
+        return;
+    }
+
+    const currentStatus = normalizeAdminStatus(account.status);
+
+    const actionRules = {
+        activate: {
+            status: "pending",
+            rpc: "admin_activate_nexus_pension_account",
+            description: "activate this pending pension account"
+        },
+
+        configure: {
+            status: "active",
+            rpc: "admin_configure_nexus_pension_subaccounts",
+            description: "verify classification and configure this pension account"
+        },
+
+        suspend: {
+            status: "operational",
+            rpc: "admin_suspend_nexus_pension_account",
+            description: "suspend this operational pension account"
+        },
+
+        reactivate: {
+            status: "suspended",
+            rpc: "admin_reactivate_nexus_pension_account",
+            description: "reactivate this suspended pension account"
+        },
+
+        close: {
+            statuses: ["operational", "suspended"],
+            rpc: "admin_close_nexus_pension_account",
+            description: "permanently close this pension account"
+        }
+    };
+
+    const rule = actionRules[action];
+
+    if (!rule) {
+
+        showAdminPensionAccountActionMessage(
+            "Invalid pension account action.",
+            "error"
+        );
+
+        return;
+    }
+
+    const statusIsValid =
+        rule.status
+            ? currentStatus === rule.status
+            : rule.statuses.includes(currentStatus);
+
+    if (!statusIsValid) {
+
+        showAdminPensionAccountActionMessage(
+            "The account status has changed. Refresh the account list before continuing.",
+            "error"
+        );
+
+        return;
+    }
+
+    let rpcParameters = {
+        p_account_id: accountId,
+        p_note: note
+    };
+
+    if (action === "configure") {
+
+        const sectorInput = document.getElementById(
+            "adminPensionMemberSector"
+        );
+
+        const mandatoryInput = document.getElementById(
+            "adminPensionMandatoryScheme"
+        );
+
+        const sector = sectorInput?.value;
+
+        const mandatoryStatus = mandatoryInput?.value;
+
+        if (!["formal", "informal"].includes(sector)) {
+
+            showAdminPensionAccountActionMessage(
+                "Select the member's verified sector.",
+                "error"
+            );
+
+            return;
+        }
+
+        if (
+            !["covered", "not_covered"].includes(
+                mandatoryStatus
+            )
+        ) {
+
+            showAdminPensionAccountActionMessage(
+                "Select the verified mandatory scheme coverage status.",
+                "error"
+            );
+
+            return;
+        }
+
+        if (
+            sector === "informal" &&
+            mandatoryStatus !== "not_covered"
+        ) {
+
+            showAdminPensionAccountActionMessage(
+                "Informal-sector configuration requires verified non-coverage by a mandatory pension scheme.",
+                "error"
+            );
+
+            return;
+        }
+
+        rpcParameters = {
+            p_account_id: accountId,
+            p_member_sector: sector,
+            p_mandatory_scheme_status: mandatoryStatus,
+            p_note: note
+        };
+    }
+
+    let confirmationMessage =
+        "Are you sure you want to " +
+        rule.description +
+        "?\n\n" +
+        "Account: " +
+        (account.account_number || accountId) +
+        "\nCurrent status: " +
+        currentStatus.toUpperCase() +
+        "\n\n";
+
+    if (action === "close") {
+
+        confirmationMessage +=
+            "IMPORTANT: The database will only permit closure if the main account and every subaccount have exactly zero balances.\n\n" +
+            "No money will be withdrawn, transferred, cleared or altered.";
+    } else if (action === "suspend") {
+
+        confirmationMessage +=
+            "The account and its active subaccounts will be suspended. Balances will remain unchanged.";
+    } else if (action === "reactivate") {
+
+        confirmationMessage +=
+            "Only subaccounts that were active before suspension will be restored. Balances will remain unchanged.";
+    } else if (action === "configure") {
+
+        confirmationMessage +=
+            "This creates the required zero-balance subaccounts and changes the account status to operational.\n\n" +
+            "Formal sector: retirement subaccount.\n" +
+            "Informal sector: retirement and personal savings subaccounts.";
+    } else if (action === "activate") {
+
+        confirmationMessage +=
+            "This changes the account status from pending to active. Classification and subaccount configuration will remain a separate step.";
+    }
+
+    confirmationMessage +=
+        "\n\nThis is a simulation-only pension management action. No real money will be processed.";
+
+    if (!window.confirm(confirmationMessage)) return;
+
+    const originalButtonText =
+        submitButton?.textContent || "Submit";
+
+    if (submitButton) {
+
+        submitButton.disabled = true;
+
+        submitButton.textContent = "Processing...";
+    }
+
+    showAdminPensionAccountActionMessage(
+        "Submitting the administrator action securely...",
+        "info"
+    );
+
+    try {
+
+        const {
+            data,
+            error
+        } = await nexusAdminSupabase.rpc(
+            rule.rpc,
+            rpcParameters
+        );
+
+        if (error) throw error;
+
+        if (!data || data.success !== true) {
+
+            throw new Error(
+                data?.message ||
+                "The pension account action was unsuccessful."
+            );
+        }
+
+        if (
+            data.real_money_enabled === true ||
+            data.payment_received === true ||
+            data.pension_balance_credited === true ||
+            data.ledger_posted === true
+        ) {
+
+            throw new Error(
+                "Unexpected financial response. Stop and verify the database before continuing."
+            );
+        }
+
+        showAdminPensionAccountActionMessage(
+            data.message ||
+            "Pension account action completed successfully.",
+            "success"
+        );
+
+        showAdminPensionAccountsMessage(
+            data.message ||
+            "Pension account action completed successfully.",
+            "success"
+        );
+
+        alert(
+            data.message ||
+            "Pension account action completed successfully."
+        );
+
+        closeAdminPensionAccountActionPanel();
+
+        await loadAdminPensionAccounts();
+
+    } catch (error) {
+
+        console.error(
+            "Pension account lifecycle action error:",
+            error
+        );
+
+        showAdminPensionAccountActionMessage(
+            error.message ||
+            "The pension account action could not be completed.",
+            "error"
+        );
+
+        alert(
+            "Pension account action failed:\n\n" +
+            (error.message || "Unknown error")
+        );
+
+    } finally {
+
+        if (submitButton) {
+
+            submitButton.disabled = false;
+
+            submitButton.textContent = originalButtonText;
+        }
+    }
+}
+
+
+/* =========================================================
+   43.7 LOAD PENSION DASHBOARD
 ========================================================= */
 
 async function loadAdminPensionDashboard() {
@@ -7614,7 +8271,7 @@ async function loadAdminPensionDashboard() {
 
 
 /* =========================================================
-   43.5 LOAD PENSION ACCOUNTS
+   43.8 LOAD PENSION ACCOUNTS
 ========================================================= */
 
 async function loadAdminPensionAccounts() {
@@ -7627,20 +8284,13 @@ async function loadAdminPensionAccounts() {
 
     try {
 
-        /*
-           The account query uses verified column names.
-
-           Only the latest 200 records are loaded here.
-           This is a display limit, not a total account count.
-        */
-
         const {
             data: accounts,
             error: accountError
         } = await nexusAdminSupabase
             .from("nexus_pension_accounts")
             .select(
-                "id, user_id, account_number, scheme_code, currency, balance, status, member_sector, mandatory_scheme_status, created_at"
+                "id, user_id, account_number, scheme_code, currency, balance, status, member_sector, mandatory_scheme_status, classification_verified_at, created_at"
             )
             .order("created_at", {
                 ascending: false
@@ -7691,7 +8341,7 @@ async function loadAdminPensionAccounts() {
             } = await nexusAdminSupabase
                 .from("nexus_pension_subaccounts")
                 .select(
-                    "account_id, sub_account_type, balance, status"
+                    "account_id, sub_account_type, balance, status, currency"
                 )
                 .in("account_id", accountIds);
 
@@ -7712,6 +8362,7 @@ async function loadAdminPensionAccounts() {
         subaccounts.forEach(subaccount => {
 
             if (!subaccountMap.has(subaccount.account_id)) {
+
                 subaccountMap.set(
                     subaccount.account_id,
                     []
@@ -7726,7 +8377,7 @@ async function loadAdminPensionAccounts() {
 
         table.replaceChildren();
 
-        let activeCount = 0;
+        let operationalCount = 0;
         let totalRecordedBalance = 0;
 
         adminPensionAccountsCache.forEach(account => {
@@ -7737,6 +8388,9 @@ async function loadAdminPensionAccounts() {
             const accountSubaccounts =
                 subaccountMap.get(account.id) || [];
 
+            account._member_name =
+                profile.full_name || "Unknown Member";
+
             const balance = getAdminNumber(
                 account.balance
             );
@@ -7744,9 +8398,10 @@ async function loadAdminPensionAccounts() {
             totalRecordedBalance += balance;
 
             if (
-                normalizeAdminStatus(account.status) === "active"
+                normalizeAdminStatus(account.status) ===
+                "operational"
             ) {
-                activeCount++;
+                operationalCount++;
             }
 
             const row = document.createElement("tr");
@@ -7757,8 +8412,7 @@ async function loadAdminPensionAccounts() {
 
             row.appendChild(
                 createAdminTableCell(
-                    profile.full_name ||
-                    "Unknown Member"
+                    profile.full_name || "Unknown Member"
                 )
             );
 
@@ -7798,12 +8452,13 @@ async function loadAdminPensionAccounts() {
 
                         return (
                             type +
-                            ": " +
+                            " (" +
+                            String(item.status || "unknown") +
+                            "): " +
                             formatNexusAdminMoney(item.balance)
                         );
 
                     }).join(" | ");
-
             }
 
             row.appendChild(subaccountCell);
@@ -7826,6 +8481,109 @@ async function loadAdminPensionAccounts() {
                 )
             );
 
+            const actionsCell =
+                document.createElement("td");
+
+            const actionGroup =
+                document.createElement("div");
+
+            actionGroup.className =
+                "nexus-pension-action-group";
+
+            const status = normalizeAdminStatus(
+                account.status
+            );
+
+            const actions = [];
+
+            if (status === "pending") {
+
+                actions.push({
+                    action: "activate",
+                    label: "Activate"
+                });
+
+            } else if (status === "active") {
+
+                actions.push({
+                    action: "configure",
+                    label: "Verify & Configure"
+                });
+
+            } else if (status === "operational") {
+
+                actions.push({
+                    action: "suspend",
+                    label: "Suspend"
+                });
+
+                actions.push({
+                    action: "close",
+                    label: "Close"
+                });
+
+            } else if (status === "suspended") {
+
+                actions.push({
+                    action: "reactivate",
+                    label: "Reactivate"
+                });
+
+                actions.push({
+                    action: "close",
+                    label: "Close"
+                });
+            }
+
+            if (actions.length === 0) {
+
+                const unavailable = document.createElement("span");
+
+                unavailable.textContent =
+                    status === "closed"
+                        ? "Permanently closed"
+                        : "No actions available";
+
+                actionsCell.appendChild(unavailable);
+
+            } else {
+
+                actions.forEach(item => {
+
+                    const button =
+                        document.createElement("button");
+
+                    button.type = "button";
+
+                    button.textContent = item.label;
+
+                    button.className =
+                        "nexus-pension-account-action";
+
+                    if (item.action === "close") {
+
+                        button.classList.add(
+                            "nexus-pension-reject"
+                        );
+                    }
+
+                    button.addEventListener(
+                        "click",
+                        () => openAdminPensionAccountActionPanel(
+                            account.id,
+                            item.action
+                        )
+                    );
+
+                    actionGroup.appendChild(button);
+
+                });
+
+                actionsCell.appendChild(actionGroup);
+            }
+
+            row.appendChild(actionsCell);
+
             table.appendChild(row);
 
         });
@@ -7834,10 +8592,9 @@ async function loadAdminPensionAccounts() {
 
             showAdminTableMessage(
                 "adminPensionAccountsTable",
-                9,
+                10,
                 "No pension accounts have been created."
             );
-
         }
 
         const accountCountElement =
@@ -7845,7 +8602,7 @@ async function loadAdminPensionAccounts() {
                 "adminPensionAccountCount"
             );
 
-        const activeElement =
+        const operationalElement =
             document.getElementById(
                 "adminPensionActiveAccounts"
             );
@@ -7856,15 +8613,19 @@ async function loadAdminPensionAccounts() {
             );
 
         if (accountCountElement) {
+
             accountCountElement.textContent =
                 adminPensionAccountsCache.length;
         }
 
-        if (activeElement) {
-            activeElement.textContent = activeCount;
+        if (operationalElement) {
+
+            operationalElement.textContent =
+                operationalCount;
         }
 
         if (balanceElement) {
+
             balanceElement.textContent =
                 formatNexusAdminMoney(
                     totalRecordedBalance
@@ -7887,13 +8648,14 @@ async function loadAdminPensionAccounts() {
 
         showAdminTableMessage(
             "adminPensionAccountsTable",
-            9,
+            10,
             "Unable to load pension accounts: " +
             error.message
         );
 
         showAdminPensionAccountsMessage(
-            "Pension account loading failed.",
+            "Pension account loading failed: " +
+            error.message,
             "error"
         );
     }
@@ -7901,7 +8663,7 @@ async function loadAdminPensionAccounts() {
 
 
 /* =========================================================
-   43.6 LOAD CONTRIBUTION REQUESTS
+   43.9 LOAD CONTRIBUTION REQUESTS
 ========================================================= */
 
 async function loadAdminPensionRequests() {
@@ -7963,6 +8725,7 @@ async function loadAdminPensionRequests() {
             );
 
         if (requestCountElement) {
+
             requestCountElement.textContent =
                 adminPensionRequestTotal;
         }
@@ -8012,13 +8775,12 @@ async function loadAdminPensionRequests() {
             "Unable to load contribution requests.",
             "error"
         );
-
     }
 }
 
 
 /* =========================================================
-   43.7 RENDER CONTRIBUTION REQUESTS
+   43.10 RENDER CONTRIBUTION REQUESTS
 ========================================================= */
 
 function renderAdminPensionRequests() {
@@ -8123,6 +8885,7 @@ function renderAdminPensionRequests() {
                 document.createElement("button");
 
             acceptButton.type = "button";
+
             acceptButton.className =
                 "nexus-pension-accept";
 
@@ -8140,11 +8903,11 @@ function renderAdminPensionRequests() {
 
             actionGroup.appendChild(acceptButton);
 
-
             const rejectButton =
                 document.createElement("button");
 
             rejectButton.type = "button";
+
             rejectButton.className =
                 "nexus-pension-reject";
 
@@ -8166,6 +8929,7 @@ function renderAdminPensionRequests() {
             document.createElement("button");
 
         historyButton.type = "button";
+
         historyButton.className =
             "nexus-pension-history";
 
@@ -8192,7 +8956,7 @@ function renderAdminPensionRequests() {
 
 
 /* =========================================================
-   43.8 REQUEST PAGINATION
+   43.11 REQUEST PAGINATION
 ========================================================= */
 
 function updateAdminPensionPagination() {
@@ -8255,7 +9019,7 @@ function updateAdminPensionPagination() {
 
 
 /* =========================================================
-   43.9 REVIEW CONTRIBUTION REQUEST
+   43.12 REVIEW CONTRIBUTION REQUEST
 ========================================================= */
 
 async function reviewAdminPensionRequest(
@@ -8411,7 +9175,7 @@ async function reviewAdminPensionRequest(
 
 
 /* =========================================================
-   43.10 LOAD CONTRIBUTION REQUEST HISTORY
+   43.13 LOAD CONTRIBUTION REQUEST HISTORY
 ========================================================= */
 
 async function loadAdminPensionRequestHistory(requestId) {
@@ -8603,7 +9367,7 @@ async function loadAdminPensionRequestHistory(requestId) {
 
 
 /* =========================================================
-   43.11 PENSION EVENT LISTENERS
+   43.14 PENSION EVENT LISTENERS
 ========================================================= */
 
 // Refresh pension records
@@ -8647,6 +9411,79 @@ if (
         }
     );
 }
+
+
+// Pension account action form
+
+const adminPensionAccountActionForm =
+    document.getElementById(
+        "adminPensionAccountActionForm"
+    );
+
+if (
+    adminPensionAccountActionForm &&
+    adminPensionAccountActionForm.dataset.pensionBound !== "true"
+) {
+
+    adminPensionAccountActionForm.dataset.pensionBound =
+        "true";
+
+    adminPensionAccountActionForm.addEventListener(
+        "submit",
+        async function(event) {
+
+            event.preventDefault();
+
+            await executeAdminPensionAccountAction();
+        }
+    );
+}
+
+
+// Classification sector selection
+
+const adminPensionMemberSector =
+    document.getElementById(
+        "adminPensionMemberSector"
+    );
+
+if (
+    adminPensionMemberSector &&
+    adminPensionMemberSector.dataset.pensionBound !== "true"
+) {
+
+    adminPensionMemberSector.dataset.pensionBound =
+        "true";
+
+    adminPensionMemberSector.addEventListener(
+        "change",
+        updateAdminPensionClassificationFields
+    );
+}
+
+
+// Close account action panel
+
+[
+    "adminPensionAccountActionClose",
+    "adminPensionAccountActionCancel"
+].forEach(elementId => {
+
+    const button = document.getElementById(elementId);
+
+    if (
+        button &&
+        button.dataset.pensionBound !== "true"
+    ) {
+
+        button.dataset.pensionBound = "true";
+
+        button.addEventListener(
+            "click",
+            closeAdminPensionAccountActionPanel
+        );
+    }
+});
 
 
 // Search contribution requests
@@ -8820,7 +9657,7 @@ if (
 }
 
 
-// Close history panel
+// Close contribution request history panel
 
 const closeAdminPensionHistory =
     document.getElementById(
@@ -8857,6 +9694,10 @@ if (
    END OF SECTION 43
    NEXUS TIER 3 PENSION ADMINISTRATION
 ========================================================= */
+
+
+
+
 
 
 /* =========================================================
