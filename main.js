@@ -1606,52 +1606,90 @@ async function loadMemberPension(user) {
 
 
 
-    /* =====================================
-       LOAD PENSION SUBACCOUNTS
-    ===================================== */
+    
+/* =====================================
+   LOAD PENSION ACCOUNT
+===================================== */
 
-    let subaccounts = [];
-
-    if (account) {
-
-        const {
-            data,
-            error
-        } = await nexusSupabase
-            .from("nexus_pension_subaccounts")
-            .select(`
-                id,
-                account_id,
-                user_id,
-                sub_account_type,
-                currency,
-                balance,
-                status
-            `)
-            .eq("account_id", account.id)
-            .eq("user_id", user.id)
-            .order(
-                "sub_account_type",
-                {
-                    ascending: true
-                }
-            );
+const {
+    data: account,
+    error: accountError
+} = await nexusSupabase
+    .from("nexus_pension_accounts")
+    .select(`
+        id,
+        account_number,
+        currency,
+        balance,
+        status,
+        member_sector,
+        mandatory_scheme_status,
+        classification_verified_at
+    `)
+    .eq("user_id", user.id)
+    .maybeSingle();
 
 
-        if (error) {
+if (accountError) {
 
-            console.error(
-                "Pension subaccount loading error:",
-                error
-            );
+    console.error(
+        "Pension account loading error:",
+        accountError
+    );
 
-            throw error;
-
-        }
-
-        subaccounts = data || [];
-
+    // Hide account information when verification fails.
+    if (pensionAccountContent) {
+        pensionAccountContent.hidden = true;
     }
+
+    // Keep account creation visible but disabled.
+    if (openingPanel) {
+        openingPanel.hidden = false;
+    }
+
+    if (openingButton) {
+        openingButton.disabled = true;
+    }
+
+    if (openingMessage) {
+        openingMessage.textContent =
+            "We could not verify your Pension account. Please refresh the page or contact support. Account creation has been temporarily disabled.";
+    }
+
+    throw accountError;
+}
+
+
+// Account lookup succeeded.
+// Determine whether a Pension account exists.
+
+const pensionAccountExists =
+    Boolean(account && account.id);
+
+
+// Control account creation panel.
+
+if (openingPanel) {
+    openingPanel.hidden =
+        pensionAccountExists;
+}
+
+if (openingButton) {
+    openingButton.disabled =
+        pensionAccountExists;
+
+    openingButton.textContent =
+        "Create Pension Account";
+}
+
+
+// Control existing account information.
+
+if (pensionAccountContent) {
+    pensionAccountContent.hidden =
+        !pensionAccountExists;
+}
+
 
 
     /* =====================================
@@ -1842,38 +1880,13 @@ async function loadMemberPension(user) {
 
    
 
+
 /* =====================================
    PENSION ACCOUNT VISIBILITY
 
-   - No Pension account:
-     Show account creation panel.
-     Hide existing account information.
-
-   - Pension account exists:
-     Hide account creation panel.
-     Show existing account information.
+   Visibility is controlled after the
+   Pension account lookup succeeds.
 ===================================== */
-
-const pensionAccountExists =
-    Boolean(account && account.id);
-
-if (openingPanel) {
-    openingPanel.hidden =
-        pensionAccountExists;
-}
-
-if (openingButton) {
-    openingButton.disabled =
-        pensionAccountExists;
-
-    openingButton.textContent =
-        "Create Pension Account";
-}
-
-if (pensionAccountContent) {
-    pensionAccountContent.hidden =
-        !pensionAccountExists;
-}
 
 
 
