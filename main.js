@@ -1788,25 +1788,40 @@ async function loadMemberPension(user) {
         pensionReady;
 
 
-    /* =====================================
-       PENSION ACCOUNT OPENING PANEL
+   
+/* =====================================
+   PENSION ACCOUNT VISIBILITY
 
-       Show only when no account exists.
-    ===================================== */
+   - No Pension account:
+     Show the account creation panel.
+     Hide existing account information.
 
-    if (openingPanel) {
+   - Pension account exists:
+     Hide the account creation panel.
+     Show existing account information.
 
-        openingPanel.hidden =
-            Boolean(account);
+   - Account content is only displayed
+     when an account has been confirmed.
+===================================== */
 
-    }
+const pensionAccountContent =
+    document.getElementById("pensionAccountContent");
 
-    if (openingButton) {
+const pensionAccountExists =
+    Boolean(account && account.id);
 
-        openingButton.disabled =
-            Boolean(account);
+if (openingPanel) {
+    openingPanel.hidden = pensionAccountExists;
+}
 
-    }
+if (openingButton) {
+    openingButton.disabled = pensionAccountExists;
+}
+
+if (pensionAccountContent) {
+    pensionAccountContent.hidden = !pensionAccountExists;
+}
+
 
 
     /* =====================================
@@ -2671,8 +2686,10 @@ async function loadMemberPension(user) {
 
 
 
+
 /* =========================================
-   16B. OPEN MEMBER PENSION ACCOUNT
+   16B. CREATE MEMBER PENSION ACCOUNT
+   EXISTING NEXUS LOGIN
    SIMULATION ONLY
 ========================================= */
 
@@ -2699,16 +2716,18 @@ if (openPensionAccountButton) {
             openPensionAccountButton.disabled = true;
 
             openPensionAccountButton.textContent =
-                "Opening Pension Account...";
+                "Creating Pension Account...";
 
             if (pensionAccountOpeningMessage) {
+
                 pensionAccountOpeningMessage.textContent =
-                    "Please wait while your account is being opened.";
+                    "Please wait while we create your Pension account.";
+
             }
 
             try {
 
-                /* AUTHENTICATION */
+                /* GET EXISTING AUTHENTICATED MEMBER */
 
                 const {
                     data: authData,
@@ -2719,14 +2738,16 @@ if (openPensionAccountButton) {
                     throw authError;
                 }
 
-                if (!authData?.user) {
+                if (!authData?.user?.id) {
+
                     throw new Error(
                         "Your session has expired. Please log in again."
                     );
+
                 }
 
 
-                /* OPEN ACCOUNT THROUGH DATABASE FUNCTION */
+                /* CREATE PENSION ACCOUNT USING EXISTING LOGIN */
 
                 const {
                     data,
@@ -2740,47 +2761,54 @@ if (openPensionAccountButton) {
                 }
 
                 if (!data || data.success !== true) {
+
                     throw new Error(
                         data?.message ||
-                        "Your Pension account could not be opened."
+                        "Your Pension account could not be created."
                     );
+
                 }
 
 
-                /* REFRESH PENSION DASHBOARD */
+                /* REFRESH MEMBER PENSION INFORMATION */
 
                 await loadMemberPension(authData.user);
 
 
-                /* DISPLAY RESULT */
+                /* DISPLAY CONFIRMATION */
+
+                const successMessage =
+                    data.message ||
+                    "Your Pension account has been created and is awaiting administrator activation.";
 
                 if (pensionAccountOpeningMessage) {
+
                     pensionAccountOpeningMessage.textContent =
-                        data.message ||
-                        "Your Pension account has been opened and is awaiting administrator activation.";
+                        successMessage;
+
                 }
 
-                showMessage(
-                    data.message ||
-                    "Your Pension account has been opened successfully."
-                );
+                showMessage(successMessage);
+
 
             } catch (error) {
 
                 console.error(
-                    "Pension account opening error:",
+                    "Pension account creation error:",
                     error
                 );
 
                 if (pensionAccountOpeningMessage) {
+
                     pensionAccountOpeningMessage.textContent =
                         error.message ||
-                        "Unable to open your Pension account.";
+                        "Unable to create your Pension account.";
+
                 }
 
                 showMessage(
                     error.message ||
-                    "Unable to open your Pension account. Please try again."
+                    "Unable to create your Pension account. Please try again."
                 );
 
             } finally {
@@ -2795,7 +2823,8 @@ if (openPensionAccountButton) {
                         Boolean(
                             accountNumber &&
                             accountNumber !== "Not yet created" &&
-                            accountNumber !== "Not yet assigned"
+                            accountNumber !== "Not yet assigned" &&
+                            accountNumber !== "Loading..."
                         );
 
                     if (accountExists) {
@@ -2813,12 +2842,17 @@ if (openPensionAccountButton) {
                     }
 
                     openPensionAccountButton.textContent =
-                        "Open Pension Account";
+                        "Create Pension Account";
+
                 }
+
             }
+
         }
     );
+
 }
+
 
 
    
