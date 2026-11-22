@@ -2867,48 +2867,166 @@ async function loadDashboard(user) {
             throw accessError;
         }
 
-        
-if (isActiveMember !== true) {
+        if (isActiveMember !== true) {
 
-    // Check whether this is a suspended ordinary member.
-    const {
-        data: profileStatus,
-        error: profileStatusError
-    } = await nexusSupabase
-        .from("profiles")
-        .select("status")
-        .eq("id", user.id)
-        .maybeSingle();
+            const {
+                data: profileStatus,
+                error: profileStatusError
+            } = await nexusSupabase
+                .from("profiles")
+                .select("status")
+                .eq("id", user.id)
+                .maybeSingle();
 
-    if (profileStatusError) {
-        throw profileStatusError;
-    }
+            if (profileStatusError) {
+                throw profileStatusError;
+            }
 
-    const status = String(
-        profileStatus?.status || ""
-    ).toLowerCase();
+            const status = String(
+                profileStatus?.status || ""
+            ).toLowerCase();
 
-    if (status === "suspended") {
+            if (status === "suspended") {
 
-        showSupportRecoveryView();
+                showSupportRecoveryView();
 
-        showMessage(
-            "Your member account is suspended. " +
-            "You can still contact NEXUS support through this page."
+                showMessage(
+                    "Your member account is suspended. " +
+                    "You can still contact NEXUS support through this page."
+                );
+
+            } else {
+
+                showPublicHome();
+
+                showMessage(
+                    "This account does not have ordinary member dashboard access. " +
+                    "Please use your authorized staff portal."
+                );
+
+            }
+
+            return false;
+        }
+
+
+        await loadMemberProfile(user);
+
+        showMemberDashboard();
+
+        initializeNexusSupport();
+        initializeNexusNotifications();
+
+
+        const dashboardTasks = [
+
+            {
+                name: "Member wallet",
+                run: () => loadMemberWallet(user)
+            },
+
+            {
+                name: "Member transactions",
+                run: () => loadMemberTransactions(user)
+            },
+
+            {
+                name: "Pending withdrawals",
+                run: () => loadPendingWithdrawals(user)
+            },
+
+            {
+                name: "Member pension",
+                run: () => loadMemberPension(user)
+            },
+
+            {
+                name: "Notifications",
+                run: () => loadNexusNotifications(user)
+            },
+
+            {
+                name: "Customer support",
+                run: () => refreshNexusSupport()
+            }
+
+        ];
+
+
+        const results = await Promise.allSettled(
+            dashboardTasks.map(async task => {
+
+                try {
+
+                    await task.run();
+
+                    console.log(
+                        task.name + " loaded successfully."
+                    );
+
+                } catch (error) {
+
+                    console.error(
+                        task.name + " loading error:",
+                        error
+                    );
+
+                    throw error;
+                }
+
+            })
         );
 
-    } else {
 
-        // Staff and other non-member accounts must not
-        // enter the ordinary member dashboard.
-        // Show the public website without the staff warning.
+        const failedTasks = results
+            .map((result, index) => ({
+                result,
+                name: dashboardTasks[index].name
+            }))
+            .filter(item =>
+                item.result.status === "rejected"
+            );
+
+
+        if (failedTasks.length > 0) {
+
+            console.error(
+                "Some dashboard sections failed:",
+                failedTasks
+            );
+
+            showMessage(
+                "Your dashboard has loaded, but some sections could not be updated. " +
+                "Please refresh the affected sections."
+            );
+
+        }
+
+
+        console.log(
+            "NEXUS member dashboard initialization completed."
+        );
+
+        return true;
+
+    } catch (error) {
+
+        console.error(
+            "Member dashboard authorization/loading error:",
+            error
+        );
 
         showPublicHome();
+
+        showMessage(
+            error.message ||
+            "Unable to verify your member account access. Please contact support."
+        );
+
+        return false;
     }
 
-    return false;
 }
-
 
 
 
