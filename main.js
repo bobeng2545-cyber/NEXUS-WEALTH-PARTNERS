@@ -2866,48 +2866,49 @@ async function loadDashboard(user) {
         if (accessError) {
             throw accessError;
         }
+       
+       
+       if (isActiveMember !== true) {
+          
+          // Check whether this is a suspended ordinary member.
+          const {
+             data: profileStatus,
+             error: profileStatusError
+          } = await nexusSupabase
+             .from("profiles")
+             .select("status")
+             .eq("id", user.id)
+             .maybeSingle();
+          
+          if (profileStatusError) {
+             throw profileStatusError;
+          }
+          
+          const status = String(
+             profileStatus?.status || ""
+          ).toLowerCase();
+          
+          if (status === "suspended") {
+             
+             showSupportRecoveryView();
+             
+             showMessage(
+                "Your member account is suspended. " +
+                "You can still contact NEXUS support through this page."
+             );
+          
+          } else {
+             
+             // Staff and other non-member accounts must not
+             // enter the ordinary member dashboard.
+             // Show the public website without the staff warning.
+             
+             showPublicHome();
+          }
+          
+          return false;
+       }
 
-        if (isActiveMember !== true) {
-
-            const {
-                data: profileStatus,
-                error: profileStatusError
-            } = await nexusSupabase
-                .from("profiles")
-                .select("status")
-                .eq("id", user.id)
-                .maybeSingle();
-
-            if (profileStatusError) {
-                throw profileStatusError;
-            }
-
-            const status = String(
-                profileStatus?.status || ""
-            ).toLowerCase();
-
-            if (status === "suspended") {
-
-                showSupportRecoveryView();
-
-                showMessage(
-                    "Your member account is suspended. " +
-                    "You can still contact NEXUS support through this page."
-                );
-
-            } else {
-
-                showPublicHome();
-
-                showMessage(
-                    "This account does not have ordinary member dashboard access. " +
-                    "Please use your authorized staff portal."
-                );
-
-            }
-
-            return false;
-        }
 
 
         await loadMemberProfile(user);
