@@ -2350,17 +2350,38 @@ if (openPensionAccountButton) {
                 );
 
 
-            } finally {
+            finally {
 
-                openPensionAccountButton.disabled = false;
+    const openingPanel =
+        getElement("pensionAccountOpeningPanel");
 
-                openPensionAccountButton.textContent =
-                    "Open Pension Account";
+    const accountNumber =
+        getElement("pensionAccountNumber")?.textContent?.trim();
 
-            }
+    const accountExists =
+        Boolean(
+            accountNumber &&
+            accountNumber !== "Not yet created" &&
+            accountNumber !== "Not yet assigned"
+        );
 
+    if (accountExists) {
+
+        openPensionAccountButton.disabled = true;
+
+        if (openingPanel) {
+            openingPanel.hidden = true;
         }
-    );
+
+    } else {
+
+        openPensionAccountButton.disabled = false;
+
+    }
+
+    openPensionAccountButton.textContent =
+        "Open Pension Account";
+
 }
 
    
