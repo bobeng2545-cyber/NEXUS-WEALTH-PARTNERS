@@ -412,8 +412,6 @@
 
                 <div class="financial-accounts-grid">
 
-                    <!-- PENSION ACCOUNT ONLY -->
-
                     <a
                         href="#memberPension"
                         class="financial-account-card pension-account-card"
@@ -506,16 +504,12 @@
 
                 <div class="dashboard-cards">
 
-                    <!-- AVAILABLE BALANCE -->
-
                     <article class="dashboard-card balance-card">
                         <span class="card-icon">💵</span>
                         <p>Available Balance</p>
                         <h3 id="walletAvailableBalance">GHS 0.00</h3>
                         <small>Funds currently available for withdrawal</small>
                     </article>
-
-                    <!-- PENDING WITHDRAWALS -->
 
                     <article class="dashboard-card pending-wallet-card">
                         <span class="card-icon">⏳</span>
@@ -535,9 +529,7 @@
             </section>
 
 
-            <!-- =================================
-                 DEPOSIT MONEY
-            ================================== -->
+            <!-- DEPOSIT MONEY -->
 
             <section
                 id="depositFunds"
@@ -601,7 +593,6 @@
                         required
                     >
 
-
                     <!-- SAVINGS PAYMENT DETAILS -->
 
                     <div id="depositPaymentDetails" hidden>
@@ -636,9 +627,15 @@
 
                     <div id="depositPensionDetails" hidden>
 
-                        <div class="nexus-pension-notice nexus-pension-notice--simulation" role="note">
+                        <div
+                            class="nexus-pension-notice nexus-pension-notice--simulation"
+                            role="note"
+                        >
 
-                            <div class="nexus-pension-notice__icon" aria-hidden="true">
+                            <div
+                                class="nexus-pension-notice__icon"
+                                aria-hidden="true"
+                            >
                                 &#9432;
                             </div>
 
@@ -1304,9 +1301,15 @@
                         destination.
                     </p>
 
-                    <div class="nexus-pension-notice nexus-pension-notice--simulation" role="note">
+                    <div
+                        class="nexus-pension-notice nexus-pension-notice--simulation"
+                        role="note"
+                    >
 
-                        <div class="nexus-pension-notice__icon" aria-hidden="true">
+                        <div
+                            class="nexus-pension-notice__icon"
+                            aria-hidden="true"
+                        >
                             &#9432;
                         </div>
 
@@ -1337,9 +1340,15 @@
 
                 <!-- PENSION INFORMATION NOTICE -->
 
-                <div class="nexus-pension-notice nexus-pension-notice--warning" role="note">
+                <div
+                    class="nexus-pension-notice nexus-pension-notice--warning"
+                    role="note"
+                >
 
-                    <div class="nexus-pension-notice__icon" aria-hidden="true">
+                    <div
+                        class="nexus-pension-notice__icon"
+                        aria-hidden="true"
+                    >
                         !
                     </div>
 
@@ -1371,40 +1380,120 @@
                 </div>
 
 
-                <!-- PENSION CONTRIBUTION REQUEST HISTORY -->
+                <!-- =====================================
+                     PROFESSIONAL PENSION REQUEST HISTORY
+                ====================================== -->
 
-                <div class="dashboard-panel pension-history-panel">
+                <section
+                    class="dashboard-panel pension-history-panel"
+                    aria-labelledby="pensionHistoryHeading"
+                >
 
-                    <h3>Pension Contribution Request History</h3>
+                    <div class="nwp-pension-history-heading">
 
-                    <p>
-                        Review requests submitted to the NEXUS Pension
-                        administration team.
-                    </p>
+                        <div class="nwp-pension-history-title-area">
 
-                    <div class="table-container">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Date</th>
-                                    <th>Destination</th>
-                                    <th>Reference</th>
-                                    <th>Amount</th>
-                                    <th>Request Status</th>
-                                </tr>
-                            </thead>
+                            <span class="nwp-pension-eyebrow">
+                                ACCOUNT ACTIVITY
+                            </span>
 
-                            <tbody id="pensionContributionList">
-                                <tr>
-                                    <td colspan="5">
-                                        No pension contribution requests available.
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                            <h3 id="pensionHistoryHeading">
+                                Pension Contribution Request History
+                            </h3>
+
+                            <p>
+                                Review the contribution requests submitted
+                                to the NEXUS Pension administration team.
+                            </p>
+
+                        </div>
+
+                        <div
+                            class="nwp-pension-history-icon"
+                            aria-hidden="true"
+                        >
+                            &#128203;
+                        </div>
+
                     </div>
 
-                </div>
+
+                    <div class="nwp-pension-history-summary">
+
+                        <div class="nwp-pension-history-summary-item">
+                            <span>Total Requests</span>
+
+                            <strong id="pensionHistoryTotal">0</strong>
+                        </div>
+
+                        <div class="nwp-pension-history-summary-item">
+                            <span>Account</span>
+
+                            <strong>NEXUS Pension</strong>
+                        </div>
+
+                        <div class="nwp-pension-history-summary-item">
+                            <span>Processing Mode</span>
+
+                            <strong>Simulation Only</strong>
+                        </div>
+
+                    </div>
+
+
+                    <!--
+                        IMPORTANT:
+                        This is a DIV container, not a TABLE TBODY.
+                        The member main.js history renderer creates
+                        individual request cards inside this element.
+                    -->
+
+                    <div
+                        id="pensionContributionList"
+                        class="nwp-pension-request-list"
+                        aria-live="polite"
+                        aria-relevant="additions text"
+                    >
+
+                        <div class="nwp-pension-history-empty">
+
+                            <div
+                                class="nwp-pension-history-empty-icon"
+                                aria-hidden="true"
+                            >
+                                &#128203;
+                            </div>
+
+                            <h4>No contribution requests yet</h4>
+
+                            <p>
+                                Your submitted Pension contribution requests
+                                will appear here.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="nwp-pension-history-footer">
+
+                        <span
+                            class="nwp-pension-history-footer-icon"
+                            aria-hidden="true"
+                        >
+                            &#9432;
+                        </span>
+
+                        <p>
+                            Request approval does not mean that a payment
+                            has been received. No wallet deduction or Pension
+                            balance credit occurs in this simulation.
+                        </p>
+
+                    </div>
+
+                </section>
 
             </section>
 
