@@ -1526,6 +1526,7 @@ async function loadMemberPension(user) {
     }
 
 
+
 /* =====================================
    LOAD PENSION ACCOUNT
 ===================================== */
@@ -1546,8 +1547,13 @@ const {
         classification_verified_at
     `)
     .eq("user_id", user.id)
+    .neq("status", "closed")
     .maybeSingle();
 
+
+/* =====================================
+   HANDLE ACCOUNT LOOKUP ERRORS
+===================================== */
 
 if (accountError) {
 
@@ -1556,7 +1562,7 @@ if (accountError) {
         accountError
     );
 
-    // Hide account information when verification fails.
+    // Hide existing account information.
     if (pensionAccountContent) {
         pensionAccountContent.hidden = true;
     }
@@ -1568,6 +1574,8 @@ if (accountError) {
 
     if (openingButton) {
         openingButton.disabled = true;
+        openingButton.textContent =
+            "Create Pension Account";
     }
 
     if (openingMessage) {
@@ -1579,35 +1587,48 @@ if (accountError) {
 }
 
 
-// Account lookup succeeded.
-// Determine whether a Pension account exists.
+/* =====================================
+   CHECK FOR AN EXISTING NON-CLOSED
+   PENSION ACCOUNT
+===================================== */
 
 const pensionAccountExists =
     Boolean(account && account.id);
 
 
-// Control account creation panel.
+/* =====================================
+   CONTROL ACCOUNT OPENING PANEL
+===================================== */
 
 if (openingPanel) {
+
     openingPanel.hidden =
         pensionAccountExists;
+
 }
 
 if (openingButton) {
+
     openingButton.disabled =
         pensionAccountExists;
 
     openingButton.textContent =
         "Create Pension Account";
+
 }
 
 
-// Control existing account information.
+/* =====================================
+   CONTROL EXISTING ACCOUNT CONTENT
+===================================== */
 
 if (pensionAccountContent) {
+
     pensionAccountContent.hidden =
         !pensionAccountExists;
+
 }
+
 
 
 
