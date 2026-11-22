@@ -9697,6 +9697,596 @@ if (
 
 
 
+/* =========================================================
+   43.15 PENSION TEST ALLOCATION RULE MANAGEMENT
+   AUTHENTICATED ADMINISTRATOR ONLY
+   SIMULATION ONLY — NO BALANCE MODIFICATIONS
+========================================================= */
+
+const NEXUS_PENSION_ALLOCATION_STATE_KEY =
+    "nexus_pension_test_allocation_setup_v1";
+
+let nexusPensionAllocationSetupState = {};
+
+try {
+    nexusPensionAllocationSetupState = JSON.parse(
+        localStorage.getItem(
+            NEXUS_PENSION_ALLOCATION_STATE_KEY
+        ) || "{}"
+    );
+
+    if (
+        !nexusPensionAllocationSetupState ||
+        typeof nexusPensionAllocationSetupState !== "object" ||
+        Array.isArray(nexusPensionAllocationSetupState)
+    ) {
+        nexusPensionAllocationSetupState = {};
+    }
+
+} catch (error) {
+    console.warn(
+        "Pension allocation browser state unavailable:",
+        error
+    );
+}
+
+
+/* ---------------------------------------------------------
+   43.15.1 SAVE SETUP PROGRESS
+--------------------------------------------------------- */
+
+function saveNexusPensionAllocationSetupState() {
+
+    try {
+
+        localStorage.setItem(
+            NEXUS_PENSION_ALLOCATION_STATE_KEY,
+            JSON.stringify(
+                nexusPensionAllocationSetupState
+            )
+        );
+
+        return true;
+
+    } catch (error) {
+
+        console.error(
+            "Could not save Pension allocation progress:",
+            error
+        );
+
+        return false;
+    }
+}
+
+
+/* ---------------------------------------------------------
+   43.15.2 CREATE ADMIN ALLOCATION PANEL
+--------------------------------------------------------- */
+
+function initializeNexusPensionAllocationPanel() {
+
+    const pensionPage = document.getElementById(
+        "page-pension"
+    );
+
+    if (!pensionPage) {
+        console.error(
+            "Pension dashboard page was not found."
+        );
+        return;
+    }
+
+    if (
+        document.getElementById(
+            "nexusPensionAllocationSetupPanel"
+        )
+    ) {
+        return;
+    }
+
+    const panel = document.createElement("section");
+
+    panel.id = "nexusPensionAllocationSetupPanel";
+
+    panel.style.cssText = `
+        background: #ffffff;
+        border: 1px solid #dce5ed;
+        border-radius: 14px;
+        padding: 22px;
+        margin: 0 0 24px 0;
+        box-shadow: 0 4px 16px rgba(15, 35, 55, 0.05);
+    `;
+
+    const heading = document.createElement("h3");
+
+    heading.textContent =
+        "Pension Allocation Rules";
+
+    heading.style.cssText = `
+        margin: 0 0 8px 0;
+        color: #12324a;
+        font-size: 19px;
+    `;
+
+    const description = document.createElement("p");
+
+    description.textContent =
+        "Configure and approve the TEST MODE contribution allocation rules. " +
+        "These rules control how simulated Pension contributions are divided.";
+
+    description.style.cssText = `
+        color: #64748b;
+        line-height: 1.6;
+        margin: 0 0 18px 0;
+    `;
+
+    const rulesContainer = document.createElement("div");
+
+    rulesContainer.style.cssText = `
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 14px;
+        margin-bottom: 18px;
+    `;
+
+    const formalCard = document.createElement("div");
+
+    formalCard.style.cssText = `
+        background: #f5f8fc;
+        border: 1px solid #dce5ed;
+        border-radius: 10px;
+        padding: 16px;
+    `;
+
+    formalCard.innerHTML = `
+        <strong style="color:#12324a;">
+            Formal Sector — Covered
+        </strong>
+        <p style="margin:10px 0 0;color:#334155;">
+            Retirement: <strong>100%</strong>
+        </p>
+    `;
+
+    const informalCard = document.createElement("div");
+
+    informalCard.style.cssText = `
+        background: #f5f8fc;
+        border: 1px solid #dce5ed;
+        border-radius: 10px;
+        padding: 16px;
+    `;
+
+    informalCard.innerHTML = `
+        <strong style="color:#12324a;">
+            Informal Sector — Not Covered
+        </strong>
+        <p style="margin:10px 0 0;color:#334155;">
+            Retirement: <strong>70%</strong>
+        </p>
+        <p style="margin:5px 0 0;color:#334155;">
+            Personal Savings: <strong>30%</strong>
+        </p>
+    `;
+
+    rulesContainer.append(
+        formalCard,
+        informalCard
+    );
+
+    const simulationNotice = document.createElement("p");
+
+    simulationNotice.textContent =
+        "TEST MODE ONLY. Creating or approving these rules does not collect money, " +
+        "credit balances, transfer funds, or post financial transactions.";
+
+    simulationNotice.style.cssText = `
+        background: #fff8e8;
+        border: 1px solid #f1d9a5;
+        border-radius: 8px;
+        padding: 12px;
+        color: #805b16;
+        font-size: 13px;
+        line-height: 1.5;
+        margin: 0 0 16px 0;
+    `;
+
+    const actionButton = document.createElement("button");
+
+    actionButton.id =
+        "createNexusPensionAllocationRulesButton";
+
+    actionButton.type = "button";
+
+    actionButton.className =
+        "admin-action-button";
+
+    actionButton.textContent =
+        "Create and Approve TEST Rules";
+
+    actionButton.style.cssText = `
+        background: #087443;
+        color: #ffffff;
+        border: 0;
+        border-radius: 8px;
+        padding: 12px 18px;
+        font-weight: 600;
+        cursor: pointer;
+        min-height: 44px;
+    `;
+
+    const message = document.createElement("div");
+
+    message.id = "nexusPensionAllocationSetupMessage";
+
+    message.setAttribute("role", "status");
+
+    message.style.cssText = `
+        margin-top: 14px;
+        font-size: 14px;
+        line-height: 1.6;
+        color: #475569;
+        white-space: pre-line;
+    `;
+
+    panel.append(
+        heading,
+        description,
+        rulesContainer,
+        simulationNotice,
+        actionButton,
+        message
+    );
+
+    pensionPage.prepend(panel);
+
+    actionButton.addEventListener(
+        "click",
+        executeNexusPensionAllocationSetup
+    );
+
+    updateNexusPensionAllocationPanelStatus();
+}
+
+
+/* ---------------------------------------------------------
+   43.15.3 DISPLAY CURRENT SETUP PROGRESS
+--------------------------------------------------------- */
+
+function updateNexusPensionAllocationPanelStatus() {
+
+    const message = document.getElementById(
+        "nexusPensionAllocationSetupMessage"
+    );
+
+    if (!message) return;
+
+    const formalApproved =
+        nexusPensionAllocationSetupState.formal?.status ===
+        "approved";
+
+    const informalApproved =
+        nexusPensionAllocationSetupState.informal?.status ===
+        "approved";
+
+    if (formalApproved && informalApproved) {
+
+        message.style.color = "#087443";
+
+        message.textContent =
+            "Both allocation rules have been approved in this browser's setup record.\n" +
+            "Formal: 100% Retirement.\n" +
+            "Informal: 70% Retirement and 30% Personal Savings.";
+
+    } else if (formalApproved || informalApproved) {
+
+        message.style.color = "#805b16";
+
+        message.textContent =
+            "Partial progress saved. The remaining allocation rule still needs approval.";
+
+    } else {
+
+        message.style.color = "#475569";
+
+        message.textContent =
+            "Both TEST allocation rules are awaiting setup.";
+    }
+}
+
+
+/* ---------------------------------------------------------
+   43.15.4 CREATE OR APPROVE ONE ALLOCATION RULE
+--------------------------------------------------------- */
+
+async function processNexusPensionAllocationRule(
+    ruleKey,
+    configuration
+) {
+
+    let savedRule =
+        nexusPensionAllocationSetupState[ruleKey] || null;
+
+    if (
+        savedRule?.status === "approved" &&
+        savedRule?.rule_id
+    ) {
+        return {
+            success: true,
+            already_approved: true,
+            rule_id: savedRule.rule_id
+        };
+    }
+
+
+    /* CREATE DRAFT IF ONE IS NOT ALREADY SAVED */
+
+    if (!savedRule?.rule_id) {
+
+        const {
+            data,
+            error
+        } = await nexusAdminSupabase.rpc(
+            "admin_create_nexus_pension_test_allocation_rule",
+            {
+                p_member_sector:
+                    configuration.member_sector,
+
+                p_mandatory_scheme_status:
+                    configuration.mandatory_scheme_status,
+
+                p_allocations:
+                    configuration.allocations,
+
+                p_note:
+                    "NEXUS WEALTH PARTNERS approved TEST MODE allocation configuration."
+            }
+        );
+
+        if (error) throw error;
+
+        if (
+            !data ||
+            data.success !== true ||
+            !data.rule_id
+        ) {
+            throw new Error(
+                data?.message ||
+                "The Pension allocation draft could not be created."
+            );
+        }
+
+        savedRule = {
+            rule_id: data.rule_id,
+            status: "draft"
+        };
+
+        nexusPensionAllocationSetupState[ruleKey] =
+            savedRule;
+
+        saveNexusPensionAllocationSetupState();
+
+        if (
+            data.simulation_only !== true ||
+            data.balances_modified !== false ||
+            data.requires_administrator_approval !== true ||
+            Number(data.allocation_total) !== 100
+        ) {
+            throw new Error(
+                "Unexpected allocation creation response. " +
+                "The rule was not approved. Verify its database record."
+            );
+        }
+    }
+
+
+    /* APPROVE THE DRAFT */
+
+    const {
+        data: approvalData,
+        error: approvalError
+    } = await nexusAdminSupabase.rpc(
+        "admin_approve_nexus_pension_test_allocation_rule",
+        {
+            p_rule_id: savedRule.rule_id,
+
+            p_note:
+                "Administrator-approved NEXUS Pension TEST MODE allocation."
+        }
+    );
+
+    if (approvalError) throw approvalError;
+
+    if (
+        !approvalData ||
+        approvalData.success !== true ||
+        approvalData.status !== "approved"
+    ) {
+        throw new Error(
+            approvalData?.message ||
+            "The Pension allocation rule could not be approved."
+        );
+    }
+
+    if (
+        approvalData.simulation_only !== true ||
+        approvalData.balances_modified !== false ||
+        Number(approvalData.allocation_total) !== 100
+    ) {
+        throw new Error(
+            "Unexpected approval response. Stop and verify the database."
+        );
+    }
+
+    nexusPensionAllocationSetupState[ruleKey] = {
+        rule_id: savedRule.rule_id,
+        status: "approved"
+    };
+
+    saveNexusPensionAllocationSetupState();
+
+    return {
+        success: true,
+        already_approved: false,
+        rule_id: savedRule.rule_id
+    };
+}
+
+
+/* ---------------------------------------------------------
+   43.15.5 EXECUTE BOTH ALLOCATION RULES
+--------------------------------------------------------- */
+
+async function executeNexusPensionAllocationSetup() {
+
+    const button = document.getElementById(
+        "createNexusPensionAllocationRulesButton"
+    );
+
+    const message = document.getElementById(
+        "nexusPensionAllocationSetupMessage"
+    );
+
+    if (!button || !message) return;
+
+    if (button.disabled) return;
+
+    const confirmed = window.confirm(
+        "APPROVE NEXUS PENSION TEST ALLOCATION RULES?\n\n" +
+        "FORMAL — COVERED\n" +
+        "100% Retirement\n\n" +
+        "INFORMAL — NOT COVERED\n" +
+        "70% Retirement\n" +
+        "30% Personal Savings\n\n" +
+        "This action creates and approves TEST MODE allocation rules only.\n" +
+        "It does not collect or move money."
+    );
+
+    if (!confirmed) return;
+
+    const originalText = button.textContent;
+
+    button.disabled = true;
+
+    button.textContent =
+        "Processing Allocation Rules...";
+
+    message.style.color = "#475569";
+
+    message.textContent =
+        "Verifying administrator permissions...";
+
+    try {
+
+        // Recheck the authenticated administrator.
+        await getNexusSettingsAdmin();
+
+
+        /* FORMAL SECTOR RULE */
+
+        message.textContent =
+            "Creating and approving the Formal Sector rule...";
+
+        await processNexusPensionAllocationRule(
+            "formal",
+            {
+                member_sector: "formal",
+
+                mandatory_scheme_status: "covered",
+
+                allocations: [
+                    {
+                        sub_account_type: "retirement",
+                        allocation_percentage: 100
+                    }
+                ]
+            }
+        );
+
+
+        /* INFORMAL SECTOR RULE */
+
+        message.textContent =
+            "Formal rule approved.\n" +
+            "Creating and approving the Informal Sector rule...";
+
+        await processNexusPensionAllocationRule(
+            "informal",
+            {
+                member_sector: "informal",
+
+                mandatory_scheme_status: "not_covered",
+
+                allocations: [
+                    {
+                        sub_account_type: "retirement",
+                        allocation_percentage: 70
+                    },
+                    {
+                        sub_account_type: "personal_savings",
+                        allocation_percentage: 30
+                    }
+                ]
+            }
+        );
+
+
+        updateNexusPensionAllocationPanelStatus();
+
+        message.style.color = "#087443";
+
+        message.textContent =
+            "SUCCESS: Both Pension TEST allocation rules have been created and approved.\n\n" +
+            "Formal — Covered: 100% Retirement.\n" +
+            "Informal — Not Covered: 70% Retirement and 30% Personal Savings.\n\n" +
+            "No member balances were modified.";
+
+        alert(
+            "Both NEXUS Pension TEST allocation rules have been approved successfully."
+        );
+
+    } catch (error) {
+
+        console.error(
+            "NEXUS Pension allocation setup error:",
+            error
+        );
+
+        message.style.color = "#b42318";
+
+        message.textContent =
+            "Allocation setup stopped:\n" +
+            (error.message || "Unknown error") +
+            "\n\nAny successfully completed earlier step has been retained in this browser's setup record.";
+
+        alert(
+            "Pension allocation setup could not be completed:\n\n" +
+            (error.message || "Unknown error")
+        );
+
+    } finally {
+
+        button.disabled = false;
+
+        button.textContent = originalText;
+
+        updateNexusPensionAllocationPanelStatus();
+    }
+}
+
+
+/* ---------------------------------------------------------
+   43.15.6 INITIALIZE PANEL
+--------------------------------------------------------- */
+
+initializeNexusPensionAllocationPanel();
+
+
+/* =========================================================
+   END OF SECTION 43.15
+   PENSION TEST ALLOCATION RULE MANAGEMENT
+========================================================= */
+
 
 
 
