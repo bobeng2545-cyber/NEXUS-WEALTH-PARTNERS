@@ -2342,7 +2342,7 @@ if (openPensionAccountButton) {
                     "Unable to open your Pension account. Please try again."
                 );
 
-            } finally {
+             finally {
 
                 if (openPensionAccountButton) {
 
