@@ -1447,12 +1447,19 @@ async function loadMemberPension(user) {
         destinationSelect?.querySelector(
             'option[value="pension"]'
         );
+   
+   const openingPanel =
+      getElement("pensionAccountOpeningPanel");
+   
+   const openingButton =
+      getElement("openPensionAccountButton");
+   
+   const pensionAccountContent =
+      getElement("pensionAccountContent");
+   
+   const openingMessage =
+      getElement("pensionAccountOpeningMessage");
 
-    const openingPanel =
-        getElement("pensionAccountOpeningPanel");
-
-    const openingButton =
-        getElement("openPensionAccountButton");
 
 
     /* =====================================
@@ -1540,18 +1547,63 @@ async function loadMemberPension(user) {
         `)
         .eq("user_id", user.id)
         .maybeSingle();
+   
+   
+   
+   if (accountError) {
+      
+      console.error(
+         "Pension account loading error:",
+         accountError
+      );
+      
+      // Do not expose account information when verification fails.
+      if (pensionAccountContent) {
+         pensionAccountContent.hidden = true;
+      }
+      
+      // Keep the opening panel visible, but prevent account creation.
+      if (openingPanel) {
+         openingPanel.hidden = false;
+      }
+      
+      if (openingButton) {
+         openingButton.disabled = true;
+      }
+      
+      if (openingMessage) {
+         openingMessage.textContent =
+            "We could not verify your Pension account. Please refresh the page or contact support. Account creation has been temporarily disabled.";
+      }
+      
+      throw accountError;
+   
+   }
+   
+   // Account lookup succeeded. Now it is safe to determine
+   // whether this member needs to open a Pension account.
+   
+   const pensionAccountExists =
+      Boolean(account && account.id);
+   
+   if (openingPanel) {
+      openingPanel.hidden = pensionAccountExists;
+   }
+   
+   if (openingButton) {
+      
+      openingButton.disabled =
+         pensionAccountExists;
+      
+      openingButton.textContent =
+         "Create Pension Account";
+   }
+   
+   if (pensionAccountContent) {
+      pensionAccountContent.hidden =
+         !pensionAccountExists;
+   }
 
-
-    if (accountError) {
-
-        console.error(
-            "Pension account loading error:",
-            accountError
-        );
-
-        throw accountError;
-
-    }
 
 
     /* =====================================
