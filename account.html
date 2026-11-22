@@ -655,19 +655,32 @@
 
                     <div id="depositPensionDetails" hidden>
 
-                        <div class="pension-notice">
-                            <h4>Pension Simulation Only</h4>
+                        <div class="nexus-pension-notice nexus-pension-notice--simulation" role="note">
 
-                            <p>
-                                This submits a pension contribution request
-                                for administrator review. It does not
-                                initiate a payment or transfer money.
-                            </p>
+                            <div class="nexus-pension-notice__icon" aria-hidden="true">
+                                &#9432;
+                            </div>
 
-                            <p>
-                                No wallet deduction, pension balance credit
-                                or pension ledger transaction will occur.
-                            </p>
+                            <div class="nexus-pension-notice__content">
+
+                                <h4 class="nexus-pension-notice__title">
+                                    Pension Simulation Only
+                                </h4>
+
+                                <p class="nexus-pension-notice__text">
+                                    This submits a pension contribution request
+                                    for administrator review. It does not
+                                    initiate a payment or transfer money.
+                                </p>
+
+                                <p class="nexus-pension-notice__text">
+                                    <strong>Important:</strong> No wallet
+                                    deduction, pension balance credit or
+                                    pension ledger transaction will occur.
+                                </p>
+
+                            </div>
+
                         </div>
 
                         <label for="depositPensionNote">
@@ -1313,27 +1326,31 @@
                         destination.
                     </p>
 
-                    <div class="pension-notice">
+                    <div class="nexus-pension-notice nexus-pension-notice--simulation" role="note">
 
-                        <h4>DEVELOPMENT / SIMULATION ONLY</h4>
+                        <div class="nexus-pension-notice__icon" aria-hidden="true">
+                            &#9432;
+                        </div>
 
-                        <p>
-                            Pension contributions are not currently
-                            enabled for real-money collection.
-                        </p>
+                        <div class="nexus-pension-notice__content">
 
-                        <p>
-                            Selecting Pension submits a nonfinancial
-                            contribution request for administrator
-                            review only.
-                        </p>
+                            <h4 class="nexus-pension-notice__title">
+                                Pension Simulation Only
+                            </h4>
 
-                        <p>
-                            It does not initiate Paystack, Mobile Money
-                            or any other payment. It does not debit your
-                            wallet, credit your pension balance or post
-                            a pension transaction.
-                        </p>
+                            <p class="nexus-pension-notice__text">
+                                This submits a pension contribution request
+                                for administrator review. It does not
+                                initiate a payment or transfer money.
+                            </p>
+
+                            <p class="nexus-pension-notice__text">
+                                <strong>Important:</strong> No wallet
+                                deduction, pension balance credit or
+                                pension ledger transaction will occur.
+                            </p>
+
+                        </div>
 
                     </div>
 
@@ -1342,26 +1359,36 @@
 
                 <!-- PENSION INFORMATION NOTICE -->
 
-                <div class="pension-notice">
+                <div class="nexus-pension-notice nexus-pension-notice--warning" role="note">
 
-                    <h3>Important Pension Information</h3>
+                    <div class="nexus-pension-notice__icon" aria-hidden="true">
+                        !
+                    </div>
 
-                    <p>
-                        NEXUS Pension is maintained separately from
-                        ordinary Savings accounts and wallet transactions.
-                    </p>
+                    <div class="nexus-pension-notice__content">
 
-                    <p>
-                        Real-money pension operations will remain disabled
-                        until the required licensed trustee, approved
-                        scheme arrangements and applicable controls
-                        are established.
-                    </p>
+                        <h4 class="nexus-pension-notice__title">
+                            Important Pension Information
+                        </h4>
 
-                    <p>
-                        Pension withdrawals, investment activity and
-                        payment processing are not currently available.
-                    </p>
+                        <p class="nexus-pension-notice__text">
+                            NEXUS Pension is maintained separately from
+                            ordinary Savings accounts and wallet transactions.
+                        </p>
+
+                        <p class="nexus-pension-notice__text">
+                            Real-money pension operations will remain disabled
+                            until the required licensed trustee, approved
+                            scheme arrangements and applicable controls
+                            are established.
+                        </p>
+
+                        <p class="nexus-pension-notice__text">
+                            Pension withdrawals, investment activity and
+                            payment processing are not currently available.
+                        </p>
+
+                    </div>
 
                 </div>
 
