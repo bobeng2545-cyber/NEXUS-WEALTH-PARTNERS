@@ -5344,558 +5344,505 @@ body > #notificationMenu.notification-open {
 }
 
 
-/* =====================================================
+
+/* =========================================================
    NEXUS WEALTH PARTNERS
-   PROFESSIONAL BANKING DASHBOARD INTERFACE
-===================================================== */
+   PROFESSIONAL BANKING DASHBOARD THEME
+   NAVY + EMERALD GREEN
+========================================================= */
 
 :root {
-    --nexus-primary: #087443;
-    --nexus-primary-dark: #075b36;
-    --nexus-primary-light: #eaf5ef;
+    --nexus-navy: #102b46;
+    --nexus-navy-dark: #091d32;
+    --nexus-navy-light: #1b4163;
+    --nexus-green: #087f5b;
+    --nexus-green-dark: #066447;
+    --nexus-green-light: #e6f5ef;
+    --nexus-gold: #d6a94f;
 
-    --nexus-navy: #142d45;
-    --nexus-navy-light: #203f5b;
-
-    --nexus-background: #f4f7f9;
-    --nexus-surface: #ffffff;
-
+    --nexus-bg: #f3f6fa;
+    --nexus-white: #ffffff;
     --nexus-text: #243447;
     --nexus-muted: #718096;
+    --nexus-border: #e1e8ef;
 
-    --nexus-border: #e4eaf0;
+    --nexus-success: #168653;
+    --nexus-success-bg: #e8f7ef;
+    --nexus-warning: #b7791f;
+    --nexus-warning-bg: #fff6df;
+    --nexus-danger: #c0392b;
+    --nexus-danger-bg: #fff0ee;
+    --nexus-info: #2563a6;
+    --nexus-info-bg: #eaf3ff;
 
-    --nexus-radius: 15px;
-    --nexus-shadow: 0 5px 20px rgba(20, 45, 69, 0.055);
+    --nexus-radius: 14px;
+    --nexus-shadow: 0 5px 20px rgba(16, 43, 70, 0.07);
+    --nexus-shadow-hover: 0 10px 28px rgba(16, 43, 70, 0.12);
 }
 
-/* MAIN ACCOUNT BACKGROUND */
+/* PAGE BACKGROUND */
 
-body.account-page {
-    background: var(--nexus-background);
+body {
+    background: var(--nexus-bg);
     color: var(--nexus-text);
     font-family: "Inter", "Segoe UI", Arial, sans-serif;
 }
 
-/* PUBLIC HEADER */
+/* HEADINGS */
 
-.account-page .public-header {
-    background: #ffffff;
-    border-bottom: 1px solid var(--nexus-border);
-    box-shadow: 0 2px 12px rgba(20, 45, 69, 0.045);
-}
-
-.account-page .brand-symbol {
-    background: var(--nexus-primary);
-    color: #ffffff;
-    border-radius: 10px;
-}
-
-.account-page .brand-text strong {
+h1, h2, h3, h4 {
     color: var(--nexus-navy);
-    letter-spacing: 1.2px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
 }
 
-.account-page .brand-text small {
+p {
     color: var(--nexus-muted);
-    letter-spacing: 1.5px;
+    line-height: 1.65;
 }
 
-/* DASHBOARD HEADING */
+/* MAIN DASHBOARD CONTAINERS */
 
-.account-page .dashboard-heading {
-    background: transparent;
+main,
+.dashboard-content,
+.account-content,
+.account-container {
+    color: var(--nexus-text);
 }
 
-.account-page .dashboard-welcome h2 {
-    color: var(--nexus-navy);
-    font-weight: 750;
-    letter-spacing: -0.5px;
+/* HEADER AND TOP NAVIGATION */
+
+header,
+.dashboard-header,
+.account-header {
+    background: var(--nexus-navy);
+    color: var(--nexus-white);
+    border-bottom: 3px solid var(--nexus-green);
 }
 
-.account-page .dashboard-welcome p {
-    color: var(--nexus-muted);
+header h1,
+header h2,
+header h3,
+.dashboard-header h1,
+.dashboard-header h2,
+.account-header h1 {
+    color: var(--nexus-white);
 }
 
-/* DASHBOARD CARDS */
-
-.account-page .dashboard-card {
-    background: var(--nexus-surface);
-    border: 1px solid var(--nexus-border);
-    border-radius: var(--nexus-radius);
-    box-shadow: var(--nexus-shadow);
-    padding: 23px;
-    transition:
-        transform 0.2s ease,
-        box-shadow 0.2s ease,
-        border-color 0.2s ease;
+header p,
+.dashboard-header p,
+.account-header p {
+    color: rgba(255,255,255,0.75);
 }
 
-.account-page .dashboard-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 9px 25px rgba(20, 45, 69, 0.09);
-    border-color: #cbded3;
-}
+/* NAVIGATION LINKS */
 
-.account-page .dashboard-card p {
-    color: var(--nexus-muted);
-    font-size: 13px;
-    font-weight: 600;
-}
-
-.account-page .dashboard-card h3 {
-    color: var(--nexus-navy);
-    font-size: 25px;
-    font-weight: 750;
-    letter-spacing: -0.5px;
-}
-
-.account-page .dashboard-card small {
-    color: var(--nexus-muted);
-    line-height: 1.6;
-}
-
-.account-page .card-icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 43px;
-    height: 43px;
-    margin-bottom: 12px;
-    background: var(--nexus-primary-light);
-    border-radius: 12px;
-    font-size: 20px;
-}
-
-/* SECTION EYEBROWS */
-
-.account-page .bank-section-eyebrow {
-    display: block;
-    margin-bottom: 7px;
-    color: var(--nexus-primary);
-    font-size: 10px;
-    font-weight: 800;
-    letter-spacing: 1.5px;
-}
-
-/* FINANCIAL ACCOUNTS */
-
-.account-page .nexus-financial-accounts {
-    padding: 25px;
-    background: #ffffff;
-    border: 1px solid var(--nexus-border);
-    border-radius: var(--nexus-radius);
-    box-shadow: var(--nexus-shadow);
-}
-
-.account-page .financial-accounts-heading h3 {
-    color: var(--nexus-navy);
-    font-size: 20px;
-    font-weight: 750;
-}
-
-.account-page .financial-accounts-heading p {
-    color: var(--nexus-muted);
-    font-size: 13px;
-}
-
-.account-page .financial-accounts-grid {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr);
-    gap: 16px;
-    margin-top: 20px;
-}
-
-.account-page .financial-account-card {
-    display: flex;
-    align-items: center;
-    gap: 17px;
-    min-width: 0;
-    padding: 22px;
-    background: #ffffff;
-    border: 1px solid var(--nexus-border);
-    border-radius: 13px;
-    text-decoration: none;
+nav a,
+.sidebar a,
+.dashboard-nav a {
     transition: all 0.2s ease;
 }
 
-.account-page .financial-account-card:hover {
-    border-color: var(--nexus-primary);
-    background: #fbfefc;
-    transform: translateY(-2px);
+nav a:hover,
+.sidebar a:hover,
+.dashboard-nav a:hover {
+    color: var(--nexus-green);
+}
+
+/* ACTIVE NAVIGATION ITEMS */
+
+nav a.active,
+.sidebar a.active,
+.dashboard-nav a.active,
+[data-screen].active {
+    color: var(--nexus-green);
+    font-weight: 700;
+}
+
+/* FINANCIAL SUMMARY CARDS */
+
+.stat-card,
+.summary-card,
+.balance-card,
+.dashboard-card,
+.financial-card,
+.account-card,
+.wallet-card,
+.nexus-card {
+    background: var(--nexus-white);
+    border: 1px solid var(--nexus-border);
+    border-radius: var(--nexus-radius);
     box-shadow: var(--nexus-shadow);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.account-page .financial-account-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex: 0 0 50px;
-    width: 50px;
-    height: 50px;
-    background: var(--nexus-primary-light);
-    border-radius: 13px;
-    font-size: 23px;
+.stat-card:hover,
+.summary-card:hover,
+.dashboard-card:hover,
+.financial-card:hover,
+.account-card:hover,
+.nexus-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--nexus-shadow-hover);
 }
 
-.account-page .financial-account-details {
-    flex: 1;
-    min-width: 0;
-}
+/* CARD TITLES */
 
-.account-page .financial-account-details h3 {
-    margin: 0 0 5px;
+.stat-card h3,
+.summary-card h3,
+.dashboard-card h3,
+.financial-card h3,
+.account-card h3,
+.wallet-card h3 {
     color: var(--nexus-navy);
-    font-size: 16px;
-    font-weight: 750;
 }
 
-.account-page .financial-account-details p {
-    margin: 0 0 9px;
-    color: var(--nexus-muted);
-    font-size: 12px;
-}
+/* BALANCE VALUES */
 
-.account-page .financial-account-details strong {
-    color: var(--nexus-primary);
-    font-size: 19px;
+.balance-card h2,
+.balance-card h3,
+.wallet-card h2,
+.wallet-card h3,
+#walletAvailableBalance,
+#walletBalance,
+#walletTotalDeposits,
+#walletTotalWithdrawals {
+    color: var(--nexus-green);
     font-weight: 800;
 }
 
-.account-page .financial-account-link {
-    color: var(--nexus-primary);
-    font-size: 12px;
-    font-weight: 750;
-    white-space: nowrap;
+/* PENSION SECTION */
+
+.nexus-financial-accounts,
+#pension,
+#pensionOverview,
+.pension-section {
+    color: var(--nexus-text);
 }
 
-.account-page .financial-accounts-note {
-    margin-top: 17px;
-    color: var(--nexus-muted);
-    font-size: 12px;
-    line-height: 1.7;
+.nexus-pension-notice {
+    background: #edf7f2;
+    border: 1px solid #b8e2ce;
+    border-left: 5px solid var(--nexus-green);
+    color: #145c43;
+    border-radius: 10px;
+    padding: 15px 18px;
 }
 
-/* WALLET PANEL */
-
-.account-page .nexus-wallet-panel {
-    padding: 25px;
-    background: #ffffff;
-    border: 1px solid var(--nexus-border);
-    border-radius: var(--nexus-radius);
-    box-shadow: var(--nexus-shadow);
+.nexus-pension-notice strong {
+    color: var(--nexus-green-dark);
 }
 
-.account-page .bank-panel-heading {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 15px;
-    margin-bottom: 22px;
+.nexus-pension-warning {
+    background: var(--nexus-warning-bg);
+    border: 1px solid #f1d58a;
+    border-left: 5px solid var(--nexus-warning);
+    color: #805a13;
+    border-radius: 10px;
+    padding: 15px 18px;
 }
 
-.account-page .bank-panel-heading h3 {
-    margin: 0 0 6px;
-    color: var(--nexus-navy);
-    font-size: 20px;
-    font-weight: 750;
+.nexus-pension-review-note {
+    background: var(--nexus-info-bg);
+    border: 1px solid #c7ddf7;
+    color: #214e7c;
+    border-radius: 10px;
+    padding: 14px 16px;
 }
 
-.account-page .bank-panel-heading p {
-    margin: 0;
-    color: var(--nexus-muted);
-    font-size: 13px;
+/* BUTTONS */
+
+button,
+.btn,
+.button,
+input[type="submit"] {
+    transition: all 0.2s ease;
 }
 
-.account-page .bank-panel-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 46px;
-    height: 46px;
-    flex: 0 0 46px;
-    background: var(--nexus-primary-light);
-    border-radius: 13px;
-    font-size: 21px;
+button:not(:disabled),
+.btn,
+.button,
+input[type="submit"] {
+    cursor: pointer;
 }
 
-.account-page .nexus-wallet-cards {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 18px;
-}
-
-.account-page .nexus-wallet-card {
-    min-width: 0;
-    margin: 0;
-}
-
-/* WALLET ACTION BUTTONS */
-
-.account-page .wallet-actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
-    margin-top: 23px;
-}
-
-.account-page .wallet-actions a {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 44px;
-    padding: 0 20px;
-    background: var(--nexus-primary);
-    border: 1px solid var(--nexus-primary);
+button.primary,
+.btn-primary,
+.button-primary,
+button[type="submit"],
+input[type="submit"] {
+    background: var(--nexus-green);
+    color: var(--nexus-white);
+    border: 1px solid var(--nexus-green);
     border-radius: 9px;
-    color: #ffffff;
-    font-size: 13px;
     font-weight: 700;
-    text-decoration: none;
-    transition: background 0.2s ease;
+    padding: 11px 18px;
 }
 
-.account-page .wallet-actions a:hover {
-    background: var(--nexus-primary-dark);
+button.primary:hover,
+.btn-primary:hover,
+.button-primary:hover,
+button[type="submit"]:hover,
+input[type="submit"]:hover {
+    background: var(--nexus-green-dark);
+    border-color: var(--nexus-green-dark);
+    box-shadow: 0 5px 14px rgba(8, 127, 91, 0.2);
 }
 
-/* GENERAL DASHBOARD PANELS */
-
-.account-page .dashboard-panel {
-    background: #ffffff;
-    border: 1px solid var(--nexus-border);
-    border-radius: var(--nexus-radius);
-    box-shadow: var(--nexus-shadow);
+button:disabled,
+.btn:disabled,
+.button:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
 }
 
-.account-page .dashboard-panel > h3,
-.account-page .dashboard-panel .desktop-page-heading {
+/* SECONDARY BUTTONS */
+
+.btn-secondary,
+.button-secondary,
+button.secondary {
+    background: #edf2f7;
     color: var(--nexus-navy);
-    font-weight: 750;
+    border: 1px solid #d5dee8;
+    border-radius: 9px;
 }
 
-.account-page .dashboard-panel > p {
-    color: var(--nexus-muted);
-    line-height: 1.7;
+.btn-secondary:hover,
+.button-secondary:hover,
+button.secondary:hover {
+    background: #e0e9f2;
 }
 
-/* FORM INPUTS */
+/* DANGER BUTTONS */
 
-.account-page input,
-.account-page select,
-.account-page textarea {
-    border: 1px solid #dce4eb;
+.btn-danger,
+.button-danger,
+button.danger {
+    background: var(--nexus-danger);
+    color: white;
+    border: 1px solid var(--nexus-danger);
+    border-radius: 9px;
+}
+
+/* INPUTS AND SELECTS */
+
+input:not([type="checkbox"]):not([type="radio"]),
+select,
+textarea {
+    border: 1px solid #ccd7e2;
     border-radius: 9px;
     background: #ffffff;
     color: var(--nexus-text);
-    font-family: inherit;
-    transition:
-        border-color 0.2s ease,
-        box-shadow 0.2s ease;
-}
-
-.account-page input:focus,
-.account-page select:focus,
-.account-page textarea:focus {
+    padding: 11px 13px;
     outline: none;
-    border-color: var(--nexus-primary);
-    box-shadow: 0 0 0 3px rgba(8, 116, 67, 0.10);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.account-page label {
+input:focus,
+select:focus,
+textarea:focus {
+    border-color: var(--nexus-green);
+    box-shadow: 0 0 0 3px rgba(8, 127, 91, 0.12);
+}
+
+label {
     color: var(--nexus-navy);
-    font-size: 13px;
-    font-weight: 650;
-}
-
-/* PRIMARY BUTTONS */
-
-.account-page button[type="submit"],
-.account-page .support-create-card button {
-    border-radius: 9px;
-    font-weight: 700;
-    transition:
-        background 0.2s ease,
-        transform 0.2s ease;
-}
-
-.account-page button[type="submit"]:hover {
-    transform: translateY(-1px);
+    font-weight: 600;
 }
 
 /* TABLES */
 
-.account-page .table-container {
-    overflow-x: auto;
-    border: 1px solid var(--nexus-border);
-    border-radius: 11px;
-    background: #ffffff;
-}
-
-.account-page table {
+table {
     width: 100%;
     border-collapse: collapse;
+    background: var(--nexus-white);
+    border-radius: 10px;
+    overflow: hidden;
 }
 
-.account-page table thead {
-    background: #f3f7f5;
+thead {
+    background: var(--nexus-navy);
+    color: var(--nexus-white);
 }
 
-.account-page table th {
-    padding: 15px 14px;
-    color: var(--nexus-navy);
-    font-size: 11px;
-    font-weight: 800;
-    letter-spacing: 0.45px;
+thead th {
+    color: var(--nexus-white);
+    font-weight: 700;
+    padding: 14px 13px;
     text-align: left;
-    white-space: nowrap;
+}
+
+tbody td {
+    padding: 13px;
     border-bottom: 1px solid var(--nexus-border);
-}
-
-.account-page table td {
-    padding: 14px;
     color: var(--nexus-text);
+}
+
+tbody tr:hover {
+    background: #f3f8f6;
+}
+
+/* STATUS BADGES */
+
+.status,
+.status-badge,
+.badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px 11px;
+    border-radius: 30px;
     font-size: 12px;
-    border-bottom: 1px solid #edf1f4;
+    font-weight: 700;
 }
 
-.account-page table tbody tr:hover {
-    background: #f8fbf9;
+.status-active,
+.status-approved,
+.status-operational,
+.badge-success {
+    background: var(--nexus-success-bg);
+    color: var(--nexus-success);
 }
 
-.account-page table tbody tr:last-child td {
-    border-bottom: none;
+.status-pending,
+.status-processing,
+.badge-warning {
+    background: var(--nexus-warning-bg);
+    color: var(--nexus-warning);
 }
 
-/* PENSION SUMMARY */
-
-.account-page .pension-summary-card {
-    background: linear-gradient(
-        135deg,
-        #0a7044,
-        #075333
-    );
-    border-radius: 15px;
-    color: #ffffff;
-    box-shadow: 0 8px 22px rgba(8, 116, 67, 0.17);
+.status-suspended,
+.status-closed,
+.status-failed,
+.status-rejected,
+.badge-danger {
+    background: var(--nexus-danger-bg);
+    color: var(--nexus-danger);
 }
 
-.account-page .pension-summary-card strong,
-.account-page .pension-summary-card span,
-.account-page .pension-summary-card small {
-    color: #ffffff;
+.status-info,
+.badge-info {
+    background: var(--nexus-info-bg);
+    color: var(--nexus-info);
 }
 
-/* PENSION NOTICE SPACING */
+/* NOTIFICATIONS AND ALERTS */
 
-.account-page .nexus-pension-notice {
-    margin: 18px 0;
+.alert,
+.notification,
+.message-box {
+    border-radius: 10px;
+    padding: 13px 16px;
+    margin: 12px 0;
 }
 
-.account-page .nexus-pension-notice__title {
-    font-weight: 750;
+.alert-success {
+    background: var(--nexus-success-bg);
+    color: var(--nexus-success);
+    border: 1px solid #b8e2ce;
 }
 
-/* ACCOUNT INFORMATION */
-
-.account-page .information-item {
-    padding: 13px 0;
-    border-bottom: 1px solid #edf1f4;
+.alert-danger {
+    background: var(--nexus-danger-bg);
+    color: var(--nexus-danger);
+    border: 1px solid #f1c4be;
 }
 
-.account-page .information-item:last-child {
-    border-bottom: none;
+.alert-warning {
+    background: var(--nexus-warning-bg);
+    color: var(--nexus-warning);
+    border: 1px solid #f1d58a;
 }
 
-.account-page .information-item span {
-    color: var(--nexus-muted);
-    font-size: 12px;
+.alert-info {
+    background: var(--nexus-info-bg);
+    color: var(--nexus-info);
+    border: 1px solid #c7ddf7;
 }
 
-.account-page .information-item strong {
+/* MODALS AND OVERLAYS */
+
+.modal,
+.modal-content,
+.dialog,
+.popup-content {
+    background: var(--nexus-white);
+    border: 1px solid var(--nexus-border);
+    border-radius: 16px;
+    box-shadow: 0 15px 45px rgba(9, 29, 50, 0.2);
+}
+
+.modal h2,
+.modal h3,
+.modal-content h2,
+.modal-content h3 {
     color: var(--nexus-navy);
-    font-size: 13px;
 }
 
-/* MEMBER NAVIGATION */
+/* DIVIDERS */
 
-.account-page .member-navigation {
-    background: #ffffff;
+hr {
+    border: 0;
     border-top: 1px solid var(--nexus-border);
-    box-shadow: 0 -4px 15px rgba(20, 45, 69, 0.035);
 }
 
-.account-page .member-navigation a {
-    transition: color 0.2s ease;
+/* LINKS */
+
+a {
+    color: var(--nexus-green);
 }
 
-.account-page .member-navigation a.active {
-    color: var(--nexus-primary);
+a:hover {
+    color: var(--nexus-green-dark);
 }
 
-/* RESPONSIVE DESIGN */
+/* PENSION ACTION GROUP */
 
-@media (max-width: 700px) {
+.nexus-pension-action-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+}
 
-    .account-page .nexus-financial-accounts,
-    .account-page .nexus-wallet-panel {
-        padding: 17px;
-        border-radius: 12px;
+/* MOBILE RESPONSIVENESS */
+
+@media (max-width: 768px) {
+    .stat-card,
+    .summary-card,
+    .dashboard-card,
+    .financial-card,
+    .account-card,
+    .nexus-card {
+        border-radius: 11px;
     }
 
-    .account-page .nexus-wallet-cards {
-        grid-template-columns: 1fr;
-        gap: 13px;
+    table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
     }
 
-    .account-page .dashboard-card {
-        padding: 18px;
+    button,
+    .btn,
+    .button {
+        max-width: 100%;
     }
 
-    .account-page .dashboard-card h3 {
-        font-size: 22px;
-    }
-
-    .account-page .financial-account-card {
-        padding: 16px;
-        gap: 12px;
-    }
-
-    .account-page .financial-account-icon {
-        flex-basis: 43px;
-        width: 43px;
-        height: 43px;
-        font-size: 20px;
-    }
-
-    .account-page .financial-account-link {
-        font-size: 11px;
-    }
-
-    .account-page .wallet-actions {
-        display: grid;
-        grid-template-columns: 1fr;
-    }
-
-    .account-page .wallet-actions a {
-        width: 100%;
-        box-sizing: border-box;
-    }
-
-    .account-page .bank-panel-heading h3 {
-        font-size: 18px;
+    .nexus-pension-action-group {
+        flex-direction: column;
+        align-items: stretch;
     }
 }
 
-@media (max-width: 380px) {
+/* ACCESSIBILITY */
 
-    .account-page .financial-account-card {
-        flex-wrap: wrap;
-    }
-
-    .account-page .financial-account-link {
-        width: 100%;
-        padding-left: 55px;
-    }
-
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+    outline: 3px solid rgba(8, 127, 91, 0.25);
+    outline-offset: 2px;
 }
+
