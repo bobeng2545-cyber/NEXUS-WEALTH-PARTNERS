@@ -1841,38 +1841,40 @@ async function loadMemberPension(user) {
 
 
    
+
 /* =====================================
    PENSION ACCOUNT VISIBILITY
 
    - No Pension account:
-     Show the account creation panel.
+     Show account creation panel.
      Hide existing account information.
 
    - Pension account exists:
-     Hide the account creation panel.
+     Hide account creation panel.
      Show existing account information.
-
-   - Account content is only displayed
-     when an account has been confirmed.
 ===================================== */
-
-const pensionAccountContent =
-    document.getElementById("pensionAccountContent");
 
 const pensionAccountExists =
     Boolean(account && account.id);
 
 if (openingPanel) {
-    openingPanel.hidden = pensionAccountExists;
+    openingPanel.hidden =
+        pensionAccountExists;
 }
 
 if (openingButton) {
-    openingButton.disabled = pensionAccountExists;
+    openingButton.disabled =
+        pensionAccountExists;
+
+    openingButton.textContent =
+        "Create Pension Account";
 }
 
 if (pensionAccountContent) {
-    pensionAccountContent.hidden = !pensionAccountExists;
+    pensionAccountContent.hidden =
+        !pensionAccountExists;
 }
+
 
 
 
