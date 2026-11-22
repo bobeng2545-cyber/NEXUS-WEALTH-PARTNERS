@@ -2050,140 +2050,580 @@ async function loadMemberPension(user) {
     }
 
 
+    
     /* =====================================
        DISPLAY CONTRIBUTION REQUEST HISTORY
+       PROFESSIONAL CARD LAYOUT
+       SIMULATION ONLY
     ===================================== */
 
     if (contributionList) {
 
         contributionList.replaceChildren();
 
+        /* UPDATE TOTAL REQUEST COUNT */
+
+        const historyTotalElement =
+            getElement("pensionHistoryTotal");
+
+        if (historyTotalElement) {
+
+            historyTotalElement.textContent =
+                pensionRequests.length.toLocaleString("en-GH");
+
+        }
+
+
+        /* EMPTY HISTORY STATE */
+
         if (pensionRequests.length === 0) {
 
-            const emptyMessage =
+            const emptyState =
+                document.createElement("div");
+
+            emptyState.className =
+                "nwp-pension-history-empty";
+
+            const emptyIcon =
+                document.createElement("div");
+
+            emptyIcon.className =
+                "nwp-pension-history-empty-icon";
+
+            emptyIcon.setAttribute("aria-hidden", "true");
+            emptyIcon.textContent = "📄";
+
+            const emptyHeading =
+                document.createElement("h4");
+
+            emptyHeading.textContent =
+                "No contribution requests yet";
+
+            const emptyDescription =
                 document.createElement("p");
 
-            emptyMessage.textContent =
+            emptyDescription.textContent =
                 account
-                    ? "You have not submitted any Pension contribution requests."
-                    : "No Pension contribution requests are available because you have not opened a Pension account.";
+                    ? "Your submitted Pension contribution requests will appear here."
+                    : "Open your Pension account before submitting a contribution request.";
 
-            contributionList.appendChild(
-                emptyMessage
+            emptyState.append(
+                emptyIcon,
+                emptyHeading,
+                emptyDescription
             );
+
+            contributionList.appendChild(emptyState);
 
         } else {
 
+            /* STATUS LABELS */
+
+            const statusLabels = {
+
+                pending: "Pending",
+
+                submitted: "Submitted",
+
+                under_review: "Under Review",
+
+                accepted_for_future_processing:
+                    "Accepted for Future Processing",
+
+                rejected: "Rejected"
+
+            };
+
+
             pensionRequests.forEach(request => {
+
+                /* NORMALIZE STATUS */
+
+                const cleanStatus = String(
+                    request.status || "pending"
+                )
+                    .trim()
+                    .toLowerCase();
+
+                const safeStatusClass = cleanStatus.replace(
+                    /[^a-z0-9_-]/g,
+                    ""
+                );
+
+                const statusLabel =
+                    statusLabels[cleanStatus] ||
+                    cleanStatus
+                        .replace(/[_-]+/g, " ")
+                        .replace(/\b\w/g, character =>
+                            character.toUpperCase()
+                        );
+
+
+                /* REQUEST CARD */
 
                 const card =
                     document.createElement("article");
 
                 card.className =
-                    "pension-contribution-request";
+                    "nwp-pension-request-card";
 
 
-                /* REQUEST REFERENCE */
+                /* CARD HEADER */
+
+                const cardHeader =
+                    document.createElement("div");
+
+                cardHeader.className =
+                    "nwp-pension-request-header";
+
+
+                const referenceArea =
+                    document.createElement("div");
+
+                referenceArea.className =
+                    "nwp-pension-request-reference-area";
+
+
+                const referenceLabel =
+                    document.createElement("span");
+
+                referenceLabel.className =
+                    "nwp-pension-request-reference-label";
+
+                referenceLabel.textContent =
+                    "REQUEST REFERENCE";
+
 
                 const reference =
                     document.createElement("strong");
 
+                reference.className =
+                    "nwp-pension-request-reference";
+
                 reference.textContent =
-                    "Reference: " +
-                    (
-                        request.request_reference ||
-                        request.id
-                    );
+                    request.request_reference ||
+                    request.id ||
+                    "Reference unavailable";
 
 
-                /* REQUEST AMOUNT */
+                referenceArea.append(
+                    referenceLabel,
+                    reference
+                );
+
+
+                /* STATUS BADGE */
+
+                const statusBadge =
+                    document.createElement("span");
+
+                statusBadge.className =
+                    "nwp-pension-request-status status-" +
+                    safeStatusClass;
+
+                statusBadge.textContent =
+                    statusLabel;
+
+                cardHeader.append(
+                    referenceArea,
+                    statusBadge
+                );
+
+
+                /* AMOUNT */
+
+                const amountArea =
+                    document.createElement("div");
+
+                amountArea.className =
+                    "nwp-pension-request-amount-area";
+
+
+                const amountLabel =
+                    document.createElement("span");
+
+                amountLabel.textContent =
+                    "Requested Amount";
+
 
                 const amount =
-                    document.createElement("p");
+                    document.createElement("strong");
+
+                amount.className =
+                    "nwp-pension-request-amount";
 
                 amount.textContent =
-                    "Requested amount: " +
                     formatMoney(
                         Number(request.amount) || 0
                     );
 
 
-                /* REQUEST STATUS */
-
-                const status =
-                    document.createElement("p");
-
-                const cleanStatus =
-                    String(
-                        request.status || "pending"
-                    ).toLowerCase();
-
-                status.textContent =
-                    "Request status: " +
-                    cleanStatus.toUpperCase();
-
-                status.className =
-                    "pension-request-status status-" +
-                    cleanStatus.replace(
-                        /[^a-z0-9_-]/g,
-                        ""
-                    );
+                amountArea.append(
+                    amountLabel,
+                    amount
+                );
 
 
-                /* REQUEST DATE */
+                /* REQUEST DETAILS */
 
-                const date =
-                    document.createElement("small");
+                const details =
+                    document.createElement("div");
+
+                details.className =
+                    "nwp-pension-request-details";
+
+
+                const destinationItem =
+                    document.createElement("div");
+
+                destinationItem.className =
+                    "nwp-pension-request-detail";
+
+
+                const destinationLabel =
+                    document.createElement("span");
+
+                destinationLabel.textContent =
+                    "Destination";
+
+
+                const destinationValue =
+                    document.createElement("strong");
+
+                destinationValue.textContent =
+                    "NEXUS Pension Account";
+
+
+                destinationItem.append(
+                    destinationLabel,
+                    destinationValue
+                );
+
+
+                const dateItem =
+                    document.createElement("div");
+
+                dateItem.className =
+                    "nwp-pension-request-detail";
+
+
+                const dateLabel =
+                    document.createElement("span");
+
+                dateLabel.textContent =
+                    "Date Submitted";
+
+
+                const dateValue =
+                    document.createElement("strong");
 
                 const createdAt =
                     new Date(request.created_at);
 
-                date.textContent =
+                dateValue.textContent =
                     Number.isNaN(createdAt.getTime())
                         ? "Date unavailable"
                         : createdAt.toLocaleString(
                             "en-GH",
                             {
-                                dateStyle: "medium",
-                                timeStyle: "short"
+                                day: "numeric",
+                                month: "short",
+                                year: "numeric",
+                                hour: "numeric",
+                                minute: "2-digit",
+                                hour12: true
                             }
                         );
 
 
-                /* MEMBER NOTE */
-
-                card.append(
-                    reference,
-                    amount,
-                    status,
-                    date
+                dateItem.append(
+                    dateLabel,
+                    dateValue
                 );
 
 
-                if (request.member_note) {
+                details.append(
+                    destinationItem,
+                    dateItem
+                );
 
-                    const note =
-                        document.createElement("p");
 
-                    note.textContent =
-                        "Your note: " +
-                        request.member_note;
+                /* REQUEST PROGRESS */
 
-                    card.appendChild(note);
+                const progress =
+                    document.createElement("div");
+
+                progress.className =
+                    "nwp-pension-request-progress";
+
+
+                const progressHeading =
+                    document.createElement("h4");
+
+                progressHeading.textContent =
+                    "Request Progress";
+
+
+                const timeline =
+                    document.createElement("div");
+
+                timeline.className =
+                    "nwp-pension-request-timeline";
+
+
+                const isUnderReview =
+                    cleanStatus === "under_review";
+
+                const isAccepted =
+                    cleanStatus ===
+                    "accepted_for_future_processing";
+
+                const isRejected =
+                    cleanStatus === "rejected";
+
+                const isReviewed =
+                    isAccepted || isRejected;
+
+
+                /* FIRST TIMELINE STEP */
+
+                const submittedStep =
+                    document.createElement("div");
+
+                submittedStep.className =
+                    "nwp-pension-timeline-step completed";
+
+
+                const submittedMarker =
+                    document.createElement("span");
+
+                submittedMarker.className =
+                    "nwp-pension-timeline-marker";
+
+                submittedMarker.textContent = "✓";
+
+
+                const submittedText =
+                    document.createElement("div");
+
+                submittedText.className =
+                    "nwp-pension-timeline-text";
+
+
+                const submittedTitle =
+                    document.createElement("strong");
+
+                submittedTitle.textContent =
+                    "Request submitted";
+
+
+                const submittedDescription =
+                    document.createElement("small");
+
+                submittedDescription.textContent =
+                    "Your contribution request was recorded.";
+
+
+                submittedText.append(
+                    submittedTitle,
+                    submittedDescription
+                );
+
+                submittedStep.append(
+                    submittedMarker,
+                    submittedText
+                );
+
+
+                /* SECOND TIMELINE STEP */
+
+                const reviewStep =
+                    document.createElement("div");
+
+                reviewStep.className =
+                    "nwp-pension-timeline-step";
+
+
+                const reviewMarker =
+                    document.createElement("span");
+
+                reviewMarker.className =
+                    "nwp-pension-timeline-marker";
+
+
+                const reviewText =
+                    document.createElement("div");
+
+                reviewText.className =
+                    "nwp-pension-timeline-text";
+
+
+                const reviewTitle =
+                    document.createElement("strong");
+
+                const reviewDescription =
+                    document.createElement("small");
+
+
+                if (isAccepted) {
+
+                    reviewStep.classList.add("completed");
+
+                    reviewMarker.textContent = "✓";
+
+                    reviewTitle.textContent =
+                        "Accepted for future processing";
+
+                    reviewDescription.textContent =
+                        "This request has been accepted for future processing only. No payment has been received.";
+
+                } else if (isRejected) {
+
+                    reviewStep.classList.add("rejected");
+
+                    reviewMarker.textContent = "!";
+
+                    reviewTitle.textContent =
+                        "Request rejected";
+
+                    reviewDescription.textContent =
+                        "The administrator recorded a rejection decision.";
+
+                } else if (isUnderReview) {
+
+                    reviewStep.classList.add("in-progress");
+
+                    reviewMarker.textContent = "…";
+
+                    reviewTitle.textContent =
+                        "Under administrator review";
+
+                    reviewDescription.textContent =
+                        "Your request is currently being reviewed.";
+
+                } else {
+
+                    reviewMarker.textContent = "2";
+
+                    reviewTitle.textContent =
+                        "Administrator review";
+
+                    reviewDescription.textContent =
+                        "Your request is awaiting an administrator decision.";
 
                 }
 
 
-                /* SIMULATION NOTICE */
+                reviewText.append(
+                    reviewTitle,
+                    reviewDescription
+                );
 
-                const notice =
-                    document.createElement("small");
+                reviewStep.append(
+                    reviewMarker,
+                    reviewText
+                );
 
-                notice.textContent =
-                    "Simulation request only — no payment received and no Pension balance credited.";
 
-                card.appendChild(notice);
+                timeline.append(
+                    submittedStep,
+                    reviewStep
+                );
 
+                progress.append(
+                    progressHeading,
+                    timeline
+                );
+
+
+                /* OPTIONAL MEMBER NOTE */
+
+                let noteArea = null;
+
+                if (
+                    typeof request.member_note === "string" &&
+                    request.member_note.trim()
+                ) {
+
+                    noteArea =
+                        document.createElement("div");
+
+                    noteArea.className =
+                        "nwp-pension-request-note";
+
+
+                    const noteLabel =
+                        document.createElement("strong");
+
+                    noteLabel.textContent =
+                        "Your Note";
+
+
+                    const noteText =
+                        document.createElement("p");
+
+                    noteText.textContent =
+                        request.member_note.trim();
+
+
+                    noteArea.append(
+                        noteLabel,
+                        noteText
+                    );
+
+                }
+
+
+                /* SIMULATION-ONLY NOTICE */
+
+                const simulationNotice =
+                    document.createElement("div");
+
+                simulationNotice.className =
+                    "nwp-pension-request-simulation";
+
+
+                const simulationIcon =
+                    document.createElement("span");
+
+                simulationIcon.className =
+                    "nwp-pension-request-simulation-icon";
+
+                simulationIcon.setAttribute(
+                    "aria-hidden",
+                    "true"
+                );
+
+                simulationIcon.textContent = "ⓘ";
+
+
+                const simulationText =
+                    document.createElement("p");
+
+                simulationText.textContent =
+                    "Simulation request only — no payment received, no wallet deduction and no Pension balance credited.";
+
+
+                simulationNotice.append(
+                    simulationIcon,
+                    simulationText
+                );
+
+
+                /* ASSEMBLE REQUEST CARD */
+
+                card.append(
+                    cardHeader,
+                    amountArea,
+                    details,
+                    progress
+                );
+
+                if (noteArea) {
+                    card.appendChild(noteArea);
+                }
+
+                card.appendChild(simulationNotice);
 
                 contributionList.appendChild(card);
 
@@ -2192,6 +2632,7 @@ async function loadMemberPension(user) {
         }
 
     }
+
 
 
     /* =====================================
