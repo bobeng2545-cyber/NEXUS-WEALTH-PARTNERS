@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <meta name="description" content="Nexus Wealth Partners - Manage your wallet, savings and separate pension account.">
+    <meta name="description" content="Nexus Wealth Partners - Manage your wallet and separate pension account.">
     <meta name="theme-color" content="#087443">
 
     <title>Member Account | Nexus Wealth Partners</title>
@@ -405,33 +405,14 @@
 
                 <div class="financial-accounts-heading">
                     <div>
-                        <h3>My Financial Accounts</h3>
-                        <p>Manage your savings and pension separately.</p>
+                        <h3>My Financial Account</h3>
+                        <p>Manage and monitor your separate pension account.</p>
                     </div>
                 </div>
 
                 <div class="financial-accounts-grid">
 
-                    <a
-                        href="#memberSavings"
-                        class="financial-account-card savings-account-card"
-                        data-screen="savings"
-                    >
-                        <div class="financial-account-icon">🐷</div>
-
-                        <div class="financial-account-details">
-                            <h3>Savings</h3>
-                            <p>Your savings account</p>
-
-                            <strong id="dashboardSavingsBalance">
-                                GH₵0.00
-                            </strong>
-                        </div>
-
-                        <span class="financial-account-link">
-                            View Savings →
-                        </span>
-                    </a>
+                    <!-- PENSION ACCOUNT ONLY -->
 
                     <a
                         href="#memberPension"
@@ -457,8 +438,9 @@
                 </div>
 
                 <p class="financial-accounts-note">
-                    Savings and pension are separate financial accounts
-                    with independent balances and transaction records.
+                    Your pension account is maintained separately from
+                    your ordinary Savings wallet. Pension contribution
+                    requests are currently simulation-only.
                 </p>
 
             </section>
@@ -524,17 +506,16 @@
 
                 <div class="dashboard-cards">
 
-                    <article class="dashboard-card balance-card">
-                        <span class="card-icon">💰</span>
-                        <p>Total Wallet Balance</p>
-                        <h3 id="walletBalanceDisplay">GHS 0.00</h3>
-                    </article>
+                    <!-- AVAILABLE BALANCE -->
 
-                    <article class="dashboard-card">
+                    <article class="dashboard-card balance-card">
                         <span class="card-icon">💵</span>
                         <p>Available Balance</p>
                         <h3 id="walletAvailableBalance">GHS 0.00</h3>
+                        <small>Funds currently available for withdrawal</small>
                     </article>
+
+                    <!-- PENDING WITHDRAWALS -->
 
                     <article class="dashboard-card pending-wallet-card">
                         <span class="card-icon">⏳</span>
@@ -1182,10 +1163,7 @@
                 </div>
 
 
-                <!-- =================================
-                     OPEN PENSION ACCOUNT
-                     SECTION 16B HTML ELEMENTS
-                ================================== -->
+                <!-- OPEN PENSION ACCOUNT -->
 
                 <div
                     id="pensionAccountOpeningPanel"
