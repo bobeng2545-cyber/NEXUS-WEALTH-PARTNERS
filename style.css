@@ -5824,31 +5824,43 @@ hr {
 
 
 
-/* =====================================================
+
+/* =========================================================
    NEXUS WEALTH PARTNERS
-   PROFESSIONAL PENSION REQUEST HISTORY
-===================================================== */
+   PROFESSIONAL PENSION CONTRIBUTION REQUEST HISTORY
+   MATCHES THE CURRENT MAIN.JS CLASS NAMES
+========================================================= */
+
+/* MAIN HISTORY PANEL */
 
 .pension-history-panel {
     width: 100%;
     padding: 30px;
-    border: 1px solid #e4eaf0;
+    margin-top: 25px;
+    border: 1px solid #e1e8ef;
     border-radius: 18px;
     background: #ffffff;
     box-shadow: 0 8px 30px rgba(16, 43, 70, 0.055);
+    box-sizing: border-box;
 }
+
+/* HISTORY HEADING */
 
 .nwp-pension-history-heading {
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    justify-content: space-between;
     gap: 20px;
     margin-bottom: 25px;
 }
 
+.nwp-pension-history-title-area {
+    min-width: 0;
+}
+
 .nwp-pension-eyebrow {
     display: block;
-    margin-bottom: 8px;
+    margin-bottom: 9px;
     color: #a47b36;
     font-size: 11px;
     font-weight: 800;
@@ -5856,14 +5868,15 @@ hr {
 }
 
 .nwp-pension-history-heading h3 {
-    margin: 0 0 8px;
+    margin: 0 0 9px;
     color: #102b46;
     font-size: 23px;
     font-weight: 750;
+    line-height: 1.4;
 }
 
 .nwp-pension-history-heading p {
-    max-width: 600px;
+    max-width: 650px;
     margin: 0;
     color: #64748b;
     font-size: 14px;
@@ -5878,198 +5891,257 @@ hr {
     align-items: center;
     justify-content: center;
     border-radius: 15px;
-    background: #edf4f1;
+    background: #edf5f1;
     color: #087443;
     font-size: 25px;
 }
 
+/* HISTORY SUMMARY */
+
 .nwp-pension-history-summary {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 15px;
-    margin-bottom: 24px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+    margin-bottom: 25px;
 }
 
-.nwp-pension-history-summary > div {
+.nwp-pension-history-summary-item {
     display: flex;
+    min-width: 0;
     flex-direction: column;
-    gap: 7px;
-    padding: 17px 19px;
-    border: 1px solid #e7edf1;
-    border-radius: 12px;
-    background: #f8fafb;
+    gap: 8px;
+    padding: 18px;
+    border: 1px solid #e5ebf0;
+    border-radius: 13px;
+    background: #f8fafc;
 }
 
-.nwp-pension-history-summary span {
+.nwp-pension-history-summary-item span {
     color: #64748b;
     font-size: 12px;
     font-weight: 600;
 }
 
-.nwp-pension-history-summary strong {
+.nwp-pension-history-summary-item strong {
     color: #102b46;
-    font-size: 17px;
+    font-size: 16px;
     font-weight: 750;
+    overflow-wrap: anywhere;
 }
+
+/* REQUEST LIST */
 
 .nwp-pension-request-list {
     display: flex;
+    width: 100%;
     flex-direction: column;
-    gap: 19px;
+    gap: 18px;
 }
 
+/* INDIVIDUAL REQUEST CARD */
+
 .nwp-pension-request-card {
-    overflow: hidden;
-    padding: 23px;
-    border: 1px solid #e3eaf0;
+    display: flex;
+    width: 100%;
+    min-width: 0;
+    flex-direction: column;
+    gap: 0;
+    padding: 24px;
+    border: 1px solid #e1e8ef;
     border-radius: 15px;
     background: #ffffff;
+    box-sizing: border-box;
     transition: border-color 0.2s ease,
-                box-shadow 0.2s ease;
+                box-shadow 0.2s ease,
+                transform 0.2s ease;
 }
 
 .nwp-pension-request-card:hover {
-    border-color: #c7d8d0;
-    box-shadow: 0 8px 24px rgba(16, 43, 70, 0.07);
+    border-color: #c6d9ce;
+    box-shadow: 0 9px 25px rgba(16, 43, 70, 0.065);
+    transform: translateY(-1px);
 }
+
+/* REQUEST HEADER */
 
 .nwp-pension-request-header {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    gap: 15px;
-    padding-bottom: 18px;
+    gap: 18px;
+    padding-bottom: 20px;
     border-bottom: 1px solid #edf1f4;
 }
 
-.nwp-pension-reference-block {
+.nwp-pension-request-reference-area {
     display: flex;
     min-width: 0;
     flex-direction: column;
-    gap: 7px;
+    gap: 8px;
 }
 
-.nwp-pension-field-label {
+.nwp-pension-request-reference-label {
     color: #8190a0;
     font-size: 10px;
     font-weight: 800;
     letter-spacing: 1.2px;
 }
 
-.nwp-pension-reference {
-    overflow-wrap: anywhere;
+.nwp-pension-request-reference {
     color: #102b46;
     font-size: 13px;
     font-weight: 750;
+    line-height: 1.6;
+    overflow-wrap: anywhere;
 }
 
-.nwp-pension-status-badge {
+/* STATUS BADGE */
+
+.nwp-pension-request-status {
     display: inline-flex;
     flex-shrink: 0;
     align-items: center;
     justify-content: center;
-    padding: 8px 12px;
-    border: 1px solid #e5eaf0;
+    max-width: 250px;
+    padding: 9px 13px;
+    border: 1px solid #d5e4f4;
     border-radius: 30px;
-    background: #f3f5f7;
-    color: #536273;
+    background: #eff6ff;
+    color: #245b91;
     font-size: 11px;
     font-weight: 750;
+    line-height: 1.4;
     text-align: center;
 }
 
-.nwp-pension-status-badge.status-accepted_for_future_processing {
+.nwp-pension-request-status.status-accepted_for_future_processing {
     border-color: #b9e5cc;
     background: #eaf8ef;
     color: #087443;
 }
 
-.nwp-pension-status-badge.status-rejected {
+.nwp-pension-request-status.status-rejected {
     border-color: #f0caca;
     background: #fff0f0;
     color: #b42318;
 }
 
-.nwp-pension-status-badge.status-under_review {
+.nwp-pension-request-status.status-under_review {
     border-color: #f2dfb3;
     background: #fff8e9;
     color: #946200;
 }
 
-.nwp-pension-status-badge.status-submitted,
-.nwp-pension-status-badge.status-pending {
+.nwp-pension-request-status.status-pending,
+.nwp-pension-request-status.status-submitted {
     border-color: #d5e4f4;
     background: #eff6ff;
     color: #245b91;
 }
 
-.nwp-pension-amount-section {
+/* REQUESTED AMOUNT */
+
+.nwp-pension-request-amount-area {
     display: flex;
     flex-direction: column;
-    gap: 7px;
-    padding: 21px 0;
+    gap: 8px;
+    padding: 22px 0;
 }
 
-.nwp-pension-amount-section span {
+.nwp-pension-request-amount-area > span {
     color: #64748b;
     font-size: 12px;
     font-weight: 600;
 }
 
-.nwp-pension-amount-section strong {
+.nwp-pension-request-amount {
     color: #102b46;
     font-size: 30px;
     font-weight: 800;
     letter-spacing: -0.7px;
+    line-height: 1.3;
 }
+
+/* REQUEST DETAILS */
 
 .nwp-pension-request-details {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 15px;
-    padding: 16px 0;
+    gap: 16px;
+    padding: 19px 0;
     border-top: 1px solid #edf1f4;
     border-bottom: 1px solid #edf1f4;
 }
 
-.nwp-pension-detail-item {
+.nwp-pension-request-detail {
     display: flex;
     min-width: 0;
     flex-direction: column;
     gap: 7px;
 }
 
-.nwp-pension-detail-item span {
+.nwp-pension-request-detail span {
     color: #8190a0;
     font-size: 11px;
     font-weight: 650;
 }
 
-.nwp-pension-detail-item strong {
-    overflow-wrap: anywhere;
+.nwp-pension-request-detail strong {
     color: #263c52;
     font-size: 13px;
     font-weight: 700;
+    line-height: 1.6;
+    overflow-wrap: anywhere;
 }
 
-.nwp-pension-progress {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 15px;
-    padding: 22px 0;
+/* REQUEST PROGRESS */
+
+.nwp-pension-request-progress {
+    padding: 23px 0 20px;
 }
 
-.nwp-pension-progress-step {
+.nwp-pension-request-progress h4 {
+    margin: 0 0 18px;
+    color: #102b46;
+    font-size: 15px;
+    font-weight: 750;
+}
+
+.nwp-pension-request-timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.nwp-pension-timeline-step {
+    position: relative;
     display: flex;
     align-items: flex-start;
-    gap: 10px;
+    gap: 13px;
     min-width: 0;
+    padding-bottom: 23px;
 }
 
-.nwp-pension-progress-marker {
+.nwp-pension-timeline-step:last-child {
+    padding-bottom: 0;
+}
+
+.nwp-pension-timeline-step:not(:last-child)::after {
+    position: absolute;
+    top: 29px;
+    left: 13px;
+    width: 2px;
+    height: calc(100% - 29px);
+    background: #e2e8ee;
+    content: "";
+}
+
+.nwp-pension-timeline-marker {
+    position: relative;
+    z-index: 1;
     display: flex;
-    width: 27px;
-    height: 27px;
+    width: 28px;
+    height: 28px;
     flex-shrink: 0;
     align-items: center;
     justify-content: center;
@@ -6081,53 +6153,63 @@ hr {
     font-weight: 800;
 }
 
-.nwp-pension-progress-step.completed .nwp-pension-progress-marker {
+.nwp-pension-timeline-step.completed .nwp-pension-timeline-marker {
     border-color: #b8dfc7;
     background: #e9f7ee;
     color: #087443;
 }
 
-.nwp-pension-progress-step.current .nwp-pension-progress-marker {
+.nwp-pension-timeline-step.in-progress .nwp-pension-timeline-marker {
     border-color: #e6c987;
     background: #fff6df;
     color: #946200;
 }
 
-.nwp-pension-progress-step > div {
+.nwp-pension-timeline-step.rejected .nwp-pension-timeline-marker {
+    border-color: #f0caca;
+    background: #fff0f0;
+    color: #b42318;
+}
+
+.nwp-pension-timeline-text {
     display: flex;
     min-width: 0;
     flex-direction: column;
     gap: 5px;
+    padding-top: 3px;
 }
 
-.nwp-pension-progress-step strong {
+.nwp-pension-timeline-text strong {
     color: #263c52;
+    font-size: 13px;
+    font-weight: 750;
+    line-height: 1.5;
+}
+
+.nwp-pension-timeline-text small {
+    color: #748294;
     font-size: 12px;
-    line-height: 1.5;
+    line-height: 1.7;
 }
 
-.nwp-pension-progress-step small {
-    color: #8190a0;
-    font-size: 11px;
-    line-height: 1.5;
-}
+/* OPTIONAL MEMBER NOTE */
 
-.nwp-pension-member-note {
-    margin: 0 0 17px;
-    padding: 14px 16px;
+.nwp-pension-request-note {
+    margin: 0 0 18px;
+    padding: 15px 17px;
     border-left: 3px solid #c5a15b;
     border-radius: 5px;
     background: #faf8f3;
 }
 
-.nwp-pension-member-note strong {
+.nwp-pension-request-note strong {
     display: block;
-    margin-bottom: 6px;
+    margin-bottom: 7px;
     color: #70572d;
     font-size: 12px;
 }
 
-.nwp-pension-member-note p {
+.nwp-pension-request-note p {
     margin: 0;
     color: #5e6470;
     font-size: 13px;
@@ -6135,29 +6217,33 @@ hr {
     overflow-wrap: anywhere;
 }
 
-.nwp-pension-simulation-notice {
+/* SIMULATION NOTICE */
+
+.nwp-pension-request-simulation {
     display: flex;
     align-items: flex-start;
-    gap: 10px;
-    padding: 13px 15px;
+    gap: 11px;
+    padding: 15px 16px;
     border: 1px solid #d9e8f3;
-    border-radius: 9px;
+    border-radius: 10px;
     background: #f2f8fc;
 }
 
-.nwp-pension-simulation-notice > span {
+.nwp-pension-request-simulation-icon {
     flex-shrink: 0;
     color: #27658f;
-    font-size: 16px;
+    font-size: 17px;
     font-weight: 800;
 }
 
-.nwp-pension-simulation-notice p {
+.nwp-pension-request-simulation p {
     margin: 0;
     color: #36566e;
-    font-size: 11px;
-    line-height: 1.7;
+    font-size: 12px;
+    line-height: 1.75;
 }
+
+/* EMPTY HISTORY */
 
 .nwp-pension-history-empty {
     display: flex;
@@ -6172,7 +6258,7 @@ hr {
     text-align: center;
 }
 
-.nwp-pension-empty-icon {
+.nwp-pension-history-empty-icon {
     display: flex;
     width: 48px;
     height: 48px;
@@ -6199,18 +6285,21 @@ hr {
     line-height: 1.7;
 }
 
+/* HISTORY FOOTER */
+
 .nwp-pension-history-footer {
     display: flex;
     align-items: flex-start;
-    gap: 10px;
+    gap: 11px;
     margin-top: 22px;
     padding-top: 18px;
     border-top: 1px solid #edf1f4;
 }
 
-.nwp-pension-footer-icon {
+.nwp-pension-history-footer-icon {
+    flex-shrink: 0;
     color: #a47b36;
-    font-size: 16px;
+    font-size: 17px;
     font-weight: 800;
 }
 
@@ -6218,11 +6307,12 @@ hr {
     margin: 0;
     color: #748294;
     font-size: 12px;
-    line-height: 1.7;
+    line-height: 1.75;
 }
 
-
-/* MOBILE RESPONSIVENESS */
+/* =========================================================
+   MOBILE RESPONSIVENESS
+========================================================= */
 
 @media (max-width: 650px) {
 
@@ -6240,6 +6330,10 @@ hr {
         font-size: 19px;
     }
 
+    .nwp-pension-history-heading p {
+        font-size: 13px;
+    }
+
     .nwp-pension-history-icon {
         width: 42px;
         height: 42px;
@@ -6248,43 +6342,65 @@ hr {
     }
 
     .nwp-pension-history-summary {
+        grid-template-columns: 1fr;
         gap: 9px;
     }
 
-    .nwp-pension-history-summary > div {
-        padding: 13px 11px;
+    .nwp-pension-history-summary-item {
+        padding: 13px 14px;
     }
 
-    .nwp-pension-history-summary strong {
+    .nwp-pension-history-summary-item strong {
         font-size: 14px;
     }
 
     .nwp-pension-request-card {
-        padding: 16px 13px;
+        padding: 17px 14px;
         border-radius: 12px;
     }
 
     .nwp-pension-request-header {
         flex-direction: column;
         align-items: flex-start;
+        gap: 13px;
     }
 
-    .nwp-pension-status-badge {
+    .nwp-pension-request-status {
+        max-width: 100%;
         white-space: normal;
     }
 
-    .nwp-pension-amount-section strong {
+    .nwp-pension-request-amount {
         font-size: 26px;
     }
 
     .nwp-pension-request-details {
         grid-template-columns: 1fr;
-        gap: 13px;
+        gap: 14px;
     }
 
-    .nwp-pension-progress {
-        grid-template-columns: 1fr;
-        gap: 17px;
+    .nwp-pension-request-progress {
+        padding: 19px 0;
+    }
+
+    .nwp-pension-timeline-text strong {
+        font-size: 12px;
+    }
+
+    .nwp-pension-timeline-text small {
+        font-size: 11px;
+    }
+
+    .nwp-pension-request-simulation {
+        padding: 13px 12px;
+    }
+
+    .nwp-pension-request-simulation p {
+        font-size: 11px;
+    }
+
+    .nwp-pension-history-footer {
+        gap: 8px;
     }
 
 }
