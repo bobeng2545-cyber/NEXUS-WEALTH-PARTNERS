@@ -1580,33 +1580,7 @@ async function loadMemberPension(user) {
    
    }
    
-   // Account lookup succeeded. Now it is safe to determine
-   // whether this member needs to open a Pension account.
    
-   const pensionAccountExists =
-      Boolean(account && account.id);
-   
-   if (openingPanel) {
-      openingPanel.hidden = pensionAccountExists;
-   }
-   
-   if (openingButton) {
-      
-      openingButton.disabled =
-         pensionAccountExists;
-      
-      openingButton.textContent =
-         "Create Pension Account";
-   }
-   
-   if (pensionAccountContent) {
-      pensionAccountContent.hidden =
-         !pensionAccountExists;
-   }
-
-
-
-    
 /* =====================================
    LOAD PENSION ACCOUNT
 ===================================== */
