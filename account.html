@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -454,57 +453,7 @@
             </div>
 
 
-            <!-- FINANCIAL ACCOUNTS -->
-
-            <section class="nexus-financial-accounts home-dashboard-content">
-
-                <div class="financial-accounts-heading">
-
-                    <div>
-                        <h3>My Financial Account</h3>
-                        <p>Manage and monitor your separate pension account.</p>
-                    </div>
-
-                </div>
-
-                <div class="financial-accounts-grid">
-
-                    <a
-                        href="#memberPension"
-                        class="financial-account-card pension-account-card"
-                        data-screen="pension"
-                    >
-
-                        <div class="financial-account-icon">🏛️</div>
-
-                        <div class="financial-account-details">
-
-                            <h3>Pension</h3>
-
-                            <p>Your separate pension account</p>
-
-                            <strong id="dashboardPensionBalance">
-                                GH₵0.00
-                            </strong>
-
-                        </div>
-
-                        <span class="financial-account-link">
-                            View Pension →
-                        </span>
-
-                    </a>
-
-                </div>
-
-                <p class="financial-accounts-note">
-                    Your pension account is maintained separately from
-                    your ordinary Savings wallet. Pension contribution
-                    requests are currently simulation-only.
-                </p>
-
-            </section>
-
+            <!-- FINANCIAL ACCOUNTS SECTION REMOVED -->
 
             <!-- MEMBER NAVIGATION -->
 
@@ -1347,689 +1296,687 @@
             </section>
 
 
-            
-<!-- =========================================
-     NEXUS PENSION ACCOUNT
-========================================== -->
+            <!-- =========================================
+                 NEXUS PENSION ACCOUNT
+            ========================================== -->
 
-<section
-    id="memberPension"
-    class="dashboard-panel pension-dashboard-panel"
->
+            <section
+                id="memberPension"
+                class="dashboard-panel pension-dashboard-panel"
+            >
 
-    <!-- MOBILE HEADING -->
+                <!-- MOBILE HEADING -->
 
-    <div class="mobile-page-heading">
+                <div class="mobile-page-heading">
 
-        <button
-            type="button"
-            class="mobile-back-button"
-            onclick="showMobileDashboardScreen('home')"
-            aria-label="Back to dashboard"
-        >
-            &#8592;
-        </button>
+                    <button
+                        type="button"
+                        class="mobile-back-button"
+                        onclick="showMobileDashboardScreen('home')"
+                        aria-label="Back to dashboard"
+                    >
+                        &#8592;
+                    </button>
 
-        <h2>My Pension</h2>
+                    <h2>My Pension</h2>
 
-    </div>
-
-
-    <!-- PENSION PAGE HEADING -->
-
-    <div class="pension-page-heading">
-
-        <div class="pension-heading-icon">🏛️</div>
-
-        <div>
-
-            <span class="nwp-pension-eyebrow">
-                NEXUS WEALTH PARTNERS
-            </span>
-
-            <h3 class="desktop-page-heading">
-                My Pension Account
-            </h3>
-
-            <p>
-                Monitor your separate Pension account, account
-                classification and contribution activity.
-            </p>
-
-        </div>
-
-    </div>
+                </div>
 
 
-    <!-- =====================================
-         CREATE PENSION ACCOUNT
-    ====================================== -->
+                <!-- PENSION PAGE HEADING -->
 
-    <div
-        id="pensionAccountOpeningPanel"
-        class="dashboard-panel pension-information-card"
-    >
+                <div class="pension-page-heading">
 
-        <h3>Create Your Pension Account</h3>
-
-        <p>
-            You can create your NEXUS Pension account using your
-            existing NEXUS member account. You do not need another
-            registration or login.
-        </p>
-
-        <p>
-            Your Pension account will be linked to your existing
-            member identity. Once created, it will await
-            administrator review and activation.
-        </p>
-
-        <p>
-            Creating this account does not initiate a payment,
-            deduct money from your Savings wallet or transfer funds.
-        </p>
-
-        <button
-            type="button"
-            id="openPensionAccountButton"
-        >
-            Create Pension Account
-        </button>
-
-        <p
-            id="pensionAccountOpeningMessage"
-            role="status"
-            aria-live="polite"
-        ></p>
-
-    </div>
-
-
-    <!-- =====================================
-         EXISTING PENSION ACCOUNT CONTENT
-    ====================================== -->
-
-    <div id="pensionAccountContent" hidden>
-
-
-        <!-- =================================
-             PENSION BALANCE SUMMARY
-        ================================== -->
-
-        <div class="dashboard-cards pension-summary-grid">
-
-            <article class="dashboard-card balance-card">
-
-                <span class="card-icon">🏛️</span>
-
-                <p>Total Pension Balance</p>
-
-                <h3 id="memberPensionBalance">
-                    GH₵0.00
-                </h3>
-
-                <small>
-                    Your separate Pension account balance
-                </small>
-
-            </article>
-
-
-            <article class="dashboard-card">
-
-                <span class="card-icon">📥</span>
-
-                <p>Total Contributions</p>
-
-                <h3 id="pensionTotalContributions">
-                    Not enabled
-                </h3>
-
-                <small>
-                    Confirmed simulated contributions
-                </small>
-
-            </article>
-
-
-            <article class="dashboard-card">
-
-                <span class="card-icon">📄</span>
-
-                <p>Contribution Requests</p>
-
-                <h3 id="pensionContributionCount">
-                    0
-                </h3>
-
-                <small>
-                    Requests submitted for review
-                </small>
-
-            </article>
-
-        </div>
-
-
-        <!-- =================================
-             PENSION ACCOUNT INFORMATION
-        ================================== -->
-
-        <div class="dashboard-content-grid">
-
-
-            <!-- ACCOUNT DETAILS -->
-
-            <section class="dashboard-panel pension-information-card">
-
-                <div class="panel-heading">
+                    <div class="pension-heading-icon">🏛️</div>
 
                     <div>
 
-                        <h3>Account Information</h3>
+                        <span class="nwp-pension-eyebrow">
+                            NEXUS WEALTH PARTNERS
+                        </span>
+
+                        <h3 class="desktop-page-heading">
+                            My Pension Account
+                        </h3>
 
                         <p>
-                            Your registered Pension account details.
+                            Monitor your separate Pension account, account
+                            classification and contribution activity.
                         </p>
 
                     </div>
 
-                    <span class="card-icon">📋</span>
+                </div>
+
+
+                <!-- =====================================
+                     CREATE PENSION ACCOUNT
+                ====================================== -->
+
+                <div
+                    id="pensionAccountOpeningPanel"
+                    class="dashboard-panel pension-information-card"
+                >
+
+                    <h3>Create Your Pension Account</h3>
+
+                    <p>
+                        You can create your NEXUS Pension account using your
+                        existing NEXUS member account. You do not need another
+                        registration or login.
+                    </p>
+
+                    <p>
+                        Your Pension account will be linked to your existing
+                        member identity. Once created, it will await
+                        administrator review and activation.
+                    </p>
+
+                    <p>
+                        Creating this account does not initiate a payment,
+                        deduct money from your Savings wallet or transfer funds.
+                    </p>
+
+                    <button
+                        type="button"
+                        id="openPensionAccountButton"
+                    >
+                        Create Pension Account
+                    </button>
+
+                    <p
+                        id="pensionAccountOpeningMessage"
+                        role="status"
+                        aria-live="polite"
+                    ></p>
 
                 </div>
 
 
-                <div class="information-item">
+                <!-- =====================================
+                     EXISTING PENSION ACCOUNT CONTENT
+                ====================================== -->
 
-                    <span>Account Type</span>
-
-                    <strong>
-                        Separate Pension Account
-                    </strong>
-
-                </div>
+                <div id="pensionAccountContent" hidden>
 
 
-                <div class="information-item">
+                    <!-- =================================
+                         PENSION BALANCE SUMMARY
+                    ================================== -->
 
-                    <span>Account Number</span>
+                    <div class="dashboard-cards pension-summary-grid">
 
-                    <strong id="pensionAccountNumber">
-                        Not yet created
-                    </strong>
+                        <article class="dashboard-card balance-card">
 
-                </div>
+                            <span class="card-icon">🏛️</span>
 
+                            <p>Total Pension Balance</p>
 
-                <div class="information-item">
+                            <h3 id="memberPensionBalance">
+                                GH₵0.00
+                            </h3>
 
-                    <span>Account Status</span>
+                            <small>
+                                Your separate Pension account balance
+                            </small>
 
-                    <strong id="pensionAccountStatus">
-                        Not yet created
-                    </strong>
-
-                </div>
-
-
-                <div class="information-item">
-
-                    <span>Member Sector</span>
-
-                    <strong id="pensionMemberSector">
-                        Not verified
-                    </strong>
-
-                </div>
+                        </article>
 
 
-                <div class="information-item">
+                        <article class="dashboard-card">
 
-                    <span>Scheme Classification</span>
+                            <span class="card-icon">📥</span>
 
-                    <strong id="pensionClassification">
-                        Not verified
-                    </strong>
+                            <p>Total Contributions</p>
 
-                </div>
+                            <h3 id="pensionTotalContributions">
+                                Not enabled
+                            </h3>
 
+                            <small>
+                                Confirmed simulated contributions
+                            </small>
 
-                <div class="information-item">
-
-                    <span>Pension Subaccounts</span>
-
-                    <strong id="pensionSubaccountSummary">
-                        Awaiting classification
-                    </strong>
-
-                </div>
-
-            </section>
+                        </article>
 
 
-            <!-- CONTRIBUTION DETAILS -->
+                        <article class="dashboard-card">
 
-            <section class="dashboard-panel pension-information-card">
+                            <span class="card-icon">📄</span>
 
-                <div class="panel-heading">
+                            <p>Contribution Requests</p>
 
-                    <div>
+                            <h3 id="pensionContributionCount">
+                                0
+                            </h3>
 
-                        <h3>Contribution Overview</h3>
+                            <small>
+                                Requests submitted for review
+                            </small>
 
-                        <p>
-                            A summary of your Pension contribution activity.
-                        </p>
+                        </article>
 
                     </div>
 
-                    <span class="card-icon">📊</span>
 
-                </div>
+                    <!-- =================================
+                         PENSION ACCOUNT INFORMATION
+                    ================================== -->
 
+                    <div class="dashboard-content-grid">
 
-                <div class="information-item">
 
-                    <span>Confirmed Contributions</span>
+                        <!-- ACCOUNT DETAILS -->
 
-                    <strong>
-                        Not enabled
-                    </strong>
+                        <section class="dashboard-panel pension-information-card">
 
-                </div>
+                            <div class="panel-heading">
 
+                                <div>
 
-                <div class="information-item">
+                                    <h3>Account Information</h3>
 
-                    <span>Last Contribution Request</span>
+                                    <p>
+                                        Your registered Pension account details.
+                                    </p>
 
-                    <strong id="pensionLastContribution">
-                        Not available
-                    </strong>
+                                </div>
 
-                </div>
+                                <span class="card-icon">📋</span>
 
+                            </div>
 
-                <div class="information-item">
 
-                    <span>Total Requests</span>
+                            <div class="information-item">
 
-                    <strong id="pensionContributionCount">
-                        0
-                    </strong>
+                                <span>Account Type</span>
 
-                </div>
+                                <strong>
+                                    Separate Pension Account
+                                </strong>
 
+                            </div>
 
-                <div class="information-item">
 
-                    <span>Processing Mode</span>
+                            <div class="information-item">
 
-                    <strong>Simulation Only</strong>
+                                <span>Account Number</span>
 
-                </div>
+                                <strong id="pensionAccountNumber">
+                                    Not yet created
+                                </strong>
 
-            </section>
+                            </div>
 
-        </div>
 
+                            <div class="information-item">
 
-        <!-- =================================
-             PENSION SUBACCOUNTS
-        ================================== -->
+                                <span>Account Status</span>
 
-        <section class="dashboard-panel pension-information-card">
+                                <strong id="pensionAccountStatus">
+                                    Not yet created
+                                </strong>
 
-            <div class="panel-heading">
+                            </div>
 
-                <div>
 
-                    <h3>My Pension Subaccounts</h3>
+                            <div class="information-item">
 
-                    <p>
-                        Your Pension savings will be organised
-                        according to your verified classification.
-                    </p>
+                                <span>Member Sector</span>
 
-                </div>
+                                <strong id="pensionMemberSector">
+                                    Not verified
+                                </strong>
 
-                <span class="card-icon">💼</span>
+                            </div>
 
-            </div>
 
+                            <div class="information-item">
 
-            <!-- RETIREMENT SUBACCOUNT -->
+                                <span>Scheme Classification</span>
 
-            <div class="dashboard-cards">
+                                <strong id="pensionClassification">
+                                    Not verified
+                                </strong>
 
-                <article class="dashboard-card">
+                            </div>
 
-                    <span class="card-icon">🏛️</span>
 
-                    <p>Retirement Savings</p>
+                            <div class="information-item">
 
-                    <h3>GH₵0.00</h3>
+                                <span>Pension Subaccounts</span>
 
-                    <small>
-                        Subaccount balance will appear after
-                        administrator configuration.
-                    </small>
+                                <strong id="pensionSubaccountSummary">
+                                    Awaiting classification
+                                </strong>
 
-                    <p>
-                        <strong>Configuration:</strong>
-                        Awaiting verification
-                    </p>
+                            </div>
 
-                </article>
+                        </section>
 
 
-                <!-- PERSONAL SAVINGS SUBACCOUNT -->
+                        <!-- CONTRIBUTION DETAILS -->
 
-                <article class="dashboard-card">
+                        <section class="dashboard-panel pension-information-card">
 
-                    <span class="card-icon">💰</span>
+                            <div class="panel-heading">
 
-                    <p>Personal Savings</p>
+                                <div>
 
-                    <h3>GH₵0.00</h3>
+                                    <h3>Contribution Overview</h3>
 
-                    <small>
-                        This subaccount will be created only
-                        if required by the verified allocation rule.
-                    </small>
+                                    <p>
+                                        A summary of your Pension contribution activity.
+                                    </p>
 
-                    <p>
-                        <strong>Configuration:</strong>
-                        Awaiting verification
-                    </p>
+                                </div>
 
-                </article>
+                                <span class="card-icon">📊</span>
 
-            </div>
+                            </div>
 
 
-            <div
-                class="nexus-pension-notice nexus-pension-notice--warning"
-                role="note"
-            >
+                            <div class="information-item">
 
-                <div
-                    class="nexus-pension-notice__icon"
-                    aria-hidden="true"
-                >
-                    &#9432;
-                </div>
+                                <span>Confirmed Contributions</span>
 
-                <div class="nexus-pension-notice__content">
+                                <strong>
+                                    Not enabled
+                                </strong>
 
-                    <h4 class="nexus-pension-notice__title">
-                        Classification Required
-                    </h4>
+                            </div>
 
-                    <p class="nexus-pension-notice__text">
-                        Your Pension account has been activated,
-                        but your member classification has not
-                        yet been verified.
-                    </p>
 
-                    <p class="nexus-pension-notice__text">
-                        Subaccount creation and allocation percentages
-                        will be determined after administrator
-                        verification.
-                    </p>
+                            <div class="information-item">
 
-                </div>
+                                <span>Last Contribution Request</span>
 
-            </div>
+                                <strong id="pensionLastContribution">
+                                    Not available
+                                </strong>
 
-        </section>
+                            </div>
 
 
-        <!-- =================================
-             CONTRIBUTION REQUEST INFORMATION
-        ================================== -->
+                            <div class="information-item">
 
-        <section class="dashboard-panel pension-contribution-panel">
+                                <span>Total Requests</span>
 
-            <div class="panel-heading">
+                                <strong>
+                                    0
+                                </strong>
 
-                <div>
+                            </div>
 
-                    <h3>Pension Contributions</h3>
 
-                    <p>
-                        Monitor your Pension contribution request
-                        process.
-                    </p>
+                            <div class="information-item">
 
-                </div>
+                                <span>Processing Mode</span>
 
-                <span class="card-icon">📥</span>
+                                <strong>Simulation Only</strong>
 
-            </div>
+                            </div>
 
+                        </section>
 
-            <div
-                class="nexus-pension-notice nexus-pension-notice--simulation"
-                role="note"
-            >
+                    </div>
 
-                <div
-                    class="nexus-pension-notice__icon"
-                    aria-hidden="true"
-                >
-                    &#9432;
-                </div>
 
-                <div class="nexus-pension-notice__content">
+                    <!-- =================================
+                         PENSION SUBACCOUNTS
+                    ================================== -->
 
-                    <h4 class="nexus-pension-notice__title">
-                        Pension Simulation Only
-                    </h4>
+                    <section class="dashboard-panel pension-information-card">
 
-                    <p class="nexus-pension-notice__text">
-                        Pension contribution requests are currently
-                        used for controlled system testing.
-                    </p>
+                        <div class="panel-heading">
 
-                    <p class="nexus-pension-notice__text">
-                        Submitting a request does not initiate a
-                        payment, deduct money from your Savings
-                        wallet or credit your Pension balance.
-                    </p>
+                            <div>
 
-                </div>
+                                <h3>My Pension Subaccounts</h3>
 
-            </div>
+                                <p>
+                                    Your Pension savings will be organised
+                                    according to your verified classification.
+                                </p>
 
+                            </div>
 
-            <div class="information-item">
+                            <span class="card-icon">💼</span>
 
-                <span>Last Contribution Request</span>
+                        </div>
 
-                <strong id="pensionLastContribution">
-                    Not available
-                </strong>
 
-            </div>
+                        <!-- RETIREMENT SUBACCOUNT -->
 
+                        <div class="dashboard-cards">
 
-            <p>
-                Once your account classification and subaccounts
-                have been configured, eligible contribution
-                request functionality can become available.
-            </p>
+                            <article class="dashboard-card">
 
-        </section>
+                                <span class="card-icon">🏛️</span>
 
+                                <p>Retirement Savings</p>
 
-        <!-- =================================
-             PENSION INFORMATION NOTICE
-        ================================== -->
+                                <h3>GH₵0.00</h3>
 
-        <div
-            class="nexus-pension-notice nexus-pension-notice--warning"
-            role="note"
-        >
+                                <small>
+                                    Subaccount balance will appear after
+                                    administrator configuration.
+                                </small>
 
-            <div
-                class="nexus-pension-notice__icon"
-                aria-hidden="true"
-            >
-                !
-            </div>
+                                <p>
+                                    <strong>Configuration:</strong>
+                                    Awaiting verification
+                                </p>
 
-            <div class="nexus-pension-notice__content">
+                            </article>
 
-                <h4 class="nexus-pension-notice__title">
-                    Important Pension Information
-                </h4>
 
-                <p class="nexus-pension-notice__text">
-                    NEXUS Pension is maintained separately from
-                    ordinary Savings accounts and wallet transactions.
-                </p>
+                            <!-- PERSONAL SAVINGS SUBACCOUNT -->
 
-                <p class="nexus-pension-notice__text">
-                    Real-money pension operations remain disabled
-                    until the required licensed trustee, approved
-                    scheme arrangements and applicable controls
-                    are established.
-                </p>
+                            <article class="dashboard-card">
 
-                <p class="nexus-pension-notice__text">
-                    Pension withdrawals, investment activity and
-                    payment processing are not currently available
-                    as real-money services.
-                </p>
+                                <span class="card-icon">💰</span>
 
-            </div>
+                                <p>Personal Savings</p>
 
-        </div>
+                                <h3>GH₵0.00</h3>
 
+                                <small>
+                                    This subaccount will be created only
+                                    if required by the verified allocation rule.
+                                </small>
 
-        <!-- =====================================
-             PENSION CONTRIBUTION REQUEST HISTORY
-        ====================================== -->
+                                <p>
+                                    <strong>Configuration:</strong>
+                                    Awaiting verification
+                                </p>
 
-        <section
-            class="dashboard-panel pension-history-panel"
-            aria-labelledby="pensionHistoryHeading"
-        >
+                            </article>
 
-            <div class="nwp-pension-history-heading">
+                        </div>
 
-                <div class="nwp-pension-history-title-area">
 
-                    <span class="nwp-pension-eyebrow">
-                        ACCOUNT ACTIVITY
-                    </span>
+                        <div
+                            class="nexus-pension-notice nexus-pension-notice--warning"
+                            role="note"
+                        >
 
-                    <h3 id="pensionHistoryHeading">
-                        Pension Contribution Request History
-                    </h3>
+                            <div
+                                class="nexus-pension-notice__icon"
+                                aria-hidden="true"
+                            >
+                                &#9432;
+                            </div>
 
-                    <p>
-                        Review the contribution requests submitted
-                        to the NEXUS Pension administration team.
-                    </p>
+                            <div class="nexus-pension-notice__content">
 
-                </div>
+                                <h4 class="nexus-pension-notice__title">
+                                    Classification Required
+                                </h4>
 
-                <div
-                    class="nwp-pension-history-icon"
-                    aria-hidden="true"
-                >
-                    &#128203;
-                </div>
+                                <p class="nexus-pension-notice__text">
+                                    Your Pension account has been activated,
+                                    but your member classification has not
+                                    yet been verified.
+                                </p>
 
-            </div>
+                                <p class="nexus-pension-notice__text">
+                                    Subaccount creation and allocation percentages
+                                    will be determined after administrator
+                                    verification.
+                                </p>
 
+                            </div>
 
-            <div class="nwp-pension-history-summary">
+                        </div>
 
-                <div class="nwp-pension-history-summary-item">
+                    </section>
 
-                    <span>Total Requests</span>
 
-                    <strong id="pensionHistoryTotal">
-                        0
-                    </strong>
+                    <!-- =================================
+                         CONTRIBUTION REQUEST INFORMATION
+                    ================================== -->
 
-                </div>
+                    <section class="dashboard-panel pension-contribution-panel">
 
+                        <div class="panel-heading">
 
-                <div class="nwp-pension-history-summary-item">
+                            <div>
 
-                    <span>Account</span>
+                                <h3>Pension Contributions</h3>
 
-                    <strong>NEXUS Pension</strong>
+                                <p>
+                                    Monitor your Pension contribution request
+                                    process.
+                                </p>
 
-                </div>
+                            </div>
 
+                            <span class="card-icon">📥</span>
 
-                <div class="nwp-pension-history-summary-item">
+                        </div>
 
-                    <span>Processing Mode</span>
 
-                    <strong>Simulation Only</strong>
+                        <div
+                            class="nexus-pension-notice nexus-pension-notice--simulation"
+                            role="note"
+                        >
 
-                </div>
+                            <div
+                                class="nexus-pension-notice__icon"
+                                aria-hidden="true"
+                            >
+                                &#9432;
+                            </div>
 
-            </div>
+                            <div class="nexus-pension-notice__content">
 
+                                <h4 class="nexus-pension-notice__title">
+                                    Pension Simulation Only
+                                </h4>
 
-            <div
-                id="pensionContributionList"
-                class="nwp-pension-request-list"
-                aria-live="polite"
-                aria-relevant="additions text"
-            >
+                                <p class="nexus-pension-notice__text">
+                                    Pension contribution requests are currently
+                                    used for controlled system testing.
+                                </p>
 
-                <div class="nwp-pension-history-empty">
+                                <p class="nexus-pension-notice__text">
+                                    Submitting a request does not initiate a
+                                    payment, deduct money from your Savings
+                                    wallet or credit your Pension balance.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="information-item">
+
+                            <span>Last Contribution Request</span>
+
+                            <strong>
+                                Not available
+                            </strong>
+
+                        </div>
+
+
+                        <p>
+                            Once your account classification and subaccounts
+                            have been configured, eligible contribution
+                            request functionality can become available.
+                        </p>
+
+                    </section>
+
+
+                    <!-- =================================
+                         PENSION INFORMATION NOTICE
+                    ================================== -->
 
                     <div
-                        class="nwp-pension-history-empty-icon"
-                        aria-hidden="true"
+                        class="nexus-pension-notice nexus-pension-notice--warning"
+                        role="note"
                     >
-                        &#128203;
+
+                        <div
+                            class="nexus-pension-notice__icon"
+                            aria-hidden="true"
+                        >
+                            !
+                        </div>
+
+                        <div class="nexus-pension-notice__content">
+
+                            <h4 class="nexus-pension-notice__title">
+                                Important Pension Information
+                            </h4>
+
+                            <p class="nexus-pension-notice__text">
+                                NEXUS Pension is maintained separately from
+                                ordinary Savings accounts and wallet transactions.
+                            </p>
+
+                            <p class="nexus-pension-notice__text">
+                                Real-money pension operations remain disabled
+                                until the required licensed trustee, approved
+                                scheme arrangements and applicable controls
+                                are established.
+                            </p>
+
+                            <p class="nexus-pension-notice__text">
+                                Pension withdrawals, investment activity and
+                                payment processing are not currently available
+                                as real-money services.
+                            </p>
+
+                        </div>
+
                     </div>
 
-                    <h4>No contribution requests yet</h4>
 
-                    <p>
-                        Your submitted Pension contribution requests
-                        will appear here.
-                    </p>
+                    <!-- =====================================
+                         PENSION CONTRIBUTION REQUEST HISTORY
+                    ====================================== -->
+
+                    <section
+                        class="dashboard-panel pension-history-panel"
+                        aria-labelledby="pensionHistoryHeading"
+                    >
+
+                        <div class="nwp-pension-history-heading">
+
+                            <div class="nwp-pension-history-title-area">
+
+                                <span class="nwp-pension-eyebrow">
+                                    ACCOUNT ACTIVITY
+                                </span>
+
+                                <h3 id="pensionHistoryHeading">
+                                    Pension Contribution Request History
+                                </h3>
+
+                                <p>
+                                    Review the contribution requests submitted
+                                    to the NEXUS Pension administration team.
+                                </p>
+
+                            </div>
+
+                            <div
+                                class="nwp-pension-history-icon"
+                                aria-hidden="true"
+                            >
+                                &#128203;
+                            </div>
+
+                        </div>
+
+
+                        <div class="nwp-pension-history-summary">
+
+                            <div class="nwp-pension-history-summary-item">
+
+                                <span>Total Requests</span>
+
+                                <strong id="pensionHistoryTotal">
+                                    0
+                                </strong>
+
+                            </div>
+
+
+                            <div class="nwp-pension-history-summary-item">
+
+                                <span>Account</span>
+
+                                <strong>NEXUS Pension</strong>
+
+                            </div>
+
+
+                            <div class="nwp-pension-history-summary-item">
+
+                                <span>Processing Mode</span>
+
+                                <strong>Simulation Only</strong>
+
+                            </div>
+
+                        </div>
+
+
+                        <div
+                            id="pensionContributionList"
+                            class="nwp-pension-request-list"
+                            aria-live="polite"
+                            aria-relevant="additions text"
+                        >
+
+                            <div class="nwp-pension-history-empty">
+
+                                <div
+                                    class="nwp-pension-history-empty-icon"
+                                    aria-hidden="true"
+                                >
+                                    &#128203;
+                                </div>
+
+                                <h4>No contribution requests yet</h4>
+
+                                <p>
+                                    Your submitted Pension contribution requests
+                                    will appear here.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="nwp-pension-history-footer">
+
+                            <span
+                                class="nwp-pension-history-footer-icon"
+                                aria-hidden="true"
+                            >
+                                &#9432;
+                            </span>
+
+                            <p>
+                                Request approval does not mean that a payment
+                                has been received. No wallet deduction or
+                                Pension balance credit occurs in this simulation.
+                            </p>
+
+                        </div>
+
+                    </section>
 
                 </div>
 
-            </div>
-
-
-            <div class="nwp-pension-history-footer">
-
-                <span
-                    class="nwp-pension-history-footer-icon"
-                    aria-hidden="true"
-                >
-                    &#9432;
-                </span>
-
-                <p>
-                    Request approval does not mean that a payment
-                    has been received. No wallet deduction or
-                    Pension balance credit occurs in this simulation.
-                </p>
-
-            </div>
-
-        </section>
-
-    </div>
-
-</section>
-
+            </section>
 
 
             <!-- MEMBER PROFILE -->
