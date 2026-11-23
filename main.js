@@ -1705,81 +1705,134 @@ if (pensionAccountContent) {
         );
 
 
-    /* =====================================
-       DETERMINE REQUIRED SUBACCOUNTS
-    ===================================== */
+    
+/* =====================================
+   LOAD PENSION SUBACCOUNTS
 
-    let expectedSubaccountTypes = [];
+   Only load subaccounts belonging to
+   this member's non-closed account.
+===================================== */
 
-    if (memberSector === "formal") {
+let subaccounts = [];
 
-        expectedSubaccountTypes = [
-            "retirement"
-        ];
+if (account?.id) {
 
-    } else if (memberSector === "informal") {
+    const {
+        data: loadedSubaccounts,
+        error: subaccountError
+    } = await nexusSupabase
+        .from("nexus_pension_subaccounts")
+        .select(`
+            id,
+            account_id,
+            user_id,
+            sub_account_type,
+            currency,
+            balance,
+            status,
+            created_at
+        `)
+        .eq("account_id", account.id)
+        .eq("user_id", user.id)
+        .order("created_at", {
+            ascending: true
+        });
 
-        expectedSubaccountTypes = [
-            "retirement",
-            "personal_savings"
-        ];
+    if (subaccountError) {
+
+        console.error(
+            "Pension subaccount loading error:",
+            subaccountError
+        );
+
+        throw subaccountError;
 
     }
 
+    subaccounts = Array.isArray(loadedSubaccounts)
+        ? loadedSubaccounts
+        : [];
 
-    /* =====================================
-       VERIFY SUBACCOUNT RECORDS
-    ===================================== */
-
-    const validSubaccounts =
-        subaccounts.filter(subaccount => {
-
-            const balance =
-                Number(subaccount.balance);
-
-            return (
-
-                subaccount.account_id === account?.id &&
-
-                subaccount.user_id === user.id &&
-
-                String(subaccount.currency)
-                    .toUpperCase() === "GHS" &&
-
-                String(subaccount.status)
-                    .toLowerCase() === "active" &&
-
-                Number.isFinite(balance) &&
-
-                balance >= 0
-
-            );
-
-        });
+}
 
 
-    const activeSubaccountTypes =
-        validSubaccounts.map(subaccount =>
+/* =====================================
+   DETERMINE REQUIRED SUBACCOUNTS
+===================================== */
 
-            String(
-                subaccount.sub_account_type
-            ).toLowerCase()
+let expectedSubaccountTypes = [];
+
+if (memberSector === "formal") {
+
+    expectedSubaccountTypes = [
+        "retirement"
+    ];
+
+} else if (memberSector === "informal") {
+
+    expectedSubaccountTypes = [
+        "retirement",
+        "personal_savings"
+    ];
+
+}
+
+
+/* =====================================
+   VERIFY SUBACCOUNT RECORDS
+===================================== */
+
+const validSubaccounts =
+    subaccounts.filter(subaccount => {
+
+        const balance =
+            Number(subaccount.balance);
+
+        return (
+
+            subaccount.account_id === account?.id &&
+
+            subaccount.user_id === user.id &&
+
+            String(subaccount.currency)
+                .toUpperCase() === "GHS" &&
+
+            String(subaccount.status)
+                .toLowerCase() === "active" &&
+
+            Number.isFinite(balance) &&
+
+            balance >= 0
 
         );
 
+    });
 
-    const hasExactExpectedSubaccounts =
-        expectedSubaccountTypes.length > 0 &&
 
-        validSubaccounts.length ===
-            expectedSubaccountTypes.length &&
+const activeSubaccountTypes =
+    validSubaccounts.map(subaccount =>
 
-        expectedSubaccountTypes.every(type =>
+        String(
+            subaccount.sub_account_type
+        ).toLowerCase()
 
-            activeSubaccountTypes.includes(type)
+    );
 
-        );
 
+const hasExactExpectedSubaccounts =
+    expectedSubaccountTypes.length > 0 &&
+
+    validSubaccounts.length ===
+        expectedSubaccountTypes.length &&
+
+    expectedSubaccountTypes.every(type =>
+
+        activeSubaccountTypes.includes(type)
+
+    );
+
+
+    
 
     /* =====================================
        FINAL PENSION CONTRIBUTION READINESS
