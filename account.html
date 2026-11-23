@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -454,6 +455,24 @@
 
 
             <!-- FINANCIAL ACCOUNTS SECTION REMOVED -->
+
+
+            <!-- CUSTOMER SUPPORT BUTTON
+                 DESKTOP: ABOVE MEMBER NAVIGATION
+                 MOBILE: FLOATS ABOVE BOTTOM NAVIGATION
+            -->
+
+            <button
+                type="button"
+                id="floatingSupportButton"
+                class="floating-support-button"
+                aria-label="Open Customer Support"
+                title="Contact Customer Support"
+            >
+                <span aria-hidden="true">💬</span>
+                <small>Support</small>
+            </button>
+
 
             <!-- MEMBER NAVIGATION -->
 
@@ -1305,8 +1324,6 @@
                 class="dashboard-panel pension-dashboard-panel"
             >
 
-                <!-- MOBILE HEADING -->
-
                 <div class="mobile-page-heading">
 
                     <button
@@ -1322,8 +1339,6 @@
 
                 </div>
 
-
-                <!-- PENSION PAGE HEADING -->
 
                 <div class="pension-page-heading">
 
@@ -1349,9 +1364,7 @@
                 </div>
 
 
-                <!-- =====================================
-                     CREATE PENSION ACCOUNT
-                ====================================== -->
+                <!-- CREATE PENSION ACCOUNT -->
 
                 <div
                     id="pensionAccountOpeningPanel"
@@ -1393,16 +1406,9 @@
                 </div>
 
 
-                <!-- =====================================
-                     EXISTING PENSION ACCOUNT CONTENT
-                ====================================== -->
+                <!-- EXISTING PENSION ACCOUNT CONTENT -->
 
                 <div id="pensionAccountContent" hidden>
-
-
-                    <!-- =================================
-                         PENSION BALANCE SUMMARY
-                    ================================== -->
 
                     <div class="dashboard-cards pension-summary-grid">
 
@@ -1459,14 +1465,9 @@
                     </div>
 
 
-                    <!-- =================================
-                         PENSION ACCOUNT INFORMATION
-                    ================================== -->
+                    <!-- PENSION ACCOUNT INFORMATION -->
 
                     <div class="dashboard-content-grid">
-
-
-                        <!-- ACCOUNT DETAILS -->
 
                         <section class="dashboard-panel pension-information-card">
 
@@ -1488,74 +1489,37 @@
 
 
                             <div class="information-item">
-
                                 <span>Account Type</span>
-
-                                <strong>
-                                    Separate Pension Account
-                                </strong>
-
+                                <strong>Separate Pension Account</strong>
                             </div>
 
-
                             <div class="information-item">
-
                                 <span>Account Number</span>
-
-                                <strong id="pensionAccountNumber">
-                                    Not yet created
-                                </strong>
-
+                                <strong id="pensionAccountNumber">Not yet created</strong>
                             </div>
 
-
                             <div class="information-item">
-
                                 <span>Account Status</span>
-
-                                <strong id="pensionAccountStatus">
-                                    Not yet created
-                                </strong>
-
+                                <strong id="pensionAccountStatus">Not yet created</strong>
                             </div>
 
-
                             <div class="information-item">
-
                                 <span>Member Sector</span>
-
-                                <strong id="pensionMemberSector">
-                                    Not verified
-                                </strong>
-
+                                <strong id="pensionMemberSector">Not verified</strong>
                             </div>
 
-
                             <div class="information-item">
-
                                 <span>Scheme Classification</span>
-
-                                <strong id="pensionClassification">
-                                    Not verified
-                                </strong>
-
+                                <strong id="pensionClassification">Not verified</strong>
                             </div>
 
-
                             <div class="information-item">
-
                                 <span>Pension Subaccounts</span>
-
-                                <strong id="pensionSubaccountSummary">
-                                    Awaiting classification
-                                </strong>
-
+                                <strong id="pensionSubaccountSummary">Awaiting classification</strong>
                             </div>
 
                         </section>
 
-
-                        <!-- CONTRIBUTION DETAILS -->
 
                         <section class="dashboard-panel pension-information-card">
 
@@ -1577,44 +1541,23 @@
 
 
                             <div class="information-item">
-
                                 <span>Confirmed Contributions</span>
-
-                                <strong>
-                                    Not enabled
-                                </strong>
-
+                                <strong>Not enabled</strong>
                             </div>
 
-
                             <div class="information-item">
-
                                 <span>Last Contribution Request</span>
-
-                                <strong id="pensionLastContribution">
-                                    Not available
-                                </strong>
-
+                                <strong id="pensionLastContribution">Not available</strong>
                             </div>
 
-
                             <div class="information-item">
-
                                 <span>Total Requests</span>
-
-                                <strong>
-                                    0
-                                </strong>
-
+                                <strong>0</strong>
                             </div>
 
-
                             <div class="information-item">
-
                                 <span>Processing Mode</span>
-
                                 <strong>Simulation Only</strong>
-
                             </div>
 
                         </section>
@@ -1622,9 +1565,7 @@
                     </div>
 
 
-                    <!-- =================================
-                         PENSION SUBACCOUNTS
-                    ================================== -->
+                    <!-- PENSION SUBACCOUNTS -->
 
                     <section class="dashboard-panel pension-information-card">
 
@@ -1645,8 +1586,6 @@
 
                         </div>
 
-
-                        <!-- RETIREMENT SUBACCOUNT -->
 
                         <div class="dashboard-cards">
 
@@ -1670,8 +1609,6 @@
 
                             </article>
 
-
-                            <!-- PERSONAL SAVINGS SUBACCOUNT -->
 
                             <article class="dashboard-card">
 
@@ -1733,9 +1670,7 @@
                     </section>
 
 
-                    <!-- =================================
-                         CONTRIBUTION REQUEST INFORMATION
-                    ================================== -->
+                    <!-- CONTRIBUTION REQUEST INFORMATION -->
 
                     <section class="dashboard-panel pension-contribution-panel">
 
@@ -1792,13 +1727,8 @@
 
 
                         <div class="information-item">
-
                             <span>Last Contribution Request</span>
-
-                            <strong>
-                                Not available
-                            </strong>
-
+                            <strong>Not available</strong>
                         </div>
 
 
@@ -1811,9 +1741,7 @@
                     </section>
 
 
-                    <!-- =================================
-                         PENSION INFORMATION NOTICE
-                    ================================== -->
+                    <!-- PENSION INFORMATION NOTICE -->
 
                     <div
                         class="nexus-pension-notice nexus-pension-notice--warning"
@@ -1856,9 +1784,7 @@
                     </div>
 
 
-                    <!-- =====================================
-                         PENSION CONTRIBUTION REQUEST HISTORY
-                    ====================================== -->
+                    <!-- PENSION CONTRIBUTION REQUEST HISTORY -->
 
                     <section
                         class="dashboard-panel pension-history-panel"
@@ -1897,31 +1823,18 @@
                         <div class="nwp-pension-history-summary">
 
                             <div class="nwp-pension-history-summary-item">
-
                                 <span>Total Requests</span>
-
-                                <strong id="pensionHistoryTotal">
-                                    0
-                                </strong>
-
+                                <strong id="pensionHistoryTotal">0</strong>
                             </div>
 
-
                             <div class="nwp-pension-history-summary-item">
-
                                 <span>Account</span>
-
                                 <strong>NEXUS Pension</strong>
-
                             </div>
 
-
                             <div class="nwp-pension-history-summary-item">
-
                                 <span>Processing Mode</span>
-
                                 <strong>Simulation Only</strong>
-
                             </div>
 
                         </div>
@@ -2069,8 +1982,6 @@
                 </div>
 
 
-                <!-- CREATE SUPPORT REPORT -->
-
                 <div class="support-create-card">
 
                     <h3>Submit a New Report</h3>
@@ -2137,8 +2048,6 @@
                 </div>
 
 
-                <!-- CUSTOMER REPORT HISTORY -->
-
                 <div class="support-ticket-area">
 
                     <div class="support-section-heading">
@@ -2172,8 +2081,6 @@
 
                 </div>
 
-
-                <!-- SUPPORT CONVERSATION -->
 
                 <div
                     id="supportConversation"
@@ -2248,22 +2155,6 @@
         </section>
 
     </main>
-
-
-    <!-- =========================================
-         FLOATING CUSTOMER SUPPORT BUTTON
-    ========================================== -->
-
-    <button
-        type="button"
-        id="floatingSupportButton"
-        class="floating-support-button"
-        aria-label="Open Customer Support"
-        title="Contact Customer Support"
-    >
-        <span aria-hidden="true">💬</span>
-        <small>Support</small>
-    </button>
 
 
     <!-- =========================================
