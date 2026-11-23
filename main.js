@@ -4253,6 +4253,87 @@ async function loadPendingWithdrawals(user) {
 }
 
 
+/* =========================================
+   MEMBER WALLET ACTION TABS
+   DEPOSIT / WITHDRAW SWITCHING
+========================================= */
+
+function initializeWalletActionTabs() {
+
+    const walletCard = getElement("walletActionsCard");
+
+    if (!walletCard) return;
+
+    const depositButton = walletCard.querySelector(
+        '[data-wallet-action="deposit"]'
+    );
+
+    const withdrawButton = walletCard.querySelector(
+        '[data-wallet-action="withdraw"]'
+    );
+
+    const depositPanel = getElement("depositFunds");
+    const withdrawPanel = getElement("withdrawFunds");
+
+    if (
+        !depositButton ||
+        !withdrawButton ||
+        !depositPanel ||
+        !withdrawPanel
+    ) {
+        return;
+    }
+
+    function showWalletAction(action) {
+
+        const showDeposit = action === "deposit";
+
+        depositPanel.hidden = !showDeposit;
+        withdrawPanel.hidden = showDeposit;
+
+        depositButton.classList.toggle(
+            "active",
+            showDeposit
+        );
+
+        withdrawButton.classList.toggle(
+            "active",
+            !showDeposit
+        );
+
+        depositButton.setAttribute(
+            "aria-selected",
+            String(showDeposit)
+        );
+
+        withdrawButton.setAttribute(
+            "aria-selected",
+            String(!showDeposit)
+        );
+
+        depositButton.setAttribute(
+            "tabindex",
+            showDeposit ? "0" : "-1"
+        );
+
+        withdrawButton.setAttribute(
+            "tabindex",
+            showDeposit ? "-1" : "0"
+        );
+    }
+
+    depositButton.addEventListener("click", function() {
+        showWalletAction("deposit");
+    });
+
+    withdrawButton.addEventListener("click", function() {
+        showWalletAction("withdraw");
+    });
+
+    showWalletAction("deposit");
+}
+
+initializeWalletActionTabs();
 
 
 /* =========================================
