@@ -4264,25 +4264,18 @@ function initializeWalletActionTabs() {
 
     if (!walletCard) return;
 
-    const depositButton = walletCard.querySelector(
-        '[data-wallet-action="deposit"]'
-    );
-
-    const withdrawButton = walletCard.querySelector(
-        '[data-wallet-action="withdraw"]'
-    );
-
     const depositPanel = getElement("depositFunds");
     const withdrawPanel = getElement("withdrawFunds");
 
-    if (
-        !depositButton ||
-        !withdrawButton ||
-        !depositPanel ||
-        !withdrawPanel
-    ) {
-        return;
-    }
+    if (!depositPanel || !withdrawPanel) return;
+
+    const depositControls = document.querySelectorAll(
+        '[data-wallet-action="deposit"]'
+    );
+
+    const withdrawControls = document.querySelectorAll(
+        '[data-wallet-action="withdraw"]'
+    );
 
     function showWalletAction(action) {
 
@@ -4291,43 +4284,53 @@ function initializeWalletActionTabs() {
         depositPanel.hidden = !showDeposit;
         withdrawPanel.hidden = showDeposit;
 
-        depositButton.classList.toggle(
-            "active",
-            showDeposit
-        );
+        depositControls.forEach(control => {
 
-        withdrawButton.classList.toggle(
-            "active",
-            !showDeposit
-        );
+            if (control.getAttribute("role") === "tab") {
+                control.classList.toggle("active", showDeposit);
+                control.setAttribute(
+                    "aria-selected",
+                    String(showDeposit)
+                );
+            }
 
-        depositButton.setAttribute(
-            "aria-selected",
-            String(showDeposit)
-        );
+        });
 
-        withdrawButton.setAttribute(
-            "aria-selected",
-            String(!showDeposit)
-        );
+        withdrawControls.forEach(control => {
 
-        depositButton.setAttribute(
-            "tabindex",
-            showDeposit ? "0" : "-1"
-        );
+            if (control.getAttribute("role") === "tab") {
+                control.classList.toggle("active", !showDeposit);
+                control.setAttribute(
+                    "aria-selected",
+                    String(!showDeposit)
+                );
+            }
 
-        withdrawButton.setAttribute(
-            "tabindex",
-            showDeposit ? "-1" : "0"
-        );
+        });
+
+        if (showDeposit) {
+            depositPanel.scrollIntoView({
+                behavior: "smooth",
+                block: "nearest"
+            });
+        } else {
+            withdrawPanel.scrollIntoView({
+                behavior: "smooth",
+                block: "nearest"
+            });
+        }
     }
 
-    depositButton.addEventListener("click", function() {
-        showWalletAction("deposit");
+    depositControls.forEach(control => {
+        control.addEventListener("click", function() {
+            showWalletAction("deposit");
+        });
     });
 
-    withdrawButton.addEventListener("click", function() {
-        showWalletAction("withdraw");
+    withdrawControls.forEach(control => {
+        control.addEventListener("click", function() {
+            showWalletAction("withdraw");
+        });
     });
 
     showWalletAction("deposit");
