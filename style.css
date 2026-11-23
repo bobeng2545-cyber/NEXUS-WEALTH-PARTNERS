@@ -3925,18 +3925,24 @@ body > #notificationMenu.notification-open {
 
 
 
+
 /* =========================================
-   NEXUS FLOATING CUSTOMER SUPPORT BUTTON
+   NEXUS CUSTOMER SUPPORT BUTTON
+   POSITIONED ABOVE MEMBER NAVIGATION
 ========================================= */
 
 .floating-support-button {
-    position: fixed;
-    top: 105px;
-    right: 18px;
-    z-index: 100000;
+    position: static;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1px;
 
     width: 46px;
     height: 46px;
+
+    margin: 0 0 8px auto;
 
     border: none;
     border-radius: 50%;
@@ -3944,15 +3950,12 @@ body > #notificationMenu.notification-open {
     background: #087443;
     color: #ffffff;
 
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 1px;
-
     cursor: pointer;
+
     box-shadow: 0 3px 12px rgba(0, 0, 0, 0.22);
     transition: 0.3s ease;
+
+    z-index: 100000;
 }
 
 .floating-support-button span {
@@ -3970,18 +3973,26 @@ body > #notificationMenu.notification-open {
     transform: scale(1.06);
 }
 
-@media (max-width: 600px) {
+/* MOBILE SUPPORT BUTTON */
+@media (max-width: 700px) {
     .floating-support-button {
-        top: 85px;
-        right: 12px;
+        position: fixed;
+        right: 14px;
+        bottom: calc(75px + env(safe-area-inset-bottom));
+
         width: 42px;
         height: 42px;
+
+        margin: 0;
+
+        z-index: 100000;
     }
 
     .floating-support-button span {
         font-size: 17px;
     }
 }
+
 
 
 /* =====================================================
@@ -6405,3 +6416,101 @@ hr {
 
 }
 
+
+/* =====================================================
+   NEXUS DASHBOARD HEADER — FINAL POSITIONING
+   GREETING + NOTIFICATION + LOGOUT
+===================================================== */
+
+#memberDashboard .dashboard-heading.home-dashboard-content {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    flex-wrap: nowrap !important;
+    gap: 15px !important;
+    width: 100% !important;
+}
+
+#memberDashboard .dashboard-heading .dashboard-welcome {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+    text-align: left !important;
+}
+
+#memberDashboard .dashboard-account-actions {
+    display: flex !important;
+    flex: 0 0 auto !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+    flex-wrap: nowrap !important;
+    gap: 10px !important;
+    width: auto !important;
+    margin: 0 !important;
+    position: relative !important;
+    z-index: 200000 !important;
+}
+
+#memberDashboard .notification-area {
+    position: relative !important;
+    display: flex !important;
+    flex: 0 0 auto !important;
+    align-items: center !important;
+    margin: 0 !important;
+}
+
+#memberDashboard .member-logout-button {
+    display: inline-flex !important;
+    flex: 0 0 auto !important;
+    align-items: center !important;
+    justify-content: center !important;
+    white-space: nowrap !important;
+    margin: 0 !important;
+}
+
+/* =====================================================
+   MOBILE HEADER ALIGNMENT
+===================================================== */
+
+@media (max-width: 700px) {
+
+    #memberDashboard .dashboard-heading.home-dashboard-content {
+        flex-direction: row !important;
+        align-items: center !important;
+        flex-wrap: nowrap !important;
+        gap: 7px !important;
+        padding: 10px 8px 16px !important;
+    }
+
+    #memberDashboard .dashboard-heading .dashboard-welcome {
+        flex: 1 1 auto !important;
+        min-width: 0 !important;
+    }
+
+    #memberDashboard .dashboard-account-actions {
+        flex: 0 0 auto !important;
+        gap: 6px !important;
+    }
+
+    #memberDashboard .notification-area {
+        flex: 0 0 auto !important;
+        width: auto !important;
+    }
+
+    #memberDashboard .notification-button {
+        width: 38px !important;
+        height: 38px !important;
+    }
+
+    #memberDashboard .member-logout-button {
+        min-height: 38px !important;
+        padding: 0 8px !important;
+        gap: 4px !important;
+        font-size: 11px !important;
+    }
+
+    #memberDashboard .member-logout-button .logout-icon {
+        font-size: 15px !important;
+    }
+}
