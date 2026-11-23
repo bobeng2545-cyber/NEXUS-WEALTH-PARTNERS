@@ -16,6 +16,82 @@
     <title>Member Account | Nexus Wealth Partners</title>
 
     <link rel="stylesheet" href="style.css">
+
+    <style>
+        /* =========================================
+           WALLET ACTION TABS
+        ========================================= */
+
+        [hidden] {
+            display: none !important;
+        }
+
+        .wallet-actions-card {
+            overflow: hidden;
+        }
+
+        .wallet-action-tabs {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 8px;
+            padding: 8px;
+            margin: 20px 0 25px;
+            background: #edf4ef;
+            border-radius: 12px;
+        }
+
+        .wallet-action-tab {
+            border: none;
+            border-radius: 9px;
+            padding: 14px 12px;
+            background: transparent;
+            color: #355344;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s ease, color 0.2s ease;
+        }
+
+        .wallet-action-tab.active {
+            background: #087443;
+            color: #ffffff;
+            box-shadow: 0 3px 10px rgba(8, 116, 67, 0.16);
+        }
+
+        .wallet-action-tab:focus-visible {
+            outline: 3px solid #80c9a4;
+            outline-offset: 3px;
+        }
+
+        .wallet-action-panel {
+            width: 100%;
+        }
+
+        .wallet-action-panel > h3 {
+            margin-top: 0;
+        }
+
+        .wallet-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .wallet-actions button {
+            font: inherit;
+            cursor: pointer;
+        }
+
+        @media (max-width: 480px) {
+
+            .wallet-action-tab {
+                padding: 12px 8px;
+                font-size: 13px;
+            }
+
+        }
+    </style>
+
 </head>
 
 <body class="account-page">
@@ -457,10 +533,7 @@
             <!-- FINANCIAL ACCOUNTS SECTION REMOVED -->
 
 
-            <!-- CUSTOMER SUPPORT BUTTON
-                 DESKTOP: ABOVE MEMBER NAVIGATION
-                 MOBILE: FLOATS ABOVE BOTTOM NAVIGATION
-            -->
+            <!-- CUSTOMER SUPPORT BUTTON -->
 
             <button
                 type="button"
@@ -525,7 +598,9 @@
             </nav>
 
 
-            <!-- MY WALLET -->
+            <!-- =====================================
+                 MY WALLET
+            ====================================== -->
 
             <section
                 id="myWallet"
@@ -569,95 +644,323 @@
                 </div>
 
                 <div class="wallet-actions">
-                    <a href="#depositFunds">➕ Deposit Money</a>
-                    <a href="#withdrawFunds">📤 Withdraw Money</a>
+
+                    <button
+                        type="button"
+                        data-wallet-action="deposit"
+                    >
+                        ➕ Deposit Money
+                    </button>
+
+                    <button
+                        type="button"
+                        data-wallet-action="withdraw"
+                    >
+                        📤 Withdraw Money
+                    </button>
+
                 </div>
 
             </section>
 
 
-            <!-- DEPOSIT MONEY -->
+            <!-- =====================================
+                 COMBINED WALLET ACTIONS CARD
+                 DEPOSIT / WITHDRAW
+            ====================================== -->
 
             <section
-                id="depositFunds"
-                class="dashboard-panel home-dashboard-content"
+                id="walletActionsCard"
+                class="dashboard-panel home-dashboard-content wallet-actions-card"
             >
 
-                <h3>Deposit Money</h3>
+                <h3>Wallet Actions</h3>
 
                 <p>
-                    Choose whether you want to deposit into your Savings
-                    wallet or submit a Pension contribution request.
+                    Deposit money into your Savings wallet or submit
+                    a withdrawal request.
                 </p>
 
-                <div class="available-balance-card">
 
-                    <span>Current Savings Wallet Balance</span>
+                <!-- DEPOSIT / WITHDRAW SWITCHES -->
 
-                    <h2 id="depositCurrentBalance">GHS 0.00</h2>
+                <div
+                    class="wallet-action-tabs"
+                    role="tablist"
+                    aria-label="Wallet actions"
+                >
+
+                    <button
+                        type="button"
+                        id="depositTabButton"
+                        class="wallet-action-tab active"
+                        data-wallet-action="deposit"
+                        role="tab"
+                        aria-selected="true"
+                        aria-controls="depositFunds"
+                    >
+                        ➕ Deposit Money
+                    </button>
+
+                    <button
+                        type="button"
+                        id="withdrawTabButton"
+                        class="wallet-action-tab"
+                        data-wallet-action="withdraw"
+                        role="tab"
+                        aria-selected="false"
+                        aria-controls="withdrawFunds"
+                    >
+                        📤 Withdraw Money
+                    </button>
 
                 </div>
 
-                <form id="depositForm">
 
-                    <label for="depositDestination">
-                        Deposit Destination
-                    </label>
+                <!-- =================================
+                     DEPOSIT MONEY PANEL
+                ================================== -->
 
-                    <select
-                        id="depositDestination"
-                        name="destination"
-                        required
-                    >
+                <section
+                    id="depositFunds"
+                    class="wallet-action-panel"
+                    role="tabpanel"
+                    aria-labelledby="depositTabButton"
+                >
 
-                        <option value="">
-                            Select where you want to deposit
-                        </option>
+                    <h3>Deposit Money</h3>
 
-                        <option value="savings">
-                            Savings Account
-                        </option>
-
-                        <option value="pension">
-                            Pension Account
-                        </option>
-
-                    </select>
-
-                    <p
-                        id="depositDestinationNotice"
-                        aria-live="polite"
-                    >
-                        Select a destination to continue.
+                    <p>
+                        Choose whether you want to deposit into your Savings
+                        wallet or submit a Pension contribution request.
                     </p>
 
-                    <label for="depositAmount">
-                        Amount (GHS)
-                    </label>
+                    <div class="available-balance-card">
 
-                    <input
-                        type="number"
-                        id="depositAmount"
-                        name="amount"
-                        min="1"
-                        max="100000"
-                        step="0.01"
-                        placeholder="Enter amount"
-                        required
-                    >
+                        <span>Current Savings Wallet Balance</span>
 
+                        <h2 id="depositCurrentBalance">GHS 0.00</h2>
 
-                    <!-- SAVINGS PAYMENT DETAILS -->
+                    </div>
 
-                    <div id="depositPaymentDetails" hidden>
+                    <form id="depositForm">
 
-                        <label for="depositMethod">
-                            Savings Deposit Method
+                        <label for="depositDestination">
+                            Deposit Destination
                         </label>
 
-                        <select id="depositMethod" name="method">
+                        <select
+                            id="depositDestination"
+                            name="destination"
+                            required
+                        >
 
-                            <option value="">Select Deposit Method</option>
+                            <option value="">
+                                Select where you want to deposit
+                            </option>
+
+                            <option value="savings">
+                                Savings Account
+                            </option>
+
+                            <option value="pension">
+                                Pension Account
+                            </option>
+
+                        </select>
+
+                        <p
+                            id="depositDestinationNotice"
+                            aria-live="polite"
+                        >
+                            Select a destination to continue.
+                        </p>
+
+                        <label for="depositAmount">
+                            Amount (GHS)
+                        </label>
+
+                        <input
+                            type="number"
+                            id="depositAmount"
+                            name="amount"
+                            min="1"
+                            max="100000"
+                            step="0.01"
+                            placeholder="Enter amount"
+                            required
+                        >
+
+
+                        <!-- SAVINGS PAYMENT DETAILS -->
+
+                        <div id="depositPaymentDetails" hidden>
+
+                            <label for="depositMethod">
+                                Savings Deposit Method
+                            </label>
+
+                            <select id="depositMethod" name="method">
+
+                                <option value="">
+                                    Select Deposit Method
+                                </option>
+
+                                <option value="mtn_momo">
+                                    MTN Mobile Money
+                                </option>
+
+                                <option value="telecel_cash">
+                                    Telecel Cash
+                                </option>
+
+                                <option value="at_money">
+                                    AT Money
+                                </option>
+
+                            </select>
+
+                            <label for="depositPhone">
+                                Mobile Money Number
+                            </label>
+
+                            <input
+                                type="tel"
+                                id="depositPhone"
+                                name="phone"
+                                placeholder="Enter mobile money number"
+                                autocomplete="tel"
+                            >
+
+                        </div>
+
+
+                        <!-- PENSION REQUEST DETAILS -->
+
+                        <div id="depositPensionDetails" hidden>
+
+                            <div
+                                class="nexus-pension-notice nexus-pension-notice--simulation"
+                                role="note"
+                            >
+
+                                <div
+                                    class="nexus-pension-notice__icon"
+                                    aria-hidden="true"
+                                >
+                                    &#9432;
+                                </div>
+
+                                <div class="nexus-pension-notice__content">
+
+                                    <h4 class="nexus-pension-notice__title">
+                                        Pension Simulation Only
+                                    </h4>
+
+                                    <p class="nexus-pension-notice__text">
+                                        This submits a pension contribution request
+                                        for administrator review. It does not
+                                        initiate a payment or transfer money.
+                                    </p>
+
+                                    <p class="nexus-pension-notice__text">
+                                        <strong>Important:</strong> No wallet
+                                        deduction, pension balance credit or
+                                        pension ledger transaction will occur.
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                            <label for="depositPensionNote">
+                                Additional Note (Optional)
+                            </label>
+
+                            <textarea
+                                id="depositPensionNote"
+                                name="pensionNote"
+                                maxlength="500"
+                                rows="3"
+                                placeholder="Enter an optional note"
+                            ></textarea>
+
+                        </div>
+
+                        <button
+                            type="submit"
+                            id="depositSubmitButton"
+                        >
+                            Continue
+                        </button>
+
+                    </form>
+
+                    <p>
+                        Savings payments are verified by the payment provider
+                        before the Savings wallet is credited. Pension
+                        selections are simulation-only requests and do not
+                        collect money.
+                    </p>
+
+                </section>
+
+
+                <!-- =================================
+                     WITHDRAWAL PANEL
+                ================================== -->
+
+                <section
+                    id="withdrawFunds"
+                    class="wallet-action-panel"
+                    role="tabpanel"
+                    aria-labelledby="withdrawTabButton"
+                    hidden
+                >
+
+                    <h3>Withdraw from My Wallet</h3>
+
+                    <p>
+                        Submit a request to withdraw money from your wallet.
+                    </p>
+
+                    <div class="available-balance-card">
+
+                        <span>Available Wallet Balance</span>
+
+                        <h2 id="availableBalance">GHS 0.00</h2>
+
+                    </div>
+
+                    <form id="withdrawalForm">
+
+                        <label for="withdrawAmount">
+                            Amount to Withdraw (GHS)
+                        </label>
+
+                        <input
+                            type="number"
+                            id="withdrawAmount"
+                            name="amount"
+                            min="1"
+                            step="0.01"
+                            placeholder="Enter amount"
+                            required
+                        >
+
+                        <label for="withdrawMethod">
+                            Withdrawal Method
+                        </label>
+
+                        <select
+                            id="withdrawMethod"
+                            name="method"
+                            required
+                        >
+
+                            <option value="">
+                                Select Withdrawal Method
+                            </option>
 
                             <option value="mtn_momo">
                                 MTN Mobile Money
@@ -671,95 +974,74 @@
                                 AT Money
                             </option>
 
+                            <option value="bank">
+                                Bank Account
+                            </option>
+
                         </select>
 
-                        <label for="depositPhone">
-                            Mobile Money Number
+                        <label for="withdrawAccountName">
+                            Recipient / Account Holder Name
                         </label>
 
                         <input
-                            type="tel"
-                            id="depositPhone"
+                            type="text"
+                            id="withdrawAccountName"
+                            name="accountName"
+                            placeholder="Enter the registered account name"
+                            autocomplete="name"
+                            required
+                        >
+
+                        <label for="withdrawPhone">
+                            Mobile Money Number / Bank Account Number
+                        </label>
+
+                        <input
+                            type="text"
+                            id="withdrawPhone"
                             name="phone"
-                            placeholder="Enter mobile money number"
-                            autocomplete="tel"
+                            placeholder="Enter mobile money / bank account number"
+                            required
                         >
 
-                    </div>
-
-
-                    <!-- PENSION REQUEST DETAILS -->
-
-                    <div id="depositPensionDetails" hidden>
-
-                        <div
-                            class="nexus-pension-notice nexus-pension-notice--simulation"
-                            role="note"
-                        >
-
-                            <div
-                                class="nexus-pension-notice__icon"
-                                aria-hidden="true"
-                            >
-                                &#9432;
-                            </div>
-
-                            <div class="nexus-pension-notice__content">
-
-                                <h4 class="nexus-pension-notice__title">
-                                    Pension Simulation Only
-                                </h4>
-
-                                <p class="nexus-pension-notice__text">
-                                    This submits a pension contribution request
-                                    for administrator review. It does not
-                                    initiate a payment or transfer money.
-                                </p>
-
-                                <p class="nexus-pension-notice__text">
-                                    <strong>Important:</strong> No wallet
-                                    deduction, pension balance credit or
-                                    pension ledger transaction will occur.
-                                </p>
-
-                            </div>
-
-                        </div>
-
-                        <label for="depositPensionNote">
-                            Additional Note (Optional)
+                        <label for="withdrawNote">
+                            Note (Optional)
                         </label>
 
                         <textarea
-                            id="depositPensionNote"
-                            name="pensionNote"
-                            maxlength="500"
-                            rows="3"
-                            placeholder="Enter an optional note"
+                            id="withdrawNote"
+                            name="note"
+                            placeholder="Enter additional information"
                         ></textarea>
+
+                        <button type="submit">
+                            Submit Withdrawal Request
+                        </button>
+
+                    </form>
+
+                    <div class="withdrawal-rules">
+
+                        <h3>Withdrawal Rules</h3>
+
+                        <ul>
+                            <li>Withdrawal requests are subject to approval.</li>
+                            <li>Withdrawals must not exceed the available balance.</li>
+                            <li>Ensure the recipient's name and account number are correct.</li>
+                            <li>All transactions must be recorded.</li>
+                        </ul>
 
                     </div>
 
-                    <button
-                        type="submit"
-                        id="depositSubmitButton"
-                    >
-                        Continue
-                    </button>
-
-                </form>
-
-                <p>
-                    Savings payments are verified by the payment provider
-                    before the Savings wallet is credited. Pension
-                    selections are simulation-only requests and do not
-                    collect money.
-                </p>
+                </section>
 
             </section>
 
 
-            <!-- SAVINGS OVERVIEW -->
+            <!-- =====================================
+                 SAVINGS OVERVIEW
+            ====================================== -->
 
             <div class="dashboard-content-grid home-dashboard-content">
 
@@ -842,131 +1124,9 @@
             </div>
 
 
-            <!-- WITHDRAWAL -->
-
-            <section
-                id="withdrawFunds"
-                class="dashboard-panel home-dashboard-content"
-            >
-
-                <h3>Withdraw from My Wallet</h3>
-
-                <p>
-                    Submit a request to withdraw money from your wallet.
-                </p>
-
-                <div class="available-balance-card">
-
-                    <span>Available Wallet Balance</span>
-
-                    <h2 id="availableBalance">GHS 0.00</h2>
-
-                </div>
-
-                <form id="withdrawalForm">
-
-                    <label for="withdrawAmount">
-                        Amount to Withdraw (GHS)
-                    </label>
-
-                    <input
-                        type="number"
-                        id="withdrawAmount"
-                        name="amount"
-                        min="1"
-                        step="0.01"
-                        placeholder="Enter amount"
-                        required
-                    >
-
-                    <label for="withdrawMethod">
-                        Withdrawal Method
-                    </label>
-
-                    <select
-                        id="withdrawMethod"
-                        name="method"
-                        required
-                    >
-
-                        <option value="">Select Withdrawal Method</option>
-
-                        <option value="mtn_momo">
-                            MTN Mobile Money
-                        </option>
-
-                        <option value="telecel_cash">
-                            Telecel Cash
-                        </option>
-
-                        <option value="at_money">
-                            AT Money
-                        </option>
-
-                        <option value="bank">
-                            Bank Account
-                        </option>
-
-                    </select>
-
-                    <label for="withdrawAccountName">
-                        Recipient / Account Holder Name
-                    </label>
-
-                    <input
-                        type="text"
-                        id="withdrawAccountName"
-                        name="accountName"
-                        placeholder="Enter the registered account name"
-                        autocomplete="name"
-                        required
-                    >
-
-                    <label for="withdrawPhone">
-                        Mobile Money Number / Bank Account Number
-                    </label>
-
-                    <input
-                        type="text"
-                        id="withdrawPhone"
-                        name="phone"
-                        placeholder="Enter mobile money / bank account number"
-                        required
-                    >
-
-                    <label for="withdrawNote">
-                        Note (Optional)
-                    </label>
-
-                    <textarea
-                        id="withdrawNote"
-                        name="note"
-                        placeholder="Enter additional information"
-                    ></textarea>
-
-                    <button type="submit">
-                        Submit Withdrawal Request
-                    </button>
-
-                </form>
-
-                <div class="withdrawal-rules">
-
-                    <h3>Withdrawal Rules</h3>
-
-                    <ul>
-                        <li>Withdrawal requests are subject to approval.</li>
-                        <li>Withdrawals must not exceed the available balance.</li>
-                        <li>Ensure the recipient's name and account number are correct.</li>
-                        <li>All transactions must be recorded.</li>
-                    </ul>
-
-                </div>
-
-            </section>
-
-
-            <!-- PENDING WITHDRAWALS -->
+            <!-- =====================================
+                 PENDING WITHDRAWALS
+            ====================================== -->
 
             <section
                 id="pendingWithdrawals"
@@ -1020,7 +1180,9 @@
             </section>
 
 
-            <!-- TRANSACTION HISTORY -->
+            <!-- =====================================
+                 TRANSACTION HISTORY
+            ====================================== -->
 
             <section
                 id="memberTransactions"
@@ -1259,7 +1421,9 @@
             </section>
 
 
-            <!-- MONTHLY SAVINGS -->
+            <!-- =====================================
+                 MONTHLY SAVINGS
+            ====================================== -->
 
             <section
                 id="memberSavings"
@@ -1892,7 +2056,9 @@
             </section>
 
 
-            <!-- MEMBER PROFILE -->
+            <!-- =====================================
+                 MEMBER PROFILE
+            ====================================== -->
 
             <section
                 id="memberProfile"
@@ -1945,7 +2111,9 @@
             </section>
 
 
-            <!-- CUSTOMER SUPPORT -->
+            <!-- =====================================
+                 CUSTOMER SUPPORT
+            ====================================== -->
 
             <section
                 id="memberSupport"
