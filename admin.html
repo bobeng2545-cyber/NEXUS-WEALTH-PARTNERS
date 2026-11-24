@@ -1595,12 +1595,13 @@
             </section>
 
 
-            
 
-<!-- =================================================
-     NEXUS TIER 3 PENSION MANAGEMENT
-     SIMULATION ONLY
-================================================== -->
+            
+<!-- =========================================================
+     NEXUS WEALTH PARTNERS
+     TIER 3 PENSION MANAGEMENT
+     SIMULATION ONLY — PRODUCTION CONTROLS
+========================================================= -->
 
 <section
     id="page-pension"
@@ -1608,12 +1609,15 @@
     aria-labelledby="pensionHeading"
 >
 
+    <!-- PAGE INTRODUCTION -->
+
     <div class="page-intro">
         <div>
             <h2 id="pensionHeading">Pension Management</h2>
             <p>
-                Manage member pension accounts, classifications,
-                account lifecycle and simulated contribution requests.
+                Manage member pension accounts, contribution requests,
+                scheme authorization, production allocation rules,
+                account lifecycle and administrative audit records.
             </p>
         </div>
 
@@ -1626,30 +1630,35 @@
         </button>
     </div>
 
+
     <!-- SIMULATION WARNING -->
 
     <div class="nexus-pension-warning">
         <strong>SIMULATION ONLY — NO REAL MONEY</strong>
 
         <p>
-            The NEXUS Tier 3 pension system is currently under development.
-            No real pension contributions, investment transactions,
-            withdrawals or benefit payments are being processed.
+            The NEXUS Tier 3 Pension system is currently under development.
+            Real pension contributions, investment transactions,
+            withdrawals and benefit payments are disabled.
         </p>
 
         <p>
-            Accepting a contribution request only marks it as
-            accepted for future processing. It does not confirm payment,
+            Accepting a contribution request only records an administrative
+            decision for future processing. It does not confirm payment,
             credit a pension balance or create a financial ledger entry.
         </p>
 
         <p>
-            Account lifecycle actions do not collect, deduct, transfer
-            or credit money.
+            Account lifecycle actions, scheme authorization administration
+            and allocation-rule administration do not collect, deduct,
+            transfer or credit money.
         </p>
     </div>
 
-    <!-- PENSION ACCOUNT STATISTICS -->
+
+    <!-- =====================================================
+         PENSION ACCOUNT STATISTICS
+    ====================================================== -->
 
     <div class="statistics-grid">
 
@@ -1664,7 +1673,7 @@
             <div class="stat-icon deposits-icon" aria-hidden="true">✓</div>
             <p>Operational Accounts</p>
             <h3 id="adminPensionActiveAccounts">0</h3>
-            <span>Configured accounts ready for the simulation workflow</span>
+            <span>Accounts configured for the simulation workflow</span>
         </article>
 
         <article class="stat-card">
@@ -1683,7 +1692,10 @@
 
     </div>
 
-    <!-- MEMBER PENSION ACCOUNTS -->
+
+    <!-- =====================================================
+         MEMBER PENSION ACCOUNTS
+    ====================================================== -->
 
     <div class="admin-panel">
 
@@ -1737,7 +1749,10 @@
 
     </div>
 
-    <!-- ACCOUNT LIFECYCLE ACTION PANEL -->
+
+    <!-- =====================================================
+         ACCOUNT LIFECYCLE ACTION PANEL
+    ====================================================== -->
 
     <div
         class="admin-panel"
@@ -1769,7 +1784,7 @@
             <strong>ACCOUNT LIFECYCLE CONTROL</strong>
             <p>
                 These actions change account status or configuration only.
-                They must never modify the account balance or subaccount balances.
+                They must never modify account balances or subaccount balances.
             </p>
         </div>
 
@@ -1804,7 +1819,8 @@
 
             </div>
 
-            <!-- CLASSIFICATION CONFIGURATION -->
+
+            <!-- MEMBER CLASSIFICATION -->
 
             <div id="adminPensionClassificationFields" hidden>
 
@@ -1840,13 +1856,16 @@
 
                 <div class="nexus-pension-warning">
                     <strong>SUBACCOUNT CONFIGURATION RULES</strong>
+
                     <p>
                         Formal sector members must have a Retirement subaccount.
                     </p>
+
                     <p>
                         Informal sector members must have Retirement and
                         Personal Savings subaccounts.
                     </p>
+
                     <p>
                         Subaccounts are created with zero balances.
                     </p>
@@ -1854,7 +1873,8 @@
 
             </div>
 
-            <!-- OPTIONAL ADMINISTRATOR NOTE -->
+
+            <!-- ADMINISTRATOR NOTE -->
 
             <div class="nexus-pension-review-note">
 
@@ -1901,7 +1921,10 @@
 
     </div>
 
-    <!-- CONTRIBUTION REQUEST MANAGEMENT -->
+
+    <!-- =====================================================
+         CONTRIBUTION REQUEST MANAGEMENT
+    ====================================================== -->
 
     <div class="admin-panel">
 
@@ -1913,6 +1936,7 @@
                 </p>
             </div>
         </div>
+
 
         <!-- REQUEST SEARCH AND FILTER -->
 
@@ -1954,7 +1978,10 @@
 
             <div class="date-filter-actions">
 
-                <button type="submit" id="searchAdminPensionRequests">
+                <button
+                    type="submit"
+                    id="searchAdminPensionRequests"
+                >
                     Search Requests
                 </button>
 
@@ -1970,6 +1997,7 @@
 
         </form>
 
+
         <p
             id="adminPensionRequestsMessage"
             class="member-search-results"
@@ -1978,6 +2006,7 @@
         >
             Contribution requests will appear here.
         </p>
+
 
         <!-- ADMINISTRATOR REVIEW NOTE -->
 
@@ -1999,6 +2028,7 @@
             </small>
 
         </div>
+
 
         <!-- REQUEST TABLE -->
 
@@ -2030,7 +2060,8 @@
 
         </div>
 
-        <!-- PAGINATION -->
+
+        <!-- REQUEST PAGINATION -->
 
         <div class="nexus-pension-pagination">
 
@@ -2060,7 +2091,10 @@
 
     </div>
 
-    <!-- CONTRIBUTION REQUEST HISTORY -->
+
+    <!-- =====================================================
+         CONTRIBUTION REQUEST HISTORY
+    ====================================================== -->
 
     <div
         class="admin-panel"
@@ -2072,6 +2106,7 @@
 
             <div>
                 <h3>Contribution Request History</h3>
+
                 <p id="adminPensionHistoryReference">
                     Selected request history
                 </p>
@@ -2132,7 +2167,920 @@
 
     </div>
 
-    <!-- PENSION OPERATIONAL NOTICE -->
+
+    <!-- =====================================================
+         PRODUCTION PENSION SCHEME AUTHORIZATION
+    ====================================================== -->
+
+    <div class="admin-panel">
+
+        <div class="panel-heading">
+            <div>
+                <h3>Scheme Authorization Management</h3>
+                <p>
+                    Record trustee and scheme authorization evidence
+                    and require independent administrator verification.
+                </p>
+            </div>
+        </div>
+
+
+        <div class="nexus-pension-warning">
+            <strong>INDEPENDENT VERIFICATION REQUIRED</strong>
+
+            <p>
+                Submitting authorization evidence does not mean that a
+                trustee or pension scheme has been legally approved.
+            </p>
+
+            <p>
+                The submitting administrator cannot verify their own
+                submission. Two different administrators, neither of
+                whom is the submitter, must independently verify the record.
+            </p>
+
+            <p>
+                Regulatory documents and licensing information must be
+                checked against genuine authoritative records.
+            </p>
+        </div>
+
+
+        <!-- AUTHORIZATION SUBMISSION FORM -->
+
+        <div class="nexus-pension-review-note">
+
+            <h4>Submit Scheme Authorization Evidence</h4>
+
+            <form id="adminPensionSchemeAuthorizationForm">
+
+                <div class="date-filter-controls">
+
+                    <div class="date-filter-field">
+                        <label for="adminPensionSchemeReference">
+                            Scheme Reference
+                        </label>
+
+                        <input
+                            type="text"
+                            id="adminPensionSchemeReference"
+                            maxlength="150"
+                            required
+                            placeholder="Enter scheme reference"
+                        >
+                    </div>
+
+                    <div class="date-filter-field">
+                        <label for="adminPensionTrusteeLegalName">
+                            Trustee Legal Name
+                        </label>
+
+                        <input
+                            type="text"
+                            id="adminPensionTrusteeLegalName"
+                            maxlength="250"
+                            required
+                            placeholder="Enter registered legal name"
+                        >
+                    </div>
+
+                    <div class="date-filter-field">
+                        <label for="adminPensionTrusteeLicense">
+                            Trustee Licence Reference
+                        </label>
+
+                        <input
+                            type="text"
+                            id="adminPensionTrusteeLicense"
+                            maxlength="150"
+                            required
+                            placeholder="Enter licence reference"
+                        >
+                    </div>
+
+                    <div class="date-filter-field">
+                        <label for="adminPensionRegulatorName">
+                            Regulator Name
+                        </label>
+
+                        <input
+                            type="text"
+                            id="adminPensionRegulatorName"
+                            maxlength="200"
+                            required
+                            placeholder="Enter regulator name"
+                        >
+                    </div>
+
+                    <div class="date-filter-field">
+                        <label for="adminPensionAuthorizationReference">
+                            Authorization Reference
+                        </label>
+
+                        <input
+                            type="text"
+                            id="adminPensionAuthorizationReference"
+                            maxlength="150"
+                            required
+                            placeholder="Enter authorization reference"
+                        >
+                    </div>
+
+                    <div class="date-filter-field">
+                        <label for="adminPensionEvidenceDocument">
+                            Evidence Document Reference
+                        </label>
+
+                        <input
+                            type="text"
+                            id="adminPensionEvidenceDocument"
+                            maxlength="500"
+                            required
+                            placeholder="Enter secure document reference"
+                        >
+                    </div>
+
+                    <div class="date-filter-field">
+                        <label for="adminPensionAuthorizationEffectiveFrom">
+                            Authorization Effective From
+                        </label>
+
+                        <input
+                            type="date"
+                            id="adminPensionAuthorizationEffectiveFrom"
+                            required
+                        >
+                    </div>
+
+                    <div class="date-filter-field">
+                        <label for="adminPensionAuthorizationEffectiveUntil">
+                            Authorization Effective Until
+                        </label>
+
+                        <input
+                            type="date"
+                            id="adminPensionAuthorizationEffectiveUntil"
+                        >
+
+                        <small>
+                            Leave blank if the verified authorization
+                            has no recorded expiry date.
+                        </small>
+                    </div>
+
+                </div>
+
+
+                <div class="date-filter-actions">
+
+                    <button
+                        type="submit"
+                        id="adminPensionSubmitAuthorizationButton"
+                    >
+                        Submit Authorization Evidence
+                    </button>
+
+                    <button
+                        type="reset"
+                        class="panel-action"
+                        id="adminPensionResetAuthorizationForm"
+                    >
+                        Clear Form
+                    </button>
+
+                </div>
+
+                <p
+                    id="adminPensionAuthorizationFormMessage"
+                    class="member-search-results"
+                    role="status"
+                    aria-live="polite"
+                ></p>
+
+            </form>
+
+        </div>
+
+
+        <!-- AUTHORIZATION RECORD FILTER -->
+
+        <div class="date-filter-controls">
+
+            <div class="date-filter-field">
+                <label for="adminPensionAuthorizationStatusFilter">
+                    Authorization Status
+                </label>
+
+                <select id="adminPensionAuthorizationStatusFilter">
+                    <option value="">All Statuses</option>
+                    <option value="pending_verification">
+                        Pending Verification
+                    </option>
+                    <option value="verified">Verified</option>
+                    <option value="suspended">Suspended</option>
+                    <option value="revoked">Revoked</option>
+                </select>
+            </div>
+
+            <div class="date-filter-field">
+                <label for="adminPensionAuthorizationSearch">
+                    Search Authorization Records
+                </label>
+
+                <input
+                    type="search"
+                    id="adminPensionAuthorizationSearch"
+                    placeholder="Scheme, trustee or authorization reference..."
+                    autocomplete="off"
+                >
+            </div>
+
+        </div>
+
+
+        <div class="date-filter-actions">
+
+            <button
+                type="button"
+                id="adminPensionSearchAuthorizations"
+            >
+                Search Authorizations
+            </button>
+
+            <button
+                type="button"
+                class="panel-action"
+                id="adminPensionRefreshAuthorizations"
+            >
+                Refresh Authorizations
+            </button>
+
+        </div>
+
+
+        <p
+            id="adminPensionAuthorizationMessage"
+            class="member-search-results"
+            role="status"
+            aria-live="polite"
+        >
+            Scheme authorization records will appear here.
+        </p>
+
+
+        <!-- AUTHORIZATION TABLE -->
+
+        <div class="table-container">
+
+            <table>
+                <thead>
+                    <tr>
+                        <th scope="col">Scheme Reference</th>
+                        <th scope="col">Trustee</th>
+                        <th scope="col">Licence Reference</th>
+                        <th scope="col">Regulator</th>
+                        <th scope="col">Authorization Reference</th>
+                        <th scope="col">Evidence Reference</th>
+                        <th scope="col">Effective Period</th>
+                        <th scope="col">Verification Status</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody id="adminPensionAuthorizationsTable">
+                    <tr>
+                        <td colspan="9" class="empty-table">
+                            Scheme authorization records will appear here.
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
+
+
+        <!-- SELECTED AUTHORIZATION DETAILS -->
+
+        <div
+            class="admin-panel"
+            id="adminPensionAuthorizationDetails"
+            hidden
+        >
+
+            <div class="panel-heading">
+                <div>
+                    <h4>Authorization Verification Details</h4>
+                    <p>
+                        Review the selected authorization before
+                        recording an independent verification.
+                    </p>
+                </div>
+
+                <button
+                    type="button"
+                    class="panel-action"
+                    id="adminPensionCloseAuthorizationDetails"
+                >
+                    Close
+                </button>
+            </div>
+
+            <input
+                type="hidden"
+                id="adminPensionSelectedAuthorizationId"
+            >
+
+            <div class="platform-information">
+
+                <div>
+                    <span>Scheme Reference</span>
+                    <strong id="adminPensionSelectedAuthorizationScheme">—</strong>
+                </div>
+
+                <div>
+                    <span>Current Status</span>
+                    <strong id="adminPensionSelectedAuthorizationStatus">—</strong>
+                </div>
+
+                <div>
+                    <span>Submitted By</span>
+                    <strong id="adminPensionAuthorizationSubmittedBy">—</strong>
+                </div>
+
+                <div>
+                    <span>First Verifier</span>
+                    <strong id="adminPensionAuthorizationFirstVerifier">—</strong>
+                </div>
+
+                <div>
+                    <span>First Verification Date</span>
+                    <strong id="adminPensionAuthorizationFirstVerifiedAt">—</strong>
+                </div>
+
+                <div>
+                    <span>Second Verifier</span>
+                    <strong id="adminPensionAuthorizationSecondVerifier">—</strong>
+                </div>
+
+                <div>
+                    <span>Second Verification Date</span>
+                    <strong id="adminPensionAuthorizationSecondVerifiedAt">—</strong>
+                </div>
+
+            </div>
+
+
+            <div class="nexus-pension-warning">
+                <strong>VERIFICATION RESTRICTIONS</strong>
+
+                <p>
+                    The submitting administrator cannot verify the record.
+                </p>
+
+                <p>
+                    The second verifier must be different from the first verifier.
+                </p>
+
+                <p>
+                    Verification must only be recorded after independently
+                    checking the underlying evidence.
+                </p>
+            </div>
+
+
+            <div class="date-filter-actions">
+
+                <button
+                    type="button"
+                    id="adminPensionVerifyAuthorizationButton"
+                >
+                    Record Independent Verification
+                </button>
+
+            </div>
+
+            <p
+                id="adminPensionAuthorizationVerificationMessage"
+                class="member-search-results"
+                role="status"
+                aria-live="polite"
+            ></p>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         PRODUCTION ALLOCATION RULE MANAGEMENT
+    ====================================================== -->
+
+    <div class="admin-panel">
+
+        <div class="panel-heading">
+            <div>
+                <h3>Production Pension Allocation Rules</h3>
+                <p>
+                    Review, activate and suspend formally approved
+                    production pension allocation rules.
+                </p>
+            </div>
+        </div>
+
+
+        <div class="nexus-pension-warning">
+            <strong>PRODUCTION RULE CONTROL</strong>
+
+            <p>
+                Only approved allocation rules may be activated.
+                Activation requires a matching independently verified
+                scheme authorization covering the requested effective period.
+            </p>
+
+            <p>
+                Rule activation does not process contributions, allocate
+                money, alter member balances or post ledger transactions.
+            </p>
+
+            <p>
+                Test allocation rules and simulation-only records must
+                never be treated as approved production allocation rules.
+            </p>
+        </div>
+
+
+        <!-- RULE SEARCH AND FILTER -->
+
+        <div class="date-filter-controls">
+
+            <div class="date-filter-field">
+                <label for="adminPensionAllocationRuleSearch">
+                    Search Allocation Rules
+                </label>
+
+                <input
+                    type="search"
+                    id="adminPensionAllocationRuleSearch"
+                    placeholder="Rule code, rule name or scheme reference..."
+                    autocomplete="off"
+                >
+            </div>
+
+            <div class="date-filter-field">
+                <label for="adminPensionAllocationRuleStatus">
+                    Rule Status
+                </label>
+
+                <select id="adminPensionAllocationRuleStatus">
+                    <option value="">All Statuses</option>
+                    <option value="draft">Draft</option>
+                    <option value="pending_approval">Pending Approval</option>
+                    <option value="approved">Approved</option>
+                    <option value="active">Active</option>
+                    <option value="suspended">Suspended</option>
+                    <option value="retired">Retired</option>
+                </select>
+            </div>
+
+            <div class="date-filter-field">
+                <label for="adminPensionAllocationRuleSector">
+                    Member Sector
+                </label>
+
+                <select id="adminPensionAllocationRuleSector">
+                    <option value="">All Sectors</option>
+                    <option value="formal">Formal Sector</option>
+                    <option value="informal">Informal Sector</option>
+                </select>
+            </div>
+
+        </div>
+
+
+        <div class="date-filter-actions">
+
+            <button
+                type="button"
+                id="adminPensionSearchAllocationRules"
+            >
+                Search Allocation Rules
+            </button>
+
+            <button
+                type="button"
+                class="panel-action"
+                id="adminPensionRefreshAllocationRules"
+            >
+                Refresh Rules
+            </button>
+
+        </div>
+
+
+        <p
+            id="adminPensionAllocationRulesMessage"
+            class="member-search-results"
+            role="status"
+            aria-live="polite"
+        >
+            Production allocation rules will appear here.
+        </p>
+
+
+        <!-- ALLOCATION RULE TABLE -->
+
+        <div class="table-container">
+
+            <table>
+                <thead>
+                    <tr>
+                        <th scope="col">Rule Code</th>
+                        <th scope="col">Rule Name</th>
+                        <th scope="col">Sector</th>
+                        <th scope="col">Mandatory Scheme Status</th>
+                        <th scope="col">Version</th>
+                        <th scope="col">Total Allocation</th>
+                        <th scope="col">Scheme Reference</th>
+                        <th scope="col">Approval Reference</th>
+                        <th scope="col">Effective Period</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody id="adminPensionAllocationRulesTable">
+                    <tr>
+                        <td colspan="11" class="empty-table">
+                            Production allocation rules will appear here.
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
+
+
+        <!-- SELECTED ALLOCATION RULE DETAILS -->
+
+        <div
+            class="admin-panel"
+            id="adminPensionAllocationRuleDetails"
+            hidden
+        >
+
+            <div class="panel-heading">
+
+                <div>
+                    <h4>Allocation Rule Details</h4>
+                    <p>
+                        Review approval, allocation percentages and
+                        scheme authorization before activation.
+                    </p>
+                </div>
+
+                <button
+                    type="button"
+                    class="panel-action"
+                    id="adminPensionCloseAllocationRuleDetails"
+                >
+                    Close
+                </button>
+
+            </div>
+
+
+            <input
+                type="hidden"
+                id="adminPensionSelectedAllocationRuleId"
+            >
+
+
+            <div class="platform-information">
+
+                <div>
+                    <span>Rule Code</span>
+                    <strong id="adminPensionSelectedRuleCode">—</strong>
+                </div>
+
+                <div>
+                    <span>Rule Status</span>
+                    <strong id="adminPensionSelectedRuleStatus">—</strong>
+                </div>
+
+                <div>
+                    <span>Member Sector</span>
+                    <strong id="adminPensionSelectedRuleSector">—</strong>
+                </div>
+
+                <div>
+                    <span>Mandatory Scheme Status</span>
+                    <strong id="adminPensionSelectedRuleMandatoryStatus">—</strong>
+                </div>
+
+                <div>
+                    <span>Scheme Reference</span>
+                    <strong id="adminPensionSelectedRuleSchemeReference">—</strong>
+                </div>
+
+                <div>
+                    <span>Approval Reference</span>
+                    <strong id="adminPensionSelectedRuleApprovalReference">—</strong>
+                </div>
+
+                <div>
+                    <span>Approved By</span>
+                    <strong id="adminPensionSelectedRuleApprovedBy">—</strong>
+                </div>
+
+                <div>
+                    <span>Approval Date</span>
+                    <strong id="adminPensionSelectedRuleApprovedAt">—</strong>
+                </div>
+
+            </div>
+
+
+            <!-- ALLOCATION ITEMS -->
+
+            <h4>Allocation Breakdown</h4>
+
+            <div class="table-container">
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th scope="col">Subaccount Type</th>
+                            <th scope="col">Allocation Percentage</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="adminPensionAllocationRuleItemsTable">
+                        <tr>
+                            <td colspan="2" class="empty-table">
+                                Allocation details will appear here.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+            </div>
+
+
+            <!-- ACTIVATION FORM -->
+
+            <div
+                class="nexus-pension-review-note"
+                id="adminPensionAllocationActivationPanel"
+            >
+
+                <h4>Activate Approved Allocation Rule</h4>
+
+                <p>
+                    Activation requires an independently verified scheme
+                    authorization that covers the complete requested
+                    effective period.
+                </p>
+
+                <form id="adminPensionAllocationActivationForm">
+
+                    <div class="date-filter-controls">
+
+                        <div class="date-filter-field">
+                            <label for="adminPensionRuleEffectiveFrom">
+                                Effective From
+                            </label>
+
+                            <input
+                                type="date"
+                                id="adminPensionRuleEffectiveFrom"
+                                required
+                            >
+                        </div>
+
+                        <div class="date-filter-field">
+                            <label for="adminPensionRuleEffectiveUntil">
+                                Effective Until
+                            </label>
+
+                            <input
+                                type="date"
+                                id="adminPensionRuleEffectiveUntil"
+                            >
+
+                            <small>
+                                Leave blank for an open-ended rule period.
+                            </small>
+                        </div>
+
+                    </div>
+
+                    <div class="date-filter-field">
+                        <label for="adminPensionRuleActivationNote">
+                            Activation Note (Optional)
+                        </label>
+
+                        <textarea
+                            id="adminPensionRuleActivationNote"
+                            rows="3"
+                            maxlength="1000"
+                            placeholder="Enter an optional activation explanation..."
+                        ></textarea>
+                    </div>
+
+                    <div class="date-filter-actions">
+
+                        <button
+                            type="submit"
+                            id="adminPensionActivateAllocationRuleButton"
+                        >
+                            Activate Approved Rule
+                        </button>
+
+                    </div>
+
+                    <p
+                        id="adminPensionAllocationActivationMessage"
+                        class="member-search-results"
+                        role="status"
+                        aria-live="polite"
+                    ></p>
+
+                </form>
+
+            </div>
+
+
+            <!-- SUSPENSION FORM -->
+
+            <div
+                class="nexus-pension-review-note"
+                id="adminPensionAllocationSuspensionPanel"
+            >
+
+                <h4>Suspend Active Allocation Rule</h4>
+
+                <p>
+                    Suspension stops the rule from remaining active.
+                    A reason is required and will be recorded in the audit history.
+                </p>
+
+                <form id="adminPensionAllocationSuspensionForm">
+
+                    <div class="date-filter-field">
+
+                        <label for="adminPensionRuleSuspensionReason">
+                            Suspension Reason
+                        </label>
+
+                        <textarea
+                            id="adminPensionRuleSuspensionReason"
+                            rows="3"
+                            maxlength="1000"
+                            required
+                            placeholder="Explain why this allocation rule must be suspended..."
+                        ></textarea>
+
+                    </div>
+
+                    <div class="date-filter-actions">
+
+                        <button
+                            type="submit"
+                            id="adminPensionSuspendAllocationRuleButton"
+                        >
+                            Suspend Active Rule
+                        </button>
+
+                    </div>
+
+                    <p
+                        id="adminPensionAllocationSuspensionMessage"
+                        class="member-search-results"
+                        role="status"
+                        aria-live="polite"
+                    ></p>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         PRODUCTION PENSION AUDIT HISTORY
+    ====================================================== -->
+
+    <div class="admin-panel">
+
+        <div class="panel-heading">
+            <div>
+                <h3>Pension Administrative Audit History</h3>
+                <p>
+                    Review recorded scheme authorization and allocation-rule
+                    administrative events.
+                </p>
+            </div>
+        </div>
+
+
+        <div class="date-filter-controls">
+
+            <div class="date-filter-field">
+                <label for="adminPensionAuditEntityType">
+                    Record Type
+                </label>
+
+                <select id="adminPensionAuditEntityType">
+                    <option value="">All Pension Events</option>
+                    <option value="pension_scheme_authorization">
+                        Scheme Authorizations
+                    </option>
+                    <option value="pension_allocation_rule">
+                        Allocation Rules
+                    </option>
+                </select>
+            </div>
+
+            <div class="date-filter-field">
+                <label for="adminPensionAuditAction">
+                    Administrative Action
+                </label>
+
+                <input
+                    type="search"
+                    id="adminPensionAuditAction"
+                    placeholder="Search action or event..."
+                >
+            </div>
+
+        </div>
+
+
+        <div class="date-filter-actions">
+
+            <button
+                type="button"
+                id="adminPensionSearchAuditHistory"
+            >
+                Search Audit History
+            </button>
+
+            <button
+                type="button"
+                class="panel-action"
+                id="adminPensionRefreshAuditHistory"
+            >
+                Refresh Audit History
+            </button>
+
+        </div>
+
+
+        <p
+            id="adminPensionAuditHistoryMessage"
+            class="member-search-results"
+            role="status"
+            aria-live="polite"
+        >
+            Pension audit records will appear here.
+        </p>
+
+
+        <div class="table-container">
+
+            <table>
+                <thead>
+                    <tr>
+                        <th scope="col">Date &amp; Time</th>
+                        <th scope="col">Administrator</th>
+                        <th scope="col">Action</th>
+                        <th scope="col">Record Type</th>
+                        <th scope="col">Record ID</th>
+                        <th scope="col">Description</th>
+                        <th scope="col">Audit Details</th>
+                    </tr>
+                </thead>
+
+                <tbody id="adminPensionAdministrativeAuditTable">
+                    <tr>
+                        <td colspan="7" class="empty-table">
+                            Pension audit records will appear here.
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         PENSION OPERATIONAL STATUS
+    ====================================================== -->
 
     <div class="admin-panel">
 
@@ -2140,7 +3088,8 @@
             <div>
                 <h3>Pension Operational Status</h3>
                 <p>
-                    Important restrictions currently governing the pension system.
+                    Current operating restrictions governing the
+                    NEXUS Pension system.
                 </p>
             </div>
         </div>
@@ -2148,40 +3097,69 @@
         <div class="platform-information">
 
             <div>
-                <span>Pension model</span>
+                <span>Pension Model</span>
                 <strong>Tier 3</strong>
             </div>
 
             <div>
-                <span>System mode</span>
+                <span>System Mode</span>
                 <strong>Simulation Only</strong>
             </div>
 
             <div>
-                <span>Real-money contributions</span>
+                <span>Real-Money Contributions</span>
                 <strong>Disabled</strong>
             </div>
 
             <div>
-                <span>Provider payments</span>
+                <span>Provider Payments</span>
                 <strong>Disabled</strong>
             </div>
 
             <div>
-                <span>Pension withdrawals</span>
+                <span>Pension Withdrawals</span>
                 <strong>Disabled</strong>
             </div>
 
             <div>
-                <span>Approved allocation rules</span>
-                <strong>Not yet configured</strong>
+                <span>Production Allocation Rules</span>
+                <strong id="adminPensionProductionRuleStatus">
+                    Awaiting Verification
+                </strong>
             </div>
 
+            <div>
+                <span>Scheme Authorization</span>
+                <strong id="adminPensionSchemeAuthorizationStatus">
+                    Awaiting Verification
+                </strong>
+            </div>
+
+        </div>
+
+
+        <div class="nexus-pension-warning">
+            <strong>REAL-MONEY OPERATIONS REMAIN DISABLED</strong>
+
+            <p>
+                Installing authorization and allocation-rule controls
+                does not authorize the NEXUS platform to receive,
+                invest, transfer or pay out real pension funds.
+            </p>
+
+            <p>
+                Real-money operations must remain disabled until the
+                required licensed trustee, approved scheme arrangements,
+                applicable regulatory requirements and operational
+                safeguards have been independently established.
+            </p>
         </div>
 
     </div>
 
 </section>
+
+
 
 
 
