@@ -867,108 +867,132 @@
 
 
             <!-- =========================================
-     MEMBER SIDEBAR NAVIGATION
-========================================== -->
+                 MEMBER SIDEBAR NAVIGATION
+            ========================================== -->
 
-<nav
-    class="member-navigation"
-    aria-label="Member Dashboard Navigation"
->
+            <nav
+                class="member-navigation"
+                aria-label="Member Dashboard Navigation"
+            >
 
-    <!-- FIXED SIDEBAR LOGO -->
+                <!-- SIDEBAR BRAND -->
 
-    <div class="member-sidebar-brand">
-        <span class="member-sidebar-logo" aria-label="NEXUS logo">N</span>
-    </div>
+                <div class="member-sidebar-brand">
 
+                    <span class="member-sidebar-logo">N</span>
 
-    <!-- SCROLLABLE MENU AREA -->
+                    <span class="member-sidebar-brand-text">
+                        <strong>NEXUS</strong>
+                        <small>WEALTH PARTNERS</small>
+                    </span>
 
-    <div class="member-sidebar-menu">
-
-        <div class="member-sidebar-label">
-            MAIN MENU
-        </div>
-
-        <a
-            href="#memberDashboard"
-            data-screen="home"
-            class="active"
-        >
-            <span aria-hidden="true">🏠</span>
-            <small>Home</small>
-        </a>
-
-        <a
-            href="#memberTransactions"
-            data-screen="transactions"
-        >
-            <span aria-hidden="true">📄</span>
-            <small>Transactions</small>
-        </a>
-
-        <a
-            href="#pendingWithdrawals"
-            data-screen="pendingWithdrawals"
-            class="desktop-sidebar-only"
-        >
-            <span aria-hidden="true">⏳</span>
-            <small>Pending Withdrawals</small>
-        </a>
-
-        <a
-            href="#memberSavings"
-            data-screen="savings"
-        >
-            <span aria-hidden="true">💰</span>
-            <small>Savings</small>
-        </a>
-
-        <a
-            href="#memberPension"
-            data-screen="pension"
-        >
-            <span aria-hidden="true">🏛️</span>
-            <small>Pension</small>
-        </a>
-
-        <a
-            href="#memberProfile"
-            data-screen="profile"
-        >
-            <span aria-hidden="true">👤</span>
-            <small>Profile</small>
-        </a>
-
-        <a
-            href="#memberSupport"
-            data-screen="support"
-            class="desktop-sidebar-only"
-        >
-            <span aria-hidden="true">💬</span>
-            <small>Customer Support</small>
-        </a>
-
-    </div>
+                </div>
 
 
-    <!-- FIXED SIDEBAR LOGOUT -->
+                <!-- MENU LABEL -->
 
-    <div class="member-sidebar-footer">
+                <div class="member-sidebar-label">
+                    MAIN MENU
+                </div>
 
-        <button
-            type="button"
-            id="memberLogoutButton"
-            class="member-logout-button"
-            aria-label="Log out of your member account"
-        >
-            <span class="logout-icon" aria-hidden="true">↪</span>
-            <span>Logout</span>
-        </button>
 
-    </div>
+                <!-- HOME -->
 
-</nav>
+                <a
+                    href="#memberDashboard"
+                    data-screen="home"
+                    class="active"
+                >
+                    <span aria-hidden="true">🏠</span>
+                    <small>Home</small>
+                </a>
+
+
+                <!-- TRANSACTIONS -->
+
+                <a
+                    href="#memberTransactions"
+                    data-screen="transactions"
+                >
+                    <span aria-hidden="true">📄</span>
+                    <small>Transactions</small>
+                </a>
+
+
+                <!-- PENDING WITHDRAWALS -->
+
+                <a
+                    href="#pendingWithdrawals"
+                    data-screen="pendingWithdrawals"
+                    class="desktop-sidebar-only"
+                >
+                    <span aria-hidden="true">⏳</span>
+                    <small>Pending Withdrawals</small>
+                </a>
+
+
+                <!-- SAVINGS -->
+
+                <a
+                    href="#memberSavings"
+                    data-screen="savings"
+                >
+                    <span aria-hidden="true">💰</span>
+                    <small>Savings</small>
+                </a>
+
+
+                <!-- PENSION -->
+
+                <a
+                    href="#memberPension"
+                    data-screen="pension"
+                >
+                    <span aria-hidden="true">🏛️</span>
+                    <small>Pension</small>
+                </a>
+
+
+                <!-- PROFILE -->
+
+                <a
+                    href="#memberProfile"
+                    data-screen="profile"
+                >
+                    <span aria-hidden="true">👤</span>
+                    <small>Profile</small>
+                </a>
+
+
+                <!-- SUPPORT -->
+
+                <a
+                    href="#memberSupport"
+                    data-screen="support"
+                    class="desktop-sidebar-only"
+                >
+                    <span aria-hidden="true">💬</span>
+                    <small>Customer Support</small>
+                </a>
+
+
+                <!-- SIDEBAR LOGOUT -->
+
+                <div class="member-sidebar-footer">
+
+                    <button
+                        type="button"
+                        id="memberLogoutButton"
+                        class="member-logout-button"
+                        aria-label="Log out of your member account"
+                    >
+                        <span class="logout-icon" aria-hidden="true">↪</span>
+                        <span>Logout</span>
+                    </button>
+
+                </div>
+
+            </nav>
 
 
             <!-- =========================================
