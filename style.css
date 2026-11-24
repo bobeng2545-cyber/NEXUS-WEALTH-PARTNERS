@@ -6867,90 +6867,174 @@ hr {
 
 }
 
-/* =========================================
-   MOBILE BOTTOM NAVIGATION
-   FIVE FEATURES IN ONE HORIZONTAL ROW
-========================================= */
 
-@media screen and (max-width: 767px) {
+/* =================================================
+   PHONE AND SMALL TABLET NAVIGATION
+   EXACTLY FIVE ITEMS IN ONE HORIZONTAL ROW
+================================================= */
 
-    /* Hide Pending Withdrawals and Support */
-    #memberSidebar .member-navigation a[data-screen="pendingWithdrawals"],
-    #memberSidebar .member-navigation a[data-screen="support"],
-    #memberSidebar .member-navigation .member-desktop-only-link {
+@media screen and (max-width: 1023px) {
+
+    /* Hide desktop sidebar branding and logout */
+    #memberDashboard .member-sidebar-brand,
+    #memberDashboard .member-sidebar-label,
+    #memberDashboard .member-sidebar-footer {
         display: none !important;
     }
 
-    /* Fixed horizontal navigation bar */
-    #memberSidebar {
+    /* Hide Pending Withdrawals and Customer Support links */
+    #memberDashboard .member-navigation a.desktop-sidebar-only {
+        display: none !important;
+    }
+
+    /* Hide other desktop-only elements */
+    #memberDashboard .desktop-sidebar-only {
+        display: none !important;
+    }
+
+    /* Keep the dashboard content clear of the bottom navigation */
+    #memberDashboard {
+        padding-bottom: 90px !important;
+    }
+
+    /* Fixed navigation bar at the bottom of the phone */
+    #memberDashboard .member-navigation {
         position: fixed !important;
         left: 0 !important;
         right: 0 !important;
-        bottom: 0 !important;
         top: auto !important;
-        width: 100% !important;
-        height: 70px !important;
-        min-height: 70px !important;
-        max-height: 70px !important;
-        z-index: 9999 !important;
-        border-radius: 0 !important;
-        padding: 0 !important;
+        bottom: 0 !important;
+
+        z-index: 999999 !important;
+
         display: block !important;
+
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+
+        height: 72px !important;
+        min-height: 72px !important;
+        max-height: 72px !important;
+
+        margin: 0 !important;
+        padding: 0 !important;
+
+        box-sizing: border-box !important;
+
+        background: #102b46 !important;
+        border: none !important;
+        border-radius: 0 !important;
+
+        overflow: hidden !important;
+
+        box-shadow: 0 -3px 15px rgba(0, 0, 0, .15) !important;
     }
 
-    /* Five items side by side */
-    #memberSidebar .member-navigation {
-        display: flex !important;
-        flex-direction: row !important;
-        flex-wrap: nowrap !important;
+    /* Make the inner menu a five-column horizontal row */
+    #memberDashboard .member-navigation .member-sidebar-menu {
+        display: grid !important;
+        grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+        grid-template-rows: 1fr !important;
+
         align-items: stretch !important;
-        justify-content: space-around !important;
+        justify-content: stretch !important;
+
         width: 100% !important;
-        height: 70px !important;
+        height: 72px !important;
+        min-width: 0 !important;
+
         margin: 0 !important;
         padding: 5px 2px !important;
+
+        box-sizing: border-box !important;
+
         gap: 0 !important;
         overflow: hidden !important;
     }
 
-    #memberSidebar .member-navigation a {
+    /* Hide the MAIN MENU heading */
+    #memberDashboard .member-navigation .member-sidebar-menu > .member-sidebar-label {
+        display: none !important;
+    }
+
+    /* Five navigation links */
+    #memberDashboard .member-navigation .member-sidebar-menu > a:not(.desktop-sidebar-only) {
         display: flex !important;
-        flex: 1 1 20% !important;
         flex-direction: column !important;
         align-items: center !important;
         justify-content: center !important;
+
+        width: 100% !important;
         min-width: 0 !important;
-        height: 60px !important;
-        padding: 4px 1px !important;
+        max-width: 100% !important;
+        height: 62px !important;
+        min-height: 0 !important;
+
         margin: 0 !important;
+        padding: 4px 1px !important;
+
+        box-sizing: border-box !important;
+
+        color: #d4e0e8 !important;
+        background: transparent !important;
+
+        border: none !important;
+        border-radius: 7px !important;
+
+        text-align: center !important;
+        text-decoration: none !important;
+
+        overflow: hidden !important;
+        white-space: nowrap !important;
+    }
+
+    /* Navigation icons */
+    #memberDashboard .member-navigation .member-sidebar-menu > a > span {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+
+        flex: 0 0 auto !important;
+
+        width: auto !important;
+        margin: 0 0 3px !important;
+        padding: 0 !important;
+
+        font-size: 18px !important;
+        line-height: 22px !important;
+    }
+
+    /* Navigation names */
+    #memberDashboard .member-navigation .member-sidebar-menu > a > small {
+        display: block !important;
+
+        width: 100% !important;
+        min-width: 0 !important;
+
+        margin: 0 !important;
+        padding: 0 !important;
+
+        color: inherit !important;
+
+        font-size: 9px !important;
+        font-weight: 650 !important;
+        line-height: 12px !important;
+
         text-align: center !important;
         white-space: nowrap !important;
     }
 
-    #memberSidebar .member-navigation a span {
-        display: block !important;
-        font-size: 19px !important;
-        line-height: 24px !important;
+    /* Active and pressed navigation item */
+    #memberDashboard .member-navigation .member-sidebar-menu > a.active {
+        color: #ffffff !important;
+        background: #087443 !important;
     }
 
-    #memberSidebar .member-navigation a small {
-        display: block !important;
-        font-size: 9px !important;
-        line-height: 13px !important;
-        white-space: nowrap !important;
-    }
-
-    /* Hide desktop sidebar branding and fixed logout */
-    #memberSidebar .sidebar-brand,
-    #memberSidebar .sidebar-label,
-    #memberSidebar .sidebar-bottom {
-        display: none !important;
-    }
-
-    /* Leave room for bottom navigation */
-    .member-main,
-    .member-content {
-        padding-bottom: 85px !important;
+    #memberDashboard .member-navigation .member-sidebar-menu > a:active {
+        background: #087443 !important;
+        color: #ffffff !important;
     }
 
 }
+
