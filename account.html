@@ -48,6 +48,47 @@
         }
 
         /* =========================================
+           WALLET ACTION BUTTONS
+           DEPOSIT / WITHDRAW
+        ========================================= */
+
+        .wallet-actions {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+            width: 100%;
+            margin: 18px 0;
+        }
+
+        .wallet-actions button {
+            width: 100%;
+            min-width: 0;
+            padding: 14px 12px;
+            border: 1px solid #087443;
+            border-radius: 9px;
+            background: #ffffff;
+            color: #087443;
+            font: inherit;
+            font-weight: 700;
+            cursor: pointer;
+            transition:
+                background 0.2s ease,
+                color 0.2s ease,
+                box-shadow 0.2s ease;
+        }
+
+        .wallet-actions button:hover {
+            background: #f0f8f3;
+            color: #087443;
+            box-shadow: 0 3px 10px rgba(8, 116, 67, 0.10);
+        }
+
+        .wallet-actions button:focus-visible {
+            outline: 3px solid #80c9a4;
+            outline-offset: 3px;
+        }
+
+        /* =========================================
            WALLET ACTION TABS
         ========================================= */
 
@@ -109,47 +150,6 @@
         }
 
         /* =========================================
-           WALLET ACTION BUTTONS
-           DEPOSIT / WITHDRAW
-        ========================================= */
-
-        .wallet-actions {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 12px;
-            width: 100%;
-            margin: 18px 0;
-        }
-
-        .wallet-actions button {
-            width: 100%;
-            min-width: 0;
-            padding: 14px 12px;
-            border: 1px solid #087443;
-            border-radius: 9px;
-            background: #ffffff;
-            color: #087443;
-            font: inherit;
-            font-weight: 700;
-            cursor: pointer;
-            transition:
-                background 0.2s ease,
-                color 0.2s ease,
-                box-shadow 0.2s ease;
-        }
-
-        .wallet-actions button:hover {
-            background: #f0f8f3;
-            color: #087443;
-            box-shadow: 0 3px 10px rgba(8, 116, 67, 0.10);
-        }
-
-        .wallet-actions button:focus-visible {
-            outline: 3px solid #80c9a4;
-            outline-offset: 3px;
-        }
-
-        /* =========================================
            MOBILE LAYOUT
         ========================================= */
 
@@ -168,20 +168,20 @@
                 padding: 14px 10px;
             }
 
-            .wallet-action-tabs {
-                gap: 8px;
-            }
-
-            .wallet-action-tab {
-                padding: 12px 8px;
-                font-size: 13px;
-            }
-
             .wallet-actions {
                 gap: 8px;
             }
 
             .wallet-actions button {
+                padding: 12px 8px;
+                font-size: 13px;
+            }
+
+            .wallet-action-tabs {
+                gap: 8px;
+            }
+
+            .wallet-action-tab {
                 padding: 12px 8px;
                 font-size: 13px;
             }
@@ -669,6 +669,29 @@
             </div>
 
 
+            <!-- =====================================
+                 DEPOSIT AND WITHDRAW BUTTONS
+            ====================================== -->
+
+            <div class="wallet-actions home-dashboard-content">
+
+                <button
+                    type="button"
+                    data-wallet-action="deposit"
+                >
+                    ➕ Deposit Money
+                </button>
+
+                <button
+                    type="button"
+                    data-wallet-action="withdraw"
+                >
+                    📤 Withdraw Money
+                </button>
+
+            </div>
+
+
             <!-- CUSTOMER SUPPORT BUTTON -->
 
             <button
@@ -732,58 +755,6 @@
                 </a>
 
             </nav>
-
-
-            <!-- =====================================
-                 MY WALLET
-            ====================================== -->
-
-            <section
-                id="myWallet"
-                class="dashboard-panel home-dashboard-content"
-            >
-
-                <h3>My Wallet</h3>
-
-                <p>Manage and monitor your wallet.</p>
-
-                <div class="dashboard-cards">
-
-                    <article class="dashboard-card balance-card">
-
-                        <span class="card-icon">💵</span>
-
-                        <p>Available Balance</p>
-
-                        <h3 id="walletAvailableBalance">GHS 0.00</h3>
-
-                        <small>
-                            Funds currently available for withdrawal
-                        </small>
-
-                    </article>
-
-                </div>
-
-                <div class="wallet-actions">
-
-                    <button
-                        type="button"
-                        data-wallet-action="deposit"
-                    >
-                        ➕ Deposit Money
-                    </button>
-
-                    <button
-                        type="button"
-                        data-wallet-action="withdraw"
-                    >
-                        📤 Withdraw Money
-                    </button>
-
-                </div>
-
-            </section>
 
 
             <!-- =====================================
@@ -1704,9 +1675,7 @@
 
                             <p>Total Pension Balance</p>
 
-                            <h3>
-                                GH₵0.00
-                            </h3>
+                            <h3>GH₵0.00</h3>
 
                             <small>
                                 Your separate Pension account balance
