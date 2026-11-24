@@ -7025,10 +7025,21 @@ hr {
         white-space: nowrap !important;
     }
 
-    /* Active and pressed navigation item */
+    /* Smaller green active navigation box */
+   @media screen and (max-width: 1023px) {
+
     #memberDashboard .member-navigation .member-sidebar-menu > a.active {
-        color: #ffffff !important;
         background: #087443 !important;
+        color: #ffffff !important;
+
+        width: 90% !important;
+        height: 54px !important;
+
+        margin: auto !important;
+        padding: 3px 1px !important;
+
+        border-radius: 7px !important;
+        box-sizing: border-box !important;
     }
 
     #memberDashboard .member-navigation .member-sidebar-menu > a:active {
