@@ -19,12 +19,37 @@
 
     <style>
         /* =========================================
-           WALLET ACTION TABS
+           GENERAL
         ========================================= */
 
         [hidden] {
             display: none !important;
         }
+
+        /* =========================================
+           DASHBOARD SUMMARY CARD LAYOUT
+        ========================================= */
+
+        .dashboard-summary-cards {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 18px;
+            width: 100%;
+        }
+
+        .dashboard-summary-cards > .dashboard-card {
+            min-width: 0;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .dashboard-summary-cards > .balance-card {
+            grid-column: 1 / -1;
+        }
+
+        /* =========================================
+           WALLET ACTION TABS
+        ========================================= */
 
         .wallet-actions-card {
             overflow: hidden;
@@ -33,29 +58,41 @@
         .wallet-action-tabs {
             display: grid;
             grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 8px;
-            padding: 8px;
+            gap: 10px;
+            padding: 0;
             margin: 20px 0 25px;
-            background: #edf4ef;
+            background: transparent;
             border-radius: 12px;
         }
 
         .wallet-action-tab {
-            border: none;
+            width: 100%;
+            min-width: 0;
+            border: 1px solid #087443;
             border-radius: 9px;
             padding: 14px 12px;
-            background: transparent;
-            color: #355344;
+            background: #ffffff;
+            color: #087443;
             font-size: 15px;
             font-weight: 700;
             cursor: pointer;
-            transition: background 0.2s ease, color 0.2s ease;
+            transition:
+                background 0.2s ease,
+                color 0.2s ease,
+                border-color 0.2s ease,
+                box-shadow 0.2s ease;
         }
 
         .wallet-action-tab.active {
-            background: #087443;
-            color: #ffffff;
-            box-shadow: 0 3px 10px rgba(8, 116, 67, 0.16);
+            background: #ffffff;
+            color: #087443;
+            border: 2px solid #087443;
+            box-shadow: 0 3px 10px rgba(8, 116, 67, 0.12);
+        }
+
+        .wallet-action-tab:hover {
+            background: #f0f8f3;
+            color: #087443;
         }
 
         .wallet-action-tab:focus-visible {
@@ -71,25 +108,85 @@
             margin-top: 0;
         }
 
+        /* =========================================
+           WALLET ACTION BUTTONS
+           DEPOSIT / WITHDRAW
+        ========================================= */
+
         .wallet-actions {
-            display: flex;
-            flex-wrap: wrap;
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
             gap: 12px;
+            width: 100%;
+            margin: 18px 0;
         }
 
         .wallet-actions button {
+            width: 100%;
+            min-width: 0;
+            padding: 14px 12px;
+            border: 1px solid #087443;
+            border-radius: 9px;
+            background: #ffffff;
+            color: #087443;
             font: inherit;
+            font-weight: 700;
             cursor: pointer;
+            transition:
+                background 0.2s ease,
+                color 0.2s ease,
+                box-shadow 0.2s ease;
         }
 
+        .wallet-actions button:hover {
+            background: #f0f8f3;
+            color: #087443;
+            box-shadow: 0 3px 10px rgba(8, 116, 67, 0.10);
+        }
+
+        .wallet-actions button:focus-visible {
+            outline: 3px solid #80c9a4;
+            outline-offset: 3px;
+        }
+
+        /* =========================================
+           MOBILE LAYOUT
+        ========================================= */
+
         @media (max-width: 480px) {
+
+            .dashboard-summary-cards {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 10px;
+            }
+
+            .dashboard-summary-cards > .balance-card {
+                grid-column: 1 / -1;
+            }
+
+            .dashboard-summary-cards > .dashboard-card {
+                padding: 14px 10px;
+            }
+
+            .wallet-action-tabs {
+                gap: 8px;
+            }
 
             .wallet-action-tab {
                 padding: 12px 8px;
                 font-size: 13px;
             }
 
+            .wallet-actions {
+                gap: 8px;
+            }
+
+            .wallet-actions button {
+                padding: 12px 8px;
+                font-size: 13px;
+            }
         }
+
     </style>
 
 </head>
@@ -487,9 +584,13 @@
             </div>
 
 
-            <!-- DASHBOARD SUMMARY -->
+            <!-- =====================================
+                 DASHBOARD FINANCIAL SUMMARY
+            ====================================== -->
 
-            <div class="dashboard-cards home-dashboard-content">
+            <div class="dashboard-cards dashboard-summary-cards home-dashboard-content">
+
+                <!-- WALLET BALANCE: FULL WIDTH -->
 
                 <article class="dashboard-card balance-card">
 
@@ -503,6 +604,9 @@
 
                 </article>
 
+
+                <!-- TOTAL DEPOSITS -->
+
                 <article class="dashboard-card">
 
                     <span class="card-icon">📥</span>
@@ -514,6 +618,9 @@
                     <small>Your confirmed deposits</small>
 
                 </article>
+
+
+                <!-- TOTAL WITHDRAWALS -->
 
                 <article class="dashboard-card">
 
@@ -527,10 +634,39 @@
 
                 </article>
 
+
+                <!-- PENDING WITHDRAWAL -->
+
+                <article class="dashboard-card pending-wallet-card">
+
+                    <span class="card-icon">⏳</span>
+
+                    <p>Pending Withdrawal</p>
+
+                    <h3 id="walletPendingWithdrawals">GHS 0.00</h3>
+
+                    <small>
+                        Money reserved for pending and processing requests
+                    </small>
+
+                </article>
+
+
+                <!-- TOTAL PENSION BALANCE -->
+
+                <article class="dashboard-card">
+
+                    <span class="card-icon">🏛️</span>
+
+                    <p>Total Pension Balance</p>
+
+                    <h3 id="memberPensionBalance">GH₵0.00</h3>
+
+                    <small>Your separate Pension account balance</small>
+
+                </article>
+
             </div>
-
-
-            <!-- FINANCIAL ACCOUNTS SECTION REMOVED -->
 
 
             <!-- CUSTOMER SUPPORT BUTTON -->
@@ -623,20 +759,6 @@
 
                         <small>
                             Funds currently available for withdrawal
-                        </small>
-
-                    </article>
-
-                    <article class="dashboard-card pending-wallet-card">
-
-                        <span class="card-icon">⏳</span>
-
-                        <p>Pending Withdrawals</p>
-
-                        <h3 id="walletPendingWithdrawals">GHS 0.00</h3>
-
-                        <small>
-                            Money reserved for pending and processing requests
                         </small>
 
                     </article>
@@ -1582,7 +1704,7 @@
 
                             <p>Total Pension Balance</p>
 
-                            <h3 id="memberPensionBalance">
+                            <h3>
                                 GH₵0.00
                             </h3>
 
