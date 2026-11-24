@@ -6866,3 +6866,91 @@ hr {
     }
 
 }
+
+/* =========================================
+   MOBILE BOTTOM NAVIGATION
+   FIVE FEATURES IN ONE HORIZONTAL ROW
+========================================= */
+
+@media screen and (max-width: 767px) {
+
+    /* Hide Pending Withdrawals and Support */
+    #memberSidebar .member-navigation a[data-screen="pendingWithdrawals"],
+    #memberSidebar .member-navigation a[data-screen="support"],
+    #memberSidebar .member-navigation .member-desktop-only-link {
+        display: none !important;
+    }
+
+    /* Fixed horizontal navigation bar */
+    #memberSidebar {
+        position: fixed !important;
+        left: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        top: auto !important;
+        width: 100% !important;
+        height: 70px !important;
+        min-height: 70px !important;
+        max-height: 70px !important;
+        z-index: 9999 !important;
+        border-radius: 0 !important;
+        padding: 0 !important;
+        display: block !important;
+    }
+
+    /* Five items side by side */
+    #memberSidebar .member-navigation {
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+        align-items: stretch !important;
+        justify-content: space-around !important;
+        width: 100% !important;
+        height: 70px !important;
+        margin: 0 !important;
+        padding: 5px 2px !important;
+        gap: 0 !important;
+        overflow: hidden !important;
+    }
+
+    #memberSidebar .member-navigation a {
+        display: flex !important;
+        flex: 1 1 20% !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        min-width: 0 !important;
+        height: 60px !important;
+        padding: 4px 1px !important;
+        margin: 0 !important;
+        text-align: center !important;
+        white-space: nowrap !important;
+    }
+
+    #memberSidebar .member-navigation a span {
+        display: block !important;
+        font-size: 19px !important;
+        line-height: 24px !important;
+    }
+
+    #memberSidebar .member-navigation a small {
+        display: block !important;
+        font-size: 9px !important;
+        line-height: 13px !important;
+        white-space: nowrap !important;
+    }
+
+    /* Hide desktop sidebar branding and fixed logout */
+    #memberSidebar .sidebar-brand,
+    #memberSidebar .sidebar-label,
+    #memberSidebar .sidebar-bottom {
+        display: none !important;
+    }
+
+    /* Leave room for bottom navigation */
+    .member-main,
+    .member-content {
+        padding-bottom: 85px !important;
+    }
+
+}
