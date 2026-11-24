@@ -3519,152 +3519,104 @@ body > #notificationMenu.notification-open {
 }
 
 
+
 /* =====================================================
    NEXUS WEALTH PARTNERS
-   PHONE VIEW - HORIZONTAL CARD LAYOUT
-   Desktop and tablet remain unchanged
+   PHONE VIEW - STABLE VERTICAL LAYOUT
+   Prevent page sections from scrolling sideways
 ===================================================== */
 
 @media screen and (max-width: 600px) {
 
-    /* ABOUT US AND FAQ CARDS */
+    /* ABOUT AND FAQ */
     #about .about-content,
     #faq .about-content {
-
-        display: flex !important;
-        flex-direction: row !important;
-        flex-wrap: nowrap !important;
-
+        display: grid !important;
+        grid-template-columns: minmax(0, 1fr) !important;
         gap: 14px !important;
-
-        overflow-x: auto !important;
-        overflow-y: hidden !important;
-
-        padding: 10px 16px 20px !important;
-
-        scroll-snap-type: x mandatory;
-        -webkit-overflow-scrolling: touch;
+        width: 100% !important;
+        min-width: 0 !important;
+        overflow: visible !important;
+        padding: 0 !important;
+        scroll-snap-type: none !important;
     }
 
     #about .about-feature,
     #faq .about-feature {
-
-        flex: 0 0 82% !important;
-        min-width: 82% !important;
-
-        scroll-snap-align: start;
-
-        box-sizing: border-box;
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+        scroll-snap-align: none !important;
     }
 
-
-    /* THE NEXUS EXPERIENCE */
+    /* BENEFITS */
     .benefits-grid {
-
-        display: flex !important;
-        flex-direction: row !important;
-        flex-wrap: nowrap !important;
-
+        display: grid !important;
+        grid-template-columns: minmax(0, 1fr) !important;
         gap: 14px !important;
-
-        overflow-x: auto !important;
-        overflow-y: hidden !important;
-
-        padding: 10px 16px 20px !important;
-
-        scroll-snap-type: x mandatory;
-        -webkit-overflow-scrolling: touch;
+        width: 100% !important;
+        min-width: 0 !important;
+        overflow: visible !important;
+        padding: 0 !important;
+        scroll-snap-type: none !important;
     }
 
     .benefit-card {
-
-        flex: 0 0 82% !important;
-        min-width: 82% !important;
-
-        scroll-snap-align: start;
-
-        box-sizing: border-box;
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+        scroll-snap-align: none !important;
     }
 
-
-    /* SAVINGS OPTIONS */
+    /* SAVINGS PLANS */
     .savings-plans-grid {
-
-        display: flex !important;
-        flex-direction: row !important;
-        flex-wrap: nowrap !important;
-
+        display: grid !important;
+        grid-template-columns: minmax(0, 1fr) !important;
         gap: 14px !important;
-
-        overflow-x: auto !important;
-        overflow-y: hidden !important;
-
-        padding: 10px 16px 20px !important;
-
-        scroll-snap-type: x mandatory;
-        -webkit-overflow-scrolling: touch;
+        width: 100% !important;
+        min-width: 0 !important;
+        overflow: visible !important;
+        padding: 0 !important;
+        scroll-snap-type: none !important;
     }
 
     .savings-plan-card {
-
-        flex: 0 0 82% !important;
-        min-width: 82% !important;
-
-        scroll-snap-align: start;
-
-        box-sizing: border-box;
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+        scroll-snap-align: none !important;
     }
 
-
-    /* FOOTER SECTIONS */
+    /* FOOTER */
     .footer-main {
-
-        display: flex !important;
-        flex-direction: row !important;
-        flex-wrap: nowrap !important;
-
-        gap: 24px !important;
-
-        overflow-x: auto !important;
-        overflow-y: hidden !important;
-
-        padding: 10px 16px 20px !important;
-
-        scroll-snap-type: x mandatory;
-        -webkit-overflow-scrolling: touch;
+        display: grid !important;
+        grid-template-columns: minmax(0, 1fr) !important;
+        gap: 18px !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        overflow: visible !important;
+        padding: 0 !important;
+        scroll-snap-type: none !important;
     }
 
     .footer-brand,
     .footer-links {
-
-        flex: 0 0 75% !important;
-        min-width: 75% !important;
-
-        scroll-snap-align: start;
-
-        box-sizing: border-box;
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+        scroll-snap-align: none !important;
     }
 
-
-    /* FOOTER COPYRIGHT */
-    .footer-bottom {
-
-        display: flex !important;
-        flex-direction: column !important;
-
-        align-items: flex-start !important;
-        gap: 8px !important;
-    }
-
-
-    /* HIDE HORIZONTAL SCROLLBAR */
+    /* REMOVE HORIZONTAL SCROLLING FROM THESE SECTIONS */
     #about .about-content,
     #faq .about-content,
     .benefits-grid,
     .savings-plans-grid,
     .footer-main {
-
-        scrollbar-width: none;
+        overflow-x: visible !important;
+        overflow-y: visible !important;
+        scrollbar-width: auto;
     }
 
     #about .about-content::-webkit-scrollbar,
@@ -3672,11 +3624,10 @@ body > #notificationMenu.notification-open {
     .benefits-grid::-webkit-scrollbar,
     .savings-plans-grid::-webkit-scrollbar,
     .footer-main::-webkit-scrollbar {
-
-        display: none;
+        display: initial;
     }
-
 }
+
 
 
 /* =====================================================
